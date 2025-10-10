@@ -461,135 +461,6 @@
                 <textarea id="quotation-tinymce">...</textarea>
             </div>
         </div>
-
-
-        <div class="modal-area">
-            <div
-                    class="modal fade" id="quotationModalCenter" tabindex="-1"
-                    role="dialog" aria-labelledby="quotationModalCenter"
-                    aria-hidden="true"
-            >
-                <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">{% trans 'Select Quotation' %}</h5>
-                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-check form-check-lg" id="copy-quotation-option">
-                                <input type="checkbox" class="form-check-input check-option" id="customCheck1" checked>
-                                <label class="form-check-label" for="customCheck1">{% trans 'Copy all from quotation' %}</label>
-                            </div>
-                            <table
-                                    id="datable-copy-quotation-product"
-                                    class="table nowrap w-100 mb-5"
-                                    hidden
-                            >
-                                <thead>
-                                <tr class="bg-light">
-                                    <th>#</th>
-                                    <th>{% trans 'Product' %}</th>
-                                    <th>{% trans 'Quantity' %}</th>
-                                    <th>{% trans 'Input' %}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="modal-footer">
-                            <button
-                                    type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal"
-                            >{% trans 'Close' %}</button>
-                            <a target="_blank" class="link-primary underline_hover" id="link-to-sale-order-create" data-url="{% url "SaleOrderCreate" %}" hidden></a>
-                            <button type="button" class="btn btn-primary" id="btn-quotation-copy-confirm" data-copy-type="copy-to" data-bs-dismiss="modal">{% trans 'Copy' %}</button>
-                            <input type="text" id="data-copy-quotation-detail" hidden>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div
-                    class="modal fade" id="selectProductModal" tabindex="-1"
-                    role="dialog" aria-labelledby="selectProductModal"
-                    aria-hidden="true"
-            >
-                <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title"><b>{% trans 'Select product' %}</b></h5>
-                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
-                        </div>
-                        <div class="modal-body">
-                            <table
-                                    id="table-select-product"
-                                    class="table nowrap w-100 mb-5"
-                            >
-                                <thead>
-                                <tr class="bg-light">
-                                    <th class="w-20">{% trans 'Product name' %}</th>
-                                    <th class="w-15">{% trans 'Product code' %}</th>
-                                    <th class="w-15">{% trans 'Description' %}</th>
-                                    <th class="w-10">{% trans 'Category' %}</th>
-                                    <th class="w-10">{% trans 'UoM' %}</th>
-                                    <th class="w-10">{% trans 'Duration UoM' %}</th>
-                                    <th class="w-10">{% trans 'Status' %}</th>
-                                    <th class="w-10">{% trans 'Note' %}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="quotation_products_data">{% trans 'Close' %}</button>
-                            <button type="button" class="btn btn-primary" id="btn-save-select-product" data-bs-dismiss="modal" data-zone="quotation_products_data">{% trans 'Save' %}</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div
-                    class="modal fade" id="selectPriceModal" tabindex="-1"
-                    role="dialog" aria-labelledby="selectPriceModal"
-            >
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title"><b>{% trans 'Select product price' %}</b></h5>
-                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
-                        </div>
-                        <div class="modal-body">
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="quotation_products_data">{% trans 'Close' %}</button>
-                            <button type="button" class="btn btn-primary" id="btn-save-select-price" data-bs-dismiss="modal" data-zone="quotation_products_data" hidden>{% trans 'Save' %}</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div
-                    class="modal fade" id="selectCostModal" tabindex="-1"
-                    role="dialog" aria-labelledby="selectCostModal"
-            >
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title"><b>{% trans 'Select product cost' %}</b></h5>
-                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
-                        </div>
-                        <div class="modal-body">
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="quotation_costs_data">{% trans 'Close' %}</button>
-                            <button type="button" class="btn btn-primary" id="btn-save-select-cost" data-bs-dismiss="modal" data-zone="quotation_costs_data" hidden>{% trans 'Save' %}</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </form>
 
     <div class="p-3">
@@ -603,6 +474,7 @@
 {% endblock %}
 
 {% block modalData %}
+    {% include 'sales/quotation/quotation_detail_offcanvas.html' %}
     {% include 'extends/files/file_attribute.html' %}
     {% include 'extends/indicator/all.html' with is_order=False %}
 {% endblock %}

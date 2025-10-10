@@ -18,6 +18,7 @@ class loadServiceOrderInfo {
                 ajax: {
                     url: $tb.attr('data-url'),
                     type: 'GET',
+                    data: {'document_root_id__isnull': true},
                     dataSrc: "data.service_order_list"
                 },
                 columns: [
@@ -31,7 +32,23 @@ class loadServiceOrderInfo {
                         className: "ellipsis-cell-lg w-5",
                         render: (data, type, row) => {
                             const link = $tb.attr('data-url-detail').replace('0', row?.['id']);
-                            return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
+                            let target = `.cl-${row?.['id'].replace(/-/g, "")}`;
+                            let clBtn = ``;
+                            if (!row?.['document_root_id']) {
+                                clBtn = `<button
+                                            type="button"
+                                            class="btn btn-icon btn-view-baseline"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="${target}"
+                                            data-bs-placement="top"
+                                            aria-expanded="false"
+                                            data-id="${row?.['id']}"
+                                        >
+                                        <span class="icon"><i class="fas fa-chevron-right"></i></span>
+                                        </button>`;
+                            }
+                            return `<div class="d-flex justify-content-between align-items-center"><a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>
+                                    ${clBtn}</div>`;
                         }
                     },
                     {
@@ -61,6 +78,9 @@ class loadServiceOrderInfo {
                     {
                         className: 'text-center w-10',
                         render: (data, type, row) => {
+                            if (!row?.['document_root_id']) {
+                                return ``;
+                            }
                             return WFRTControl.displayRuntimeStatus(row?.['system_status']);
                         }
                     },
@@ -297,6 +317,59 @@ $('document').ready(function () {
             (errs) => {
                 WindowControl.hideLoading();
                 $.fn.notifyB({description: errs.data.errors}, 'failure');
+            }
+        )
+    });
+
+    // baseline events
+    $('#table-service-order').on('click', '.btn-view-baseline', function () {
+        let targetID = $(this).attr('data-id');
+        let targetRow = this.closest('tr');
+        let cls = `cl-${targetID.replace(/-/g, "")}`;
+        let count = $('#table-service-order')[0].querySelectorAll(`.${cls}`).length;
+        if (count > 0) {
+            $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
+            if ($(this).find('i').hasClass('fa-chevron-right')) {
+                // remove show
+                $('#table-service-order')[0].querySelectorAll(`.${cls}`).forEach(el => {
+                    el.classList.remove('show');
+                });
+            }
+            return true;
+        }
+        WindowControl.showLoading();
+        $.fn.callAjax2({
+                'url': $('#table-service-order').attr('data-url'),
+                'method': 'GET',
+                'data': {'document_root_id': targetID},
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('service_order_list') && Array.isArray(data.service_order_list)) {
+                        console.log(data.service_order_list);
+                        $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
+                        // append new row
+                        const filtered = data.service_order_list.filter(item => item.system_status === 3);
+                        const latest = filtered.length
+                            ? filtered.reduce((max, item) =>
+                                item.document_change_order > max.document_change_order ? item : max
+                            )
+                            : null;
+                        for (let dataSO of data?.['service_order_list']) {
+                            let clsBg = 'bg-light';
+                            if (dataSO?.['id'] === latest?.['id']) {
+                                clsBg = 'bg-green-light-5';
+                            }
+                            let newRow = $('#table-service-order').DataTable().row.add(dataSO).node();
+                            $(newRow).addClass(`${cls} collapse show ${clsBg}`);
+                            $(newRow).detach().insertAfter(targetRow);
+                        }
+                        WindowControl.hideLoading();
+                    }
+                }
             }
         )
     });

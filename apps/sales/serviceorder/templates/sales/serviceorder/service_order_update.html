@@ -25,12 +25,7 @@
             </span>
         </button>
     </a>
-    <button class="btn btn-outline-primary" type="submit" form="form-update-service-order">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon"><i class="fa-regular fa-floppy-disk"></i></span>
-        </span>
-    </button>
+    {% include 'extends/systems/page_actions.html' with is_save=True save_frm='form-update-service-order' %}
 {% endblock %}
 
 {% block pageSubAction %}
@@ -44,6 +39,7 @@
           data-url="{% url 'ServiceOrderDetailAPI' data.pk %}"
           data-url-redirect="{% url 'ServiceOrderList' %}"
           data-url-cr="{% url 'ServiceOrderListAPI' %}"
+          data-baseline="true"
     >
         {% csrf_token %}
         {% include 'sales/serviceorder/common/common_data.html' %}

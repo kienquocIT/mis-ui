@@ -2424,100 +2424,108 @@ class WFRTControl {
     }
 
     static callWFSubmitForm(_form) {
+        let $formEle = _form.formSelected;
         let IDRuntime = WFRTControl.getRuntimeWF();
         let currentEmployee = $x.fn.getEmployeeCurrentID();
         let docData = WFRTControl.getRuntimeDocData();
-        // Check currency
-        let dataCurrency = MaskMoney2.setupSubmitCurrencyExchange();
-        if (Object.keys(dataCurrency).length !== 0) {
-            _form.dataForm['currency_company_id'] = dataCurrency?.['currency_company_id'];
-            _form.dataForm['currency_company_data'] = dataCurrency?.['currency_company_data'];
-            _form.dataForm['currency_exchange_id'] = dataCurrency?.['currency_exchange_id'];
-            _form.dataForm['currency_exchange_data'] = dataCurrency?.['currency_exchange_data'];
-            _form.dataForm['currency_exchange_rate'] = dataCurrency?.['currency_exchange_rate'];
-        }
-        // Check submit CR
-        if (docData?.['system_status'] === 3 && docData?.['employee_inherit']?.['id'] === currentEmployee && docData?.['code'] && _form.dataMethod.toLowerCase() === 'put') {
-            let $eleForm = $(`#${globeFormMappedZone}`);
-            let docRootID = docData?.['document_root_id'];
-            let docChangeOrder = docData?.['document_change_order'] + 1;
-            let code = docData?.['code'];
-            if ($eleForm && $eleForm.length > 0 && docRootID) {
-                _form.dataMethod = 'POST';
-                _form.dataUrl = $eleForm.attr('data-url-cr');
-                _form.dataForm['code'] = code;
-                _form.dataForm['system_status'] = 1;
-                _form.dataForm['is_change'] = true;
-                _form.dataForm['document_root_id'] = docRootID;
-                _form.dataForm['document_change_order'] = docChangeOrder;
+        if ($formEle.length > 0) {
+            // check currency
+            let dataCurrency = MaskMoney2.setupSubmitCurrencyExchange();
+            if (Object.keys(dataCurrency).length !== 0) {
+                _form.dataForm['currency_company_id'] = dataCurrency?.['currency_company_id'];
+                _form.dataForm['currency_company_data'] = dataCurrency?.['currency_company_data'];
+                _form.dataForm['currency_exchange_id'] = dataCurrency?.['currency_exchange_id'];
+                _form.dataForm['currency_exchange_data'] = dataCurrency?.['currency_exchange_data'];
+                _form.dataForm['currency_exchange_rate'] = dataCurrency?.['currency_exchange_rate'];
+            }
+            // check submit CR
+            if (docData?.['system_status'] === 3 && docData?.['employee_inherit']?.['id'] === currentEmployee && docData?.['code'] && _form.dataMethod.toLowerCase() === 'put') {
+                let docRootID = docData?.['document_root_id'];
+                let docChangeOrder = docData?.['document_change_order'] + 1;
+                let code = docData?.['code'];
+                if (docRootID) {
+                    _form.dataMethod = 'POST';
+                    _form.dataUrl = $formEle.attr('data-url-cr');
+                    _form.dataForm['code'] = code;
+                    _form.dataForm['system_status'] = 1;
+                    _form.dataForm['is_change'] = true;
+                    _form.dataForm['document_root_id'] = docRootID;
+                    _form.dataForm['document_change_order'] = docChangeOrder;
+                    // check next node
+                    let associationData = WFAssociateControl.checkNextNode(_form.dataForm);
+                    // select cancel/confirm change
+                    Swal.fire({
+                        title: $.fn.transEle.attr('data-msg-are-u-sure'),
+                        text: $.fn.transEle.attr('data-warning-can-not-undo'),
+                        icon: "warning",
+                        allowOutsideClick: false,
+                        showConfirmButton: true,
+                        confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                        showCancelButton: true,
+                        cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            WFRTControl.submitCheckAssociation(_form, associationData, 0);
+                        }
+                    })
+                }
+                return true;
+            }
+            if (!IDRuntime) {  // Start run WF (@decorator_run_workflow in API)
                 // check next node
                 let associationData = WFAssociateControl.checkNextNode(_form.dataForm);
-                // select cancel/confirm change
+                // select save status before select collaborator
                 Swal.fire({
-                    title: $.fn.transEle.attr('data-msg-are-u-sure'),
-                    text: $.fn.transEle.attr('data-warning-can-not-undo'),
-                    icon: "warning",
+                    title: $.fn.transEle.attr('data-select-save-status'),
+                    html: String(WFRTControl.setupHTMLDraftOrWF()),
                     allowOutsideClick: false,
                     showConfirmButton: true,
                     confirmButtonText: $.fn.transEle.attr('data-confirm'),
                     showCancelButton: true,
                     cancelButtonText: $.fn.transEle.attr('data-cancel'),
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                            WFRTControl.submitCheckAssociation(_form, associationData, 0);
-                    }
-                })
-            }
-            return true;
-        }
-        // Create/Update document
-        if (!IDRuntime) {  // Create document, run WF by @decorator_run_workflow in API
-            // check next node
-            let associationData = WFAssociateControl.checkNextNode(_form.dataForm);
-            // select save status before select collaborator
-            Swal.fire({
-                title: $.fn.transEle.attr('data-select-save-status'),
-                html: String(WFRTControl.setupHTMLDraftOrSave()),
-                allowOutsideClick: false,
-                showConfirmButton: true,
-                confirmButtonText: $.fn.transEle.attr('data-confirm'),
-                showCancelButton: true,
-                cancelButtonText: $.fn.transEle.attr('data-cancel'),
-                didOpen: () => {
-                    // Add event listener for click events on the group
-                    document.querySelectorAll('.group-checkbox-save-status').forEach((checkboxGr) => {
-                        checkboxGr.addEventListener('click', function () {
-                            // Mark the child radio button as checked
-                            let radio = this.querySelector('.checkbox-save-status');
-                            if (radio) {
-                                radio.checked = true; // Automatically unchecks other radios in the group
-                            }
+                    didOpen: () => {
+                        // Add event listener for click events on the group
+                        document.querySelectorAll('.group-checkbox-save-status').forEach((checkboxGr) => {
+                            checkboxGr.addEventListener('click', function () {
+                                // Mark the child radio button as checked
+                                let radio = this.querySelector('.checkbox-save-status');
+                                if (radio) {
+                                    radio.checked = true; // Automatically unchecks other radios in the group
+                                }
+                            });
                         });
-                    });
-                }
-            }).then((result) => {
-                if (result.dismiss === Swal.DismissReason.timer || result.value) {
-                    let eleChecked = document.querySelector('.checkbox-save-status:checked');
-                    if (eleChecked) {
-                        let saveStatus = eleChecked.getAttribute('data-status');
-                        if (saveStatus) {
-                            _form.dataForm['system_status'] = parseInt(saveStatus);
-                            if (_form.dataForm['system_status'] === 0) {  // draft
-                                WFRTControl.callAjaxWFCreate(_form);
-                            }
-                            if (_form.dataForm['system_status'] === 1) {  // WF
-                                WFRTControl.submitCheckAssociation(_form, associationData, 0);
-                            }
-                        }
-                    } else {
-                        $.fn.notifyB({description: $.fn.transEle.attr('data-need-one-option')}, 'failure');
-                        return false;
                     }
-                }
-            });
-        } else { // Update document with zones, already runtime WF
-            _form.dataForm['system_status'] = 1;
-            WFRTControl.callAjaxWFUpdate(_form);
+                }).then((result) => {
+                    if (result.dismiss === Swal.DismissReason.timer || result.value) {
+                        let eleChecked = document.querySelector('.checkbox-save-status:checked');
+                        if (eleChecked) {
+                            let saveStatus = eleChecked.getAttribute('data-status');
+                            if (saveStatus) {
+                                _form.dataForm['system_status'] = parseInt(saveStatus);
+                                if (_form.dataForm['system_status'] === 0) {  // draft
+                                    WFRTControl.callAjaxWFCreate(_form);
+                                }
+                                if (_form.dataForm['system_status'] === 1) {  // WF
+
+                                    // check submit baseline
+                                    if ($formEle.attr('data-baseline') === 'true') {
+                                        _form.dataForm['system_status'] = 0;
+                                    }
+
+                                    WFRTControl.submitCheckAssociation(_form, associationData, 0);
+                                }
+                            }
+                        } else {
+                            $.fn.notifyB({description: $.fn.transEle.attr('data-need-one-option')}, 'failure');
+                            return false;
+                        }
+                    }
+                });
+            }
+            if (IDRuntime) { // Already in WF, update zones
+                _form.dataForm['system_status'] = 1;
+                WFRTControl.callAjaxWFUpdate(_form);
+            }
         }
     }
 
@@ -2535,6 +2543,20 @@ class WFRTControl {
                 if (data && (data['status'] === 201 || data['status'] === 200)) {
                     $.fn.notifyB({description: data.message}, 'success');
                     if (_form?.resetForm) $(_form.formElm)[0].reset()
+
+                    // check submit baseline
+                    let $formEle = _form.formSelected;
+                    let docData = WFRTControl.getRuntimeDocData();
+                    let associationData = WFAssociateControl.checkNextNode(_form.dataForm);
+                    if ($formEle.attr('data-baseline') === 'true' && docData?.['id']) {
+                        let docRootID = docData?.['id'];
+                        _form.dataMethod = 'POST';
+                        _form.dataUrl = $formEle.attr('data-url-cr');
+                        _form.dataForm['document_root_id'] = docRootID;
+                        _form.dataForm['system_status'] = 1;
+                        WFRTControl.submitCheckAssociation(_form, associationData, 0);
+                    }
+
                     setTimeout(() => {
                         window.location.replace(_form.dataUrlRedirect);
                     }, 2000);
@@ -2816,11 +2838,11 @@ class WFRTControl {
         return htmlCustom;
     }
 
-    static setupHTMLDraftOrSave() {
+    static setupHTMLDraftOrWF() {
         let htmlCustom = ``;
         let statusList = [0, 1];
         let statusMapText = {
-            0: $.fn.transEle.attr('data-save-draft'),
+            0: $.fn.transEle.attr('data-save-document'),
             1: $.fn.transEle.attr('data-save-run-wf'),
         };
         for (let status of statusList) {

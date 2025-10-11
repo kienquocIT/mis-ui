@@ -1623,6 +1623,7 @@ $(async function () {
                 const res = $.fn.switcherResp(req);
                 if ($('#delivery_form').attr('data-method') === 'GET') {
                     new PrintTinymceControl().render('1373e903-909c-4b77-9957-8bcf97e8d6d3', res, false);
+                    PrintTinymceControl.open_modal();
                 }
             })
     }

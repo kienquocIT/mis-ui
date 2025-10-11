@@ -727,57 +727,58 @@ class QuotationLoadDataHandle {
     };
 
     static loadPriceProduct(productEle) {
-        let dataZone = "quotation_products_data";
-        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
-            dataZone = "sale_order_products_data";
-        }
-        if ($(productEle).val()) {
-            let productData = SelectDDControl.get_data_from_idx($(productEle), $(productEle).val());
-            let row = productEle.closest('tr');
-            if (productData && row) {
-                let data = productData;
-                let priceGrEle = row.querySelector('.input-group-price');
-                let priceEle = row.querySelector('.table-row-price');
-                let modalBody= QuotationLoadDataHandle.$priceModal[0].querySelector('.modal-body');
-                // load PRICE
-                if (priceGrEle && priceEle && modalBody) {
-                    let account_price_id = null;
-                    let dataAcc = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, QuotationLoadDataHandle.customerSelectEle.val());
-                    if (dataAcc) {
-                        if (dataAcc?.['price_list_mapped']?.['id']) {
-                            account_price_id = dataAcc?.['price_list_mapped']?.['id']
+        if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+            let dataZone = "quotation_products_data";
+            if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
+                dataZone = "sale_order_products_data";
+            }
+            if ($(productEle).val()) {
+                let productData = SelectDDControl.get_data_from_idx($(productEle), $(productEle).val());
+                let row = productEle.closest('tr');
+                if (productData && row) {
+                    let data = productData;
+                    let priceGrEle = row.querySelector('.input-group-price');
+                    let priceEle = row.querySelector('.table-row-price');
+                    let modalBody = QuotationLoadDataHandle.$priceModal[0].querySelector('.modal-body');
+                    // load PRICE
+                    if (priceGrEle && priceEle && modalBody) {
+                        let account_price_id = null;
+                        let dataAcc = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, QuotationLoadDataHandle.customerSelectEle.val());
+                        if (dataAcc) {
+                            if (dataAcc?.['price_list_mapped']?.['id']) {
+                                account_price_id = dataAcc?.['price_list_mapped']?.['id']
+                            }
                         }
-                    }
-                    let lastPrice = 0;
-                    $(modalBody).empty();
-                    let htmlPriceList = `<div class="mb-4 product-target" data-product-id="${productData?.['id']}"><i class="fas fa-cube mr-2"></i><b>${productData?.['title']}</b></div>`;
-                    if (Array.isArray(data?.['price_list']) && data?.['price_list'].length > 0) {
-                        let typeChecked = 0;
-                        if (priceGrEle.getAttribute('data-price-id')) {
-                            typeChecked = 1;
-                        }
-                        for (let priceData of data?.['price_list']) {
-                            if (priceData?.['price_status'] === 1) {
-                                let checked = '';
-                                if (typeChecked === 0) {  // Load default
-                                    if (account_price_id) {
-                                        if (priceData?.['id'] === account_price_id) { // Check CUSTOMER_PRICE then set customer_price
-                                            lastPrice = parseFloat(priceData?.['value']);
-                                            checked = 'checked';
+                        let lastPrice = 0;
+                        $(modalBody).empty();
+                        let htmlPriceList = `<div class="mb-4 product-target" data-product-id="${productData?.['id']}"><i class="fas fa-cube mr-2"></i><b>${productData?.['title']}</b></div>`;
+                        if (Array.isArray(data?.['price_list']) && data?.['price_list'].length > 0) {
+                            let typeChecked = 0;
+                            if (priceGrEle.getAttribute('data-price-id')) {
+                                typeChecked = 1;
+                            }
+                            for (let priceData of data?.['price_list']) {
+                                if (priceData?.['price_status'] === 1) {
+                                    let checked = '';
+                                    if (typeChecked === 0) {  // Load default
+                                        if (account_price_id) {
+                                            if (priceData?.['id'] === account_price_id) { // Check CUSTOMER_PRICE then set customer_price
+                                                lastPrice = parseFloat(priceData?.['value']);
+                                                checked = 'checked';
+                                            }
+                                        } else {
+                                            if (priceData?.['is_default'] === true) { // Check GENERAL_PRICE_LIST OF PRODUCT then set general_price
+                                                lastPrice = parseFloat(priceData?.['value']);
+                                                checked = 'checked';
+                                            }
                                         }
-                                    } else {
-                                        if (priceData?.['is_default'] === true) { // Check GENERAL_PRICE_LIST OF PRODUCT then set general_price
-                                            lastPrice = parseFloat(priceData?.['value']);
+                                    }
+                                    if (typeChecked === 1) {  // Set checked to price checked before
+                                        if (row.querySelector(`.input-group-price[data-price-id="${priceData?.['id']}"]`)) {
                                             checked = 'checked';
                                         }
                                     }
-                                }
-                                if (typeChecked === 1) {  // Set checked to price checked before
-                                    if (row.querySelector(`.input-group-price[data-price-id="${priceData?.['id']}"]`)) {
-                                        checked = 'checked';
-                                    }
-                                }
-                                htmlPriceList += `<div class="d-flex justify-content-between align-items-center">
+                                    htmlPriceList += `<div class="d-flex justify-content-between align-items-center">
                                                     <div class="form-check form-check-lg">
                                                         <input type="radio" name="row-price-option" class="form-check-input table-row-price-option" id="price-${priceData?.['id'].replace(/-/g, "")}" data-value="${parseFloat(priceData?.['value'])}" data-price="${JSON.stringify(priceData).replace(/"/g, "&quot;")}" data-zone="${dataZone}" ${checked}>
                                                         <label class="form-check-label" for="price-${priceData?.['id'].replace(/-/g, "")}">${priceData?.['title']}</label>
@@ -787,13 +788,14 @@ class QuotationLoadDataHandle {
                                                         <span class="badge badge-light">${priceData?.['uom']?.['title']}</span>
                                                     </div>
                                                 </div>`;
+                                }
                             }
                         }
+                        $(modalBody).append(`${htmlPriceList}`);
+                        QuotationLoadDataHandle.loadEventRadio(QuotationLoadDataHandle.$priceModal);
+                        $.fn.initMaskMoney2();
+                        return lastPrice;
                     }
-                    $(modalBody).append(`${htmlPriceList}`);
-                    QuotationLoadDataHandle.loadEventRadio(QuotationLoadDataHandle.$priceModal);
-                    $.fn.initMaskMoney2();
-                    return lastPrice;
                 }
             }
         }
@@ -2779,105 +2781,106 @@ class QuotationLoadDataHandle {
     };
 
     static loadTableDisabled(table) {
-        for (let ele of table[0].querySelectorAll('.table-row-item')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-description')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-labor-item')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-expense-title')) {
-            ele.setAttribute('readonly', 'true');
-            ele.classList.add('text-black');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-uom')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-uom-time')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-quantity')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-price')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-discount')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-tax')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.input-group-price')) {
-            ele.setAttribute('disabled', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.btn-select-price')) {
-            ele.setAttribute('disabled', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.input-group-expense-purchase-product')) {
-            ele.setAttribute('disabled', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.del-row')) {
-            ele.setAttribute('disabled', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-remark')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-date')) {
-            ele.setAttribute('disabled', 'true');
-            ele.classList.add('text-black');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-installment')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-ratio')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-value-before-tax')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-issue-invoice')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-value-after-tax')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-value-total')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-due-date')) {
-            ele.setAttribute('disabled', 'true');
-            ele.classList.add('text-black');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-checkbox-invoice')) {
-            ele.setAttribute('disabled', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.btn-edit-group')) {
-            ele.setAttribute('disabled', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.btn-del-group')) {
-            ele.setAttribute('disabled', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-supplied-by')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-total')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-value-before-tax')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-value-tax')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-value-total')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        QuotationLoadDataHandle.$btnSavePrice[0].setAttribute('disabled', 'true');
-        for (let ele of table[0].querySelectorAll('.btn-select-cost')) {
-            ele.setAttribute('disabled', 'true');
+        if (['get'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+            for (let ele of table[0].querySelectorAll('.table-row-item')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-description')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-labor-item')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-expense-title')) {
+                ele.setAttribute('readonly', 'true');
+                ele.classList.add('text-black');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-uom')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-uom-time')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-quantity')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-price')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-discount')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-tax')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.input-group-price')) {
+                ele.setAttribute('disabled', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.btn-select-price')) {
+                ele.setAttribute('disabled', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.input-group-expense-purchase-product')) {
+                ele.setAttribute('disabled', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.del-row')) {
+                ele.setAttribute('disabled', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-remark')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-date')) {
+                ele.setAttribute('disabled', 'true');
+                ele.classList.add('text-black');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-installment')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-ratio')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-value-before-tax')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-issue-invoice')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-value-after-tax')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-value-total')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-due-date')) {
+                ele.setAttribute('disabled', 'true');
+                ele.classList.add('text-black');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-checkbox-invoice')) {
+                ele.setAttribute('disabled', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.btn-edit-group')) {
+                ele.setAttribute('disabled', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.btn-del-group')) {
+                ele.setAttribute('disabled', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-supplied-by')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-total')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-value-before-tax')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-value-tax')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-value-total')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.btn-select-cost')) {
+                ele.setAttribute('disabled', 'true');
+            }
         }
     };
 
@@ -3363,6 +3366,7 @@ class QuotationDataTableHandle {
                 let uomTimeEle = row.querySelector('.table-row-uom-time');
                 let quantityTimeEle = row.querySelector('.table-row-quantity-time');
                 let taxEle = row.querySelector('.table-row-tax');
+                let btnSPriceEle = row.querySelector('.btn-select-price');
                 if (itemEle) {
                     let dataS2 = [];
                     if (data?.['product_data']) {
@@ -3417,6 +3421,11 @@ class QuotationDataTableHandle {
                         dataS2 = [data?.['tax_data']];
                     }
                     FormElementControl.loadInitS2($(taxEle), dataS2);
+                }
+                if (btnSPriceEle) {
+                    if (['get'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                        $(btnSPriceEle).attr('hidden', 'true');
+                    }
                 }
                 // add classes for collapse
                 if (data?.['is_group'] === true) {
@@ -3706,6 +3715,9 @@ class QuotationDataTableHandle {
                 }
                 if (btnSCostEle) {
                     if (data?.['product_data']?.['specific_data']?.['id']) {
+                        $(btnSCostEle).attr('hidden', 'true');
+                    }
+                    if (['get'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
                         $(btnSCostEle).attr('hidden', 'true');
                     }
                 }
@@ -4403,6 +4415,8 @@ class QuotationDataTableHandle {
                 let taxCheckEle = row.querySelector('.table-row-tax-check');
                 let valTaxEle = row.querySelector('.table-row-value-tax');
                 let valTotalEle = row.querySelector('.table-row-value-total');
+                let btnSInvoiceEle = row.querySelector('.btn-select-invoice');
+                let btnSReconcileEle = row.querySelector('.btn-select-reconcile');
                 let delEle = row.querySelector('.del-row');
 
                 let $termMD = QuotationLoadDataHandle.paymentSelectEle;
@@ -4490,6 +4504,16 @@ class QuotationDataTableHandle {
                 }
                 if ($(installmentEle).val()) {
                     QuotationLoadDataHandle.loadChangeInstallment(installmentEle);
+                }
+                if (btnSInvoiceEle) {
+                    if (['get'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                        $(btnSInvoiceEle).attr('hidden', 'true');
+                    }
+                }
+                if (btnSReconcileEle) {
+                    if (['get'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                        $(btnSReconcileEle).attr('hidden', 'true');
+                    }
                 }
                 if (delEle) {
                     if (!$termMD.val()) {
@@ -4642,6 +4666,7 @@ class QuotationDataTableHandle {
                 let termDataEle = row.querySelector('.table-row-term-data');
                 let totalEle = row.querySelector('.table-row-total');
                 let paidFullEle = row.querySelector('.paid-full');
+                let btnSTermEle = row.querySelector('.btn-select-term');
 
                 let $termMD = QuotationLoadDataHandle.paymentSelectEle;
                 let checkTax = QuotationLoadDataHandle.loadCheckSameMixTax();
@@ -4678,6 +4703,11 @@ class QuotationDataTableHandle {
                 if (paidFullEle) {
                     if (data?.['total'] > 0 && data?.['balance'] === 0) {
                         paidFullEle.removeAttribute('hidden');
+                    }
+                }
+                if (btnSTermEle) {
+                    if (['get'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                        $(btnSTermEle).attr('hidden', 'true');
                     }
                 }
             },

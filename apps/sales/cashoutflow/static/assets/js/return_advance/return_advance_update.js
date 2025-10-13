@@ -1,6 +1,6 @@
 $(document).ready(function () {
     ReturnAPHandle.LoadPage()
-    WFRTControl.setWFInitialData('returnpayment')
+    WFRTControl.setWFInitialData('returnadvance')
     ReturnAPHandle.LoadDetail('update');
 
     // SUBMIT FORM UPDATE RETURN ADVANCE

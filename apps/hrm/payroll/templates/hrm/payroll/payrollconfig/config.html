@@ -16,10 +16,10 @@
     </style>
 {% endblock %}
 {% block pageAction %}
-    {% include 'extends/systems/page_actions.html' with is_save=True save_frm='frm_create_payroll_config' %}
+    {% include 'extends/systems/page_actions.html' with is_save=True save_frm='frm_payroll_config' %}
 {% endblock %}
 {% block pageContent %}
-    <form id="frm_create_payroll_config" data-method="POST"
+    <form id="frm_payroll_config" data-method="POST"
           data-url="{% url 'PayrollConfigListAPI' %}"
           data-url-redirect="{% url 'PayrollConfigList' %}">
         {% csrf_token %}
@@ -35,5 +35,5 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/hrm/payroll/js/payrollconfig/common.js' %}"></script>
-    <script src="{% static 'assets/hrm/payroll/js/payrollconfig/create.js' %}"></script>
+    <script src="{% static 'assets/hrm/payroll/js/payrollconfig/submit.js' %}"></script>
 {% endblock %}

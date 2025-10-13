@@ -1,8 +1,6 @@
 class PayrollConfigElements {
     constructor() {
         // tab insurance element
-        this.$insuranceRuleName = $('#insurance_rule_name');
-        this.$insuranceEffectiveDate = $('#insurance_effective_date');
         this.$socialEmployeeRate = $('#social_insurance_employee_rate');
         this.$socialEmployerRate = $('#social_insurance_employer_rate');
         this.$socialCeilingRate = $('#social_insurance_ceiling');
@@ -22,13 +20,13 @@ class PayrollConfigElements {
 
         // constant
         this.$taxBracketData = [
-            {'level': '1', 'from': '0', 'to': '5,000,000', 'rate': '5'},
-            {'level': '2', 'from': '5,000,000', 'to': '10,000,000', 'rate': '10'},
-            {'level': '3', 'from': '10,000,000', 'to': '18,000,000', 'rate': '15'},
-            {'level': '4', 'from': '18,000,000', 'to': '32,000,000', 'rate': '20'},
-            {'level': '5', 'from': '32,000,000', 'to': '52,000,000', 'rate': '25'},
-            {'level': '6', 'from': '52,000,000', 'to': '80,000,000', 'rate': '30'},
-            {'level': '7', 'from': '80,000,000', 'to': '', 'rate': '35'}
+            {'order': '1', 'from': '0', 'to': '5,000,000', 'rate': '5'},
+            {'order': '2', 'from': '5,000,000', 'to': '10,000,000', 'rate': '10'},
+            {'order': '3', 'from': '10,000,000', 'to': '18,000,000', 'rate': '15'},
+            {'order': '4', 'from': '18,000,000', 'to': '32,000,000', 'rate': '20'},
+            {'order': '5', 'from': '32,000,000', 'to': '52,000,000', 'rate': '25'},
+            {'order': '6', 'from': '52,000,000', 'to': '80,000,000', 'rate': '30'},
+            {'order': '7', 'from': '80,000,000', 'to': '', 'rate': '35'}
         ];
     }
 }
@@ -38,17 +36,16 @@ const pageElements = new PayrollConfigElements();
 class PayrollConfigInsuranceHandler {
     static combineInsuranceData() {
         return {
-            title: pageElements.$insuranceRuleName.val(),
-            social_employee_rate: pageElements.$socialEmployeeRate.val(),
-            social_employer_rate: pageElements.$socialEmployerRate.val(),
-            social_ceiling: pageElements.$socialCeilingRate.val(),
-            unemployment_employee_rate: pageElements.$unemploymentEmployeeRate.val(),
-            unemployment_employer_rate: pageElements.$unemploymentEmployerRate.val(),
-            unemployment_ceiling: pageElements.$unemploymentCeiling.val(),
-            health_employee_rate: pageElements.$healthEmployeeRate.val(),
-            health_employer_rate: pageElements.$healthEmployerRate.val(),
-            union_employee_rate: pageElements.$unionEmployeeRate.val(),
-            union_employer_rate: pageElements.$unionEmployerRate.val(),
+            social_insurance_employee: pageElements.$socialEmployeeRate.val(),
+            social_insurance_employer: pageElements.$socialEmployerRate.val(),
+            social_insurance_ceiling: pageElements.$socialCeilingRate.val(),
+            unemployment_insurance_employee: pageElements.$unemploymentEmployeeRate.val(),
+            unemployment_insurance_employer: pageElements.$unemploymentEmployerRate.val(),
+            unemployment_insurance_ceiling: pageElements.$unemploymentCeiling.val(),
+            health_insurance_employee: pageElements.$healthEmployeeRate.val(),
+            health_insurance_employer: pageElements.$healthEmployerRate.val(),
+            union_insurance_employee: pageElements.$unionEmployeeRate.val(),
+            union_insurance_employer: pageElements.$unionEmployerRate.val(),
         };
     }
 }
@@ -66,7 +63,7 @@ class PayrollConfigPersonalTaxHandler {
                 {
                     className: "w-10 text-center",
                     render: (data, type, row) => {
-                        return row?.['level'] || '0';
+                        return row?.['order'] || '0';
                     }
                 },
                 {
@@ -93,9 +90,23 @@ class PayrollConfigPersonalTaxHandler {
 
     static combinePersonalIncomeTaxData() {
         return {
-            personal_tax: pageElements.$personalTax.val(),
-            dependent_tax: pageElements.$dependentTax.val(),
-            tax_bracket: pageElements.$taxBracketData
+            personal_deduction: pageElements.$personalTax.val(),
+            dependent_deduction: pageElements.$dependentTax.val(),
+            effective_date: DateTimeControl.formatDateType(
+                'DD/MM/YYYY',
+                'YYYY-MM-DD',
+                pageElements.$effectiveDate.val()
+            )
         }
+    }
+
+    static combineTaxBracketData() {
+        let taxBracketData = pageElements.$taxBracketData.map(item => ({
+            order: parseInt(item.order),
+            min_amount: parseFloat(item.from.replace(/,/g, '')) || 0,
+            max_amount:item.to ? parseFloat(item.to.replace(/,/g, '')) : 0,
+            rate: parseFloat(item.rate)
+        }));
+        return taxBracketData;
     }
 }

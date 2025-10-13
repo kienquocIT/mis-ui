@@ -104,7 +104,8 @@ class CashOutflowDetailAPI(APIView):
         return resp.auto_return()
 
 
-class AdvanceForSupplierListForCashOutflowAPI(APIView):
+# related
+class AdvanceForSupplierListForCOFAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
@@ -115,7 +116,7 @@ class AdvanceForSupplierListForCashOutflowAPI(APIView):
         return resp.auto_return(key_success='advance_for_supplier_list')
 
 
-class APInvoiceListForCashOutflowAPI(APIView):
+class APInvoiceListForCOFAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,

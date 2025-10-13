@@ -10,20 +10,22 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="table-responsive">
-                    <table class="table nowrap w-100"
-                           id="table-select-supplier"
-                           data-method="GET" data-url="{% url 'SupplierListAPI' %}"
-                    >
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th>{% trans 'Supplier' %}</th>
-                                <th>{% trans 'Tax number' %}</th>
-                            </tr>
-                        </thead>
-                    </table>
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table nowrap w-100"
+                               id="table-select-supplier"
+                               data-method="GET" data-url="{% url 'SupplierListAPI' %}"
+                        >
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th>{% trans 'Supplier' %}</th>
+                                    <th>{% trans 'Tax number' %}</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -44,20 +46,22 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="table-responsive">
-                    <table class="table nowrap w-100"
-                           id="table-select-customer"
-                           data-method="GET" data-url="{% url 'CustomerListAPI' %}"
-                    >
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th>{% trans 'Customer' %}</th>
-                                <th>{% trans 'Tax number' %}</th>
-                            </tr>
-                        </thead>
-                    </table>
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table nowrap w-100"
+                               id="table-select-customer"
+                               data-method="GET" data-url="{% url 'CustomerListAPI' %}"
+                        >
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th>{% trans 'Customer' %}</th>
+                                    <th>{% trans 'Tax number' %}</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -78,20 +82,22 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="table-responsive">
-                    <table class="table nowrap w-100"
-                           id="table-select-employee"
-                           data-method="GET" data-url="{% url 'EmployeeListAPI' %}"
-                    >
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th>{% trans 'Employee' %}</th>
-                                <th>{% trans 'Group' %}</th>
-                            </tr>
-                        </thead>
-                    </table>
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table nowrap w-100"
+                               id="table-select-employee"
+                               data-method="GET" data-url="{% url 'EmployeeListAPI' %}"
+                        >
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th>{% trans 'Employee' %}</th>
+                                    <th>{% trans 'Group' %}</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -102,7 +108,46 @@
     </div>
 </div>
 
-<div class="modal fade" id="payment-method-modal" tabindex="-1" role="dialog" aria-labelledby="payment-method-modal" aria-hidden="true">
+<div class="modal fade" id="budget-change-modal" tabindex="-1" role="dialog" aria-labelledby="budget-change-modal">
+    <div class="modal-dialog" style="min-width: 70%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Select order' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table nowrap w-100"
+                               id="table-select-order"
+                               data-method="GET"
+                               data-sale-order-url="{% url 'SaleOrderListAPI' %}"
+                               data-lease-order-url="{% url 'LeaseOrderListAPI' %}"
+                        >
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 50px"></th>
+                                    <th style="min-width: 50px"></th>
+                                    <th style="min-width: 150px">{% trans 'Type' %}</th>
+                                    <th style="min-width: 250px">{% trans 'Name' %}</th>
+                                    <th style="min-width: 200px">{% trans 'Employee inherit' %}</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" id="accept-select-employee-btn" class="btn btn-primary">{% trans 'Select' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="payment-method-modal" tabindex="-1" role="dialog" aria-labelledby="payment-method-modal">
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -153,7 +198,7 @@
 	</div>
 </div>
 
-<div class="modal fade" id="detail-payment-value-modal" tabindex="-1" role="dialog" aria-labelledby="detail-payment-value-modal" aria-hidden="true">
+<div class="modal fade" id="detail-payment-value-modal" tabindex="-1" role="dialog" aria-labelledby="detail-payment-value-modal">
 	<div class="modal-dialog modal-lg" style="min-width: 90%" role="document">
 		<div class="modal-content">
 			<div class="modal-header">

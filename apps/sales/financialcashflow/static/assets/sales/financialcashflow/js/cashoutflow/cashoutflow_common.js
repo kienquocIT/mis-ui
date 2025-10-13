@@ -5,32 +5,37 @@ class COFPageElements {
     constructor() {
         this.$title = $('#title')
         this.$cof_type = $('#cof_type')
-        this.$supplier_space = $('.supplier-space')
-        this.$customer_space = $('.customer-space')
-        this.$employee_space = $('.employee-space')
-        this.$account_space = $('.account-space')
-        this.$supplier_name = $('#supplier-name')
-        this.$customer_name = $('#customer-name')
-        this.$employee_name = $('#employee-name')
         this.$description = $('#description')
-        this.$table_select_supplier = $('#table-select-supplier')
-        this.$table_select_customer = $('#table-select-customer')
-        this.$table_select_employee = $('#table-select-employee')
-        this.$payment_on_account_table = $('#payment-on-account-table')
-        this.$supplier_select_modal = $('#supplier-select-modal')
-        this.$customer_select_modal = $('#customer-select-modal')
-        this.$employee_select_modal = $('#employee-select-modal')
-        this.$accept_select_supplier_btn = $('#accept-select-supplier-btn')
-        this.$accept_select_customer_btn = $('#accept-select-customer-btn')
-        this.$accept_select_employee_btn = $('#accept-select-employee-btn')
-        this.$btn_add_row_account = $('#btn-add-row-account')
         this.$posting_date = $('#posting_date')
         this.$document_date = $('#document_date')
+        // supplier
+        this.$supplier_space = $('.supplier-space')
+        this.$supplier_name = $('#supplier-name')
+        this.$supplier_select_modal = $('#supplier-select-modal')
+        this.$table_select_supplier = $('#table-select-supplier')
+        this.$accept_select_supplier_btn = $('#accept-select-supplier-btn')
         this.$advance_for_supplier_value = $('#advance_for_supplier_value')
         this.$advance_for_supplier_table = $('#advance-to-supplier-table')
-        this.$payment_to_customer = $('#payment_to_customer')
         this.$ap_invoice_table = $('#ap-invoice-table')
-        this.$advance_for_employee_value = $('#advance_for_employee_value')
+        // customer
+        this.$customer_space = $('.customer-space')
+        this.$customer_name = $('#customer-name')
+        this.$customer_select_modal = $('#customer-select-modal')
+        this.$table_select_customer = $('#table-select-customer')
+        this.$accept_select_customer_btn = $('#accept-select-customer-btn')
+        this.$payment_to_customer = $('#payment_to_customer')
+        // employee
+        this.$employee_space = $('.employee-space')
+        this.$employee_name = $('#employee-name')
+        this.$employee_select_modal = $('#employee-select-modal')
+        this.$table_select_employee = $('#table-select-employee')
+        this.$accept_select_employee_btn = $('#accept-select-employee-btn')
+        this.$order_cost_table = $('#order-cost-table')
+        // payment on account
+        this.$account_space = $('.account-space')
+        this.$payment_on_account_table = $('#payment-on-account-table')
+        this.$btn_add_row_account = $('#btn-add-row-account')
+        // detail payment
         this.$detail_payment_value_modal = $('#detail-payment-value-modal')
         this.$detail_payment_table = $('#detail-payment-table')
         this.$total_payment = $('#total_payment')
@@ -313,6 +318,51 @@ class COFPageVariables {
                 }
             },
         ]
+        this.order_cost_table_cfg = [
+            {
+                className: 'w-5',
+                render: () => {
+                    return ``
+                }
+            },
+            {
+                className: 'w-5',
+                render: (data, type, row) => {
+                    return `<div class="form-check">
+                                <input type="checkbox"
+                                       ${pageVariables.is_detail_page ? 'disabled': ''}
+                                       class="form-check-input select_row_order_cost"
+                                       data-sale-order-id="${row?.['id']}"
+                                >
+                                <label class="form-check-label"></label>
+                            </div>`
+                }
+            },
+            {
+                className: 'w-30',
+                render: (data, type, row) => {
+                    return `<span class="text-muted">${row?.['expense_item']?.['title'] || ''}</span>`
+                }
+            },
+            {
+                className: 'text-right w-20',
+                render: (data, type, row) => {
+                    return `<span class="mask-money" data-init-money="${row?.['recon_total'] || 0}"></span>`;
+                }
+            },
+            {
+                className: 'text-right w-20',
+                render: (data, type, row) => {
+                    return `<span class="mask-money recon_balance_value" data-init-money="${row?.['recon_balance'] || 0}"></span>`;
+                }
+            },
+            {
+                className: 'text-right w-20',
+                render: (data, type, row) => {
+                    return `<span class="mask-money recon_balance_value" data-init-money="${row?.['this_time'] || 0}"></span>`;
+                }
+            },
+        ]
         this.current_row_ap_invoice = null
         this.is_detail_page = false
     }
@@ -323,7 +373,7 @@ const pageVariables = new COFPageVariables();
  * Các hàm load page và hàm hỗ trợ
  */
 class COFPageFunction {
-    // load page
+    // cof for supplier
     static LoadAdvanceToSupplierTable(data_params={}, data_list=[], approved=false) {
         if (approved) {
             let stage_id = []
@@ -455,6 +505,82 @@ class COFPageFunction {
             });
         }
     }
+    // cof payment on account
+    static LoadPaymentOnAccountTable(data_list=[]) {
+        pageElements.$payment_on_account_table.DataTable().clear().destroy()
+        pageElements.$payment_on_account_table.DataTableDefault({
+            dom: 't',
+            reloadCurrency: true,
+            rowIdx: true,
+            scrollX: true,
+            scrollY: '40vh',
+            scrollCollapse: true,
+            paging: false,
+            data: data_list,
+            columns: pageVariables.payment_on_account_table_cfg
+        });
+    }
+    // cof for employee
+    static LoadOrderCostTable(data_params={}, data_list=[], approved=false) {
+        if (approved) {
+            let stage_id = []
+            for (let i = 0; i < data_list.length; i++) {
+                stage_id.push(data_list[i]?.['purchase_order_stage_data']?.['id'])
+            }
+            data_params['id__in'] = stage_id.join(',')
+        }
+        pageElements.$order_cost_table.DataTable().clear().destroy()
+        let frm = new SetupFormSubmit(pageElements.$order_cost_table);
+        if (Object.keys(data_params).length > 0) {
+            pageElements.$order_cost_table.DataTableDefault({
+                dom: 't',
+                reloadCurrency: true,
+                useDataServer: true,
+                rowIdx: true,
+                scrollX: true,
+                scrollY: '30vh',
+                scrollCollapse: true,
+                paging: false,
+                ajax: {
+                    url: frm.dataUrl,
+                    type: frm.dataMethod,
+                    data: data_params,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            return resp.data['advance_for_supplier_list'] ? resp.data['advance_for_supplier_list'] : [];
+                        }
+                        return [];
+                    },
+                },
+                columns: pageVariables.order_cost_table_cfg,
+                initComplete: function () {
+                    for (let i=0; i < data_list.length; i++) {
+                        let row_checkbox = pageElements.$advance_for_supplier_table.find(`tbody .select_row_advance_for_supplier[data-advance-for-supplier-id="${data_list[i]?.['purchase_order_stage_data']?.['id']}"]`)
+                        row_checkbox.prop('checked', true)
+                        if (approved) {
+                            row_checkbox.closest('tr').find('.recon_balance_value_advance').attr('data-init-money', data_list[i]?.['sum_balance_value'])
+                        }
+                        row_checkbox.closest('tr').find('.cash_out_value_advance').attr('value', data_list[i]?.['sum_payment_value'])
+                    }
+                }
+            });
+        }
+        else {
+            pageElements.$order_cost_table.DataTableDefault({
+                dom: 't',
+                reloadCurrency: true,
+                rowIdx: true,
+                scrollX: true,
+                scrollY: '30vh',
+                scrollCollapse: true,
+                paging: false,
+                data: [],
+                columns: pageVariables.order_cost_table_cfg,
+            });
+        }
+    }
+    // modal
     static LoadPaymentStageTable(data_list=[], valid_detail_payment=[]) {
         pageElements.$detail_payment_table.DataTable().clear().destroy()
         if (pageElements.$supplier_name.attr('data-id')) {
@@ -497,20 +623,6 @@ class COFPageFunction {
             });
         }
     }
-    static LoadPaymentOnAccountTable(data_list=[]) {
-        pageElements.$payment_on_account_table.DataTable().clear().destroy()
-        pageElements.$payment_on_account_table.DataTableDefault({
-            dom: 't',
-            reloadCurrency: true,
-            rowIdx: true,
-            scrollX: true,
-            scrollY: '40vh',
-            scrollCollapse: true,
-            paging: false,
-            data: data_list,
-            columns: pageVariables.payment_on_account_table_cfg
-        });
-    }
     static LoadAccountBankAccount(bank_accounts_mapped=[], selected_id=null) {
         let options = ''
         for (let i=0; i < bank_accounts_mapped.length; i++) {
@@ -521,7 +633,7 @@ class COFPageFunction {
         }
         pageElements.$account_bank_account.html(options)
     }
-    // function
+    // sub
     static RecalculateTotalPayment() {
         let total_payment = 0
         if (pageElements.$cof_type.val() === '0') {
@@ -539,7 +651,7 @@ class COFPageFunction {
             total_payment += pageElements.$payment_to_customer.attr('value') ? parseFloat(pageElements.$payment_to_customer.attr('value')) : 0
         }
         else if (pageElements.$cof_type.val() === '2') {
-            total_payment += pageElements.$advance_for_employee_value.attr('value') ? parseFloat(pageElements.$advance_for_employee_value.attr('value')) : 0
+            total_payment += 999
         }
         else if (pageElements.$cof_type.val() === '3') {
 
@@ -633,7 +745,7 @@ class COFHandler {
         }
         else if (pageElements.$cof_type.val() === '2') {
             frm.dataForm['employee_id'] = pageElements.$employee_name.attr('data-id') || null
-            frm.dataForm['advance_for_employee_value'] = pageElements.$advance_for_employee_value.attr('value')
+            frm.dataForm['advance_for_employee_value'] = 999
         }
         else if (pageElements.$cof_type.val() === '3') {
         }
@@ -711,7 +823,6 @@ class COFHandler {
                         let employee_data = data?.['employee_data'] || {}
                         pageElements.$employee_name.val(`${employee_data?.['full_name']} - ${employee_data?.['group']?.['title'] || ''}`)
                         pageElements.$employee_name.attr('data-id', employee_data?.['id'] || '')
-                        pageElements.$advance_for_employee_value.attr('value', data?.['advance_for_employee_value'] ? data?.['advance_for_employee_value'] : 0)
                         COFPageFunction.LoadAccountBankAccount()
                     }
                     else if (pageElements.$cof_type.val() === '3') {
@@ -945,9 +1056,6 @@ class COFEventHandler {
             COFPageFunction.RecalculateTotalPayment()
         })
         // thay đổi giá trị tạm ứng cho nhân viên
-        pageElements.$advance_for_employee_value.on('change', function () {
-            COFPageFunction.RecalculateTotalPayment()
-        })
         // thêm dòng vô bảng tài khoản
         pageElements.$btn_add_row_account.on('click', function () {
             UsualLoadPageFunction.AddTableRow(pageElements.$payment_on_account_table)

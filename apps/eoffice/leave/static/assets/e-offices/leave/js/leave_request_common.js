@@ -77,7 +77,6 @@ function yearList(){
         for (let item of ws) {
             lsYear[item["config_year"]] = item["list_holiday"]
         }
-    else $.fn.notifyB({'description': $.fn.gettext('Oops, some data is missing. Please reload the page and try again.')}, 'failure')
     return lsYear
 }
 

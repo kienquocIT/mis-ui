@@ -113,6 +113,9 @@ $(async function () {
                     };
                     keyResp = 'regis_borrow_list';
                 }
+                if (targetItemData?.['specific_data']?.['product_warehouse_serial_id']) {
+                    dataParam['product_warehouse_serial_product_warehouse__id'] = targetItemData?.['specific_data']?.['product_warehouse_serial_id'];
+                }
                 $.fn.callAjax2({
                     'url': url,
                     'method': 'get',
@@ -679,9 +682,6 @@ $(async function () {
                 }
             }
 
-            if ($.fn.dataTable.isDataTable($tableLot)) {
-                $tableLot.DataTable().destroy();
-            }
             prodTable.dataTableTableLot(url, dataParam, keyResp, isRegis, dataCheck);
             return true;
         };
@@ -784,10 +784,17 @@ $(async function () {
                     isRegis = false;
                 }
             }
-
-            if ($.fn.dataTable.isDataTable($tableSerial)) {
-                $tableSerial.DataTable().destroy();
+            let checkedEle = $tableProductNew[0].querySelector('.table-row-checkbox:checked');
+            if (checkedEle) {
+                let row = checkedEle.closest('tr');
+                let rowIndex = $tableProductNew.DataTable().row(row).index();
+                let $row = $tableProductNew.DataTable().row(rowIndex);
+                let dataRow = $row.data();
+                if (dataRow?.['product_data']?.['specific_data']?.['product_warehouse_serial_id']) {
+                    dataParam['id'] = dataRow?.['product_data']?.['specific_data']?.['product_warehouse_serial_id'];
+                }
             }
+
             prodTable.dataTableTableSerial(url, dataParam, keyResp, isRegis, dataCheck);
             return true;
         };
@@ -1094,7 +1101,10 @@ $(async function () {
         };
 
         dataTableTableLot(url, dataParam, keyResp, isRegis, dataCheck) {
-            $tableLot.not('.dataTable').DataTableDefault({
+            if ($.fn.dataTable.isDataTable($tableLot)) {
+                $tableLot.DataTable().destroy();
+            }
+            $tableLot.DataTableDefault({
                 useDataServer: true,
                 ajax: {
                     url: url,
@@ -1183,7 +1193,10 @@ $(async function () {
             if (checkAll) {
                 checkAll.checked = false;
             }
-            $tableSerial.not('.dataTable').DataTableDefault({
+            if ($.fn.dataTable.isDataTable($tableSerial)) {
+                $tableSerial.DataTable().destroy();
+            }
+            $tableSerial.DataTableDefault({
                 useDataServer: true,
                 ajax: {
                     url: url,

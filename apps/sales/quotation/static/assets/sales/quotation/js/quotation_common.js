@@ -663,8 +663,18 @@ class QuotationLoadDataHandle {
         if (QuotationLoadDataHandle.$productsCheckedEle.val()) {
             let storeID = JSON.parse(QuotationLoadDataHandle.$productsCheckedEle.val());
             for (let key in storeID) {
-                if (!QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${key}"]`)) {
-                    QuotationLoadDataHandle.loadAddRowProduct(storeID[key]?.['data']);
+                let dataAdd = storeID[key]?.['data'];
+                if (!dataAdd?.['specific_data']?.['id']) {
+                    let check = dataAdd?.['id'];
+                    if (!QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${check}"]`)) {
+                        QuotationLoadDataHandle.loadAddRowProduct(dataAdd);
+                    }
+                }
+                if (dataAdd?.['specific_data']?.['id']) {
+                    let check = dataAdd?.['specific_data']?.['id'];
+                    if (!QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-specific-id="${check}"]`)) {
+                        QuotationLoadDataHandle.loadAddRowProduct(dataAdd);
+                    }
                 }
             }
         }
@@ -679,8 +689,6 @@ class QuotationLoadDataHandle {
         // ReCalculate Total
         QuotationCalculateCaseHandle.updateTotal(QuotationDataTableHandle.$tableProduct[0]);
         let TotalOrder = QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-order').length;
-        // let TotalGroup = QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-group').length;
-        // let order = (TotalOrder - TotalGroup) + 1;
         let order = TotalOrder + 1;
         let dataUOM = {};
         let dataTax = {};
@@ -720,6 +728,7 @@ class QuotationLoadDataHandle {
         let priceEle = newRow.querySelector('.table-row-price');
         let lastPrice = QuotationLoadDataHandle.loadPriceProduct(itemEle);
         $(priceEle).attr('value', String(lastPrice));
+        QuotationCalculateCaseHandle.commonCalculate(QuotationDataTableHandle.$tableProduct, newRow);
         QuotationLoadDataHandle.loadSetWFRuntimeZone();
         $.fn.initMaskMoney2();
 
@@ -3050,7 +3059,6 @@ class QuotationDataTableHandle {
                                                 data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-product')}"
                                                 data-method="GET"
                                                 data-keyResp="product_sale_list"
-                                                data-product-id="${row?.['product_data']?.['id']}"
                                                 data-zone="${dataZone}"
                                                 readonly>
                                             </select>
@@ -3374,7 +3382,12 @@ class QuotationDataTableHandle {
                     }
                     FormElementControl.loadInitS2($(itemEle), dataS2);
                     QuotationLoadDataHandle.loadCssS2($(itemEle), '260px');
-                    $(itemEle).attr('data-product-id', data?.['product_data']?.['id']);
+                    if (!data?.['product_data']?.['specific_data']?.['id']) {
+                        $(itemEle).attr('data-product-id', data?.['product_data']?.['id']);
+                    }
+                    if (data?.['product_data']?.['specific_data']?.['id']) {
+                        $(itemEle).attr('data-specific-id', data?.['product_data']?.['specific_data']?.['id']);
+                    }
                     QuotationLoadDataHandle.loadPriceProduct(itemEle);
                 }
                 if (promotionEle) {
@@ -3583,6 +3596,9 @@ class QuotationDataTableHandle {
                             disabled = 'disabled'  // shipping
                         }
                         let costPrice = row?.['product_cost_price'] ? row?.['product_cost_price'] : 0;
+                        if (costPrice === 0) {
+                            costPrice = row?.['product_data']?.['specific_data']?.['specific_value'] ? row?.['product_data']?.['specific_data']?.['specific_value'] : 0;
+                        }
                         if (costPrice === 0) {
                             costPrice = row?.['product_data']?.['standard_price'] ? row?.['product_data']?.['standard_price'] : 0;
                         }
@@ -5128,11 +5144,17 @@ class QuotationDataTableHandle {
                 {
                     title: QuotationLoadDataHandle.transEle.attr('data-spec-prod-2'),
                     render: (data, type, row) => {
-                        return `<textarea class="form-control form-check-label table-row-title" rows="2" readonly>${row?.['vendor_serial_number']}</textarea>`;
+                        return `<textarea class="form-control form-check-label" rows="2" readonly>${row?.['vendor_serial_number']}</textarea>`;
                     }
                 },
                 {
                     title: QuotationLoadDataHandle.transEle.attr('data-spec-prod-3'),
+                    render: (data, type, row) => {
+                        return `<textarea class="form-control form-check-label" rows="2" readonly>${row?.['new_description']}</textarea>`;
+                    }
+                },
+                {
+                    title: QuotationLoadDataHandle.transEle.attr('data-spec-prod-4'),
                     render: (data, type, row) => {
                         let date = '--';
                         if (row?.['expire_date']) {
@@ -5142,7 +5164,7 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    title: QuotationLoadDataHandle.transEle.attr('data-spec-prod-4'),
+                    title: QuotationLoadDataHandle.transEle.attr('data-spec-prod-5'),
                     render: (data, type, row) => {
                         let date = '--';
                         if (row?.['manufacture_date']) {
@@ -5152,7 +5174,7 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    title: QuotationLoadDataHandle.transEle.attr('data-spec-prod-5'),
+                    title: QuotationLoadDataHandle.transEle.attr('data-spec-prod-6'),
                     render: (data, type, row) => {
                         let date = '--';
                         if (row?.['warranty_start']) {
@@ -5162,7 +5184,7 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    title: QuotationLoadDataHandle.transEle.attr('data-spec-prod-6'),
+                    title: QuotationLoadDataHandle.transEle.attr('data-spec-prod-7'),
                     render: (data, type, row) => {
                         let date = '--';
                         if (row?.['warranty_end']) {
@@ -5172,7 +5194,7 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    title: QuotationLoadDataHandle.transEle.attr('data-spec-prod-7'),
+                    title: QuotationLoadDataHandle.transEle.attr('data-spec-prod-8'),
                     render: (data, type, row) => {
                         return `<span class="mask-money" data-init-money="${parseFloat(row?.['specific_value'])}"></span>`;
                     }
@@ -7063,6 +7085,10 @@ class QuotationSubmitHandle {
         QuotationDataTableHandle.$tableProduct.DataTable().rows().every(function () {
             let rowData = {};
             let row = this.node();
+            let rowIndex = QuotationDataTableHandle.$tableProduct.DataTable().row(row).index();
+            let $row = QuotationDataTableHandle.$tableProduct.DataTable().row(rowIndex);
+            let dataRow = $row.data();
+
             let groupEle = row.querySelector('.table-row-group');
             let productEle = row.querySelector('.table-row-item');
             let promotionEle = row.querySelector('.table-row-promotion');
@@ -7085,7 +7111,7 @@ class QuotationSubmitHandle {
                         rowData['product_id'] = dataProduct?.['id'];
                         rowData['product_title'] = dataProduct?.['title'];
                         rowData['product_code'] = dataProduct?.['code'];
-                        rowData['product_data'] = dataProduct;
+                        rowData['product_data'] = dataRow?.['product_data'];
                     }
                 }
                 let eleUOM = row.querySelector('.table-row-uom');

@@ -799,6 +799,15 @@
         data-add-expense="{% trans "Add Expense" %}"
         data-add-labor="{% trans "Add Labor" %}"
         data-new="{% trans "New" %}"
+
+        data-spec-prod-1="{% trans "Serial no." %}"
+        data-spec-prod-2="{% trans "Vendor serial no." %}"
+        data-spec-prod-3="{% trans "Description" %}"
+        data-spec-prod-4="{% trans "Exp date" %}"
+        data-spec-prod-5="{% trans "Mfg date" %}"
+        data-spec-prod-6="{% trans "Warranty start" %}"
+        data-spec-prod-7="{% trans "Warranty end" %}"
+        data-spec-prod-8="{% trans "Specific value" %}"
     >
     <input
             type="text"
@@ -815,6 +824,7 @@
             data-so-product-wo="{% url 'SOProductWOListAPI' %}"
             data-quotation="{% url "QuotationListAPI" %}"
             data-quotation-detail="{% url "QuotationDetailAPI" 1 %}"
+            data-spec-product="{% url "ProductSpecificIdentificationSerialNumberListAPI" %}"
     >
 
     <input

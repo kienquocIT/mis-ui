@@ -4740,6 +4740,7 @@ class QuotationDataTableHandle {
             ajax: {
                 url: QuotationLoadDataHandle.urlEle.attr('data-md-product'),
                 type: "GET",
+                data: {'sale_default_uom_id__isnull': false},
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('product_sale_list')) {

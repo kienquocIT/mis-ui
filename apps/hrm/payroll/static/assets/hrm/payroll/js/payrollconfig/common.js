@@ -36,16 +36,16 @@ const pageElements = new PayrollConfigElements();
 class PayrollConfigInsuranceHandler {
     static combineInsuranceData() {
         return {
-            social_insurance_employee: pageElements.$socialEmployeeRate.val(),
-            social_insurance_employer: pageElements.$socialEmployerRate.val(),
-            social_insurance_ceiling: pageElements.$socialCeilingRate.val(),
-            unemployment_insurance_employee: pageElements.$unemploymentEmployeeRate.val(),
-            unemployment_insurance_employer: pageElements.$unemploymentEmployerRate.val(),
-            unemployment_insurance_ceiling: pageElements.$unemploymentCeiling.val(),
-            health_insurance_employee: pageElements.$healthEmployeeRate.val(),
-            health_insurance_employer: pageElements.$healthEmployerRate.val(),
-            union_insurance_employee: pageElements.$unionEmployeeRate.val(),
-            union_insurance_employer: pageElements.$unionEmployerRate.val(),
+            social_insurance_employee: parseFloat(pageElements.$socialEmployeeRate.val() || 0),
+            social_insurance_employer: parseFloat(pageElements.$socialEmployerRate.val() || 0),
+            social_insurance_ceiling: parseFloat(pageElements.$socialCeilingRate.val() || 0),
+            unemployment_insurance_employee: parseFloat(pageElements.$unemploymentEmployeeRate.val() || 0),
+            unemployment_insurance_employer: parseFloat(pageElements.$unemploymentEmployerRate.val() || 0),
+            unemployment_insurance_ceiling: parseFloat(pageElements.$unemploymentCeiling.val() || 0),
+            health_insurance_employee: parseFloat(pageElements.$healthEmployeeRate.val() || 0),
+            health_insurance_employer: parseFloat(pageElements.$healthEmployerRate.val() || 0),
+            union_insurance_employee: parseFloat(pageElements.$unionEmployeeRate.val() || 0),
+            union_insurance_employer: parseFloat(pageElements.$unionEmployerRate.val() || 0),
         };
     }
 }
@@ -90,8 +90,8 @@ class PayrollConfigPersonalTaxHandler {
 
     static combinePersonalIncomeTaxData() {
         return {
-            personal_deduction: pageElements.$personalTax.val(),
-            dependent_deduction: pageElements.$dependentTax.val(),
+            personal_deduction: parseFloat(pageElements.$personalTax.val() || 0),
+            dependent_deduction: parseFloat(pageElements.$dependentTax.val() || 0),
             effective_date: DateTimeControl.formatDateType(
                 'DD/MM/YYYY',
                 'YYYY-MM-DD',

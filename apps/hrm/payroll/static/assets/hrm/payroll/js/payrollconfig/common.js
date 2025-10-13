@@ -1,6 +1,8 @@
 class PayrollConfigElements {
     constructor() {
         // tab insurance element
+        this.$insuranceRuleName = $('#insurance_rule_name');
+        this.$insuranceEffectiveDate = $('#insurance_effective_date');
         this.$socialEmployeeRate = $('#social_insurance_employee_rate');
         this.$socialEmployerRate = $('#social_insurance_employer_rate');
         this.$socialCeilingRate = $('#social_insurance_ceiling');
@@ -36,6 +38,7 @@ const pageElements = new PayrollConfigElements();
 class PayrollConfigInsuranceHandler {
     static combineInsuranceData() {
         return {
+            title: pageElements.$insuranceRuleName.val(),
             social_employee_rate: pageElements.$socialEmployeeRate.val(),
             social_employer_rate: pageElements.$socialEmployerRate.val(),
             social_ceiling: pageElements.$socialCeilingRate.val(),

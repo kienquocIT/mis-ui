@@ -1,5 +1,6 @@
 $(document).ready(function() {
     UsualLoadPageFunction.LoadDate({element: pageElements.$effectiveDate, empty: true});
+    UsualLoadPageFunction.LoadDate({element: pageElements.$insuranceEffectiveDate, empty: true});
     PayrollConfigPersonalTaxHandler.initTaxBracketTable();
 
     $('#frm_create_payroll_config').validate({

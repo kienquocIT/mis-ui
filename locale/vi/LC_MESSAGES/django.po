@@ -12314,3 +12314,7 @@ msgstr "Serial đích danh"
 #
 msgid "Not available yet"
 msgstr "Chưa hỗ trợ"
+
+#
+msgid "Specific value"
+msgstr "Giá cụ thể"

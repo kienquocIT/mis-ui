@@ -297,8 +297,12 @@ class QuotationLoadDataHandle {
             let rowIndex = QuotationDataTableHandle.$tableProduct.DataTable().row(row).index();
             let $row = QuotationDataTableHandle.$tableProduct.DataTable().row(rowIndex);
             let dataRow = $row.data();
-            if (dataRow?.['product_data']?.['id']) {
-                dataSelected[dataRow?.['product_data']?.['id']] = {
+            let ID = dataRow?.['product_data']?.['id'];
+            if (dataRow?.['product_data']?.['specific_data']?.['id']) {
+                ID = dataRow?.['product_data']?.['id'] + "-" + dataRow?.['product_data']?.['specific_data']?.['id'];
+            }
+            if (ID) {
+                dataSelected[ID] = {
                     "type": "selected",
                     "data": dataRow?.['product_data'],
                 };
@@ -342,6 +346,60 @@ class QuotationLoadDataHandle {
                     };
                 }
                 QuotationLoadDataHandle.$productsCheckedEle.val(JSON.stringify(dataStore));
+            }
+        }
+        return true;
+    };
+
+    static loadStoreCheckSpecProduct(ele) {
+        let table = ele.closest('table');
+        let row = ele.closest('tr');
+        let rowIndex = $(table).DataTable().row(row).index();
+        let $row = $(table).DataTable().row(rowIndex);
+        let dataRow = $row.data();
+
+        if (dataRow) {
+            let productID = $(ele).attr('data-product-id');
+            let btnClEle = QuotationDataTableHandle.$tableSProduct[0].querySelector(`.btn-collapse-parent[data-product-id="${productID}"]`);
+            if (btnClEle) {
+                let rowParent = btnClEle.closest('tr');
+                if (rowParent) {
+                    let rowIndex = QuotationDataTableHandle.$tableSProduct.DataTable().row(rowParent).index();
+                    let $row = QuotationDataTableHandle.$tableSProduct.DataTable().row(rowIndex);
+                    let dataRowP = $row.data();
+                    if (dataRowP) {
+                        let combineID = productID + "-" + dataRow?.['id'];
+                        dataRowP['specific_data'] = dataRow;
+                        if (QuotationLoadDataHandle.$productsCheckedEle.val()) {
+                            let storeID = JSON.parse(QuotationLoadDataHandle.$productsCheckedEle.val());
+                            if (typeof storeID === 'object') {
+                                if (ele.checked === true) {
+                                    if (!storeID?.[combineID]) {
+                                        storeID[combineID] = {
+                                            "type": "current",
+                                            "data": dataRowP,
+                                        };
+                                    }
+                                }
+                                if (ele.checked === false) {
+                                    if (storeID?.[combineID]) {
+                                        delete storeID?.[combineID];
+                                    }
+                                }
+                                QuotationLoadDataHandle.$productsCheckedEle.val(JSON.stringify(storeID));
+                            }
+                        } else {
+                            let dataStore = {};
+                            if (ele.checked === true) {
+                                dataStore[combineID] = {
+                                    "type": "current",
+                                    "data": dataRowP,
+                                };
+                            }
+                            QuotationLoadDataHandle.$productsCheckedEle.val(JSON.stringify(dataStore));
+                        }
+                    }
+                }
             }
         }
         return true;
@@ -605,24 +663,21 @@ class QuotationLoadDataHandle {
         if (QuotationLoadDataHandle.$productsCheckedEle.val()) {
             let storeID = JSON.parse(QuotationLoadDataHandle.$productsCheckedEle.val());
             for (let key in storeID) {
-                if (!QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${storeID[key]?.['data']?.['id']}"]`)) {
-                    QuotationLoadDataHandle.loadAddRowProduct(storeID[key]?.['data']);
+                let dataAdd = storeID[key]?.['data'];
+                if (!dataAdd?.['specific_data']?.['id']) {
+                    let check = dataAdd?.['id'];
+                    if (!QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${check}"]`)) {
+                        QuotationLoadDataHandle.loadAddRowProduct(dataAdd);
+                    }
+                }
+                if (dataAdd?.['specific_data']?.['id']) {
+                    let check = dataAdd?.['specific_data']?.['id'];
+                    if (!QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-specific-id="${check}"]`)) {
+                        QuotationLoadDataHandle.loadAddRowProduct(dataAdd);
+                    }
                 }
             }
         }
-
-        // QuotationDataTableHandle.$tableSProduct.DataTable().rows().every(function () {
-        //     let row = this.node();
-        //     let rowIndex = QuotationDataTableHandle.$tableSProduct.DataTable().row(row).index();
-        //     let $row = QuotationDataTableHandle.$tableSProduct.DataTable().row(rowIndex);
-        //     let dataRow = $row.data();
-        //
-        //     if (row.querySelector('.table-row-checkbox:checked:not([disabled])')) {
-        //         if (!QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${dataRow?.['id']}"]`)) {
-        //             QuotationLoadDataHandle.loadAddRowProduct(dataRow);
-        //         }
-        //     }
-        // });
         return true;
     };
 
@@ -634,8 +689,6 @@ class QuotationLoadDataHandle {
         // ReCalculate Total
         QuotationCalculateCaseHandle.updateTotal(QuotationDataTableHandle.$tableProduct[0]);
         let TotalOrder = QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-order').length;
-        // let TotalGroup = QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-group').length;
-        // let order = (TotalOrder - TotalGroup) + 1;
         let order = TotalOrder + 1;
         let dataUOM = {};
         let dataTax = {};
@@ -675,6 +728,7 @@ class QuotationLoadDataHandle {
         let priceEle = newRow.querySelector('.table-row-price');
         let lastPrice = QuotationLoadDataHandle.loadPriceProduct(itemEle);
         $(priceEle).attr('value', String(lastPrice));
+        QuotationCalculateCaseHandle.commonCalculate(QuotationDataTableHandle.$tableProduct, newRow);
         QuotationLoadDataHandle.loadSetWFRuntimeZone();
         $.fn.initMaskMoney2();
 
@@ -682,57 +736,58 @@ class QuotationLoadDataHandle {
     };
 
     static loadPriceProduct(productEle) {
-        let dataZone = "quotation_products_data";
-        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
-            dataZone = "sale_order_products_data";
-        }
-        if ($(productEle).val()) {
-            let productData = SelectDDControl.get_data_from_idx($(productEle), $(productEle).val());
-            let row = productEle.closest('tr');
-            if (productData && row) {
-                let data = productData;
-                let priceGrEle = row.querySelector('.input-group-price');
-                let priceEle = row.querySelector('.table-row-price');
-                let modalBody= QuotationLoadDataHandle.$priceModal[0].querySelector('.modal-body');
-                // load PRICE
-                if (priceGrEle && priceEle && modalBody) {
-                    let account_price_id = null;
-                    let dataAcc = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, QuotationLoadDataHandle.customerSelectEle.val());
-                    if (dataAcc) {
-                        if (dataAcc?.['price_list_mapped']?.['id']) {
-                            account_price_id = dataAcc?.['price_list_mapped']?.['id']
+        if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+            let dataZone = "quotation_products_data";
+            if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
+                dataZone = "sale_order_products_data";
+            }
+            if ($(productEle).val()) {
+                let productData = SelectDDControl.get_data_from_idx($(productEle), $(productEle).val());
+                let row = productEle.closest('tr');
+                if (productData && row) {
+                    let data = productData;
+                    let priceGrEle = row.querySelector('.input-group-price');
+                    let priceEle = row.querySelector('.table-row-price');
+                    let modalBody = QuotationLoadDataHandle.$priceModal[0].querySelector('.modal-body');
+                    // load PRICE
+                    if (priceGrEle && priceEle && modalBody) {
+                        let account_price_id = null;
+                        let dataAcc = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, QuotationLoadDataHandle.customerSelectEle.val());
+                        if (dataAcc) {
+                            if (dataAcc?.['price_list_mapped']?.['id']) {
+                                account_price_id = dataAcc?.['price_list_mapped']?.['id']
+                            }
                         }
-                    }
-                    let lastPrice = 0;
-                    $(modalBody).empty();
-                    let htmlPriceList = `<div class="mb-4 product-target" data-product-id="${productData?.['id']}"><i class="fas fa-cube mr-2"></i><b>${productData?.['title']}</b></div>`;
-                    if (Array.isArray(data?.['price_list']) && data?.['price_list'].length > 0) {
-                        let typeChecked = 0;
-                        if (priceGrEle.getAttribute('data-price-id')) {
-                            typeChecked = 1;
-                        }
-                        for (let priceData of data?.['price_list']) {
-                            if (priceData?.['price_status'] === 1) {
-                                let checked = '';
-                                if (typeChecked === 0) {  // Load default
-                                    if (account_price_id) {
-                                        if (priceData?.['id'] === account_price_id) { // Check CUSTOMER_PRICE then set customer_price
-                                            lastPrice = parseFloat(priceData?.['value']);
-                                            checked = 'checked';
+                        let lastPrice = 0;
+                        $(modalBody).empty();
+                        let htmlPriceList = `<div class="mb-4 product-target" data-product-id="${productData?.['id']}"><i class="fas fa-cube mr-2"></i><b>${productData?.['title']}</b></div>`;
+                        if (Array.isArray(data?.['price_list']) && data?.['price_list'].length > 0) {
+                            let typeChecked = 0;
+                            if (priceGrEle.getAttribute('data-price-id')) {
+                                typeChecked = 1;
+                            }
+                            for (let priceData of data?.['price_list']) {
+                                if (priceData?.['price_status'] === 1) {
+                                    let checked = '';
+                                    if (typeChecked === 0) {  // Load default
+                                        if (account_price_id) {
+                                            if (priceData?.['id'] === account_price_id) { // Check CUSTOMER_PRICE then set customer_price
+                                                lastPrice = parseFloat(priceData?.['value']);
+                                                checked = 'checked';
+                                            }
+                                        } else {
+                                            if (priceData?.['is_default'] === true) { // Check GENERAL_PRICE_LIST OF PRODUCT then set general_price
+                                                lastPrice = parseFloat(priceData?.['value']);
+                                                checked = 'checked';
+                                            }
                                         }
-                                    } else {
-                                        if (priceData?.['is_default'] === true) { // Check GENERAL_PRICE_LIST OF PRODUCT then set general_price
-                                            lastPrice = parseFloat(priceData?.['value']);
+                                    }
+                                    if (typeChecked === 1) {  // Set checked to price checked before
+                                        if (row.querySelector(`.input-group-price[data-price-id="${priceData?.['id']}"]`)) {
                                             checked = 'checked';
                                         }
                                     }
-                                }
-                                if (typeChecked === 1) {  // Set checked to price checked before
-                                    if (row.querySelector(`.input-group-price[data-price-id="${priceData?.['id']}"]`)) {
-                                        checked = 'checked';
-                                    }
-                                }
-                                htmlPriceList += `<div class="d-flex justify-content-between align-items-center">
+                                    htmlPriceList += `<div class="d-flex justify-content-between align-items-center">
                                                     <div class="form-check form-check-lg">
                                                         <input type="radio" name="row-price-option" class="form-check-input table-row-price-option" id="price-${priceData?.['id'].replace(/-/g, "")}" data-value="${parseFloat(priceData?.['value'])}" data-price="${JSON.stringify(priceData).replace(/"/g, "&quot;")}" data-zone="${dataZone}" ${checked}>
                                                         <label class="form-check-label" for="price-${priceData?.['id'].replace(/-/g, "")}">${priceData?.['title']}</label>
@@ -742,13 +797,14 @@ class QuotationLoadDataHandle {
                                                         <span class="badge badge-light">${priceData?.['uom']?.['title']}</span>
                                                     </div>
                                                 </div>`;
+                                }
                             }
                         }
+                        $(modalBody).append(`${htmlPriceList}`);
+                        QuotationLoadDataHandle.loadEventRadio(QuotationLoadDataHandle.$priceModal);
+                        $.fn.initMaskMoney2();
+                        return lastPrice;
                     }
-                    $(modalBody).append(`${htmlPriceList}`);
-                    QuotationLoadDataHandle.loadEventRadio(QuotationLoadDataHandle.$priceModal);
-                    $.fn.initMaskMoney2();
-                    return lastPrice;
                 }
             }
         }
@@ -1022,9 +1078,7 @@ class QuotationLoadDataHandle {
                 }
             }
         }
-        QuotationDataTableHandle.$tableProduct.DataTable().destroy();
-        QuotationDataTableHandle.dataTableProduct();
-        QuotationDataTableHandle.$tableProduct.DataTable().rows.add(tableData).draw();
+        QuotationDataTableHandle.dataTableProduct(tableData);
         // load dropdowns
         QuotationLoadDataHandle.loadDropDowns(QuotationDataTableHandle.$tableProduct);
         // load price
@@ -1095,9 +1149,7 @@ class QuotationLoadDataHandle {
                 }
             }
         }
-        QuotationDataTableHandle.$tableCost.DataTable().destroy();
-        QuotationDataTableHandle.dataTableCost();
-        QuotationDataTableHandle.$tableCost.DataTable().rows.add(tableData).draw();
+        QuotationDataTableHandle.dataTableCost(tableData);
         if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
             QuotationLoadDataHandle.loadTableDisabled(QuotationDataTableHandle.$tableCost);
         }
@@ -1149,9 +1201,7 @@ class QuotationLoadDataHandle {
                 }
             }
         }
-        QuotationDataTableHandle.$tableExpense.DataTable().destroy();
-        QuotationDataTableHandle.dataTableExpense();
-        QuotationDataTableHandle.$tableExpense.DataTable().rows.add(tableData).draw();
+        QuotationDataTableHandle.dataTableExpense(tableData);
         if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
             QuotationLoadDataHandle.loadTableDisabled(QuotationDataTableHandle.$tableExpense);
         }
@@ -1193,9 +1243,7 @@ class QuotationLoadDataHandle {
                 }
             }
         }
-        QuotationDataTableHandle.$tablePayment.DataTable().destroy();
-        QuotationDataTableHandle.dataTablePaymentStage();
-        QuotationDataTableHandle.$tablePayment.DataTable().rows.add(tableData).draw();
+        QuotationDataTableHandle.dataTablePaymentStage(tableData);
         if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
             QuotationLoadDataHandle.loadTableDisabled(QuotationDataTableHandle.$tablePayment);
         }
@@ -1237,9 +1285,7 @@ class QuotationLoadDataHandle {
                 }
             }
         }
-        QuotationDataTableHandle.$tableInvoice.DataTable().destroy();
-        QuotationDataTableHandle.dataTableInvoice();
-        QuotationDataTableHandle.$tableInvoice.DataTable().rows.add(tableData).draw();
+        QuotationDataTableHandle.dataTableInvoice(tableData);
         if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
             QuotationLoadDataHandle.loadTableDisabled(QuotationDataTableHandle.$tableInvoice);
         }
@@ -1808,10 +1854,13 @@ class QuotationLoadDataHandle {
             let rowIndex = QuotationDataTableHandle.$tableCost.DataTable().row(row).index();
             let $row = QuotationDataTableHandle.$tableCost.DataTable().row(rowIndex);
             let dataRow = $row.data();
-
-            if (dataRow?.['product_data']?.['id']) {
-                if (!storeCost.hasOwnProperty(dataRow?.['product_data']?.['id'])) {
-                    storeCost[dataRow?.['product_data']?.['id']] = dataRow;
+            let ID = dataRow?.['product_data']?.['id'];
+            if (dataRow?.['product_data']?.['specific_data']?.['id']) {
+                ID = dataRow?.['product_data']?.['id'] + "-" + dataRow?.['product_data']?.['specific_data']?.['id'];
+            }
+            if (ID) {
+                if (!storeCost.hasOwnProperty(ID)) {
+                    storeCost[ID] = dataRow;
                 }
             }
         });
@@ -1842,6 +1891,7 @@ class QuotationLoadDataHandle {
                     break;
                 }
             }
+            let datasAdd = [];
             if (isHidden === true) {  // product is zone hidden => use data product from data detail
                 let storeDetail = JSON.parse(QuotationLoadDataHandle.$eleStoreDetail.val());
                 for (let data of storeDetail?.[dataZone]) {
@@ -1868,15 +1918,19 @@ class QuotationLoadDataHandle {
                             "product_tax_amount": data?.['product_tax_amount'],
                             "product_subtotal_price": data?.['product_subtotal_price'],
                         }
-                        if (storeCost.hasOwnProperty(dataAdd?.['product_data']?.['id'])) {
-                            dataAdd = storeCost[dataAdd?.['product_data']?.['id']];
+                        let ID = dataAdd?.['product_data']?.['id'];
+                        if (dataAdd?.['product_data']?.['specific_data']?.['id']) {
+                            ID = dataAdd?.['product_data']?.['id'] + "-" + dataAdd?.['product_data']?.['specific_data']?.['id'];
+                        }
+                        if (storeCost.hasOwnProperty(ID)) {
+                            dataAdd = storeCost[ID];
                             dataAdd['product_quantity'] = data?.['product_quantity'];
                             dataAdd['uom_id'] = data?.['uom_data']?.['id'];
                             dataAdd['uom_data'] = data?.['uom_data'];
                             dataAdd['tax_id'] = data?.['tax_data']?.['id'];
                             dataAdd['tax_data'] = data?.['tax_data'];
                         }
-                        $table.DataTable().row.add(dataAdd).draw().node();
+                        datasAdd.push(dataAdd);
                     }
                     if (data?.['shipping_data']?.['id']) { // SHIPPING
                         let dataShipping = data?.['shipping_data'];
@@ -1903,7 +1957,7 @@ class QuotationLoadDataHandle {
                             "tax_id": data?.['tax_data']?.['id'],
                             "tax_data": data?.['tax_data'],
                         }
-                        $table.DataTable().row.add(dataAdd).draw().node();
+                        datasAdd.push(dataAdd);
                     }
                 }
             } else {  // product is not zone hidden => use realtime data product from $tableProduct
@@ -1928,15 +1982,19 @@ class QuotationLoadDataHandle {
                             "tax_data": dataRow?.['tax_data'],
                             "product_quantity": dataRow?.['product_quantity'],
                         }
-                        if (storeCost.hasOwnProperty(dataAdd?.['product_data']?.['id'])) {
-                            dataAdd = storeCost[dataAdd?.['product_data']?.['id']];
+                        let ID = dataAdd?.['product_data']?.['id'];
+                        if (dataAdd?.['product_data']?.['specific_data']?.['id']) {
+                            ID = dataAdd?.['product_data']?.['id'] + "-" + dataAdd?.['product_data']?.['specific_data']?.['id'];
+                        }
+                        if (storeCost.hasOwnProperty(ID)) {
+                            dataAdd = storeCost[ID];
                             dataAdd['product_quantity'] = dataRow?.['product_quantity'];
                             dataAdd['uom_id'] = dataRow?.['uom_data']?.['id'];
                             dataAdd['uom_data'] = dataRow?.['uom_data'];
                             dataAdd['tax_id'] = dataRow?.['tax_data']?.['id'];
                             dataAdd['tax_data'] = dataRow?.['tax_data'];
                         }
-                        $table.DataTable().row.add(dataAdd).draw().node();
+                        datasAdd.push(dataAdd);
                     }
                     if (shipping) { // SHIPPING
                         if (shipping.getAttribute('data-shipping')) {
@@ -1964,11 +2022,12 @@ class QuotationLoadDataHandle {
                                 "tax_id": dataRow?.['tax_data']?.['id'],
                                 "tax_data": dataRow?.['tax_data'],
                             }
-                            $table.DataTable().row.add(dataAdd).draw().node();
+                            datasAdd.push(dataAdd);
                         }
                     }
                 })
             }
+            QuotationDataTableHandle.dataTableCost(datasAdd);
             QuotationLoadDataHandle.loadSetWFRuntimeZone();
         }
         return true;
@@ -2731,105 +2790,106 @@ class QuotationLoadDataHandle {
     };
 
     static loadTableDisabled(table) {
-        for (let ele of table[0].querySelectorAll('.table-row-item')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-description')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-labor-item')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-expense-title')) {
-            ele.setAttribute('readonly', 'true');
-            ele.classList.add('text-black');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-uom')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-uom-time')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-quantity')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-price')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-discount')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-tax')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.input-group-price')) {
-            ele.setAttribute('disabled', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.btn-select-price')) {
-            ele.setAttribute('disabled', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.input-group-expense-purchase-product')) {
-            ele.setAttribute('disabled', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.del-row')) {
-            ele.setAttribute('disabled', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-remark')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-date')) {
-            ele.setAttribute('disabled', 'true');
-            ele.classList.add('text-black');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-installment')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-ratio')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-value-before-tax')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-issue-invoice')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-value-after-tax')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-value-total')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-due-date')) {
-            ele.setAttribute('disabled', 'true');
-            ele.classList.add('text-black');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-checkbox-invoice')) {
-            ele.setAttribute('disabled', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.btn-edit-group')) {
-            ele.setAttribute('disabled', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.btn-del-group')) {
-            ele.setAttribute('disabled', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-supplied-by')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-total')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-value-before-tax')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-value-tax')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-value-total')) {
-            ele.setAttribute('readonly', 'true');
-        }
-        QuotationLoadDataHandle.$btnSavePrice[0].setAttribute('disabled', 'true');
-        for (let ele of table[0].querySelectorAll('.btn-select-cost')) {
-            ele.setAttribute('disabled', 'true');
+        if (['get'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+            for (let ele of table[0].querySelectorAll('.table-row-item')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-description')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-labor-item')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-expense-title')) {
+                ele.setAttribute('readonly', 'true');
+                ele.classList.add('text-black');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-uom')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-uom-time')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-quantity')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-price')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-discount')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-tax')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.input-group-price')) {
+                ele.setAttribute('disabled', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.btn-select-price')) {
+                ele.setAttribute('disabled', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.input-group-expense-purchase-product')) {
+                ele.setAttribute('disabled', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.del-row')) {
+                ele.setAttribute('disabled', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-remark')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-date')) {
+                ele.setAttribute('disabled', 'true');
+                ele.classList.add('text-black');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-installment')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-ratio')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-value-before-tax')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-issue-invoice')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-value-after-tax')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-value-total')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-due-date')) {
+                ele.setAttribute('disabled', 'true');
+                ele.classList.add('text-black');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-checkbox-invoice')) {
+                ele.setAttribute('disabled', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.btn-edit-group')) {
+                ele.setAttribute('disabled', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.btn-del-group')) {
+                ele.setAttribute('disabled', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-supplied-by')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-total')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-value-before-tax')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-value-tax')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.table-row-value-total')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of table[0].querySelectorAll('.btn-select-cost')) {
+                ele.setAttribute('disabled', 'true');
+            }
         }
     };
 
@@ -2891,6 +2951,25 @@ class QuotationLoadDataHandle {
         };
     };
 
+    //
+    static loadPushDtbSpecProduct(trEle, productID) {
+        let idTbl = UtilControl.generateRandomString(12);
+        if (!trEle.next().hasClass('child-list')) {
+            let dtlSub = `<table id="${idTbl}" class="table table-child nowrap w-100"><thead></thead><tbody></tbody></table>`
+            trEle.after(
+                `<tr class="child-list"><td colspan="9"><div class="child-workflow-group hidden-simple">${dtlSub}</div></td></tr>`
+            );
+        }
+        if (trEle.next().hasClass('child-list')) {
+            let $tableChildEle = trEle.next().find('.table-child');
+            if ($tableChildEle.length > 0) {
+                idTbl = $tableChildEle[0].id;
+            }
+        }
+        QuotationDataTableHandle.dataTableSpecProduct(idTbl, productID);
+        return true;
+    };
+
 }
 
 // DataTable
@@ -2911,6 +2990,9 @@ class QuotationDataTableHandle {
 
     static dataTableProduct(data) {
         // init dataTable
+        if ($.fn.dataTable.isDataTable(QuotationDataTableHandle.$tableProduct)) {
+            QuotationDataTableHandle.$tableProduct.DataTable().destroy();
+        }
         QuotationDataTableHandle.$tableProduct.DataTableDefault({
             styleDom: 'hide-foot',
             data: data ? data : [],
@@ -2946,7 +3028,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '13%',
+                    width: '14%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return `<input type="text" class="form-control table-row-group-title-edit" value="${row?.['group_title']}">
@@ -2977,7 +3059,6 @@ class QuotationDataTableHandle {
                                                 data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-product')}"
                                                 data-method="GET"
                                                 data-keyResp="product_sale_list"
-                                                data-product-id="${row?.['product_data']?.['id']}"
                                                 data-zone="${dataZone}"
                                                 readonly>
                                             </select>
@@ -3013,7 +3094,22 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '13%',
+                    width: '10%',
+                    render: (data, type, row) => {
+                        if (row?.['is_group'] === true) {
+                            return ``;
+                        }
+
+                        let dataZone = "quotation_products_data";
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
+                            dataZone = "sale_order_products_data";
+                        }
+                        return `<textarea class="form-control table-row-serial" rows="3" data-zone="${dataZone}" readonly>${row?.['product_data']?.['specific_data']?.['serial_number'] ? row?.['product_data']?.['specific_data']?.['serial_number'] : ''}</textarea>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    width: '12%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -3045,7 +3141,7 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 3,
+                    targets: 4,
                     width: '8%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
@@ -3068,8 +3164,8 @@ class QuotationDataTableHandle {
                     },
                 },
                 {
-                    targets: 4,
-                    width: '7%',
+                    targets: 5,
+                    width: '6%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -3083,7 +3179,7 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 6,
                     width: '8%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
@@ -3105,8 +3201,8 @@ class QuotationDataTableHandle {
                     },
                 },
                 {
-                    targets: 6,
-                    width: '7%',
+                    targets: 7,
+                    width: '6%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -3120,8 +3216,8 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 7,
-                    width: '13%',
+                    targets: 8,
+                    width: '14%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -3154,8 +3250,8 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 8,
-                    width: '7%',
+                    targets: 9,
+                    width: '6%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -3196,8 +3292,8 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 9,
-                    width: '7%',
+                    targets: 10,
+                    width: '6%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -3231,8 +3327,8 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 10,
-                    width: '13%',
+                    targets: 11,
+                    width: '14%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -3254,7 +3350,7 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 11,
+                    targets: 12,
                     width: '1%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
@@ -3274,9 +3370,11 @@ class QuotationDataTableHandle {
                 let promotionEle = row.querySelector('.table-row-promotion');
                 let shippingEle = row.querySelector('.table-row-shipping');
                 let uomEle = row.querySelector('.table-row-uom');
+                let quantityEle = row.querySelector('.table-row-quantity');
                 let uomTimeEle = row.querySelector('.table-row-uom-time');
                 let quantityTimeEle = row.querySelector('.table-row-quantity-time');
                 let taxEle = row.querySelector('.table-row-tax');
+                let btnSPriceEle = row.querySelector('.btn-select-price');
                 if (itemEle) {
                     let dataS2 = [];
                     if (data?.['product_data']) {
@@ -3284,7 +3382,12 @@ class QuotationDataTableHandle {
                     }
                     FormElementControl.loadInitS2($(itemEle), dataS2);
                     QuotationLoadDataHandle.loadCssS2($(itemEle), '260px');
-                    $(itemEle).attr('data-product-id', data?.['product_data']?.['id']);
+                    if (!data?.['product_data']?.['specific_data']?.['id']) {
+                        $(itemEle).attr('data-product-id', data?.['product_data']?.['id']);
+                    }
+                    if (data?.['product_data']?.['specific_data']?.['id']) {
+                        $(itemEle).attr('data-specific-id', data?.['product_data']?.['specific_data']?.['id']);
+                    }
                     QuotationLoadDataHandle.loadPriceProduct(itemEle);
                 }
                 if (promotionEle) {
@@ -3308,6 +3411,13 @@ class QuotationDataTableHandle {
                     }
                     FormElementControl.loadInitS2($(uomEle), dataS2);
                 }
+                if (quantityEle) {
+                    if (data?.['product_data']?.['specific_data']?.['id']) {
+                        $(quantityEle).attr('disabled', 'true');
+                        $(quantityEle).val(1);
+                        // QuotationCalculateCaseHandle.commonCalculate(QuotationDataTableHandle.$tableProduct, row);
+                    }
+                }
                 if (uomTimeEle) {
                     let dataS2 = [];
                     if (data?.['uom_time_data']) {
@@ -3324,6 +3434,11 @@ class QuotationDataTableHandle {
                         dataS2 = [data?.['tax_data']];
                     }
                     FormElementControl.loadInitS2($(taxEle), dataS2);
+                }
+                if (btnSPriceEle) {
+                    if (['get'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                        $(btnSPriceEle).attr('hidden', 'true');
+                    }
                 }
                 // add classes for collapse
                 if (data?.['is_group'] === true) {
@@ -3350,6 +3465,9 @@ class QuotationDataTableHandle {
 
     static dataTableCost(data) {
         // init dataTable
+        if ($.fn.dataTable.isDataTable(QuotationDataTableHandle.$tableCost)) {
+            QuotationDataTableHandle.$tableCost.DataTable().destroy();
+        }
         QuotationDataTableHandle.$tableCost.DataTableDefault({
             styleDom: 'hide-foot',
             data: data ? data : [],
@@ -3362,12 +3480,14 @@ class QuotationDataTableHandle {
             columns: [
                 {
                     targets: 0,
+                    width: '1%',
                     render: (data, type, row) => {
                         return `<span class="table-row-order">${row?.['order']}</span>`
                     }
                 },
                 {
                     targets: 1,
+                    width: '15%',
                     render: (data, type, row) => {
                         let dataZone = "quotation_costs_data";
                         if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
@@ -3378,7 +3498,7 @@ class QuotationDataTableHandle {
                             itemType = 1  // shipping
                         }
                         if (itemType === 0) {  // product
-                            return `<textarea class="form-control table-row-item-show zone-readonly" rows="2" data-zone="${dataZone}" readonly>${row?.['product_data']?.['title']}</textarea>
+                            return `<textarea class="form-control table-row-item-show zone-readonly" rows="3" data-zone="${dataZone}" readonly>${row?.['product_data']?.['title']}</textarea>
                                     <div class="row table-row-item-area hidden">
                                         <div class="col-12 col-md-12 col-lg-12">
                                             <select
@@ -3405,6 +3525,22 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
+                    width: '14%',
+                    render: (data, type, row) => {
+                        if (row?.['is_group'] === true) {
+                            return ``;
+                        }
+
+                        let dataZone = "quotation_products_data";
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
+                            dataZone = "sale_order_products_data";
+                        }
+                        return `<textarea class="form-control table-row-serial" rows="3" data-zone="${dataZone}" readonly>${row?.['product_data']?.['specific_data']?.['serial_number'] ? row?.['product_data']?.['specific_data']?.['serial_number'] : ''}</textarea>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    width: '8%',
                     render: (data, type, row) => {
                         let dataZone = "quotation_costs_data";
                         if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
@@ -3418,7 +3554,8 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 3,
+                    targets: 4,
+                    width: '8%',
                     render: () => {
                         let dataZone = "quotation_costs_data";
                         if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
@@ -3436,7 +3573,8 @@ class QuotationDataTableHandle {
                     },
                 },
                 {
-                    targets: 4,
+                    targets: 5,
+                    width: '8%',
                     render: (data, type, row) => {
                         let dataZone = "quotation_costs_data";
                         if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
@@ -3446,7 +3584,8 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 6,
+                    width: '20%',
                     render: (data, type, row) => {
                         let dataZone = "quotation_costs_data";
                         if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
@@ -3457,6 +3596,9 @@ class QuotationDataTableHandle {
                             disabled = 'disabled'  // shipping
                         }
                         let costPrice = row?.['product_cost_price'] ? row?.['product_cost_price'] : 0;
+                        if (costPrice === 0) {
+                            costPrice = row?.['product_data']?.['specific_data']?.['specific_value'] ? row?.['product_data']?.['specific_data']?.['specific_value'] : 0;
+                        }
                         if (costPrice === 0) {
                             costPrice = row?.['product_data']?.['standard_price'] ? row?.['product_data']?.['standard_price'] : 0;
                         }
@@ -3483,7 +3625,8 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 6,
+                    targets: 7,
+                    width: '10%',
                     render: (data, type, row) => {
                         let dataZone = "quotation_costs_data";
                         if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
@@ -3518,7 +3661,8 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 7,
+                    targets: 8,
+                    width: '15%',
                     render: (data, type, row) => {
                         let dataZone = "quotation_costs_data";
                         if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
@@ -3543,6 +3687,7 @@ class QuotationDataTableHandle {
                 let priceGrEle = row.querySelector('.input-group-price');
                 let priceEle = row.querySelector('.table-row-price');
                 let taxEle = row.querySelector('.table-row-tax');
+                let btnSCostEle = row.querySelector('.btn-select-cost');
                 if (itemEle) {
                     let dataS2 = [];
                     if (data?.['product_data']) {
@@ -3584,6 +3729,14 @@ class QuotationDataTableHandle {
                     }
                     FormElementControl.loadInitS2($(taxEle), dataS2);
                 }
+                if (btnSCostEle) {
+                    if (data?.['product_data']?.['specific_data']?.['id']) {
+                        $(btnSCostEle).attr('hidden', 'true');
+                    }
+                    if (['get'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                        $(btnSCostEle).attr('hidden', 'true');
+                    }
+                }
                 // re calculate
                 QuotationCalculateCaseHandle.commonCalculate(QuotationDataTableHandle.$tableCost, row);
             },
@@ -3595,6 +3748,9 @@ class QuotationDataTableHandle {
 
     static dataTableExpense(data) {
         // init dataTable
+        if ($.fn.dataTable.isDataTable(QuotationDataTableHandle.$tableExpense)) {
+            QuotationDataTableHandle.$tableExpense.DataTable().destroy();
+        }
         QuotationDataTableHandle.$tableExpense.DataTableDefault({
             styleDom: 'hide-foot',
             data: data ? data : [],
@@ -4085,6 +4241,9 @@ class QuotationDataTableHandle {
 
     static dataTablePaymentStage(data) {
         // init dataTable
+        if ($.fn.dataTable.isDataTable(QuotationDataTableHandle.$tablePayment)) {
+            QuotationDataTableHandle.$tablePayment.DataTable().destroy();
+        }
         QuotationDataTableHandle.$tablePayment.DataTableDefault({
             styleDom: 'hide-foot',
             data: data ? data : [],
@@ -4272,6 +4431,8 @@ class QuotationDataTableHandle {
                 let taxCheckEle = row.querySelector('.table-row-tax-check');
                 let valTaxEle = row.querySelector('.table-row-value-tax');
                 let valTotalEle = row.querySelector('.table-row-value-total');
+                let btnSInvoiceEle = row.querySelector('.btn-select-invoice');
+                let btnSReconcileEle = row.querySelector('.btn-select-reconcile');
                 let delEle = row.querySelector('.del-row');
 
                 let $termMD = QuotationLoadDataHandle.paymentSelectEle;
@@ -4360,6 +4521,16 @@ class QuotationDataTableHandle {
                 if ($(installmentEle).val()) {
                     QuotationLoadDataHandle.loadChangeInstallment(installmentEle);
                 }
+                if (btnSInvoiceEle) {
+                    if (['get'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                        $(btnSInvoiceEle).attr('hidden', 'true');
+                    }
+                }
+                if (btnSReconcileEle) {
+                    if (['get'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                        $(btnSReconcileEle).attr('hidden', 'true');
+                    }
+                }
                 if (delEle) {
                     if (!$termMD.val()) {
                         delEle.removeAttribute('hidden');
@@ -4379,6 +4550,9 @@ class QuotationDataTableHandle {
 
     static dataTableInvoice(data) {
         // init dataTable
+        if ($.fn.dataTable.isDataTable(QuotationDataTableHandle.$tableInvoice)) {
+            QuotationDataTableHandle.$tableInvoice.DataTable().destroy();
+        }
         QuotationDataTableHandle.$tableInvoice.DataTableDefault({
             styleDom: 'hide-foot',
             data: data ? data : [],
@@ -4508,6 +4682,7 @@ class QuotationDataTableHandle {
                 let termDataEle = row.querySelector('.table-row-term-data');
                 let totalEle = row.querySelector('.table-row-total');
                 let paidFullEle = row.querySelector('.paid-full');
+                let btnSTermEle = row.querySelector('.btn-select-term');
 
                 let $termMD = QuotationLoadDataHandle.paymentSelectEle;
                 let checkTax = QuotationLoadDataHandle.loadCheckSameMixTax();
@@ -4546,6 +4721,11 @@ class QuotationDataTableHandle {
                         paidFullEle.removeAttribute('hidden');
                     }
                 }
+                if (btnSTermEle) {
+                    if (['get'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                        $(btnSTermEle).attr('hidden', 'true');
+                    }
+                }
             },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
@@ -4570,7 +4750,7 @@ class QuotationDataTableHandle {
             },
             autoWidth: true,
             scrollX: true,
-            scrollY: "50vh",
+            scrollY: "60vh",
             columns: [
                 {
                     targets: 0,
@@ -4606,6 +4786,7 @@ class QuotationDataTableHandle {
                             return `<div class="form-check form-check-lg d-flex align-items-center">
                                         <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-product-${row?.['id'].replace(/-/g, "")}" ${disabled} ${checked} data-zone="${dataZone}">
                                         <textarea class="form-control form-check-label table-row-title" rows="3" readonly>${row?.['title']}</textarea>
+                                        <button class="btn-collapse-parent btn btn-icon btn-rounded" data-product-id="${row?.['id']}"><span class="icon"><i class="fas fa-chevron-right icon-collapse"></i></span></button>
                                     </div>`;
                         }
                         return `<span>--</span>`;
@@ -4677,7 +4858,6 @@ class QuotationDataTableHandle {
                 if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
                     QuotationDataTableHandle.dtbSProductHDCustom();
                 }
-                // QuotationLoadDataHandle.loadEventCheckbox(QuotationDataTableHandle.$tableSProduct);
             },
         });
     };
@@ -4917,6 +5097,118 @@ class QuotationDataTableHandle {
         });
     };
 
+    static dataTableSpecProduct(idTbl, productID) {
+        let $tableChild = $('#' + idTbl);
+        if ($.fn.dataTable.isDataTable($tableChild)) {
+            $tableChild.DataTable().destroy();
+        }
+        $tableChild.not('.dataTable').DataTableDefault({
+            useDataServer: true,
+            ajax: {
+                url: QuotationLoadDataHandle.urlEle.attr('data-spec-product'),
+                type: 'GET',
+                data: {'product_id': productID},
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) return resp.data['product_si_serial_number_list'] ? resp.data['product_si_serial_number_list'] : [];
+                    return [];
+                },
+            },
+            pageLength: 5,
+            info: false,
+            columns: [
+                {
+                    title: QuotationLoadDataHandle.transEle.attr('data-spec-prod-1'),
+                    render: (data, type, row) => {
+                        let disabled = '';
+                        let checked = '';
+                        if (QuotationLoadDataHandle.$productsCheckedEle.val()) {
+                            let storeID = JSON.parse(QuotationLoadDataHandle.$productsCheckedEle.val());
+                            if (typeof storeID === 'object') {
+                                let combineID = productID + "-" + row?.['id'];
+                                if (storeID?.[combineID]) {
+                                    if (storeID?.[combineID]?.['type'] === "selected") {
+                                        disabled = 'disabled';
+                                    }
+                                    checked = 'checked';
+                                }
+                            }
+                        }
+
+                        return `<div class="form-check form-check-lg d-flex align-items-center">
+                                    <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox-spec" id="s-spec-product-${row?.['id'].replace(/-/g, "")}" data-product-id="${productID}" ${disabled} ${checked}>
+                                    <textarea class="form-control form-check-label table-row-title" rows="2" readonly>${row?.['serial_number']}</textarea>
+                                </div>`;
+                    }
+                },
+                {
+                    title: QuotationLoadDataHandle.transEle.attr('data-spec-prod-2'),
+                    render: (data, type, row) => {
+                        return `<textarea class="form-control form-check-label" rows="2" readonly>${row?.['vendor_serial_number']}</textarea>`;
+                    }
+                },
+                {
+                    title: QuotationLoadDataHandle.transEle.attr('data-spec-prod-3'),
+                    render: (data, type, row) => {
+                        return `<textarea class="form-control form-check-label" rows="2" readonly>${row?.['new_description']}</textarea>`;
+                    }
+                },
+                {
+                    title: QuotationLoadDataHandle.transEle.attr('data-spec-prod-4'),
+                    render: (data, type, row) => {
+                        let date = '--';
+                        if (row?.['expire_date']) {
+                            date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['expire_date']);
+                        }
+                        return `<span>${date}</span>`;
+                    }
+                },
+                {
+                    title: QuotationLoadDataHandle.transEle.attr('data-spec-prod-5'),
+                    render: (data, type, row) => {
+                        let date = '--';
+                        if (row?.['manufacture_date']) {
+                            date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['manufacture_date']);
+                        }
+                        return `<span>${date}</span>`;
+                    }
+                },
+                {
+                    title: QuotationLoadDataHandle.transEle.attr('data-spec-prod-6'),
+                    render: (data, type, row) => {
+                        let date = '--';
+                        if (row?.['warranty_start']) {
+                            date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['warranty_start']);
+                        }
+                        return `<span>${date}</span>`;
+                    }
+                },
+                {
+                    title: QuotationLoadDataHandle.transEle.attr('data-spec-prod-7'),
+                    render: (data, type, row) => {
+                        let date = '--';
+                        if (row?.['warranty_end']) {
+                            date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['warranty_end']);
+                        }
+                        return `<span>${date}</span>`;
+                    }
+                },
+                {
+                    title: QuotationLoadDataHandle.transEle.attr('data-spec-prod-8'),
+                    render: (data, type, row) => {
+                        return `<span class="mask-money" data-init-money="${parseFloat(row?.['specific_value'])}"></span>`;
+                    }
+                },
+            ],
+            rowCallback: function (row, data, index) {
+            },
+            drawCallback: function () {
+                QuotationDataTableHandle.loadDtbHideHeader(idTbl);
+                $.fn.initMaskMoney2();
+            },
+        });
+    };
+
     // Custom dtb
     static dtbSProductHDCustom() {
         let $table = $('#table-select-product');
@@ -4982,7 +5274,7 @@ class QuotationDataTableHandle {
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
-                                    <a class="dropdown-item" href="#" id="btn-add-product-quotation-create" data-bs-toggle="modal" data-bs-target="#selectProductModal"><i class="dropdown-icon fas fa-cube"></i><span class="mt-2">${QuotationLoadDataHandle.transEle.attr('data-add-product')}</span></a>
+                                    <a class="dropdown-item" href="#" id="btn-add-product-quotation-create" data-bs-toggle="offcanvas" data-bs-target="#selectProductCanvas"><i class="dropdown-icon fas fa-cube"></i><span class="mt-2">${QuotationLoadDataHandle.transEle.attr('data-add-product')}</span></a>
                                     <a class="dropdown-item" href="#" id="btn-add-product-group-quotation"><i class="dropdown-icon fas fa-layer-group"></i><span>${QuotationLoadDataHandle.transEle.attr('data-add-group')}</span></a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="#" id="btn-add-shipping" data-bs-toggle="modal" data-bs-target="#shippingFeeModalCenter"><i class="dropdown-icon fas fa-shipping-fast"></i><span class="mt-2">${QuotationLoadDataHandle.transEle.attr('data-shipping')}</span></a>
@@ -5161,6 +5453,22 @@ class QuotationDataTableHandle {
                     QuotationLoadDataHandle.loadAddInvoice();
                 });
             }
+        }
+    };
+
+    static loadDtbHideHeader(tableID) {
+        let tableIDWrapper = tableID + '_wrapper';
+        let tableWrapper = document.getElementById(tableIDWrapper);
+        if (tableWrapper) {
+            let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
+            if (headerToolbar) {
+                headerToolbar.classList.add('hidden');
+            }
+        }
+        let tableIDLength = tableID + '_length';
+        let tableLength = document.getElementById(tableIDLength);
+        if (tableLength) {
+            tableLength.classList.add('hidden');
         }
     };
 
@@ -6777,6 +7085,10 @@ class QuotationSubmitHandle {
         QuotationDataTableHandle.$tableProduct.DataTable().rows().every(function () {
             let rowData = {};
             let row = this.node();
+            let rowIndex = QuotationDataTableHandle.$tableProduct.DataTable().row(row).index();
+            let $row = QuotationDataTableHandle.$tableProduct.DataTable().row(rowIndex);
+            let dataRow = $row.data();
+
             let groupEle = row.querySelector('.table-row-group');
             let productEle = row.querySelector('.table-row-item');
             let promotionEle = row.querySelector('.table-row-promotion');
@@ -6799,7 +7111,7 @@ class QuotationSubmitHandle {
                         rowData['product_id'] = dataProduct?.['id'];
                         rowData['product_title'] = dataProduct?.['title'];
                         rowData['product_code'] = dataProduct?.['code'];
-                        rowData['product_data'] = dataProduct;
+                        rowData['product_data'] = dataRow?.['product_data'];
                     }
                 }
                 let eleUOM = row.querySelector('.table-row-uom');

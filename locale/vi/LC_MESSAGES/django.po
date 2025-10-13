@@ -12322,3 +12322,7 @@ msgstr "Chọn ngân sách"
 #
 msgid "Total budget"
 msgstr "Tổng ngân sách"
+
+#
+msgid "Specific value"
+msgstr "Giá cụ thể"

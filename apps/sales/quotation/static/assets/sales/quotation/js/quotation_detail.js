@@ -73,6 +73,7 @@ $(function () {
                                 appID = 'a870e392-9ad2-4fe2-9baa-298a38691cf2';
                             }
                             new PrintTinymceControl().render(appID, data, false);
+                            PrintTinymceControl.open_modal();
                         }
                     }
                 }

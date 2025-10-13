@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Payroll template' %} {% trans 'list' %}
+{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'PayrollTemplateCreate' %}">
+        <button class="btn btn-outline-primary" type="button">
+            <span>
+                <span>{% trans 'Create' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <div class="row">
+        <div class="col-md-12 col-xs-12">
+            <table
+                class="table nowrap min-w-1500p w-100"
+                id="overtime_request_tbl"
+                data-method="get"
+                data-url="{% url 'PayrollTemplateListAPI' %}"
+                data-detail="{% url 'PayrollTemplateDetail' 1 %}"
+            >
+                <thead>
+                    <tr>
+                        <td>#</td>
+                        <td>{% trans 'Name' %}</td>
+                        <td>{% trans 'Code' %}</td>
+                        <td>{% trans 'Creator' %}</td>
+                        <td>{% trans 'Beneficiary' %}</td>
+                        <td>{% trans 'Created date' %}</td>
+                        <td>{% trans 'Status' %}</td>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory" aria-label="url factory"
+    >
+{% endblock %}
+{% block jsFooter %}
+{#    <script src="{% static 'assets/overtime/js/list.js' %}"></script>#}
+{% endblock %}

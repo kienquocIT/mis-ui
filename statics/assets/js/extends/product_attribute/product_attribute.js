@@ -736,34 +736,15 @@ class ProductAttribute {
     appendProductId($row) {
         let productId = null;
 
-        // Try to get product ID from different possible sources
+        // Get product ID
         if (this.currentRowData) {
-            // Check various common field names for product ID
-            productId = this.currentRowData.product_id ||
-                       this.currentRowData.productId ||
-                       this.currentRowData.id ||
-                       this.currentRowData.uuid ||
-                       this.currentRowData.product_uuid;
-
-            console.log('Current row data:', this.currentRowData);
-            console.log('Extracted product ID:', productId);
+            productId = this.currentRowData.product_id
         }
 
         // Fallback: try to extract from row HTML if no ID found
         if (!productId && $row && $row.length) {
             // Check for data attributes
-            productId = $row.data('product-id') ||
-                       $row.data('id') ||
-                       $row.attr('data-product-id');
-
-            // Check for hidden input or specific cell
-            if (!productId) {
-                productId = $row.find('input[name="product_id"]').val() ||
-                           $row.find('.product-id').text() ||
-                           $row.find('[data-field="product_id"]').text();
-            }
-
-            console.log('Product ID from HTML:', productId);
+            productId = $row.attr('data-product-id');
         }
 
         const $offcanvas = $('#offcanvas-product-attribute');
@@ -970,7 +951,36 @@ class ProductAttribute {
         return totalCost;
     }
 
+    static validateRowDataInput(rowData) {
+        const requiredRowDataFields = [
+            'duration_unit_data',
+            'product_id',
+            'title',
+            'code',
+            'duration'
+        ]
+
+        if (!rowData) {
+            console.log('Invalid input: rowData is null or undefined');
+            return false;
+        }
+
+        const missingRowDataFields = [];
+        requiredRowDataFields.forEach(field => {
+            if (rowData[field] === undefined || rowData[field] === null) {
+                missingRowDataFields.push(field);
+            }
+        })
+        if (missingRowDataFields.length > 0) {
+            console.log('Missing rowData fields:', missingRowDataFields)
+            console.log('Current rowData:', rowData)
+            return false
+        }
+        return true
+    }
+
     static renderProductAttributeButton(has_attributes=false, attributes_total_cost=0, rowData, selectedAttributes= {}) {
+        ProductAttribute.validateRowDataInput(rowData)
         if (rowData.duration_unit_data === undefined || rowData.duration_unit_data === null) {
             rowData.duration_unit_data = {}
         }

@@ -3134,6 +3134,9 @@ class QuotationDataTableHandle {
                                     des = row?.['product_description'] ? row?.['product_description'] : '';
                                 }
                             }
+                            if (row?.['product_data']?.['specific_data']?.['new_description']) {
+                                des = row?.['product_data']?.['specific_data']?.['new_description'] ? row?.['product_data']?.['specific_data']?.['new_description'] : '';
+                            }
                         } else if (itemType === 1) {  // PROMOTION
                             des = row?.['promotion_data']?.['product_data']?.['description'] ? row?.['promotion_data']?.['product_data']?.['description'] : '';
                         }
@@ -4740,6 +4743,7 @@ class QuotationDataTableHandle {
             ajax: {
                 url: QuotationLoadDataHandle.urlEle.attr('data-md-product'),
                 type: "GET",
+                data: {'sale_default_uom_id__isnull': false},
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('product_sale_list')) {

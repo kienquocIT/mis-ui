@@ -513,6 +513,83 @@ if (_form.dataForm.hasOwnProperty('attachment')) {
 ```
 ---
 
+
+## CÁCH TẠO CẤU HÌNH CHO CHỨC NĂNG
+```python
+
+BƯỚC 1: HTML:
+- Tạo file html *_config.html trong module chức năng
+* Lưu ý: config chỉ có 1 html, khi mở page load data detail -> chỉnh sửa -> lưu callAjax method put
+   
+BƯỚC 2: JS:
+- Tạo file js *_config.js trong module chức năng
+* Lưu ý: js có các hàm init, callAjax get detail, callAjax put update
+VD:
+    $form.submit(function (e) {
+         e.preventDefault()
+         let _form = new SetupFormSubmit($(this));
+         let csr = $("[name=csrfmiddlewaretoken]").val();
+         $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
+             .then(
+                 (resp) => {
+                     let data = $.fn.switcherResp(resp);
+                     if (data) {
+                         $.fn.notifyB({description: data.message}, 'success')
+                         $.fn.redirectUrl($(this).attr('data-url-redirect'), 1000);
+                     }
+                 },
+                 (errs) => {
+                     console.log(errs)
+                 }
+             )
+        });
+
+BƯỚC 3: Views:
+VD:
+class QuotationConfigDetail(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/quotation/config/quotation_config.html',
+        menu_active='menu_quotation_config',
+        breadcrumb='SALE_ORDER_CONFIG',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class QuotationConfigDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_CONFIG).get()
+        return resp.auto_return()
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_CONFIG).put(request.data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.QUOTATION_CONFIG_UPDATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+BƯỚC 4: Urls:
+VD:
+    path('config', QuotationConfigDetail.as_view(), name='QuotationConfigDetail'),
+    path('config/api', QuotationConfigDetailAPI.as_view(), name='QuotationConfigDetailAPI'),
+
+```
+---
+
+
 ---
 ## CÁCH ÁP DỤNG PRINT CHO CHỨC NĂNG:
 page tham khảo: 

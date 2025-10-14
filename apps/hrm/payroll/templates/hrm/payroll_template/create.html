@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Payroll template' %} {% trans 'create' %}
+{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="payroll_template_form">
+            <span>
+                <span>{% trans 'Save' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-floppy-disk"></i>
+                </span>
+            </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form class="container-fluid mt-4" id="payroll_template_form" method="post" data-method="POST" autocomplete="off"
+          data-url-redirect="{% url 'PayrollTemplateList' %}" data-url="{% url 'PayrollTemplateListAPI' %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-12 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label required" for="ipt_title">{% trans 'Template name' %}</label>
+                    <input type="text" id="ipt_title" class="form-control" name="title" required>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label" for="select-apply-for">{% trans 'Apply for' %}</label>
+                    <select class="form-select" name="department_applied"
+                            id="select-apply-for"
+                            data-url="{% url 'GroupDDListAPI' %}"
+                            data-method="GET" data-keyResp="group_dd_list"
+                            data-allowClear="true"
+                            multiple
+                            data-closeOnSelect="false"
+                    ></select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label" for="ipt_remarks">{% trans 'Description' %}</label>
+                    <input type="text" id="ipt_remarks" class="form-control" name="remarks">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <table class="table nowrap min-w-1500p w-100" id="tbl_attribute_list">
+                 <thead>
+                    <tr>
+                        <td>#</td>
+                        <td>{% trans 'Column title' %}</td>
+                        <td>{% trans 'Data source' %}</td>
+                        <td>{% trans 'Value code' %}</td>
+                        <td>{% trans 'Data type' %}</td>
+                        <td>{% trans 'Formula' %}</td>
+                    </tr>
+                </thead>
+            </table>
+            <button class="btn btn-icon btn btn-outline-primary" type="button" id="add-new-row-attr">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
+    </form>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory" aria-label="url factory"
+    >
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/payroll/template/js/common.js' %}"></script>
+{#    <script src="{% static 'assets/overtime/js/create.js' %}"></script>#}
+{% endblock %}

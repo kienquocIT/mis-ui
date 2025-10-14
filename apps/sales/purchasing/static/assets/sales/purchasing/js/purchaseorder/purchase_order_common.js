@@ -952,9 +952,7 @@ class POLoadDataHandle {
                 }
             }
         }
-        PODataTableHandle.$tablePayment.DataTable().destroy();
-        PODataTableHandle.dataTablePaymentStage();
-        PODataTableHandle.$tablePayment.DataTable().rows.add(tableData).draw();
+        PODataTableHandle.dataTablePaymentStage(tableData);
         if (POLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
             POLoadDataHandle.loadTableDisabled(PODataTableHandle.$tablePayment);
         }
@@ -994,9 +992,7 @@ class POLoadDataHandle {
                 }
             }
         }
-        PODataTableHandle.$tableInvoice.DataTable().destroy();
-        PODataTableHandle.dataTableInvoice();
-        PODataTableHandle.$tableInvoice.DataTable().rows.add(tableData).draw();
+        PODataTableHandle.dataTableInvoice(tableData);
         if (POLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
             POLoadDataHandle.loadTableDisabled(PODataTableHandle.$tableInvoice);
         }
@@ -2384,6 +2380,9 @@ class PODataTableHandle {
 
     static dataTablePaymentStage(data) {
         // init dataTable
+        if ($.fn.dataTable.isDataTable(PODataTableHandle.$tablePayment)) {
+            PODataTableHandle.$tablePayment.DataTable().destroy();
+        }
         PODataTableHandle.$tablePayment.DataTableDefault({
             styleDom: 'hide-foot',
             data: data ? data : [],
@@ -2624,6 +2623,9 @@ class PODataTableHandle {
 
     static dataTableInvoice(data) {
         // init dataTable
+        if ($.fn.dataTable.isDataTable(PODataTableHandle.$tableInvoice)) {
+            PODataTableHandle.$tableInvoice.DataTable().destroy();
+        }
         PODataTableHandle.$tableInvoice.DataTableDefault({
             styleDom: 'hide-foot',
             data: data ? data : [],

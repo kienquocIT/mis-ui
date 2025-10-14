@@ -4670,11 +4670,6 @@ const ServiceOrder = (function($) {
                         if (totalContributionData.total_contribution_percent < 0) {
                             totalContributionData.total_contribution_percent = 0;
                         }
-
-                        // If no contributions left, could optionally delete the entry
-                        if (totalContributionData.total_contribution_percent === 0) {
-                            totalContributionData.delivery_balance_value = null; // Reset to use quantity
-                        }
                     }
                 }
             });

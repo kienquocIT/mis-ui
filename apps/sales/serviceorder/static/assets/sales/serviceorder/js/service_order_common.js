@@ -1211,33 +1211,33 @@ const ServiceOrder = (function($) {
                                 </div>`
                     }
                 },
-                {
-                    width: '10%',
-                    title: $.fn.gettext('Package'),
-                    render: (data, type, row) => {
-                        const hasPackage = row.has_package || false
-                        const rowId = row.id
-                        return `<div class="d-flex align-items-center">
-                                    <div class="form-check me-2">
-                                        <input 
-                                            ${!isDelivery ? 'disabled' : ''}
-                                            type="checkbox"  
-                                            class="form-check-input contribution-package"
-                                            ${hasPackage ? 'checked' : ''}
-                                        />
-                                    </div>
-                                    <button 
-                                        ${!isDelivery ? 'disabled' : ''}
-                                        type="button" 
-                                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-open-contribution-package"
-                                        data-contribution-id="${rowId}"
-                                        title="Open package"
-                                    >
-                                        <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
-                                    </button>
-                                </div>`
-                    }
-                },
+                // {
+                //     width: '10%',
+                //     title: $.fn.gettext('Package'),
+                //     render: (data, type, row) => {
+                //         const hasPackage = row.has_package || false
+                //         const rowId = row.id
+                //         return `<div class="d-flex align-items-center">
+                //                     <div class="form-check me-2">
+                //                         <input
+                //                             ${!isDelivery ? 'disabled' : ''}
+                //                             type="checkbox"
+                //                             class="form-check-input contribution-package"
+                //                             ${hasPackage ? 'checked' : ''}
+                //                         />
+                //                     </div>
+                //                     <button
+                //                         ${!isDelivery ? 'disabled' : ''}
+                //                         type="button"
+                //                         class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-open-contribution-package"
+                //                         data-contribution-id="${rowId}"
+                //                         title="Open package"
+                //                     >
+                //                         <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
+                //                     </button>
+                //                 </div>`
+                //     }
+                // },
                 {
                     width: '15%',
                     title: $.fn.gettext('Unit Cost'),

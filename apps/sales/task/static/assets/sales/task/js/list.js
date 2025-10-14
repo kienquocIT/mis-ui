@@ -518,7 +518,7 @@ $(function () {
                     childHTML.find('.card-body').append('<span class="float-right active-sales" data-bs-toggle="tooltip"'
                         + 'title="'+newData.opportunity.code +' - '+ newData.opportunity.title+'"><i class="fas far fa-lightbulb"></i></span>')
                 }
-                if (Object.keys(newData?.service_order).length > 0){
+                if (newData?.['service_order'] && Object.keys(newData?.['service_order']).length > 0){
                     const serviceOrder = newData.service_order
                     childHTML.find('.card-body').append('<span class="float-right is-so" data-bs-toggle="tooltip" '
                         +'title="'+serviceOrder.code+' - '+serviceOrder.title+'"><i class="fas fa-concierge-bell"></i></span>')

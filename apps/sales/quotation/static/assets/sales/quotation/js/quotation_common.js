@@ -3134,6 +3134,9 @@ class QuotationDataTableHandle {
                                     des = row?.['product_description'] ? row?.['product_description'] : '';
                                 }
                             }
+                            if (row?.['product_data']?.['specific_data']?.['new_description']) {
+                                des = row?.['product_data']?.['specific_data']?.['new_description'] ? row?.['product_data']?.['specific_data']?.['new_description'] : '';
+                            }
                         } else if (itemType === 1) {  // PROMOTION
                             des = row?.['promotion_data']?.['product_data']?.['description'] ? row?.['promotion_data']?.['product_data']?.['description'] : '';
                         }

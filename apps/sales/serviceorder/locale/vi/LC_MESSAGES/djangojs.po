@@ -118,8 +118,8 @@ msgid "Total Balance"
 msgstr "Tổng còn lại"
 
 #
-msgid "No of Service Delivered"
-msgstr "Dịch vụ không giao hàng"
+msgid "No. of Service Delivered"
+msgstr "Số lượng dịch vụ đã thực hiện"
 
 #
 msgid "Package"
@@ -127,7 +127,7 @@ msgstr "Kiện"
 
 #
 msgid "Unit Cost"
-msgstr "Chi phí dịch vụ"
+msgstr "Giá vốn"
 
 #
 msgid "Total Cost"

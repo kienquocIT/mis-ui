@@ -1195,7 +1195,7 @@ const ServiceOrder = (function($) {
                 },
                 {
                     width: '10%',
-                    title: $.fn.gettext('No of Service Delivered'),
+                    title: $.fn.gettext('No. of Service Delivered'),
                     render: (data, type, row) => {
                         const quantity = row.delivered_quantity || 0
                         const balance = row.balance_quantity || 0

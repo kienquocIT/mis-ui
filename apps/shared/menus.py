@@ -926,7 +926,7 @@ class MenusHRM:
         icon='<i class="fas fa-cash-register"></i>',
         child=[
             MenuCommon(
-                name='Payroll config', code='menu_payroll_config_list', view_name='PayrollConfigList',
+                name='Payroll config', code='menu_payroll_config', view_name='PayrollConfigDetail',
                 icon='<i class="fas fa-cog"></i>',
             ),
         ]

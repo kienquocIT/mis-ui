@@ -16,12 +16,23 @@
     </style>
 {% endblock %}
 {% block pageAction %}
-    {% include 'extends/systems/page_actions.html' with is_save=True save_frm='frm_payroll_config' %}
+    <button class="btn btn-outline-primary" id="btn_update_payroll_config">
+        <span>
+            <span>{% trans 'Update' %}</span>
+            <span class="icon"><i class="fa-regular fa-pen-to-square"></i></span>
+        </span>
+    </button>
+    <button class="btn btn-outline-primary" type="submit" form="frm_payroll_config" id="btn_save_payroll_config" hidden>
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon"><i class="fa-regular fa-floppy-disk"></i></span>
+        </span>
+    </button>
 {% endblock %}
 {% block pageContent %}
-    <form id="frm_payroll_config" data-method="POST"
-          data-url="{% url 'PayrollConfigListAPI' %}"
-          data-url-redirect="{% url 'PayrollConfigList' %}">
+    <form id="frm_payroll_config" data-method="PUT" method="post"
+          data-url="{% url 'PayrollConfigDetailAPI' %}"
+          data-url-redirect="{% url 'PayrollConfigDetail' %}">
         {% csrf_token %}
         {% include 'hrm/payroll/payrollconfig/tab_data.html' %}
     </form>
@@ -35,5 +46,5 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/hrm/payroll/js/payrollconfig/common.js' %}"></script>
-    <script src="{% static 'assets/hrm/payroll/js/payrollconfig/submit.js' %}"></script>
+    <script src="{% static 'assets/hrm/payroll/js/payrollconfig/payroll_config.js' %}"></script>
 {% endblock %}

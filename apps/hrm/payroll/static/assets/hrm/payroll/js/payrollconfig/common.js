@@ -31,34 +31,34 @@ class PayrollConfigElements {
     }
 }
 
-const pageElements = new PayrollConfigElements();
+const payrollConfigElements = new PayrollConfigElements();
 
-class PayrollConfigInsuranceHandler {
+class PayrollConfigDataHandler {
+    // Insurance Tab
     static combineInsuranceData() {
         return {
-            social_insurance_employee: parseFloat(pageElements.$socialEmployeeRate.val() || 0),
-            social_insurance_employer: parseFloat(pageElements.$socialEmployerRate.val() || 0),
-            social_insurance_ceiling: parseFloat(pageElements.$socialCeilingRate.val() || 0),
-            unemployment_insurance_employee: parseFloat(pageElements.$unemploymentEmployeeRate.val() || 0),
-            unemployment_insurance_employer: parseFloat(pageElements.$unemploymentEmployerRate.val() || 0),
-            unemployment_insurance_ceiling: parseFloat(pageElements.$unemploymentCeiling.val() || 0),
-            health_insurance_employee: parseFloat(pageElements.$healthEmployeeRate.val() || 0),
-            health_insurance_employer: parseFloat(pageElements.$healthEmployerRate.val() || 0),
-            union_insurance_employee: parseFloat(pageElements.$unionEmployeeRate.val() || 0),
-            union_insurance_employer: parseFloat(pageElements.$unionEmployerRate.val() || 0),
+            social_insurance_employee: parseFloat(payrollConfigElements.$socialEmployeeRate.val() || 0),
+            social_insurance_employer: parseFloat(payrollConfigElements.$socialEmployerRate.val() || 0),
+            social_insurance_ceiling: parseFloat(payrollConfigElements.$socialCeilingRate.val() || 0),
+            unemployment_insurance_employee: parseFloat(payrollConfigElements.$unemploymentEmployeeRate.val() || 0),
+            unemployment_insurance_employer: parseFloat(payrollConfigElements.$unemploymentEmployerRate.val() || 0),
+            unemployment_insurance_ceiling: parseFloat(payrollConfigElements.$unemploymentCeiling.val() || 0),
+            health_insurance_employee: parseFloat(payrollConfigElements.$healthEmployeeRate.val() || 0),
+            health_insurance_employer: parseFloat(payrollConfigElements.$healthEmployerRate.val() || 0),
+            union_insurance_employee: parseFloat(payrollConfigElements.$unionEmployeeRate.val() || 0),
+            union_insurance_employer: parseFloat(payrollConfigElements.$unionEmployerRate.val() || 0),
         };
     }
-}
 
-class PayrollConfigPersonalTaxHandler {
+    // Personal Income Tax
     static initTaxBracketTable() {
-        pageElements.$tblTaxBracket.DataTable().clear().destroy();
-        pageElements.$tblTaxBracket.DataTableDefault({
+        payrollConfigElements.$tblTaxBracket.DataTable().clear().destroy();
+        payrollConfigElements.$tblTaxBracket.DataTableDefault({
             scrollY: '70vh',
             scrollX: true,
             scrollCollapse: true,
             rowIndex: false,
-            data: pageElements.$taxBracketData,
+            data: payrollConfigElements.$taxBracketData,
             columns: [
                 {
                     className: "w-10 text-center",
@@ -90,18 +90,18 @@ class PayrollConfigPersonalTaxHandler {
 
     static combinePersonalIncomeTaxData() {
         return {
-            personal_deduction: parseFloat(pageElements.$personalTax.val() || 0),
-            dependent_deduction: parseFloat(pageElements.$dependentTax.val() || 0),
+            personal_deduction: parseFloat(payrollConfigElements.$personalTax.val() || 0),
+            dependent_deduction: parseFloat(payrollConfigElements.$dependentTax.val() || 0),
             effective_date: DateTimeControl.formatDateType(
                 'DD/MM/YYYY',
                 'YYYY-MM-DD',
-                pageElements.$effectiveDate.val()
+                payrollConfigElements.$effectiveDate.val()
             )
         }
     }
 
     static combineTaxBracketData() {
-        let taxBracketData = pageElements.$taxBracketData.map(item => ({
+        let taxBracketData = payrollConfigElements.$taxBracketData.map(item => ({
             order: parseInt(item.order),
             min_amount: parseFloat(item.from.replace(/,/g, '')) || 0,
             max_amount:item.to ? parseFloat(item.to.replace(/,/g, '')) : 0,

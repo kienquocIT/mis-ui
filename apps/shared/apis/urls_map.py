@@ -1029,4 +1029,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SERVICE_QUOTATION_DETAIL_DASHBOARD = StringUrl('servicequotation/detail-dashboard/{pk}')
 
     # HRM - Payroll
-    PAYROLL_CONFIG_LIST = StringUrl('hrm/payroll/payrollconfig/list')
+    PAYROLL_CONFIG = StringUrl('hrm/payroll/payrollconfig/config')

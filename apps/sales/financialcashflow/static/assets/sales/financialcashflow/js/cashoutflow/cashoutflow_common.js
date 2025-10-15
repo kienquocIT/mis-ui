@@ -401,7 +401,7 @@ class COFPageFunction {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            return resp.data['advance_for_supplier_list'] ? resp.data['advance_for_supplier_list'] : [];
+                            return resp.data['po_payment_stage_list'] ? resp.data['po_payment_stage_list'] : [];
                         }
                         return [];
                     },
@@ -460,7 +460,7 @@ class COFPageFunction {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            return resp.data['ap_invoice_list'] ? resp.data['ap_invoice_list'].filter(item => item?.['recon_balance'] > 0) : [];
+                            return resp.data['ap_invoice_po_payment_stage_list'] ? resp.data['ap_invoice_po_payment_stage_list'].filter(item => item?.['recon_balance'] > 0) : [];
                         }
                         return [];
                     },
@@ -548,7 +548,7 @@ class COFPageFunction {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            return resp.data['advance_for_supplier_list'] ? resp.data['advance_for_supplier_list'] : [];
+                            return resp.data['po_payment_stage_list'] ? resp.data['po_payment_stage_list'] : [];
                         }
                         return [];
                     },

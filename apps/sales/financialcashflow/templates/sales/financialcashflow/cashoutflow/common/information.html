@@ -92,7 +92,7 @@
     <div class="col-12 mt-5">
         <label class="form-check-label fw-bold h5">{% trans 'Advance payment to supplier (according to Purchase order)' %}</label>
         <span class="small text-muted" style="float: right;">({% trans 'Order by Due date' %})</span>
-        <table id="advance-to-supplier-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'AdvanceForSupplierListForCOFAPI' %}">
+        <table id="advance-to-supplier-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'POPaymentStageListForCOFAPI' %}">
             <thead>
             <tr>
                 <th style="min-width: 30px"></th>
@@ -110,7 +110,7 @@
     </div>
     <div class="col-12 mt-5">
         <label class="form-check-label fw-bold h5">{% trans 'Payment to supplier (according to AP invoice)' %}</label>
-        <table id="ap-invoice-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'APInvoiceListForCOFAPI' %}">
+        <table id="ap-invoice-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'APInvoicePOPaymentStageListForCOFAPI' %}">
             <thead>
             <tr>
                 <th style="min-width: 30px"></th>
@@ -161,7 +161,7 @@
         </div>
     </div>
     <div class="col-12 mt-5">
-        <table id="order-cost-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'AdvanceForSupplierListForCOFAPI' %}">
+        <table id="order-cost-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'POPaymentStageListForCOFAPI' %}">
             <thead class="bg-secondary-light-5">
                 <tr>
                     <th style="min-width: 30px"></th>

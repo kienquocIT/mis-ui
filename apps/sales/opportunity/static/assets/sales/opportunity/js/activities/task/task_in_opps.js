@@ -18,8 +18,34 @@ function resetFormTask() {
 }
 
 function isValidString(inputString) {
-    let pattern = /^\d+[dh]*$/;
-    return pattern.test(inputString);
+        // Kiểm tra null/undefined/empty
+    if (!inputString || typeof inputString !== 'string') {
+        return false;
+    }
+
+    // Trim và lowercase để xử lý khoảng trắng và chữ hoa
+    const cleanInput = inputString.trim().toLowerCase();
+
+    // Pattern cải tiến:
+    // - Số nguyên dương: 5, 10 (không chấp nhận 0)
+    // - Số + d: 5d (ngày)
+    // - Số + h: 8h (giờ)
+    // - Số + d + số + h: 5d8h (5 ngày 8 giờ)
+    // - Số + d + 0.5h: 5d0.5h (5 ngày rưỡi)
+    // - Đặc biệt 0.5h (30 phút)
+    const pattern = /^(([1-9]\d*)d([1-9]\d*|0\.5)h|([1-9]\d*)d|([1-9]\d*|0\.5)h|[1-9]\d*)$/;
+
+    if (!pattern.test(cleanInput)) {
+        return false;
+    }
+
+    // Validation bổ sung: giới hạn số ngày hợp lý (tối đa 365 ngày)
+    const dayMatch = cleanInput.match(/(\d+)d/);
+    if (dayMatch && parseInt(dayMatch[1]) > 365) {
+        return false; // Quá 365 ngày
+    }
+
+    return true;
 }
 
 function logWorkSubmit() {

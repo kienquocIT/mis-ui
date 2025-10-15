@@ -84,7 +84,7 @@ class MenusCompanySystem:
         ]
     )
     WORKING_CALENDAR = MenuCommon(
-        name='Working calendar', code='menu_working_calendar', view_name='WorkingCalendarConfig',
+        name='Holidays', code='menu_holidays', view_name='WorkingCalendarConfig',
         icon='<i class="fas far fa-calendar"></i>',
     )
     WORKFLOW_PROCESS = MenuCommon(

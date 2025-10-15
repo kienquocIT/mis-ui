@@ -24,7 +24,6 @@
     <form class="container-fluid mt-4" id="business_trip_form" method="post" data-method="PUT" autocomplete="off"
           data-url-redirect="{% url 'BusinessTripRequestList' %}" data-url="{% url 'BusinessTripRequestEditAPI' data.pk%}">
         {% csrf_token %}
-        <input type="hidden" name="employee_inherit_id">
         <input type="hidden" name="pretax_amount">
         <input type="hidden" name="taxes">
         <input type="hidden" name="total_amount">

@@ -985,7 +985,7 @@ $(function () {
                             render: (row, type, data) => {
                                 let html = '--';
                                 if (row?.code) html = `<span>${row.code}</span>`
-                                if (Object.keys(data?.service_order).length){
+                                if (data?.service_order && Object.keys(data?.service_order).length){
                                     const ser = data.service_order;
                                     const opp = ser?.opportunity
                                     html = `<span class="font-3">${ser.code ? ser.code : ser.title
@@ -1346,7 +1346,7 @@ $(function () {
         }
 
         static CallData(data = null) {
-            let params = {"parent_n__isnull": true}
+            let params = {"parent_n__isnull": true, task_status__is_finish: false}
             if (data) params = data
             return $.fn.callAjax2({
                     'url': $urlFact.attr('data-task-list'),
@@ -1438,7 +1438,7 @@ $(function () {
     // render task
     const kanbanTask = new kanbanHandle()
     const listTask = new listViewTask()
-    callDataTaskList(kanbanTask, listTask)
+    callDataTaskList(kanbanTask, listTask, {'task_status__is_finish': false})
     GanttViewTask.initGantt()
     // on click save btn log work
     logworkSubmit()
@@ -1462,7 +1462,12 @@ $(function () {
     function rtParams (){
         let params = {}
         if ($fOppElm.val() !== null) params.opportunity = $fOppElm.val()
-        if ($fSttElm.val() !== null) params.task_status = $fSttElm.val()
+        if ($fSttElm.val() !== null){
+            if ($fSttElm.val() !== 'is_finish')
+                params.task_status = $fSttElm.val()
+            else if ($fSttElm.val() === 'is_finish')
+                params.task_status__is_finish = false
+        }
         if ($fEmpElm.val() !== null) params.employee_inherit = $fEmpElm.val()
         if ($fServiceOrder.val() !== null) params.service_order = $fServiceOrder.val()
         if ($fPriority.val()) params.priority = $fPriority.val()
@@ -1520,7 +1525,12 @@ $(function () {
             "pageSize": load_info.page_size
         }
         if ($fOppElm.val() !== null) params.opportunity = $fOppElm.val()
-        if ($fSttElm.val() !== null) params.task_status = $fSttElm.val()
+        if ($fSttElm.val() !== null){
+            if ($fSttElm.val() !== 'is_finish')
+                params.task_status = $fSttElm.val()
+            else if ($fSttElm.val() === 'is_finish')
+                params.task_status__is_finish = false
+        }
         if ($fEmpElm.val() !== null) params.employee_inherit = $fEmpElm.val()
         let request = callDataTaskList(null, null, params, true)
         request.then((rep) => {

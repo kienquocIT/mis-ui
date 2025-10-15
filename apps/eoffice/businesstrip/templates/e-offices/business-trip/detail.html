@@ -26,7 +26,6 @@
           data-url-redirect="{% url 'BusinessTripRequestList' %}"
           data-url-detail="{% url 'BusinessTripRequestDetailAPI' data.pk %}">
         {% csrf_token %}
-        <input type="hidden" name="employee_inherit_id" value="{{ data.employee_inherit.id }}">
         <input type="hidden" name="pretax_amount">
         <input type="hidden" name="taxes">
         <input type="hidden" name="total_amount">

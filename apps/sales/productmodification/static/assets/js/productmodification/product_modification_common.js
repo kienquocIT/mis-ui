@@ -281,7 +281,7 @@ class ProductModificationPageFunction {
             {
                 className: 'text-right w-30',
                 render: (data, type, row) => {
-                    return `<span>${row?.['stock_amount']}</span></span>`
+                    return `<span>${row?.['stock_amount']}</span>`
                 }
             }
         ]
@@ -1499,7 +1499,7 @@ class ProductModificationEventHandler {
             pageElements.$table_select_lot.closest('.table-serial-space').prop('hidden', true)
             pageElements.$table_select_serial.closest('.table-lot-space').prop('hidden', true)
             let product_id = pageVariables.current_product_modified?.['id']
-            let url = `${pageElements.$script_url.attr('data-url-warehouse-list-by-product')}?product_id=${product_id}`
+            let url = `${pageElements.$script_url.attr('data-url-warehouse-list-by-product')}?product_id=${product_id}&warehouse__is_pm_warehouse=True`
             ProductModificationPageFunction.LoadTableWarehouseByProduct(url)
             ProductModificationPageFunction.LoadTableLotListByWarehouse()
             ProductModificationPageFunction.LoadTableSerialListByWarehouse()

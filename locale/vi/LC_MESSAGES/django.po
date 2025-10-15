@@ -4816,10 +4816,6 @@ msgid "My Website"
 msgstr "Website của tôi"
 
 #
-msgid "Working calendar update successfully"
-msgstr "Lịch làm việc cập nhật thành công"
-
-#
 msgid "Working year create successfully"
 msgstr "Năm làm việc tạo thành công"
 
@@ -4854,10 +4850,6 @@ msgstr "Tăng"
 #
 msgid "Decrease"
 msgstr "Giảm"
-
-#
-msgid "Working calendar"
-msgstr "Lịch làm việc"
 
 #
 msgid "Holidays"
@@ -12308,9 +12300,29 @@ msgid "List task assigned"
 msgstr "Danh sách nhiệm vụ được giao"
 
 #
-msgid "Specific serial number"
-msgstr "Serial đích danh"
+msgid "Specific item"
+msgstr "Đích danh"
 
 #
 msgid "Not available yet"
 msgstr "Chưa hỗ trợ"
+
+#
+msgid "Select budget"
+msgstr "Chọn ngân sách"
+
+#
+msgid "Total budget"
+msgstr "Tổng ngân sách"
+
+#
+msgid "Specific value"
+msgstr "Giá cụ thể"
+
+#
+msgid "Warehouse for product modification"
+msgstr "Kho cho Ráp-Rã"
+
+#
+msgid "If this product’s valuation method is not Specific Identification, its cost will be mixed in this warehouse. A quantity of 1 is recommended when performing a Product Modification."
+msgstr "Nếu phương pháp định giá của sản phẩm này không phải là Thực tế đích danh, giá trị của nó sẽ bị lẫn lộn trong kho này. Khuyến nghị nên đảm bảo số lượng = 1 khi muốn thực hiện Ráp-Rã."

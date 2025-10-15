@@ -3,6 +3,17 @@ class PayrollTemplateCommon {
         this.init()
 
     }
+    getSystemAttribute(){
+        $.fn.callAjax2({
+            url: $('#url-factory').attr('data-attr-lst'),
+            type: 'GET',
+            isNotify: false
+        }).then((req) => {
+            const res = $.fn.switcherResp(req);
+
+        })
+    }
+
     init(){
         const _tblAttr = $('#tbl_attribute_list').DataTableDefault({
             data: [],
@@ -27,8 +38,9 @@ class PayrollTemplateCommon {
                 {
                     data: 'source',
                     render: (row) => {
-                        let html = 'this is source'
+                        let html = `<select`
                         if (row !== null)
+
                         return html
                     }
                 },

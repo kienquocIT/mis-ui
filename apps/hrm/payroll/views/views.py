@@ -93,7 +93,7 @@ class PayrollTemplateUpdate(View):
         return {}, status.HTTP_200_OK
 
 
-class PayrollTemplateAttributeList(View):
+class PayrollTemplAttrList(View):
     @mask_view(
         auth_require=True,
         template='hrm/payroll_template/list.html',
@@ -104,7 +104,7 @@ class PayrollTemplateAttributeList(View):
         return {}, status.HTTP_200_OK
 
 
-class PayrollTemplateAttributeListAPI(APIView):
+class PayrollTemplAttrListAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True

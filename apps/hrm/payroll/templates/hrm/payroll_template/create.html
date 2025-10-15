@@ -51,6 +51,32 @@
                 </div>
             </div>
         </div>
+
+        <div class="row">
+            <div id="template_select">
+                <ul class="menus-ul">
+                    <li>
+                        <a href="#">
+                            <span id="attribute">{% trans 'Select attribute' %}</span>
+                            <span><i class="fa-solid fa-chevron-right fa-2xs"></i></span>
+                        </a>
+                        <ul>
+                            <li>
+                                <a href="">
+                                    {% trans 'Add new attribute' %}
+                                    <span><i class="fa-solid fa-circle-plus"></i></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span id="formula">{% trans 'Fomula' %}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
         <div class="row">
             <table class="table nowrap min-w-1500p w-100" id="tbl_attribute_list">
                  <thead>
@@ -71,9 +97,10 @@
         </div>
     </form>
 {% endblock %}
+
 {% block dataHiddenGroup %}
     <input type="text" id="url-factory" aria-label="url factory"
-    >
+    data-attr-lst="{% url 'PayrollTemplAttrListAPI' %}">
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/payroll/template/js/common.js' %}"></script>

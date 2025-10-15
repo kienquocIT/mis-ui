@@ -51,21 +51,7 @@ class BusinessTripCreate(View):
         breadcrumb='BUSINESS_TRIP_CREATE',
     )
     def get(self, request, *args, **kwargs):
-        reps_employee = ServerAPI(
-            user=request.user, url=ApiURL.EMPLOYEE_DETAIL_PK.fill_key(pk=request.user.employee_current_data['id'])
-        ).get({'list_from_app': 'businesstrip.businessrequest.create'})
-        current_emp = {}
-        if reps_employee.state:
-            current_emp = {
-                'id': reps_employee.result['id'],
-                'last_name': reps_employee.result['last_name'],
-                'first_name': reps_employee.result['first_name'],
-                'full_name': reps_employee.result['full_name'],
-                'selected': 'true'
-            }
-        return {
-                   'employee_inherit': current_emp
-               }, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class BusinessTripRequestCreateAPI(APIView):

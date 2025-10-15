@@ -11,13 +11,14 @@ class PayrollTemplateCommon {
             columns: [
                 {
                     data: 'order',
+                    width: '5%',
                     orderable: false,
                     defaultContent: ''
                 },
                 {
                     data: 'name',
                     render: (row, type, data, meta) => {
-                        let html = `<input type="text" id="attr_name_${meta.row}"/>`
+                        let html = `<input type="text" class="form-control" id="attr_name_${meta.row}"/>`
                         if (row )
                             html = '<p>${row}</p>'
                         return html
@@ -27,6 +28,7 @@ class PayrollTemplateCommon {
                     data: 'source',
                     render: (row) => {
                         let html = 'this is source'
+                        if (row !== null)
                         return html
                     }
                 },
@@ -47,17 +49,19 @@ class PayrollTemplateCommon {
                 {
                     data: 'formula',
                     render: (row) => {
-                        const isFor = '';
-                        const btn = `<div class="wrap-action"><button type="button" class="edit-formula">`
-                            +`<i class="bi bi-pencil-square"></i></button></div>`
+                        let isFor = '';
+                        const btn = `<div class="wrap-action"><button type="button" class="edit-formula btn btn-icon btn-flush-light btn-rounded">`
+                            +`<span><i class="bi bi-pencil-square"></i></span></button></div>`
+                        if (row)
+                            isFor += btn
                         return isFor
                     }
                 },
                 {
                     data: 'id',
                     render: (row) => {
-                        const delBtn = `<button type="button" class="delete-row" data-id="${row}">`
-                            +`<i class="bi bi-trash"></i></button>`
+                        const delBtn = `<button type="button" class="btn btn-icon btn-flush-light btn-rounded delete-row" data-id="${row}">`
+                            +`<span><i class="bi bi-trash"></i></span></button>`
                         return delBtn
                     }
                 }
@@ -77,7 +81,7 @@ class PayrollTemplateCommon {
         const temp = [{
             order: 0,
             name: '',
-            source: 0,
+            source: null,
             code: '',
             type: 0,
             formula: {},
@@ -91,7 +95,8 @@ $(document).ready(function(){
 
     new PayrollTemplateCommon()
 
-    $('#add-new-row-attr').on('click', () => {
+    $('#add-new-row-attr').on('click', function(e) {
+        e.preventDefault()
         PayrollTemplateCommon.actionAddNewRow()
     })
 

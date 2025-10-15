@@ -6,67 +6,9 @@ $(document).ready(function () {
     UsualLoadPageFunction.LoadDate({element: pageElements.$date_created, empty: false})
     UsualLoadPageFunction.LoadDate({element: pageElements.$return_date})
     UsualLoadPageFunction.LoadDate({element: pageElements.$advance_date})
-    const {
-        create_open, opp_id, opp_title, opp_code,
-        process_id, process_title, process_stage_app_id, process_stage_app_title,
-        inherit_id, inherit_title
-    } = $x.fn.getManyUrlParameters([
-        'create_open', 'opp_id', 'opp_title', 'opp_code',
-        'process_id', 'process_title', 'process_stage_app_id', 'process_stage_app_title',
-        'inherit_id', 'inherit_title'
-    ])
-    const group$ = $('#bastion-space')
-    if (create_open) {
-        const data_inherit = [{
-            "id": inherit_id || '',
-            "full_name": inherit_title || '',
-            "selected": true,
-        }];
-        const data_opp = [{
-            "id": opp_id || '',
-            "title": opp_title || '',
-            "code": opp_code || '',
-            "selected": true,
-        }];
-        const data_process = [{
-            "id": process_id || '',
-            "title": process_title || '',
-            "selected": true,
-        }];
-        const data_process_stage_app = [{
-            "id": process_stage_app_id || '',
-            "title": process_stage_app_title || '',
-            'selected': true,
-        }];
-        new $x.cls.bastionField({
-            list_from_app: "cashoutflow.advancepayment.create",
-            app_id: "57725469-8b04-428a-a4b0-578091d0e4f5",
-            mainDiv: group$,
-            oppEle: group$.find('select[name=opportunity_id]'),
-            prjEle: group$.find('select[name=project_id]'),
-            empInheritEle: group$.find('select[name=employee_inherit_id]'),
-            processEle: group$.find('select[name=process]'),
-            processStageAppEle$: group$.find('select[name=process_stage_app]'),
-            data_opp: data_opp,
-            data_inherit: data_inherit,
-            data_process: data_process,
-            data_process_stage_app: data_process_stage_app,
-        }).init();
+    const {opp_id} = $x.fn.getManyUrlParameters(['opp_title'])
+    AdvancePaymentHandler.LoadPageActionWithParams(opp_id)
 
-        AdvancePaymentHandler.LoadPageActionWithParams(opp_id)
-    }
-    else {
-        new $x.cls.bastionField({
-            list_from_app: "cashoutflow.advancepayment.create",
-            app_id: "57725469-8b04-428a-a4b0-578091d0e4f5",
-            mainDiv: group$,
-            oppEle: group$.find('select[name=opportunity_id]'),
-            prjEle: group$.find('select[name=project_id]'),
-            empInheritEle: group$.find('select[name=employee_inherit_id]'),
-            processEle: group$.find('select[name=process]'),
-            processStageAppEle$: group$.find('select[name=process_stage_app]'),
-        }).init();
-    }
     AdvancePaymentPageFunction.LoadQuotation()
     AdvancePaymentPageFunction.LoadSaleOrder()
     AdvancePaymentPageFunction.LoadSupplier()

@@ -4,7 +4,7 @@ from apps.sales.financialcashflow.views import (
     CashInflowListAPI, CashInflowDetailAPI, ARInvoiceListForCashInflowAPI,
     CashOutflowList, CashOutflowCreate, CashOutflowDetail, CashOutflowUpdate,
     CashOutflowListAPI, CashOutflowDetailAPI, CustomerAdvanceListForCashInflowAPI,
-    POPaymentStageListForCOFAPI, APInvoicePOPaymentStageListForCOFAPI
+    POPaymentStageListForCOFAPI, APInvoicePOPaymentStageListForCOFAPI, SaleOrderExpenseListForCOFAPI
 )
 
 urlpatterns = [
@@ -27,4 +27,5 @@ urlpatterns = [
     path('cashoutflow/api/<str:pk>', CashOutflowDetailAPI.as_view(), name='CashOutflowDetailAPI'),
     path('po-payment-stage-list-for-cof/api', POPaymentStageListForCOFAPI.as_view(), name='POPaymentStageListForCOFAPI'),
     path('ap-invoice-po-payment-stage-list-for-cof/api', APInvoicePOPaymentStageListForCOFAPI.as_view(), name='APInvoicePOPaymentStageListForCOFAPI'),
+    path('so-expense-list-for-cof/api', SaleOrderExpenseListForCOFAPI.as_view(), name='SaleOrderExpenseListForCOFAPI'),
 ]

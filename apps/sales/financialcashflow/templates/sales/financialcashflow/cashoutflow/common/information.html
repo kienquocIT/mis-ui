@@ -42,17 +42,6 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-8 col-lg-8 employee-space" hidden>
-                <div class="form-group">
-                    <label class="form-label required" for="employee-name">{% trans "Employee" %}</label>
-                    <div style="display: flex;">
-                        <input disabled readonly type="text" placeholder="{% trans 'Click the button behind the box to select' %}" class="form-control" id="employee-name">
-                        <button type="button" class="btn btn-xs btn-soft-primary btn-animated ml-1" id="employee-select-btn" data-bs-toggle="modal" data-bs-target="#employee-select-modal">
-                            <span><span class="icon"><span class="feather-icon"><i class="bi bi-check2-circle"></i></span></span><span>{% trans 'Select employee' %}</span></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
     <div class="col-12 col-md-3 col-lg-3">
@@ -138,14 +127,6 @@
     </div>
 </div>
 <div class="row mt-5 employee-space" hidden>
-{#    <div class="col-12">#}
-{#        <div class="form-group">#}
-{#            <label for="advance_for_employee_value" class="form-label fw-bold h5">#}
-{#                {% trans "Advance payment to employee" %}#}
-{#            </label>#}
-{#            <input class="form-control mask-money" value="0" id="advance_for_employee_value">#}
-{#        </div>#}
-{#    </div>#}
     <div class="col-12 col-md-3 col-lg-3">
         <div class="form-group">
             <label for="employee-budget" class="form-label">{% trans "Select budget" %}</label>
@@ -160,7 +141,13 @@
             </div>
         </div>
     </div>
-    <div class="col-12 mt-5">
+    <div class="col-12">
+        <div id="bastion-space">
+            {% trans 'Select Sale Person (Beneficiary)' as inherit_title %}
+            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True opp_title=opp_title has_opp=True has_process=False has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+        </div>
+    </div>
+    <div class="col-12">
         <table id="order-cost-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'POPaymentStageListForCOFAPI' %}">
             <thead class="bg-secondary-light-5">
                 <tr>

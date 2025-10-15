@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    OpportunityBOMHandle.LoadPage('update');
     WFRTControl.setWFInitialData('bom')
 
     OpportunityBOMHandle.LoadDetailBOM('update');

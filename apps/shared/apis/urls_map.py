@@ -852,6 +852,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     FINANCIAL_CASHOUTFLOW_DETAIL = StringUrl('financial-cashflow/cashoutflow/{pk}')
     PO_PAYMENT_STAGE_LIST_FOR_COF = StringUrl('financial-cashflow/po-payment-stage-list-for-cof')
     AP_INVOICE_PO_PAYMENT_STAGE_LIST_FOR_COF = StringUrl('financial-cashflow/ap-invoice-po-payment-stage-list-for-cof')
+    SO_EXPENSE_LIST_FOR_COF = StringUrl('financial-cashflow/so-expense-list-for-cof')
 
     # Recon
     FINANCIAL_RECON_LIST = StringUrl('financial-reconciliation/list')

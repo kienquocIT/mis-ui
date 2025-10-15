@@ -26,10 +26,6 @@ class COFPageElements {
         this.$payment_to_customer = $('#payment_to_customer')
         // employee
         this.$employee_space = $('.employee-space')
-        this.$employee_name = $('#employee-name')
-        this.$employee_select_modal = $('#employee-select-modal')
-        this.$table_select_employee = $('#table-select-employee')
-        this.$accept_select_employee_btn = $('#accept-select-employee-btn')
         this.$order_cost_table = $('#order-cost-table')
         // payment on account
         this.$account_space = $('.account-space')
@@ -744,8 +740,7 @@ class COFHandler {
             frm.dataForm['payment_to_customer_value'] = pageElements.$payment_to_customer.attr('value')
         }
         else if (pageElements.$cof_type.val() === '2') {
-            frm.dataForm['employee_id'] = pageElements.$employee_name.attr('data-id') || null
-            frm.dataForm['advance_for_employee_value'] = 999
+
         }
         else if (pageElements.$cof_type.val() === '3') {
         }
@@ -820,9 +815,6 @@ class COFHandler {
                         pageElements.$payment_to_customer.attr('value', data?.['payment_to_customer_value'] ? data?.['payment_to_customer_value'] : 0)
                     }
                     else if (pageElements.$cof_type.val() === '2') {
-                        let employee_data = data?.['employee_data'] || {}
-                        pageElements.$employee_name.val(`${employee_data?.['full_name']} - ${employee_data?.['group']?.['title'] || ''}`)
-                        pageElements.$employee_name.attr('data-id', employee_data?.['id'] || '')
                         COFPageFunction.LoadAccountBankAccount()
                     }
                     else if (pageElements.$cof_type.val() === '3') {
@@ -924,22 +916,6 @@ class COFEventHandler {
             }
 
             COFPageFunction.LoadAccountBankAccount(selected?.['bank_accounts_mapped'] || [])
-        })
-        pageElements.$accept_select_employee_btn.on('click', function () {
-            let selected = null
-            $('input[name="employee-selected-radio"]').each(function () {
-                if ($(this).prop('checked')) {
-                    selected = $(this).attr('data-employee') ? JSON.parse($(this).attr('data-employee')) : null
-                    pageElements.$employee_name.attr('data-id', selected?.['id'] || '')
-                    pageElements.$employee_name.val(`${(selected?.['full_name'] || '')} - ${((selected?.['group'] || {})?.['title'] || '')}`)
-                    pageElements.$employee_select_modal.modal('hide')
-                }
-            })
-            if (!selected) {
-                $.fn.notifyB({description: 'Nothing selected'}, 'warning');
-            }
-
-            COFPageFunction.LoadAccountBankAccount()
         })
         // thay đổi giá trị tạm ứng không theo hđ
         pageElements.$advance_for_supplier_value.on('change', function () {

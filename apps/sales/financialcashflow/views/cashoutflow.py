@@ -28,7 +28,9 @@ class CashOutflowCreate(View):
     )
     def get(self, request, *args, **kwargs):
         return {
-            'form_id': 'form-create-cashoutflow'
+            'form_id': 'form-create-cashoutflow',
+            'app_id': 'c51857ef-513f-4dbf-babd-26d68950ad6e',
+            'list_from_app': 'financialcashflow.cashoutflow.create',
         }, status.HTTP_200_OK
 
 
@@ -57,7 +59,9 @@ class CashOutflowUpdate(View):
     def get(self, request, *args, **kwargs):
         # input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_RETURN
         return {
-            'form_id': 'form-detail-cashoutflow'
+            'form_id': 'form-detail-cashoutflow',
+            'app_id': 'c51857ef-513f-4dbf-babd-26d68950ad6e',
+            'list_from_app': 'financialcashflow.cashoutflow.edit',
         }, status.HTTP_200_OK
 
 
@@ -125,3 +129,14 @@ class APInvoicePOPaymentStageListForCOFAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.AP_INVOICE_PO_PAYMENT_STAGE_LIST_FOR_COF).get(data)
         return resp.auto_return(key_success='ap_invoice_po_payment_stage_list')
+
+
+class SaleOrderExpenseListForCOFAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.SO_EXPENSE_LIST_FOR_COF).get(data)
+        return resp.auto_return(key_success='so_expense_list')

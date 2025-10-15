@@ -847,9 +847,9 @@ class PaymentPageFunction {
                             }
                         }
                         let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
-                        if (sum_available < 0) {
-                            sum_available = 0;
-                        }
+                        // if (sum_available < 0) {
+                        //     sum_available = 0;
+                        // }
 
                         data_table_planned.push({
                             'type': 'planned',
@@ -1061,9 +1061,9 @@ class PaymentPageFunction {
                             }
                         }
                         let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
-                        if (sum_available < 0) {
-                            sum_available = 0;
-                        }
+                        // if (sum_available < 0) {
+                        //     sum_available = 0;
+                        // }
 
                         data_table_planned.push({
                             'type': 'planned',
@@ -1410,9 +1410,9 @@ class PaymentPageFunction {
                             }
                         }
                         let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
-                        if (sum_available < 0) {
-                            sum_available = 0;
-                        }
+                        // if (sum_available < 0) {
+                        //     sum_available = 0;
+                        // }
                         data_table_planned.push({
                             'type': 'planned',
                             'expense_item': data_expense[i]?.['expense_item'],
@@ -1623,9 +1623,9 @@ class PaymentPageFunction {
                             }
                         }
                         let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
-                        if (sum_available < 0) {
-                            sum_available = 0;
-                        }
+                        // if (sum_available < 0) {
+                        //     sum_available = 0;
+                        // }
                         data_table_planned.push({
                             'type': 'planned',
                             'expense_item': data_expense[i]?.['expense_item'],

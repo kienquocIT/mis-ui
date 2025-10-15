@@ -16,13 +16,7 @@
     </style>
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" id="btn_update_payroll_config">
-        <span>
-            <span>{% trans 'Update' %}</span>
-            <span class="icon"><i class="fa-regular fa-pen-to-square"></i></span>
-        </span>
-    </button>
-    <button class="btn btn-outline-primary" type="submit" form="frm_payroll_config" id="btn_save_payroll_config" hidden>
+    <button class="btn btn-outline-primary" type="submit" form="frm_payroll_config" id="btn_update_payroll_config">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon"><i class="fa-regular fa-floppy-disk"></i></span>
@@ -30,7 +24,7 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <form id="frm_payroll_config" data-method="PUT" method="post"
+    <form id="frm_payroll_config" data-method="PUT" method="GET"
           data-url="{% url 'PayrollConfigDetailAPI' %}"
           data-url-redirect="{% url 'PayrollConfigDetail' %}">
         {% csrf_token %}

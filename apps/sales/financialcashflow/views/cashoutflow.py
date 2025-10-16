@@ -104,23 +104,24 @@ class CashOutflowDetailAPI(APIView):
         return resp.auto_return()
 
 
-class AdvanceForSupplierListForCashOutflowAPI(APIView):
+# related
+class POPaymentStageListForCOFAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_FOR_SUPPLIER_LIST_FOR_CASHOUTFLOW).get(data)
-        return resp.auto_return(key_success='advance_for_supplier_list')
+        resp = ServerAPI(user=request.user, url=ApiURL.PO_PAYMENT_STAGE_LIST_FOR_COF).get(data)
+        return resp.auto_return(key_success='po_payment_stage_list')
 
 
-class APInvoiceListForCashOutflowAPI(APIView):
+class APInvoicePOPaymentStageListForCOFAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.AP_INVOICE_LIST_FOR_CASHOUTFLOW).get(data)
-        return resp.auto_return(key_success='ap_invoice_list')
+        resp = ServerAPI(user=request.user, url=ApiURL.AP_INVOICE_PO_PAYMENT_STAGE_LIST_FOR_COF).get(data)
+        return resp.auto_return(key_success='ap_invoice_po_payment_stage_list')

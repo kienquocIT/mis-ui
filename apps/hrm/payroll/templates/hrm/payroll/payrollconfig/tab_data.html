@@ -1,0 +1,269 @@
+{% load i18n %}
+
+<!-- tabs -->
+<div class="row mt-5 mb-10">
+    <div class="col-12">
+        <!-- tabs navigation -->
+        <ul class="nav nav-light nav-tabs" id="payroll_config_tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#tab_insurance">
+                    <span class="nav-link-text">{% trans 'Insurance' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_personal_income_tax">
+                    <span class="nav-link-text">{% trans 'Personal income tax' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_overtime">
+                    <span class="nav-link-text">{% trans 'Overtime' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_other">
+                    <span class="nav-link-text">{% trans 'Other' %}</span>
+                </a>
+            </li>
+        </ul>
+
+        <!-- tabs content -->
+        <div class="tab-content" id="payroll_config_tab_content">
+            <div class="tab-pane fade show active" id="tab_insurance">
+                <div class="row">
+                    <div class="col-12 col-mt-6 col-md-6">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <fieldset>
+                                        <legend><span>{% trans 'Social Insurance' %}</span></legend>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="si_employee_rate">{% trans 'Employee rate' %}</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="social_insurance_employee_rate"
+                                                name="si_employee_rate" placeholder="0" step="0.01" min="0" max="100">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="si_employer_rate">{% trans 'Employer rate' %}</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="social_insurance_employer_rate"
+                                                name="si_employer_rate" placeholder="0" step="0.01" min="0">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="si_ceiling">{% trans 'Ceiling' %}</label>
+                                    <div class="input-group">
+                                        <input class="form-control mask-money" id="social_insurance_ceiling" name="si_ceiling" value="0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-mt-6 col-md-6">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <fieldset>
+                                        <legend><span>{% trans 'Unemployment Insurance' %}</span></legend>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="ui_employee_rate">{% trans 'Employee rate' %}</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="unemployment_insurance_employee_rate"
+                                                name="ui_employee_rate" placeholder="0" step="0.01" min="0">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="ui_employer_rate">{% trans 'Employer rate' %}</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="unemployment_insurance_employer_rate"
+                                                name="ui_employer_rate" placeholder="0" step="0.01" min="0">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="ui_ceiling">{% trans 'Ceiling' %}</label>
+                                    <div class="input-group">
+                                        <input class="form-control mask-money" name="ui_ceiling"
+                                               id="unemployment_insurance_ceiling" value="0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-mt-6 col-md-6">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <fieldset>
+                                        <legend><span>{% trans 'Health Insurance' %}</span></legend>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="hi_employee_rate">{% trans 'Employee rate' %}</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="health_insurance_employee_rate"
+                                                name="hi_employee_rate" placeholder="0" step="0.01" min="0">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="hi_employer_rate">{% trans 'Employer rate' %}</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="health_insurance_employer_rate"
+                                                name="hi_employer_rate" placeholder="0" step="0.01" min="0">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-mt-6 col-md-6">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <fieldset>
+                                        <legend><span>{% trans 'Union Insurance' %}</span></legend>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="union_employee_rate">{% trans 'Employee rate' %}</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="union_insurance_employee_rate"
+                                                name="union_employee_rate" placeholder="0" step="0.01" min="0">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="union_employer_rate">{% trans 'Employer rate' %}</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="union_insurance_employer_rate"
+                                                name="union_employer_rate" placeholder="0" step="0.01" min="0">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab_personal_income_tax">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <fieldset>
+                                <legend><span>{% trans 'Deduction' %}</span></legend>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="col-12 col-mt-4 col-md-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="personal_tax">{% trans 'Personal' %}</label>
+                                    <div class="input-group">
+                                        <input class="form-control mask-money" id="personal_tax" name="personal_tax" value="0">
+                                        <span class="input-group-text">Month</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-mt-4 col-md-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="dependent_tax">{% trans 'Dependent' %}</label>
+                                    <div class="input-group">
+                                        <input class="form-control mask-money" id="dependent_tax" name="dependent_tax" value="0">
+                                        <span class="input-group-text">Person</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-mt-4 col-md-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="effective_date">{% trans 'Effective date' %}</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-affix-wrapper">
+                                            <span class="input-prefix">📅</span>
+                                            <input type="text" name="effective_date" class="form-control" autocomplete="off" id="effective_date">
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <fieldset>
+                                <legend><span>{% trans 'Tax bracket' %}</span></legend>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <table class="table nowrap w-100" id="table_tax_bracket">
+                            <thead class="bg-secondary-light-5">
+                                <tr>
+                                    <th style="min-width: 40px">{% trans 'Level' %}</th>
+                                    <th style="min-width: 40px">{% trans 'From (VND)' %}</th>
+                                    <th style="min-width: 200px">{% trans 'To (VND)' %}</th>
+                                    <th style="min-width: 160px">{% trans 'Rate (%)' %}</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab_overtime">
+                <div class="row">
+                    <div class="col-12">
+
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab_other">
+                <div class="row">
+                    <div class="col-12">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

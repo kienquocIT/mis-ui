@@ -92,7 +92,7 @@
     <div class="col-12 mt-5">
         <label class="form-check-label fw-bold h5">{% trans 'Advance payment to supplier (according to Purchase order)' %}</label>
         <span class="small text-muted" style="float: right;">({% trans 'Order by Due date' %})</span>
-        <table id="advance-to-supplier-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'AdvanceForSupplierListForCashOutflowAPI' %}">
+        <table id="advance-to-supplier-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'POPaymentStageListForCOFAPI' %}">
             <thead>
             <tr>
                 <th style="min-width: 30px"></th>
@@ -110,7 +110,7 @@
     </div>
     <div class="col-12 mt-5">
         <label class="form-check-label fw-bold h5">{% trans 'Payment to supplier (according to AP invoice)' %}</label>
-        <table id="ap-invoice-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'APInvoiceListForCashOutflowAPI' %}">
+        <table id="ap-invoice-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'APInvoicePOPaymentStageListForCOFAPI' %}">
             <thead>
             <tr>
                 <th style="min-width: 30px"></th>
@@ -155,22 +155,22 @@
                     <option value="1" disabled>{% trans 'Budget plan' %}</option>
                 </select>
                 <button type="button" class="btn btn-xs btn-soft-secondary btn-animated ml-1" id="budget-change-btn" data-bs-toggle="modal" data-bs-target="#budget-change-modal">
-                    <span><span class="icon"><span class="feather-icon"><i class="bi bi-check2-circle"></i></span></span><span>{% trans 'Change budget' %}</span></span>
+                    <span><span class="icon"><span class="feather-icon"><i class="bi bi-check2-circle"></i></span></span><span>{% trans 'Change' %}</span></span>
                 </button>
             </div>
         </div>
     </div>
     <div class="col-12 mt-5">
-        <table id="employee-budget-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'AdvanceForSupplierListForCashOutflowAPI' %}">
+        <table id="order-cost-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'POPaymentStageListForCOFAPI' %}">
             <thead class="bg-secondary-light-5">
-            <tr>
-                <th style="min-width: 30px"></th>
-                <th style="min-width: 30px"></th>
-                <th style="min-width: 250px">{% trans 'Cost' %}/{% trans 'Expense name' %}</th>
-                <th style="min-width: 200px">{% trans 'Total' %}</th>
-                <th style="min-width: 200px">{% trans 'Balance value' %}</th>
-                <th style="min-width: 200px">{% trans 'This time' %}</th>
-            </tr>
+                <tr>
+                    <th style="min-width: 30px"></th>
+                    <th style="min-width: 30px"></th>
+                    <th style="min-width: 250px">{% trans 'Expense' %}</th>
+                    <th style="min-width: 200px">{% trans 'Total budget' %}</th>
+                    <th style="min-width: 200px">{% trans 'Balance value' %}</th>
+                    <th style="min-width: 200px">{% trans 'This time' %}</th>
+                </tr>
             </thead>
             <tbody></tbody>
         </table>

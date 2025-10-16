@@ -5122,7 +5122,11 @@ class QuotationDataTableHandle {
             ajax: {
                 url: QuotationLoadDataHandle.urlEle.attr('data-spec-product'),
                 type: 'GET',
-                data: {'product_id': productID},
+                data: {
+                    'product_id': productID,
+                    'from_pm': true,
+                    'product_warehouse_serial__serial_status': 0,
+                },
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) return resp.data['product_si_serial_number_list'] ? resp.data['product_si_serial_number_list'] : [];
@@ -5159,13 +5163,13 @@ class QuotationDataTableHandle {
                 {
                     title: QuotationLoadDataHandle.transEle.attr('data-spec-prod-2'),
                     render: (data, type, row) => {
-                        return `<textarea class="form-control form-check-label" rows="2" readonly>${row?.['vendor_serial_number']}</textarea>`;
+                        return `<textarea class="form-control form-check-label" rows="2" readonly>${row?.['vendor_serial_number'] ? row?.['vendor_serial_number'] : ''}</textarea>`;
                     }
                 },
                 {
                     title: QuotationLoadDataHandle.transEle.attr('data-spec-prod-3'),
                     render: (data, type, row) => {
-                        return `<textarea class="form-control form-check-label" rows="2" readonly>${row?.['new_description']}</textarea>`;
+                        return `<textarea class="form-control form-check-label" rows="2" readonly>${row?.['new_description'] ? row?.['new_description'] : ''}</textarea>`;
                     }
                 },
                 {
@@ -5734,7 +5738,9 @@ class QuotationCalculateCaseHandle {
                 if ($(eleDiscountAmount).valCurrency()) {
                     discount = $(eleDiscountAmount).valCurrency();
                 }
-                discountRate = Math.round((discount / price) * 100);
+                if (price > 0) {
+                    discountRate = Math.round((discount / price) * 100);
+                }
                 $(eleDiscount).val(discountRate);
             }
             let priceAfterDiscount = (price - discount);

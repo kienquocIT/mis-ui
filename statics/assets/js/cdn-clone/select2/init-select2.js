@@ -243,18 +243,20 @@ class SelectDDControl {
         // setup data after receive resp API
         //      Auto add selected to first load
         //      Exclude selected from resp data
+        // data-virtual cho case muốn show 1 số opts chỉ có ở UI
         let clsThis = this;
         let data_convert = [];
         let keyResp = this._data_keyResp;
         // let respData = resp?.data[keyResp];
         let respData = this.callbackDataResp(resp, keyResp);
+        let dataVirtual = this.ele.attr('data-virtual')
+        let pagePrevious = resp?.data?.['page_previous'];
+        let keyId = this._data_keyId;
+        let keyText = this._data_keyText;
+        let idsSelected = this.ele.val();
         if (respData && Array.isArray(respData) && respData.length) {
-            let keyId = this._data_keyId;
-            let keyText = this._data_keyText;
-            let idsSelected = this.ele.val();
 
             // append select to first load
-            let pagePrevious = resp?.data?.['page_previous'];
             if (idsSelected && pagePrevious === 0) {
                 this.ele.find('option:selected').each(function () {
                     let idn = $(this).val();
@@ -281,6 +283,24 @@ class SelectDDControl {
                     });
                 }
             })
+        }
+        if (dataVirtual !== undefined && pagePrevious === 0){
+            let tempDataVirtual = []
+            try {
+                let temp = dataVirtual.replaceAll("'", '"');
+                let parseData = JSON.parse(temp);
+                tempDataVirtual = parseData.reverse()
+            } catch (e) {
+            }
+            for (let item of tempDataVirtual){
+                if (item[keyId] !== idsSelected)
+                    data_convert.unshift({
+                        'id': item[keyId],
+                        'text': this.callbackTextDisplay(item, keyText),
+                        'data': item,
+                        'selected': false,
+                    })
+            }
         }
         return data_convert;
     }

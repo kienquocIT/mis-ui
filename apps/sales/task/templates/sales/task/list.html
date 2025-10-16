@@ -94,6 +94,8 @@
                             data-keyResp="task_status"
                             data-url="{% url 'OpportunityTaskStatusAPI' %}"
                             data-allowClear="true"
+                            data-onload="[{'selected': true, 'id': 'is_finish', 'title': '{% trans 'Not completed' %}'}]"
+                            data-virtual="[{'id': 'is_finish', 'text': '{% trans 'Not completed' %}', 'title': '{% trans 'Not completed' %}'}]"
                     ></select>
                 </div>
             </div>

@@ -150,6 +150,10 @@ class MenusCoreConfigurations:
                 name='Bank', code='id_menu_master_data_bank', view_name='BankMasterDataList',
                 icon='<i class="fas fa-solid fa-building-columns"></i>',
             ),
+            MenuCommon(
+                name='Payroll config', code='menu_payroll_config', view_name='PayrollConfigDetail',
+                icon='<i class="fas fa-cog"></i>',
+            ),
         ]
     )
     MASTER_DATA_CONFIG = MenuCommon(
@@ -925,10 +929,10 @@ class MenusHRM:
         name='Payroll', code='menu_payroll', view_name='',
         icon='<i class="fas fa-cash-register"></i>',
         child=[
-            MenuCommon(
-                name='Payroll config', code='menu_payroll_config', view_name='PayrollConfigDetail',
-                icon='<i class="fas fa-cog"></i>',
-            ),
+            # MenuCommon(
+            #     name='Payroll config', code='menu_payroll_config', view_name='PayrollConfigDetail',
+            #     icon='<i class="fas fa-cog"></i>',
+            # ),
         ]
     )
 

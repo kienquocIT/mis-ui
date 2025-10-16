@@ -11,6 +11,8 @@ $(document).ready(function () {
     EmployeeHRMInit.loadPOI($('#employee-poo'));
     EmployeeHRMInit.switchChoice();
     EmployeeHRMInit.loadBank();
+    EmployeeHRMInit.initDependentTable();
+    EmployeeInfoEventHandler.InitPageEvent();
 
     // run tinyMCE
     const contract_edt = new editor_handle();

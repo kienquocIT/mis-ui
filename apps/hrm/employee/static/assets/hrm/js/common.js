@@ -24,6 +24,7 @@ class EmployeeHRMInit {
     static userSelectEle = $('#select-box-user');
     static empSelectEle = $('#select-box-employee');
     static ElmNationality = $('#employee-nationality');
+    static $tableDependentInfo = $('#table_dependent');
 
     static loadUserList() {
         EmployeeHRMInit.userSelectEle.initSelect2({
@@ -187,6 +188,57 @@ class EmployeeHRMInit {
             allowClear: true,
             templateResult: renderTemplateBank,
         })
+    }
+
+    static initDependentTable(data = [], option='create') {
+        this.$tableDependentInfo.DataTable().destroy();
+        this.$tableDependentInfo.DataTableDefault({
+            data: data,
+            styleDom: 'hide-foot',
+            rowIdx: true,
+            scrollX: true,
+            scrollY: '70vh',
+            scrollCollapse: true,
+            reloadCurrency: true,
+            columns: [
+                {
+                    className: "w-5",
+                    render: () => {
+                        return '';
+                    }
+                },
+                {
+                    className: "w-25",
+                    render: (data, type, row) => {
+                        return `<input ${option === 'detail' ? 'disabled' : ''} class="form-control row-dependent-id" 
+                                type="text" required>`;
+                    }
+                },
+                {
+                    className: "w-30",
+                    render: (data, type, row) => {
+                        return `<input ${option === 'detail' ? 'disabled' : ''} class="form-control row-dependent-title" 
+                                type="text" required>`;
+                    }
+                },
+                {
+                    className: "w-30",
+                    render: (data, type, row) => {
+                        return `<input ${option === 'detail' ? 'disabled' : ''} class="form-control row-dependent-address" 
+                                type="text" required>`;
+                    }
+                },
+                {
+                    className: "w-10 text-center",
+                    render: () => {
+                        return `<button ${option === 'detail' ? 'disabled' : ''}
+                                   type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row">
+                                   <span class="icon"><i class="far fa-trash-alt"></i></span>
+                              </button>`;
+                    }
+                },
+            ]
+        });
     }
 }
 
@@ -599,5 +651,23 @@ class contract_data {
             (error) => {
                 $.fn.notifyB({description: error.data.errors}, 'failure');
             });
+    }
+}
+
+/** EVENT HANDLE **/
+class EmployeeInfoEventHandler {
+    static InitPageEvent() {
+        // event when click add button
+        $('#add_dependent').on('click', function() {
+            UsualLoadPageFunction.AddTableRow($('#table_dependent'));
+        });
+
+        // event for deleting row
+        $('#table_dependent').on('click', '.del-row', function() {
+            UsualLoadPageFunction.DeleteTableRow(
+                $('#table_dependent'),
+                parseInt($(this).closest('tr').find('td:first-child').text())
+            )
+        })
     }
 }

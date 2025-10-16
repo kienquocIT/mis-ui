@@ -2,6 +2,9 @@ function handleServiceDetailTabEvent(){
     ServiceOrder.handleChangeServiceDescription()
     ServiceOrder.handleChangeServiceQuantity()
     ServiceOrder.handleDeleteServiceDetailRow()
+    ServiceOrder.handleChangeServicePrice()
+    ServiceOrder.handleChangeServiceDetail()
+    ServiceOrder.handleChangeServicePercentage()
 }
 
 function handleWorkOrderDetailTabEvent(){

@@ -3,6 +3,8 @@ function handleServiceDetailTabEvent(){
     ServiceOrder.handleChangeServiceQuantity()
     ServiceOrder.handleDeleteServiceDetailRow()
     ServiceOrder.handleChangeServicePrice()
+    ServiceOrder.handleChangeServiceDetail()
+    ServiceOrder.handleChangeServicePercentage()
 }
 
 function handleWorkOrderDetailTabEvent(){
@@ -310,12 +312,15 @@ $(document).ready(function () {
 
         initEvents(){
             const self= this
+
+            //select quotation and copy data
             self.$selectBtn.on('click', (e) => {
                 const templateDetailUrl = self.$canvas.attr('data-quotation-detail')
                 const detailUrl = templateDetailUrl.format_url_with_uuid(self.getSelectedQuotationId())
                 $.fn.callAjax2({
                     url: detailUrl,
-                    method: 'GET'
+                    method: 'GET',
+                    isLoading: true
                 }).then(
                     (resp) => {
                         const data = $.fn.switcherResp(resp);
@@ -400,6 +405,7 @@ $(document).ready(function () {
                     })
             })
 
+            //select quotation
             self.$table.on('click', 'input[type="radio"]', (e)=>{
                 self.updateSelectedQuotationId($(e.currentTarget).attr('data-id'))
                 console.log($(e.currentTarget).attr('data-id'))

@@ -258,7 +258,12 @@ class SetupFormSubmit {
 
 class MaskMoney2 {
     static _beforeParseFloatAndLimit(strData) {
-        let data = strData.replace(/^0+0+$/, "");
+        let strCheck = String(strData || '').trim();
+        // check not number => return "0"
+        if (!/^[-+]?\d*\.?\d+$/.test(strCheck)) {
+            return "0";
+        }
+        let data = strCheck.replace(/^0+0+$/, "");
         if (data.indexOf('.') > -1 && data.length > 18) {
             return data.slice(0, 18);
         } else if (data.indexOf('.') === -1 && data.length > 17) {

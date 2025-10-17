@@ -32,7 +32,6 @@ $(document).ready(function(){
             $('#dateFInput')[0]._flatpickr.setDate(dateFormat)
             $('#totalDayInput').val(data.total_day)
             expenseItemTable.init(data.expense_items)
-            $('[name="employee_inherit_id"]').val(data.employee_inherit.id)
             if (data.system_status >= 2) $('#idxRealAction').remove()
 
             // load attachments

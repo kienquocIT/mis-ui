@@ -449,19 +449,19 @@ class ProductPageFunction {
                     }
                 },
                 {
-                    className: 'w-25',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         return `<span class="text-danger">${row?.['vendor_serial_number']}</span>`
                     }
                 },
                 {
-                    className: 'w-25',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         return `<span class="text-danger">${row?.['serial_number']}</span>`
                     }
                 },
                 {
-                    className: 'w-25',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         return `<span class="mask-money text-danger" data-init-money="${row?.['specific_value'] || 0}"></span>`;
                     }
@@ -470,6 +470,12 @@ class ProductPageFunction {
                     className: 'w-20 text-center',
                     render: (data, type, row) => {
                         return row?.['serial_status'] ? `<span class="text-secondary">${$.fn.gettext('Not available')}</span>` : `<span class="text-success">${$.fn.gettext('Available')}</span>`;
+                    }
+                },
+                {
+                    className: 'w-15 text-center',
+                    render: (data, type, row) => {
+                        return row?.['from_pm'] ? `<span class="text-muted">${row?.['product_modification_code'] || ''}</span>` : '';
                     }
                 },
             ]

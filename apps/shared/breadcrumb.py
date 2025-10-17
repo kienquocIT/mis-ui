@@ -562,6 +562,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Service quotation
     SERVICE_QUOTATION_PAGE = BreadcrumbChildren(_('Service quotation'), 'ServiceQuotationList')
 
+    # Payroll configuration
+    PAYROLL_CONFIG_PAGE = BreadcrumbChildren(_('Payroll config'), 'PayrollConfigDetail')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -1532,3 +1535,7 @@ class BreadcrumbView:
     SERVICE_QUOTATION_CREATE_PAGE = SERVICE_QUOTATION + [BreadcrumbItem.BASTION_CREATE]
     SERVICE_QUOTATION_DETAIL_PAGE = SERVICE_QUOTATION + [BreadcrumbItem.BASTION_DETAIL]
     SERVICE_QUOTATION_UPDATE_PAGE = SERVICE_QUOTATION + [BreadcrumbItem.BASTION_UPDATE]
+
+    PAYROLL_CONFIG_PAGE = [
+        BreadcrumbItem.PAYROLL_CONFIG_PAGE
+    ]

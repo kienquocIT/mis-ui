@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Payroll Configuration' %}
+{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="{% static 'assets/hrm/css/common.css' %}">
+    <style>
+        .mask-money {
+            text-align: left; !important;
+        }
+        table .select2-selection__rendered {
+            max-width: 250px;
+        }
+    </style>
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="frm_payroll_config" id="btn_update_payroll_config">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon"><i class="fa-regular fa-floppy-disk"></i></span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <form id="frm_payroll_config" data-method="PUT" method="GET"
+          data-url="{% url 'PayrollConfigDetailAPI' %}"
+          data-url-redirect="{% url 'PayrollConfigDetail' %}">
+        {% csrf_token %}
+        {% include 'hrm/payroll/payrollconfig/tab_data.html' %}
+    </form>
+{% endblock %}
+
+{% block modalData %}
+{% endblock %}
+{% block dataHiddenGroup %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
+    <script src="{% static 'assets/hrm/payroll/js/payrollconfig/common.js' %}"></script>
+    <script src="{% static 'assets/hrm/payroll/js/payrollconfig/payroll_config.js' %}"></script>
+{% endblock %}

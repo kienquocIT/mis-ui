@@ -503,7 +503,7 @@ const ServiceOrder = (function($) {
                 {
                     className: 'w-5',
                     render: (data, type, row) => {
-                        return `<input type="number" class="form-control service-quantity" value="${row?.['quantity'] || 1}" min="0">`
+                        return `<input type="number" class="form-control service-quantity" value="${row?.['quantity'] || 0}" min="0">`
                     }
                 },
                 {
@@ -674,7 +674,7 @@ const ServiceOrder = (function($) {
                 {
                     className: 'w-5',
                     render: (data, type, row) => {
-                        return `<input type="number" class="form-control work-order-quantity" value="${row?.['quantity'] || 1}" min="0">`
+                        return `<input type="number" class="form-control work-order-quantity" value="${row?.['quantity'] || 0}" min="0">`
                     }
                 },
                 {
@@ -812,7 +812,7 @@ const ServiceOrder = (function($) {
                 {
                     className: 'w-5',
                     render: (data, type, row) => {
-                        return `<input type="number" class="form-control work-order-quantity" value="${row?.['quantity'] || 1}" min="0">`
+                        return `<input type="number" class="form-control work-order-quantity" value="${row?.['quantity'] || 0}" min="0">`
                     }
                 },
                 {
@@ -2082,8 +2082,8 @@ const ServiceOrder = (function($) {
                             rowData.quantity = newQuantity
 
                             // Calculate new total (quantity * price)
-                            const attrTotalCost = rowData.attributes_total_cost
-                            const duration = rowData.duration
+                            const attrTotalCost = rowData?.['attributes_total_cost'] || 0
+                            const duration = rowData.duration || 1
                             const price = parseFloat(rowData.price) || 0;
                             const taxRate = parseFloat(rowData.tax_data?.rate || 0) / 100
                             const subtotal = newQuantity * price * duration + attrTotalCost

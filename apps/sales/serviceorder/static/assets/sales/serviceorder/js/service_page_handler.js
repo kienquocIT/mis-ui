@@ -1,5 +1,5 @@
 class ServiceOrderPageHandler {
-    // Common initialization for all pages
+    // Hàm load sẵn data cần thiết cho các page
     static async initializeCommonData() {
         await Promise.all([
             ServiceOrder.loadCurrencyRateData(),
@@ -8,6 +8,7 @@ class ServiceOrderPageHandler {
         ]);
     }
 
+    // Hàm set up form data
     static setUpFormData(formInstance) {
         const startDate = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $('#so-start-date').val());
         const endDate = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $('#so-end-date').val());
@@ -27,6 +28,7 @@ class ServiceOrderPageHandler {
         ServiceOrderPageHandler.setIndicatorData(formInstance);
     }
 
+    // Hàm set total fields
     static setTotalFields(formInstance) {
         const $pretaxPrdEle = $('#service-detail-pretax-value');
         const $taxPrdEle = $('#service-detail-taxes-value');
@@ -46,6 +48,7 @@ class ServiceOrderPageHandler {
         }
     }
 
+    // Hàm set indicator
     static setIndicatorData(formInstance) {
         const keyInd = "quotation_indicator_data";
         const indicators_data_setup = IndicatorControl.loadIndicator(formInstance?.['dataForm']);
@@ -68,7 +71,7 @@ class ServiceOrderPageHandler {
         }
     }
 
-    // Common event handlers
+    // Hàm tạo events chung cho trang create và update
     static registerCommonEventHandlers() {
         ServiceOrder.handleSaveProduct();
         ServiceOrder.handleSaveExchangeRate();
@@ -84,6 +87,7 @@ class ServiceOrderPageHandler {
         ServiceOrderPageHandler.setupDashboardLink();
     }
 
+    // Hàm chung cho các event lên quan tới bảng service detail
     static handleServiceDetailEvents() {
         ServiceOrder.handleChangeServiceDescription();
         ServiceOrder.handleChangeServiceQuantity();
@@ -93,6 +97,7 @@ class ServiceOrderPageHandler {
         ServiceOrder.handleChangeServicePercentage();
     }
 
+    // Hàm chung cho các event lên quan tới bảng work order
     static handleWorkOrderEvents() {
         ServiceOrder.handleChangeWorkOrderDetail();
         ServiceOrder.handleClickOpenWorkOrderCost();
@@ -104,6 +109,7 @@ class ServiceOrderPageHandler {
         ServiceOrder.handleDeleteWorkOrderRow();
     }
 
+    // Hàm chung cho các event lên quan tới bảng work order cost
     static handleModalWorkOrderCostEvents() {
         ServiceOrder.handleAddWorkOrderCostRow();
         ServiceOrder.handleChangeWorkOrderCostQuantityAndUnitCost();
@@ -113,6 +119,7 @@ class ServiceOrderPageHandler {
         ServiceOrder.handleSelectWorkOrderCostExpense();
     }
 
+    // Hàm chung cho các event lên quan tới bảng work order contribution
     static handleModalWorkOrderContributionEvents() {
         ServiceOrder.handleSaveProductContribution();
         ServiceOrder.handleUncheckContribution();
@@ -125,6 +132,7 @@ class ServiceOrderPageHandler {
         ServiceOrder.handleSelectContainer();
     }
 
+    // Hàm chung cho các event lên quan tới bảng payment
     static handlePaymentEvents() {
         ServiceOrder.handleAddPaymentRow();
         ServiceOrder.handleChangePaymentDate();
@@ -134,6 +142,7 @@ class ServiceOrderPageHandler {
         ServiceOrder.handleDeletePaymentRow();
     }
 
+    // Hàm chung cho các event lên quan tới bảng payment detail
     static handleModalPaymentDetailEvents() {
         ServiceOrder.handleSavePaymentDetail();
         ServiceOrder.handleChangePaymentDetail();
@@ -141,6 +150,7 @@ class ServiceOrderPageHandler {
         ServiceOrder.handleSavePaymentReconcile();
     }
 
+    // Hàm tạo link cho dashboard
     static setupDashboardLink() {
         $('#view-dashboard').on('click', function() {
             const url = $(this).attr('data-url') + '?service_order_id=' + $.fn.getPkDetail();
@@ -148,6 +158,7 @@ class ServiceOrderPageHandler {
         });
     }
 
+    // Hàm set up form submit
     static setupFormSubmit(formSelector) {
         SetupFormSubmit.call_validate($(formSelector), {
             onsubmit: true,
@@ -173,6 +184,7 @@ class ServiceOrderPageHandler {
         });
     }
 
+    // Hàm set up indicator canvas
     static setupIndicatorCanvas(formSelector) {
         IndicatorControl.$openCanvas.on('click', () => {
             let formInstance = new SetupFormSubmit($(formSelector));
@@ -192,6 +204,7 @@ class ServiceOrderPageHandler {
     }
 
     // Data loading helpers
+    // Hàm goộp init các table
     static initializeTables(isOrderPage=true){
         ServiceOrder.initServiceDetailDataTable();
         if(isOrderPage){
@@ -204,6 +217,7 @@ class ServiceOrderPageHandler {
         TabExpenseFunction.initExpenseTable();
     }
 
+    // Hàm gộp init các field khác table
     static initializeComponents(isCreatePage=true) {
         ServiceOrder.initDateTime();
         ServiceOrder.initPageSelect();
@@ -218,10 +232,12 @@ class ServiceOrderPageHandler {
         TabExpenseEventHandler.InitPageEvent();
     }
 
+    // Hàm format date dữ liệu
     static formatDate(date, fromFormat, toFormat) {
         return date ? DateTimeControl.formatDateType(fromFormat, toFormat, date) : '';
     }
 
+    // Hàm format shipment data
     static formatShipmentData(shipmentData) {
         const result = [];
         if (shipmentData.length > 0) {
@@ -241,6 +257,7 @@ class ServiceOrderPageHandler {
         return result;
     }
 
+    // Hàm load data các field opp
     static loadBastionFields(data, isReadOnly = false) {
         const oppData = data?.['opportunity'];
         const inheritData = data?.['employee_inherit'];
@@ -261,6 +278,7 @@ class ServiceOrderPageHandler {
         }).init();
     }
 
+    // Hàm load data customer
     static loadCustomerList(data) {
         ServiceOrder.pageElement.commonData.$customer.initSelect2({
             ajax: {
@@ -274,12 +292,14 @@ class ServiceOrderPageHandler {
         });
     }
 
-    static async loadServiceOrderData(formSelector, isReadOnly = false) {
-        const $form = $(formSelector);
-        const data_url = $form.attr('data-url');
-
+    // Hàm load service order data cho detail page
+    static async loadServiceOrderData(dataUrl, isReadOnly = false, isServiceOrder=true) {
+        if(!dataUrl){
+            console.log('missing data url detail')
+            return false
+        }
         $.fn.callAjax2({
-            url: data_url,
+            url: dataUrl,
             method: 'GET',
             isLoading: true
         }).then(
@@ -301,7 +321,7 @@ class ServiceOrderPageHandler {
                 // Load all form data
                 ServiceOrderPageHandler.loadBastionFields(data, isReadOnly);
                 ServiceOrderPageHandler.loadBasicFields(data);
-                ServiceOrderPageHandler.loadTableData(data, isReadOnly);
+                ServiceOrderPageHandler.loadTableData(data, isReadOnly, isServiceOrder);
 
                 // Indicators
                 if (data?.['service_order_indicators_data']) {
@@ -314,6 +334,7 @@ class ServiceOrderPageHandler {
         )
     }
 
+    // Hàm load data các field chung cho detail
     static loadBasicFields(data) {
         ServiceOrder.pageElement.commonData.$titleEle.val(data?.title);
         ServiceOrderPageHandler.loadCustomerList(data?.customer_data);
@@ -327,6 +348,7 @@ class ServiceOrderPageHandler {
         ServiceOrder.loadExchangeRateData(data?.exchange_rate_data);
     }
 
+    // Hàm load data detail cho table
     static loadTableData(data, isReadOnly, isServiceOrder=true) {
         // Shipment
         const shipmentData = ServiceOrderPageHandler.formatShipmentData(data?.shipment || []);

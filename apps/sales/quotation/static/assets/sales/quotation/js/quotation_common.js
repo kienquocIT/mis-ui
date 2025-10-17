@@ -3292,7 +3292,7 @@ class QuotationDataTableHandle {
                                         data-return-type="number"
                                     >
                                     <div class="form-check form-check-lg d-flex align-items-center hidden">
-                                        <input type="checkbox" name="row-checkbox-discount" class="form-check-input table-row-discount-check" hidden>
+                                        <input type="checkbox" name="row-checkbox-discount" class="form-check-input table-row-discount-check" checked hidden>
                                     </div>
                                     <input
                                         type="text"

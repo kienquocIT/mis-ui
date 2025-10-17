@@ -131,6 +131,17 @@ class APInvoicePOPaymentStageListForCOFAPI(APIView):
         return resp.auto_return(key_success='ap_invoice_po_payment_stage_list')
 
 
+class SaleOrderListForCOFAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.SO_LIST_FOR_COF).get(data)
+        return resp.auto_return(key_success='sale_order_list')
+
+
 class SaleOrderExpenseListForCOFAPI(APIView):
     @mask_view(
         auth_require=True,
@@ -140,3 +151,25 @@ class SaleOrderExpenseListForCOFAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.SO_EXPENSE_LIST_FOR_COF).get(data)
         return resp.auto_return(key_success='so_expense_list')
+
+
+class LeaseOrderListForCOFAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.LO_LIST_FOR_COF).get(data)
+        return resp.auto_return(key_success='lease_order_list')
+
+
+class LeaseOrderExpenseListForCOFAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.LO_EXPENSE_LIST_FOR_COF).get(data)
+        return resp.auto_return(key_success='lo_expense_list')

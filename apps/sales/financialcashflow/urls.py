@@ -4,7 +4,8 @@ from apps.sales.financialcashflow.views import (
     CashInflowListAPI, CashInflowDetailAPI, ARInvoiceListForCashInflowAPI,
     CashOutflowList, CashOutflowCreate, CashOutflowDetail, CashOutflowUpdate,
     CashOutflowListAPI, CashOutflowDetailAPI, CustomerAdvanceListForCashInflowAPI,
-    POPaymentStageListForCOFAPI, APInvoicePOPaymentStageListForCOFAPI, SaleOrderExpenseListForCOFAPI
+    POPaymentStageListForCOFAPI, APInvoicePOPaymentStageListForCOFAPI, SaleOrderExpenseListForCOFAPI,
+    SaleOrderListForCOFAPI, LeaseOrderListForCOFAPI, LeaseOrderExpenseListForCOFAPI
 )
 
 urlpatterns = [
@@ -27,5 +28,8 @@ urlpatterns = [
     path('cashoutflow/api/<str:pk>', CashOutflowDetailAPI.as_view(), name='CashOutflowDetailAPI'),
     path('po-payment-stage-list-for-cof/api', POPaymentStageListForCOFAPI.as_view(), name='POPaymentStageListForCOFAPI'),
     path('ap-invoice-po-payment-stage-list-for-cof/api', APInvoicePOPaymentStageListForCOFAPI.as_view(), name='APInvoicePOPaymentStageListForCOFAPI'),
+    path('so-list-for-cof/api', SaleOrderListForCOFAPI.as_view(), name='SaleOrderListForCOFAPI'),
     path('so-expense-list-for-cof/api', SaleOrderExpenseListForCOFAPI.as_view(), name='SaleOrderExpenseListForCOFAPI'),
+    path('lo-list-for-cof/api', LeaseOrderListForCOFAPI.as_view(), name='LeaseOrderListForCOFAPI'),
+    path('lo-expense-list-for-cof/api', LeaseOrderExpenseListForCOFAPI.as_view(), name='LeaseOrderExpenseListForCOFAPI'),
 ]

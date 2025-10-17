@@ -15,6 +15,9 @@ $(document).ready(function () {
     COFPageFunction.LoadAdvanceToSupplierTable()
     COFPageFunction.LoadAPInvoiceTable()
     COFPageFunction.LoadPaymentOnAccountTable()
+    COFPageFunction.LoadSaleOrder()
+    COFPageFunction.LoadLeaseOrder()
+    COFPageFunction.LoadServiceOrder()
     COFPageFunction.LoadOrderCostTable()
     WFRTControl.setWFInitialData('cashoutflow')
 

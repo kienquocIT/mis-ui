@@ -353,11 +353,20 @@ class MaskMoney2 {
                 let dataCompany = SelectDDControl.get_data_from_idx($currencyCompanyEle, $currencyCompanyEle.val());
                 let dataExchange = SelectDDControl.get_data_from_idx($currencyExchangeEle, $currencyExchangeEle.val());
                 dataSubmit['is_currency_exchange'] = $currencyAllowEle[0].checked;
-                dataSubmit['currency_company_id'] = $currencyCompanyEle.val();
-                dataSubmit['currency_company_data'] = dataCompany;
-                dataSubmit['currency_exchange_id'] = $currencyExchangeEle.val();
-                dataSubmit['currency_exchange_data'] = dataExchange;
-                dataSubmit['currency_exchange_rate'] = dataExchange?.['rate'] ? dataExchange?.['rate'] : 1;
+                if ($currencyAllowEle[0].checked === true) {
+                    dataSubmit['currency_company_id'] = $currencyCompanyEle.val();
+                    dataSubmit['currency_company_data'] = dataCompany;
+                    dataSubmit['currency_exchange_id'] = $currencyExchangeEle.val();
+                    dataSubmit['currency_exchange_data'] = dataExchange;
+                    dataSubmit['currency_exchange_rate'] = dataExchange?.['rate'] ? dataExchange?.['rate'] : 1;
+                }
+                if ($currencyAllowEle[0].checked === false) {
+                    dataSubmit['currency_company_id'] = null;
+                    dataSubmit['currency_company_data'] = {};
+                    dataSubmit['currency_exchange_id'] = null;
+                    dataSubmit['currency_exchange_data'] = {};
+                    dataSubmit['currency_exchange_rate'] = 1;
+                }
             }
         }
         return dataSubmit;
@@ -392,7 +401,7 @@ class MaskMoney2 {
         this.configData = configData;
     }
 
-    applyConfig(other_abbreviation, strAttrValue) {
+    applyConfig($ele, strAttrValue) {
         let strDataParsed = parseFloat(strAttrValue);
         if (strAttrValue !== null && Number.isFinite(strDataParsed)) {
             // strAttrValue = strDataParsed.toString();
@@ -405,6 +414,7 @@ class MaskMoney2 {
             let thousand = this.configData?.['thousands'];
             let precision = parseInt(this.configData?.['precision']);
 
+            let other_abbreviation = $ele.attr('data-other-abbreviation');
             if (other_abbreviation) {
                 if (prefix) {
                     prefix = prefix.replace(prefix.trim(), other_abbreviation)
@@ -459,11 +469,11 @@ class MaskMoney2 {
         // inputOrDisplay choice in ['input', 'display']
         switch (inputOrDisplay) {
             case 'input':
-                $($ele).val(this.applyConfig($($ele).attr('data-other-abbreviation'), $($ele).attr('value')));
+                $($ele).val(this.applyConfig($($ele), $($ele).attr('value')));
                 this.runAllowExchange($($ele), $($ele).attr('value'), inputOrDisplay);
                 break
             case 'display':
-                $($ele).text(this.applyConfig($($ele).attr('data-other-abbreviation'), $($ele).attr('data-init-money')));
+                $($ele).text(this.applyConfig($($ele), $($ele).attr('data-init-money')));
                 this.runAllowExchange($($ele), $($ele).attr('data-init-money'), inputOrDisplay);
                 break
             default:
@@ -520,13 +530,14 @@ class MaskMoney2 {
     }
 
     applyMaskMoneyExchange($ele, value, inputOrDisplay) {
+        $ele.attr("data-bs-toggle", "tooltip");
+        $ele.attr("data-bs-placement", "bottom");
         switch (inputOrDisplay) {
             case 'input':
-                $ele.text(this.applyConfigExchange(value));
-                // $ele.html(`<span class="fs-5 mr-1">~</span>${this.applyConfigExchange(value)}`);
+                $ele.attr('title', this.applyConfigExchange(value));
                 break
             case 'display':
-                $ele.text(this.applyConfigExchange(value));
+                $ele.attr('title', this.applyConfigExchange(value));
                 break
             default:
                 if ($.fn.isDebug() === true) throw Error('strData must be required!')
@@ -537,12 +548,9 @@ class MaskMoney2 {
     runAllowExchange($ele, value, inputOrDisplay) {
         let $currencyAllowEle = $('#is_currency_exchange');
         if ($currencyAllowEle.length > 0) {
-            MaskMoney2.appendTextExchangeMoney($($ele));
+            // MaskMoney2.appendTextExchangeMoney($($ele));
             if ($currencyAllowEle.is(':checked')) {
-                let $next = $ele.next('.mask-money-exchange');
-                if ($next.length > 0) {
-                    this.applyMaskMoneyExchange($next, value, inputOrDisplay);
-                }
+                this.applyMaskMoneyExchange($ele, value, inputOrDisplay);
             }
         }
         return true;
@@ -2439,6 +2447,7 @@ class WFRTControl {
             // check currency
             let dataCurrency = MaskMoney2.setupSubmitCurrencyExchange();
             if (Object.keys(dataCurrency).length !== 0) {
+                _form.dataForm['is_currency_exchange'] = dataCurrency?.['is_currency_exchange'];
                 _form.dataForm['currency_company_id'] = dataCurrency?.['currency_company_id'];
                 _form.dataForm['currency_company_data'] = dataCurrency?.['currency_company_data'];
                 _form.dataForm['currency_exchange_id'] = dataCurrency?.['currency_exchange_id'];

@@ -258,7 +258,12 @@ class SetupFormSubmit {
 
 class MaskMoney2 {
     static _beforeParseFloatAndLimit(strData) {
-        let data = strData.replace(/^0+0+$/, "");
+        let strCheck = String(strData || '').trim();
+        // check not number => return "0"
+        if (!/^[-+]?\d*\.?\d+$/.test(strCheck)) {
+            return "0";
+        }
+        let data = strCheck.replace(/^0+0+$/, "");
         if (data.indexOf('.') > -1 && data.length > 18) {
             return data.slice(0, 18);
         } else if (data.indexOf('.') === -1 && data.length > 17) {
@@ -2424,6 +2429,8 @@ class WFRTControl {
     }
 
     static callWFSubmitForm(_form) {
+        let appID = WFRTControl.getAppID();
+        let appBaseline = WFRTControl.getAppBaseline();
         let $formEle = _form.formSelected;
         let IDRuntime = WFRTControl.getRuntimeWF();
         let currentEmployee = $x.fn.getEmployeeCurrentID();
@@ -2474,6 +2481,12 @@ class WFRTControl {
             if (!IDRuntime) {  // Start run WF (@decorator_run_workflow in API)
                 // check next node
                 let associationData = WFAssociateControl.checkNextNode(_form.dataForm);
+                // check baseline app
+                if (appBaseline.includes(appID) && _form.dataMethod.toLowerCase() === 'post') {
+                    _form.dataForm['system_status'] = 0;
+                    WFRTControl.callAjaxWFCreate(_form);
+                    return true;
+                }
                 // select save status before select collaborator
                 Swal.fire({
                     title: $.fn.transEle.attr('data-select-save-status'),
@@ -3030,7 +3043,6 @@ class WFRTControl {
     static setWFInitialData(app_code, isCR = false) {
         if (app_code) {
             let btn = $('#btnLogShow');
-            // btn.removeClass('hidden');
             let url = btn.attr('data-url-current-wf');
             $.fn.callAjax2({
                 'url': url,
@@ -3055,41 +3067,7 @@ class WFRTControl {
                                     WFRTControl.setAssociateCreate(workflow_current['association']);
                                 }
                             }
-                            if (WFconfig?.['mode'] === 0) {
-                                // let url = btn.attr('data-url-app-emp-config');
-                                // let currentEmployee = $x.fn.getEmployeeCurrentID();
-                                // $.fn.callAjax2({
-                                //     'url': url,
-                                //     'method': 'GET',
-                                //     'data': {
-                                //         'application__model_code': app_code,
-                                //         'employee_created_id': currentEmployee
-                                //     },
-                                // }).then((resp) => {
-                                //     let data = $.fn.switcherResp(resp);
-                                //     if (data) {
-                                //         if (data.hasOwnProperty('app_emp_config_list') && Array.isArray(data.app_emp_config_list)) {
-                                //             if (data?.['app_emp_config_list'].length > 0) {
-                                //                 let zonesData = [];
-                                //                 let zonesHiddenData = [];
-                                //                 for (let appEmpConfig of data?.['app_emp_config_list']) {
-                                //                     for (let zone of appEmpConfig?.['zones_editing_data']) {
-                                //                         for (let property of zone?.['properties_data']) {
-                                //                             zonesData.push(property);
-                                //                         }
-                                //                     }
-                                //                     for (let zone of appEmpConfig?.['zones_hidden_data']) {
-                                //                         for (let property of zone?.['properties_data']) {
-                                //                             zonesHiddenData.push(property);
-                                //                         }
-                                //                     }
-                                //                 }
-                                //                 WFRTControl.activeBtnOpenZone(zonesData, zonesHiddenData, false);
-                                //             }
-                                //         }
-                                //     }
-                                // })
-                            }
+                            WFRTControl.setAppID(WFconfig?.['application_id'] ? WFconfig?.['application_id']: "");
                         }
                     }
                 }
@@ -3531,6 +3509,20 @@ class WFRTControl {
         return [];
     }
 
+    static getAppID() {
+        let itemEle = $('#idxApp');
+        if (itemEle.length > 0) {
+            return itemEle.text();
+        }
+        return "";
+    }
+
+    static getAppBaseline() {
+        return [
+            "36f25733-a6e7-43ea-b710-38e2052f0f6d",
+        ];
+    }
+
     static setRuntimeDoc(docData) {
         if (typeof docData === 'object' && docData !== null) {
             let $RuntimeDoc = $('#idxRuntimeDoc');
@@ -3697,6 +3689,17 @@ class WFRTControl {
                 $pageAction.on('click', '.btn-wf-after-finish', function () {
                     return WFRTControl.callActionWF($(this));
                 });
+            }
+        }
+    }
+
+    static setAppID(appID) {
+        if (appID) {
+            let $appIDEle = $('#idxApp');
+            if ($appIDEle && $appIDEle.length > 0) {
+                $appIDEle.empty().html(appID);
+            } else {
+                $('html').append(`<div class="hidden" id="idxApp">${appID}</div>`);
             }
         }
     }

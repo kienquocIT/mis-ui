@@ -236,7 +236,7 @@ $(function () {
             }
         });
 
-        QuotationDataTableHandle.$tableProduct.on('change', '.table-row-item, .table-row-uom, .table-row-quantity, .table-row-uom-time, .table-row-quantity-time, .table-row-price, .table-row-tax, .table-row-discount', function () {
+        QuotationDataTableHandle.$tableProduct.on('change', '.table-row-item, .table-row-uom, .table-row-quantity, .table-row-uom-time, .table-row-quantity-time, .table-row-price, .table-row-tax, .table-row-discount, .table-row-discount-amount', function () {
             if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 let row = this.closest('tr');
                 if ($(this).hasClass('table-row-price')) {
@@ -275,6 +275,17 @@ $(function () {
                         }
                         if (!$(this).val()) {
                             quantityTimeEle.value = "0";
+                        }
+                    }
+                }
+                if ($(this).hasClass('table-row-discount') || $(this).hasClass('table-row-discount-amount')) {
+                    let discountCheckEle = row.querySelector('.table-row-discount-check');
+                    if (discountCheckEle) {
+                        if ($(this).hasClass('table-row-discount')) {
+                            discountCheckEle.checked = true;
+                        }
+                        if ($(this).hasClass('table-row-discount-amount')) {
+                            discountCheckEle.checked = false;
                         }
                     }
                 }

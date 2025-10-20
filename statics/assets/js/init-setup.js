@@ -424,16 +424,16 @@ class MaskMoney2 {
                         suffix = suffix.replace(suffix.trim(), other_abbreviation)
                     }
                 }
-                // Check currency exchange local
-                let dataLocal = $ele.attr('data-exchange');
-                if (dataLocal) {
-                    let dataLocalParse = JSON.parse($ele.attr('data-exchange'));
-                    if (dataLocalParse?.['currency_exchange_data']?.['abbreviation']) {
+                // Check has data exchange
+                let dataExchange = $ele.attr('data-exchange');
+                if (dataExchange) {
+                    let dataExchangeParse = JSON.parse($ele.attr('data-exchange'));
+                    if (dataExchangeParse?.['currency_exchange_data']?.['abbreviation']) {
                         if (prefix) {
-                            prefix = dataLocalParse?.['currency_exchange_data']?.['abbreviation'];
+                            prefix = dataExchangeParse?.['currency_exchange_data']?.['abbreviation'];
                         }
                         if (suffix) {
-                            suffix = dataLocalParse?.['currency_exchange_data']?.['abbreviation'];
+                            suffix = dataExchangeParse?.['currency_exchange_data']?.['abbreviation'];
                         }
                     }
                 }

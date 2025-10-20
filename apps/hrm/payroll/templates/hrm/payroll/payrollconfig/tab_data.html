@@ -235,18 +235,41 @@
                             </fieldset>
                         </div>
                     </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label class="form-label" for="effective_day_tax_bracket">{% trans 'Effective date' %}</label>
+                            <div class="input-group mb-3">
+                                <span class="input-affix-wrapper">
+                                    <span class="input-prefix">📅</span>
+                                    <input type="text" name="effective_day_tax_bracket" class="form-control"
+                                        autocomplete="off" id="effective_day_tax_bracket">
+                                </span>
+                                <button type="button" class="btn btn-primary" id="btn_apply">{% trans 'Apply' %}</button>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">{% trans 'Status' %}</label>
+                            <p id="status_field" class="form-control-plaintext mb-0"></p>
+                        </div>
+                    </div>
                     <div class="col-12">
                         <table class="table nowrap w-100" id="table_tax_bracket">
                             <thead class="bg-secondary-light-5">
                                 <tr>
                                     <th style="min-width: 40px">{% trans 'Level' %}</th>
-                                    <th style="min-width: 40px">{% trans 'From (VND)' %}</th>
-                                    <th style="min-width: 200px">{% trans 'To (VND)' %}</th>
-                                    <th style="min-width: 160px">{% trans 'Rate (%)' %}</th>
+                                    <th style="min-width: 100px">{% trans 'From (VND)' %}</th>
+                                    <th style="min-width: 100px">{% trans 'To (VND)' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Rate (%)' %}</th>
+                                    <th style="min-width: 50px"></th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
+                    </div>
+                    <div class="col-12 col-lg-7 mt-3">
+                        <button class="btn btn-primary mt-4" type="button" id="add_tax_bracket" aria-expanded="false">
+                                <i class="fas fa-plus-circle me-2"></i>{% trans 'Add' %}
+                        </button>
                     </div>
                 </div>
             </div>

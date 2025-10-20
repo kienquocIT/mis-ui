@@ -152,7 +152,7 @@ class MenusCoreConfigurations:
             ),
             MenuCommon(
                 name='Payroll config', code='menu_payroll_config', view_name='PayrollConfigDetail',
-                icon='<i class="fas fa-cog"></i>',
+                icon='<i class="fas fa-receipt"></i>',
             ),
         ]
     )

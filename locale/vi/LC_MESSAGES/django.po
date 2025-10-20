@@ -9617,10 +9617,6 @@ msgid "Warehouse Address"
 msgstr "Địa chỉ kho"
 
 #
-msgid "Edit Warehouse Address"
-msgstr "Sửa địa chỉ kho"
-
-#
 msgid "Click to edit"
 msgstr "Nhấn để chỉnh sửa"
 

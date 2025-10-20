@@ -121,7 +121,7 @@ $(document).ready(function () {
                 scrollCollapse: true,
                 paging: false,
                 ajax: {
-                    url: wh_list_table.attr('data-url') + '?get_all=1',
+                    url: wh_list_table.attr('data-url') + '?get_all_active=1',
                     type: 'GET',
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);

@@ -59,7 +59,7 @@ $(document).ready(function () {
                 }, {
                     className: 'text-center w-5',
                     render: (data, type, row) => {
-                        return row?.['is_active'] ? `<span class="badge-indicator badge badge-indicator-xl bg-success"></span>` : ''
+                        return row?.['is_active'] ? `<span class="badge-indicator badge badge-indicator-xl bg-success"></span>` : `<span class="badge-indicator badge badge-indicator-xl bg-danger"></span>`
                     },
                 },
             ]

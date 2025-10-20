@@ -180,7 +180,7 @@ class loadServiceOrderInfo {
     }
 
     static loadTotalDeliveryProduct() {
-        // get all product list from selected work order
+        // get all product list from selected work
         let data_list = loadServiceOrderInfo.buildDeliveryProductData();
 
         // init DataTable
@@ -250,7 +250,7 @@ class loadServiceOrderInfo {
             let work_order_info = [];
             let product_data = {};
             loadServiceOrderInfo.selectedWorkOrders.forEach(workOrder => {
-                // store work order info
+                // store work info
                 let work_order_data = {
                     'id': workOrder?.id || '',
                     'title': workOrder?.title || ''

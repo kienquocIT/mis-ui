@@ -64,7 +64,7 @@ const ServiceOrder = (function($) {
 
         /**
          * @type {{ [work_order_id: string]: [{ service_id: string, contribution_percent: number, delivered_quantity: number}] }}
-         * @description Biến lưu dữ liệu đóng góp của 1 hàng work order (còn gồm nhiều field khác)
+         * @description Biến lưu dữ liệu đóng góp của 1 hàng work (còn gồm nhiều field khác)
          */
         productContributionData: {},
 
@@ -481,7 +481,7 @@ const ServiceOrder = (function($) {
                 {
                     className: 'w-25',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-soft-secondary mr-1">${row?.['code'] || ''}</span><span>${row?.['title'] || ''}</span>`
+                        return `<span class="badge badge-sm badge-soft-secondary">${row?.['code'] || ''}</span><br><span>${row?.['title'] || ''}</span>`
                     }
                 },
                 {
@@ -633,7 +633,7 @@ const ServiceOrder = (function($) {
                     className: 'w-15',
                     render: (data, type, row) => {
                         if (row?.['product_id']){
-                            return `<span class="badge badge-sm badge-soft-secondary mr-1">${row?.['code'] || ''}</span><span class="" title="${row?.['title'] || ''}">${row?.['title'] || ''}</span>`
+                            return `<span class="badge badge-sm badge-soft-secondary">${row?.['code'] || ''}</span><br><span class="" title="${row?.['title'] || ''}">${row?.['title'] || ''}</span>`
                         } else {
                             return `<textarea class="form-control work-order-description" rows="2">${row?.['title'] || ''}</textarea>`
                         }
@@ -2493,7 +2493,7 @@ const ServiceOrder = (function($) {
     }
 
 
-    // ============ work order =============
+    // ============ work =============
 
     function handleChangeWorkOrderDetail(){
         function validateDates(rowData) {
@@ -2655,7 +2655,7 @@ const ServiceOrder = (function($) {
         pageElement.workOrder.$btnAddNonItem.on('click', function(e) {
             const uniqueStr = Math.random().toString(36).slice(2)
 
-            // Add empty row to work order for manual entry
+            // Add empty row to work for manual entry
             const emptyWorkOrderItem = {
                 id: uniqueStr,
                 code: '',
@@ -3248,7 +3248,7 @@ const ServiceOrder = (function($) {
             // Get current contribution value from input
             const currentContribution = parseFloat($row.find('.pc-contribution').val()) || 0
 
-            // Old contribution from work order
+            // Old contribution from work
             const oldContribution = rowData.contribution_percent || 0
 
             // Get the badge
@@ -4199,7 +4199,7 @@ const ServiceOrder = (function($) {
                 }
             }
 
-            // Collect the work order data
+            // Collect the work data
             const workOrder = {
                 id: rowData.id,
                 order: rowIdx + 1,
@@ -4214,7 +4214,7 @@ const ServiceOrder = (function($) {
                 unit_cost: unitCost,
                 total_value: currentTotal,
                 work_status: rowData.status || 0,
-                // Include work order cost breakdown if exists
+                // Include work cost breakdown if exists
                 cost_data: costData,
                 // Include product contribution data if exists and is delivery point
                 product_contribution: contributionData,
@@ -4296,7 +4296,7 @@ const ServiceOrder = (function($) {
     }
 
     function validateDates() {
-        // Validate work order dates
+        // Validate work dates
         const workOrderTable = ServiceOrder.pageElement.workOrder.$table.DataTable()
         let hasError = false
 
@@ -4307,7 +4307,7 @@ const ServiceOrder = (function($) {
 
             if (!startDate) {
                 $.fn.notifyB({
-                    description: $.fn.gettext(`Work Order row ${rowIdx + 1}: Start Date is required`)
+                    description: $.fn.gettext(`Work row ${rowIdx + 1}: Start Date is required`)
                 }, 'failure')
                 hasError = true
                 return false // Break the loop
@@ -4315,7 +4315,7 @@ const ServiceOrder = (function($) {
 
             if (!endDate) {
                 $.fn.notifyB({
-                    description: $.fn.gettext(`Work Order row ${rowIdx + 1}: End Date is required`)
+                    description: $.fn.gettext(`Work row ${rowIdx + 1}: End Date is required`)
                 }, 'failure')
                 hasError = true
                 return false
@@ -4511,7 +4511,7 @@ const ServiceOrder = (function($) {
         }
 
         // 3. Clean up productContributionData
-        // Remove this service from all work order contributions
+        // Remove this service from all work contributions
         Object.keys(pageVariable.productContributionData).forEach(workOrderId => {
             const contributions = pageVariable.productContributionData[workOrderId];
             if (contributions) {
@@ -4617,7 +4617,7 @@ const ServiceOrder = (function($) {
             const rowData = table.row($row).data();
             const workOrderId = rowData.id;
 
-            const confirmTitle = $.fn.gettext('Delete Work Order?')
+            const confirmTitle = $.fn.gettext('Delete Work?')
             Swal.fire({
                 html: `
                     <div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>
@@ -4646,7 +4646,7 @@ const ServiceOrder = (function($) {
     }
 
     function cleanupWorkOrderRelatedData(workOrderId) {
-        // 1. Clean up work order cost data
+        // 1. Clean up work cost data
         if (pageVariable.workOrderCostData[workOrderId]) {
             delete pageVariable.workOrderCostData[workOrderId];
         }
@@ -4662,7 +4662,7 @@ const ServiceOrder = (function($) {
                     const totalContributionData = pageVariable.serviceDetailTotalContributionData[serviceId];
 
                     if (totalContributionData) {
-                        // Subtract this work order's contribution from totals
+                        // Subtract this work's contribution from totals
                         totalContributionData.total_contribution_percent -= contribution.contribution_percent;
                         totalContributionData.delivery_balance_value += contribution.delivered_quantity;
 
@@ -4674,11 +4674,11 @@ const ServiceOrder = (function($) {
                 }
             });
 
-            // Delete the work order's contribution data
+            // Delete the work's contribution data
             delete pageVariable.productContributionData[workOrderId];
         }
 
-        // 3. Update any other work orders' contribution data to reflect the new balances
+        // 3. Update any other work's contribution data to reflect the new balances
         Object.keys(pageVariable.productContributionData).forEach(otherWorkOrderId => {
             if (otherWorkOrderId !== workOrderId) {
                 const otherContributions = pageVariable.productContributionData[otherWorkOrderId];

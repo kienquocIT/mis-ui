@@ -424,7 +424,7 @@ class MaskMoney2 {
                 }
             }
 
-            // Check currency exchange
+            // Check currency exchange global
             let $currencyExchangeEle = $('#currency_exchange_id');
             if ($currencyExchangeEle) {
                 let dataSelected = SelectDDControl.get_data_from_idx($currencyExchangeEle, $currencyExchangeEle.val());
@@ -434,6 +434,19 @@ class MaskMoney2 {
                     }
                     if (suffix) {
                         suffix = dataSelected?.['abbreviation'];
+                    }
+                }
+            }
+            // Check currency exchange local
+            let dataLocal = $ele.attr('data-exchange');
+            if (dataLocal) {
+                let dataLocalParse = JSON.parse($ele.attr('data-exchange'));
+                if (dataLocalParse?.['currency_exchange_data']?.['abbreviation']) {
+                    if (prefix) {
+                        prefix = dataLocalParse?.['currency_exchange_data']?.['abbreviation'];
+                    }
+                    if (suffix) {
+                        suffix = dataLocalParse?.['currency_exchange_data']?.['abbreviation'];
                     }
                 }
             }

@@ -326,12 +326,10 @@ class ProductPageFunction {
                             let disabled = '';
                             let disabled_input = 'disabled';
                             let is_default = false;
-                            let required = '';
                             if (item.is_default) {
                                 general_price_list_id = item.id
                                 disabled_input = ''
                                 is_default = true;
-                                required = 'required';
                             }
                             if (item.is_default || (item?.['price_list_mapped'] === general_price_list_id && item?.['auto_update'] === true)) {
                                 checked = 'checked';
@@ -350,7 +348,6 @@ class ProductPageFunction {
                                 'disabled': disabled,
                                 'is_default': is_default,
                                 'disabled_input': disabled_input,
-                                'required': required,
                                 'id': item?.['id'],
                                 'title': item?.['title'],
                                 'price_value': price_value,
@@ -379,7 +376,7 @@ class ProductPageFunction {
                 }, {
                     className: 'w-30',
                     render: (data, type, row) => {
-                        return `<label class="${row.required} form-label text-primary fw-bold">${row.title}</label>`
+                        return `<label class="form-label text-primary">${row.title}</label>`
                     }
                 }, {
                     className: 'w-15',
@@ -451,19 +448,19 @@ class ProductPageFunction {
                 {
                     className: 'w-20',
                     render: (data, type, row) => {
-                        return `<span class="text-danger">${row?.['vendor_serial_number']}</span>`
+                        return `<span>${row?.['vendor_serial_number'] || ''}</span>`
                     }
                 },
                 {
                     className: 'w-20',
                     render: (data, type, row) => {
-                        return `<span class="text-danger">${row?.['serial_number']}</span>`
+                        return `<span>${row?.['serial_number']}</span>`
                     }
                 },
                 {
                     className: 'w-20',
                     render: (data, type, row) => {
-                        return `<span class="mask-money text-danger" data-init-money="${row?.['specific_value'] || 0}"></span>`;
+                        return `<span class="mask-money" data-init-money="${row?.['specific_value'] || 0}"></span>`;
                     }
                 },
                 {
@@ -475,7 +472,7 @@ class ProductPageFunction {
                 {
                     className: 'w-15 text-center',
                     render: (data, type, row) => {
-                        return row?.['from_pm'] ? `<span class="text-muted">${row?.['product_modification_code'] || ''}</span>` : '';
+                        return row?.['from_pm'] ? `<span class="text-muted">${row?.['product_modification_code'] || ''}</span>` : `${$.fn.gettext('Receipt')}`;
                     }
                 },
             ]

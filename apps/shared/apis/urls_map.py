@@ -629,7 +629,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     REPORT_INVENTORY_COST_LIST = StringUrl('report/inventory-cost-report/list')
     REPORT_INVENTORY_STOCK_LIST = StringUrl('report/inventory-stock-report/list')
     BALANCE_INIT_LIST = StringUrl('report/balance-init/list')
-    BALANCE_INIT_IMPORT_DB = StringUrl('report/balance-init-import-db')
     WAREHOUSE_AVAILABLE_PRODUCT_LIST = StringUrl('report/warehouse-available-product-list')
     WAREHOUSE_AVAILABLE_PRODUCT_DETAIL = StringUrl('report/warehouse-available-product-detail')
     REPORT_GENERAL_LIST = StringUrl('report/general/list')

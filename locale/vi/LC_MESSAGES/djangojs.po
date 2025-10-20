@@ -556,3 +556,7 @@ msgstr "Serial đích danh"
 #
 msgid "Not available"
 msgstr "Không khả dụng"
+
+#
+msgid "Receipt"
+msgstr "Nhập hàng"

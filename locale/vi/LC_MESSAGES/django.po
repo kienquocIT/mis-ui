@@ -12300,10 +12300,6 @@ msgid "List task assigned"
 msgstr "Danh sách nhiệm vụ được giao"
 
 #
-msgid "Specific item"
-msgstr "Đích danh"
-
-#
 msgid "Not available yet"
 msgstr "Chưa hỗ trợ"
 
@@ -12317,7 +12313,7 @@ msgstr "Tổng ngân sách"
 
 #
 msgid "Specific value"
-msgstr "Giá cụ thể"
+msgstr "Giá đích danh"
 
 #
 msgid "Warehouse for product modification"
@@ -12326,3 +12322,11 @@ msgstr "Kho cho Ráp-Rã"
 #
 msgid "If this product’s valuation method is not Specific Identification, its cost will be mixed in this warehouse. A quantity of 1 is recommended when performing a Product Modification."
 msgstr "Nếu phương pháp định giá của sản phẩm này không phải là Thực tế đích danh, giá trị của nó sẽ bị lẫn lộn trong kho này. Khuyến nghị nên đảm bảo số lượng = 1 khi muốn thực hiện Ráp-Rã."
+
+#
+msgid "Specific serial number"
+msgstr "Serial đích danh"
+
+#
+msgid "or import here"
+msgstr "hoặc nhập tại đây"

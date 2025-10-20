@@ -1124,4 +1124,69 @@ class UsualLoadPageFunction {
             keyText: 'fullname',
         });
     }
+
+    /**
+     * Đọc dữ liệu trong file Excel và trả về danh sách object để đổ vào DataTable.
+     * @param {Event} even_object - Sự kiện change từ input file
+     * @param {Array<{key: string, default: any, transform?: (value:any)=>any}>} key_structure - Cấu trúc cột cần đọc
+     * @returns {Promise<Array<Object>>} Promise resolve với danh sách dữ liệu
+     */
+    static Read_file_excel(even_object, key_structure = []) {
+        return new Promise((resolve, reject) => {
+            const file = even_object?.target?.files?.[0];
+            if (!file) return resolve([]);
+
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+                try {
+                    const data = new Uint8Array(event.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+
+                    if (!sheet) {
+                        alert("No available sheet!");
+                        return resolve([]);
+                    }
+
+                    let rows = XLSX.utils.sheet_to_json(sheet, {header: 1});
+
+                    // Bỏ dòng tiêu đề
+                    if (rows.length < 2) {
+                        alert("File is empty!");
+                        return resolve([]);
+                    }
+
+                    rows = rows.slice(1);
+
+                    // Chuyển đổi từng dòng thành object
+                    const data_list = rows.map(row => {
+                        const obj = {};
+                        key_structure.forEach((item, i) => {
+                            const raw = row[i];
+                            const value =
+                                item?.transform
+                                    ? item.transform(raw)
+                                    : (raw ?? item?.default ?? '');
+                            obj[item.key] = value;
+                        });
+                        return obj;
+                    });
+
+                    resolve(data_list);
+                } catch (error) {
+                    console.error("Excel parse error:", error);
+                    alert("Can not read this file!");
+                    resolve([]);
+                }
+            };
+
+            reader.onerror = () => {
+                alert("Error when file!");
+                reject(new Error("File read error!"));
+            };
+
+            reader.readAsArrayBuffer(file);
+        });
+    }
 }

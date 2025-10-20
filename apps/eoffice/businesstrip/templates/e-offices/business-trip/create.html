@@ -139,12 +139,12 @@
                         <table id="expense_detail_tbl" class="table nowrap min-w-1500p w-100 mb-5">
                                 <thead>
                                 <tr>
-                                    <th>{% trans 'Expense name' %}</th>
-                                    <th>{% trans 'Expense item' %}</th>
-                                    <th>{% trans 'UoM' %}</th>
-                                    <th>{% trans 'Quantity' %}</th>
-                                    <th>{% trans 'Price' %}</th>
-                                    <th>{% trans 'Tax' %}</th>
+                                    <th><span class="required">{% trans 'Expense name' %}</span></th>
+                                    <th><span class="required">{% trans 'Expense item' %}</span></th>
+                                    <th><span class="required">{% trans 'UoM' %}</span></th>
+                                    <th><span class="required">{% trans 'Quantity' %}</span></th>
+                                    <th><span class="required">{% trans 'Price' %}</span></th>
+                                    <th><span class="required">{% trans 'Tax' %}</span></th>
                                     <th>{% trans 'Subtotal price' %}</th>
                                     <th></th>
                                 </tr>
@@ -159,12 +159,12 @@
                                 <tr>
                                     <th colspan="5" class="border-0"></th>
                                     <th class="border-0"><p style="text-align:right">{% trans 'Taxes' %}:</p></th>
-                                    <th colspan="2" class="border-0"><p class="pl-3 font-3"><b><i>0 VND</i></b></p></th>
+                                    <th colspan="2" class="border-0 footer-taxes"><p class="pl-3 font-3"><b><i>0 VND</i></b></p></th>
                                 </tr>
                                 <tr>
                                     <th colspan="5" class="border-0"></th>
                                     <th class="border-bottom-0 border-dark"><p style="text-align:right">{% trans 'Total' %}:</p></th>
-                                    <th colspan="2" class="border-bottom-0 border-dark"><p class="pl-3 font-3"><b><i>0 VND</i></b></p></th>
+                                    <th colspan="2" class="border-bottom-0 border-dark footer-all_totals"><p class="pl-3 font-3"><b><i>0 VND</i></b></p></th>
                                 </tr>
                                 </tfoot>
                             </table>

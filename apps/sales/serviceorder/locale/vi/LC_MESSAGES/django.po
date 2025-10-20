@@ -42,8 +42,8 @@ msgid "TOTAL SERVICES"
 msgstr "TỔNG SỐ DỊCH VỤ"
 
 #
-msgid "TOTAL WORK ORDERS"
-msgstr "TỔNG SỐ YÊU CẦU CÔNG VIỆC"
+msgid "TOTAL WORKS"
+msgstr "TỔNG SỐ CÔNG VIỆC"
 
 #
 msgid "TOTAL TASKS"
@@ -206,13 +206,17 @@ msgid "Duration Unit"
 msgstr "ĐV Thời Lượng"
 
 #
-msgid "Work Order Cost"
-msgstr "Chi phí sản xuất"
+msgid "Work Cost"
+msgstr "Chi phí công việc"
 
 #
-msgid "Select Work Order with Delivery"
-msgstr "Chọn Phiếu Công Việc Có Giao Hàng"
+msgid "Select Work with Delivery"
+msgstr "Chọn Công Việc Có Giao Hàng"
 
 #
 msgid "No. of service delivered"
 msgstr "Số lượng dịch vụ đã thực hiện"
+
+#
+msgid "Work"
+msgstr "Công việc"

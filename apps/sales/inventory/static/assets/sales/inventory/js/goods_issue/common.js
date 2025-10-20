@@ -59,29 +59,21 @@ class GISLoadPage {
                     render: (data, type, row) => {
                         return ``
                     }
-                }, {
-                    className: 'w-20',
-                    render: (data, type, row) => {
-                        return `<span class="badge badge-primary w-80">${row?.['code']}</span>`
-                    }
-                }, {
-                    className: 'w-35',
-                    render: (data, type, row) => {
-                        return `<span data-id="${row?.['id']}" class="ia-title text-primary">${row?.['title']}</span>`
-                    }
-                }, {
-                    className: 'w-20',
-                    render: (data, type, row) => {
-                        return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
-                    }
-                }, {
-                    className: 'text-right w-20',
+                },
+                {
+                    className: 'text-center w-5',
                     render: (data, type, row) => {
                         return `<div class="form-check">
                             <input ${row?.['id'] === selected_ia ? 'checked' : ''} type="radio" name="ia-group" class="ia-selected form-check-input">
                         </div>`
                     }
                 },
+                {
+                    className: 'w-90',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-sm badge-soft-secondary mr-1">${row?.['code']}</span><span data-id="${row?.['id']}" class="ia-title">${row?.['title']}</span>`
+                    }
+                }
             ],
         });
     }
@@ -102,27 +94,25 @@ class GISLoadPage {
                     render: (data, type, row) => {
                         return ``
                     }
-                }, {
-                    className: 'w-30',
-                    render: (data, type, row) => {
-                        return `<span class="badge badge-soft-primary">${row?.['app']}</span> <span class="badge badge-primary">${row?.['code']}</span>`
-                    }
-                }, {
-                    className: 'w-35',
-                    render: (data, type, row) => {
-                        return `<span data-id="${row?.['id']}" data-type="${row?.['type']}" class="powo-title text-primary">${row?.['title']}</span>`
-                    }
-                }, {
-                    className: 'w-20',
-                    render: (data, type, row) => {
-                        return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
-                    }
-                }, {
-                    className: 'text-right w-10',
+                },
+                {
+                    className: 'text-center w-5',
                     render: (data, type, row) => {
                         return `<div class="form-check">
                             <input ${row?.['id'] === selected_powo ? 'checked' : ''} type="radio" name="powo-group" class="powo-selected form-check-input">
                         </div>`
+                    }
+                },
+                {
+                    className: 'w-30',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['app']}</span>`
+                    }
+                },
+                {
+                    className: 'w-60',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-sm badge-soft-secondary mr-1">${row?.['code']}</span><span data-id="${row?.['id']}" data-type="${row?.['type']}" class="powo-title">${row?.['title']}</span>`
                     }
                 },
             ],

@@ -273,98 +273,41 @@ $(document).on('click', '#meeting-cancel-activity', function () {
 
 class MeetingHandle {
     static LoadPageActionWithParams(opp_id) {
-        let dataParam = {'id': opp_id}
-        let opportunity_ajax = $.fn.callAjax2({
-            url: table_opportunity_meeting_list.attr('data-url-opp-list'),
-            data: dataParam,
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_list')) {
-                    return data?.['opportunity_list'].length > 0 ? data?.['opportunity_list'][0] : null;
+        if (opp_id) {
+            let dataParam = {'id': opp_id}
+            let opportunity_ajax = $.fn.callAjax2({
+                url: table_opportunity_meeting_list.attr('data-url-opp-list'),
+                data: dataParam,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_list')) {
+                        return data?.['opportunity_list'].length > 0 ? data?.['opportunity_list'][0] : null;
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
                 }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            }
-        )
+            )
 
-        Promise.all([opportunity_ajax]).then(
-            (results) => {
-                if (results[0]) {
-                    $('#opportunity_id').trigger('change')
-                    loadMeetingAddress(results[0]?.['customer']?.['shipping_address'])
-                    loadCustomerMember(results[0]?.['customer']?.['contact_mapped'])
-                    $('#offcanvas-meeting').offcanvas('show')
-                }
-            })
+            Promise.all([opportunity_ajax]).then(
+                (results) => {
+                    if (results[0]) {
+                        $('#opportunity_id').trigger('change')
+                        loadMeetingAddress(results[0]?.['customer']?.['shipping_address'])
+                        loadCustomerMember(results[0]?.['customer']?.['contact_mapped'])
+                        $('#offcanvas-meeting').offcanvas('show')
+                    }
+                })
+        }
     }
     static load() {
         loadOpportunityMeetingList();
         loadEmployeeAttended();
-        const {
-            create_open, opp_id, opp_title, opp_code,
-            process_id, process_title, process_stage_app_id, process_stage_app_title,
-            inherit_id, inherit_title
-        } = $x.fn.getManyUrlParameters([
-            'create_open', 'opp_id', 'opp_title', 'opp_code',
-            'process_id', 'process_title', 'process_stage_app_id', 'process_stage_app_title',
-            'inherit_id', 'inherit_title'
-        ])
-        const group$ = $('#offcanvas-meeting')
-        if (create_open) {
-            const data_inherit = [{
-                "id": inherit_id || '',
-                "full_name": inherit_title || '',
-                "selected": true,
-            }];
-            const data_opp = [{
-                "id": opp_id || '',
-                "title": opp_title || '',
-                "code": opp_code || '',
-                "selected": true,
-            }];
-            const data_process = [{
-                "id": process_id || '',
-                "title": process_title || '',
-                "selected": true,
-            }];
-            const data_process_stage_app = [{
-                "id": process_stage_app_id || '',
-                "title": process_stage_app_title || '',
-                'selected': true,
-            }];
-            new $x.cls.bastionField({
-                list_from_app: "opportunity.meetingwithcustomer.create",
-                app_id: "2fe959e3-9628-4f47-96a1-a2ef03e867e3",
-                mainDiv: group$,
-                oppEle: group$.find('select[name=opportunity_id]'),
-                prjEle: group$.find('select[name=project_id]'),
-                empInheritEle: group$.find('select[name=employee_inherit_id]'),
-                processEle: group$.find('select[name=process]'),
-                processStageAppEle$: group$.find('select[name=process_stage_app]'),
-                data_opp: data_opp,
-                data_inherit: data_inherit,
-                data_process: data_process,
-                data_process_stage_app: data_process_stage_app,
-            }).init();
-
-            MeetingHandle.LoadPageActionWithParams(opp_id)
-        }
-        else {
-            new $x.cls.bastionField({
-                list_from_app: "opportunity.meetingwithcustomer.create",
-                app_id: "2fe959e3-9628-4f47-96a1-a2ef03e867e3",
-                mainDiv: group$,
-                oppEle: group$.find('select[name=opportunity_id]'),
-                prjEle: group$.find('select[name=project_id]'),
-                empInheritEle: group$.find('select[name=employee_inherit_id]'),
-                processEle: group$.find('select[name=process]'),
-                processStageAppEle$: group$.find('select[name=process_stage_app]'),
-            }).init();
-        }
+        const {opp_id} = $x.fn.getManyUrlParameters(['opp_id'])
+        MeetingHandle.LoadPageActionWithParams(opp_id)
     }
     static combinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));

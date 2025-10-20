@@ -1071,55 +1071,6 @@ class OpportunityBOMAction {
 }
 
 class OpportunityBOMHandle {
-    static LoadPage(option='create') {
-        if (option === "create") {
-            const {
-                create_open, opp_id, opp_title, opp_code, inherit_id, inherit_title
-            } = $x.fn.getManyUrlParameters([
-                'create_open', 'opp_id', 'opp_title', 'opp_code', 'inherit_id', 'inherit_title',
-            ])
-
-            const group$ = $('#bastion-space')
-            if (create_open) {
-                const data_inherit = [{
-                    "id": inherit_id || '',
-                    "full_name": inherit_title || '',
-                    "selected": true,
-                }];
-                const data_opp = [{
-                    "id": opp_id || '',
-                    "title": opp_title || '',
-                    "code": opp_code || '',
-                    "selected": true,
-                }];
-                new $x.cls.bastionField({
-                    list_from_app: "production.bom.create",
-                    app_id: "2de9fb91-4fb9-48c8-b54e-c03bd12f952b",
-                    mainDiv: group$,
-                    oppEle: group$.find('select[name=opportunity_id]'),
-                    empInheritEle: group$.find('select[name=employee_inherit_id]'),
-                    data_opp: data_opp,
-                    data_inherit: data_inherit,
-                }).init();
-            }
-            else {
-                new $x.cls.bastionField({
-                    list_from_app: "production.bom.create",
-                    app_id: "2de9fb91-4fb9-48c8-b54e-c03bd12f952b",
-                    mainDiv: group$,
-                    oppEle: group$.find('select[name=opportunity_id]'),
-                    empInheritEle: group$.find('select[name=employee_inherit_id]'),
-                }).init();
-            }
-        }
-        OpportunityBOMLoadPage.LoadProduct(productEle)
-        OpportunityBOMLoadTab.LoadProcessDescriptionTable()
-        OpportunityBOMLoadTab.LoadLaborSummaryTable()
-        // material
-        OpportunityBOMLoadTab.LoadMaterialTable()
-        // tool
-        OpportunityBOMLoadTab.LoadToolTable()
-    }
     static CombinesBOMData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle))
         frm.dataForm['bom_type'] = 4

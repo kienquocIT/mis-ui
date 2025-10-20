@@ -6,9 +6,6 @@ $(document).ready(function () {
     UsualLoadPageFunction.LoadCustomerTable({
         element: pageElements.$table_select_customer,
     })
-    UsualLoadPageFunction.LoadEmployeeTable({
-        element: pageElements.$table_select_employee,
-    })
     UsualLoadPageFunction.LoadDate({
         element: pageElements.$posting_date
     })

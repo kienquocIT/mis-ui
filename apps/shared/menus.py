@@ -571,7 +571,7 @@ class MenusInventory:
         icon='<i class="fas fa-store"></i>',
         child=[
             MenuCommon(
-                name='Warehouses', code='menu_warehouse_list', view_name='WareHouseList',
+                name='Warehouse list', code='menu_warehouse_list', view_name='WareHouseList',
                 icon='<i class="fas fa-warehouse"></i>',
             ),
             MenuCommon(

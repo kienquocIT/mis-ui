@@ -1054,6 +1054,9 @@ class OpportunityPageFunction {
                         'opp_title': results_perm_app[8]?.['title'],
                         'inherit_id': results_perm_app[8]?.['sale_person']?.['id'],
                         'inherit_title': results_perm_app[8]?.['sale_person']?.['full_name'],
+                        'customer_id': results_perm_app[8]?.['customer']?.['id'],
+                        'customer_code': results_perm_app[8]?.['customer']?.['code'],
+                        'customer_title': results_perm_app[8]?.['customer']?.['name'],
                         'customer': encodeURIComponent(JSON.stringify(results_perm_app[8]?.['customer'])),
                     })
                     create_svo_sc.attr('href', param_url)

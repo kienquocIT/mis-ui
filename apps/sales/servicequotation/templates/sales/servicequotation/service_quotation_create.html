@@ -14,9 +14,26 @@
         }
     </style>
 {% endblock %}
+
 {% block pageAction %}
     {% include 'extends/systems/page_actions.html' with is_save=True save_frm='form-create-service-quotation' %}
 {% endblock %}
+
+{% block pageSubAction %}
+    <div class="nav-pills-bfl" role="group" aria-label="Button group with nested dropdown">
+        <button type="button" class="btn nav-link text-green" id="open_indicator" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Indicator' %}"><span class="icon"><i class="fa-solid fa-arrow-trend-up"></i></span></button>
+        <button
+                type="button"
+                class="btn nav-link text-blue"
+                id="btn-copy-quotation"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvas-copy-service-quotation"
+                data-bs-placement="bottom"
+                title="{% trans 'Copy Quotation' %}"
+        ><span class="icon"><i class="far fa-copy"></i></span></button>
+    </div>
+{% endblock %}
+
 {% block pageContent %}
     <form data-method="POST" id="form-create-service-quotation"
           data-url="{% url 'ServiceQuotationListAPI' %}"
@@ -26,11 +43,45 @@
         {% include 'sales/serviceorder/common/tab_data.html' with feature='service_quotation' %}
     </form>
 {% endblock %}
+
 {% block modalData %}
     {% include 'sales/serviceorder/common/modal_data.html' %}
     {% include 'sales/task/extend/task-form.html' with not_bastion=True custom_assignee=True %}
     {% include 'extends/product_attribute_extend/canvas.html' %}
+    {% include 'extends/indicator/all.html' with is_order=False %}
+
+    <div data-quotation-list-url='{% url 'ServiceQuotationListAPI' %}' data-quotation-detail='{% url 'ServiceQuotationDetailAPI' 0 %}' class="offcanvas offcanvas-end w-70" tabindex="-1" id="offcanvas-copy-service-quotation" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header">
+            <h5 id="offcanvasRightLabel">
+                {% trans 'Service Quotation List' %}
+            </h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="row">
+                <table
+                        id="datatable-copy-service-quotation"
+                        class="table nowrap w-100 mb-5"
+                >
+                    <thead>
+                        <tr class="bg-light tr-custom">
+                            <td class="w-25">{% trans 'Title' %}</td>
+                            <td class="w-25">{% trans 'Code' %}</td>
+                            <td class="w-25">{% trans 'Opportunity' %}</td>
+                            <td class="w-25">{% trans 'Customer' %}</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="btn-select-quotation-copy" type="button" class="btn btn-primary mr-2" data-bs-dismiss="offcanvas">{% trans 'Select' %}</button>
+        </div>
+    </div>
 {% endblock %}
+
 {% block dataHiddenGroup %}
     <script id="script-url"
             data-expense-item-list-url="{% url 'ExpenseItemListAPI' %}"
@@ -52,9 +103,11 @@
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static "assets/js/extends/product_attribute/product_attribute.js" %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/service_order_common.js' %}"></script>
+    <script src="{% static 'assets/sales/serviceorder/js/service_page_handler.js' %}"></script>
     <script src="{% static 'assets/sales/servicequotation/js/service_quotation_create.js' %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/tab_shipment.js' %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/tab_expense.js' %}"></script>
 
     <script src="{% static 'assets/js/extends/the-documents/auto-init-with-parameters.js' %}"></script>
+    <script src="{% static 'assets/js/extends/indicator/indicator_common.js' %}"></script>
 {% endblock %}

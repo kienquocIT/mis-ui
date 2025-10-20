@@ -414,13 +414,28 @@ class MaskMoney2 {
             let thousand = this.configData?.['thousands'];
             let precision = parseInt(this.configData?.['precision']);
 
-            let other_abbreviation = $ele.attr('data-other-abbreviation');
-            if (other_abbreviation) {
-                if (prefix) {
-                    prefix = prefix.replace(prefix.trim(), other_abbreviation)
+            if ($ele) {
+                let other_abbreviation = $ele.attr('data-other-abbreviation');
+                if (other_abbreviation) {
+                    if (prefix) {
+                        prefix = prefix.replace(prefix.trim(), other_abbreviation)
+                    }
+                    if (suffix) {
+                        suffix = suffix.replace(suffix.trim(), other_abbreviation)
+                    }
                 }
-                if (suffix) {
-                    suffix = suffix.replace(suffix.trim(), other_abbreviation)
+                // Check currency exchange local
+                let dataLocal = $ele.attr('data-exchange');
+                if (dataLocal) {
+                    let dataLocalParse = JSON.parse($ele.attr('data-exchange'));
+                    if (dataLocalParse?.['currency_exchange_data']?.['abbreviation']) {
+                        if (prefix) {
+                            prefix = dataLocalParse?.['currency_exchange_data']?.['abbreviation'];
+                        }
+                        if (suffix) {
+                            suffix = dataLocalParse?.['currency_exchange_data']?.['abbreviation'];
+                        }
+                    }
                 }
             }
 
@@ -434,19 +449,6 @@ class MaskMoney2 {
                     }
                     if (suffix) {
                         suffix = dataSelected?.['abbreviation'];
-                    }
-                }
-            }
-            // Check currency exchange local
-            let dataLocal = $ele.attr('data-exchange');
-            if (dataLocal) {
-                let dataLocalParse = JSON.parse($ele.attr('data-exchange'));
-                if (dataLocalParse?.['currency_exchange_data']?.['abbreviation']) {
-                    if (prefix) {
-                        prefix = dataLocalParse?.['currency_exchange_data']?.['abbreviation'];
-                    }
-                    if (suffix) {
-                        suffix = dataLocalParse?.['currency_exchange_data']?.['abbreviation'];
                     }
                 }
             }
@@ -2543,8 +2545,9 @@ class WFRTControl {
                                 if (_form.dataForm['system_status'] === 1) {  // WF
 
                                     // check submit baseline
-                                    if ($formEle.attr('data-baseline') === 'true') {
+                                    if (appBaseline.includes(appID)) {
                                         _form.dataForm['system_status'] = 0;
+                                        _form.dataForm['run_baseline'] = true;
                                     }
 
                                     WFRTControl.submitCheckAssociation(_form, associationData, 0);
@@ -2583,7 +2586,7 @@ class WFRTControl {
                     let $formEle = _form.formSelected;
                     let docData = WFRTControl.getRuntimeDocData();
                     let associationData = WFAssociateControl.checkNextNode(_form.dataForm);
-                    if ($formEle.attr('data-baseline') === 'true' && docData?.['id']) {
+                    if (_form.dataForm?.['run_baseline'] === true && docData?.['id']) {
                         let docRootID = docData?.['id'];
                         _form.dataMethod = 'POST';
                         _form.dataUrl = $formEle.attr('data-url-cr');

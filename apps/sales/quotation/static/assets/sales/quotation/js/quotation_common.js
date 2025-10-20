@@ -5739,7 +5739,9 @@ class QuotationCalculateCaseHandle {
                     discount = $(eleDiscountAmount).valCurrency();
                 }
                 if (price > 0) {
-                    discountRate = Math.round((discount / price) * 100);
+                    let percent = (discount / price) * 100;
+                    discountRate = percent;
+                    // discountRate = Number(percent.toFixed(1));
                 }
                 $(eleDiscount).val(discountRate);
             }

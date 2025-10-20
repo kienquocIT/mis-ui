@@ -3188,7 +3188,7 @@ msgid "Pricing"
 msgstr "Giá"
 
 #
-msgid "WareHouse List"
+msgid "Warehouse list"
 msgstr "Danh sách kho"
 
 #

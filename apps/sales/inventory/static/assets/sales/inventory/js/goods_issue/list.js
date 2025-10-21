@@ -41,7 +41,7 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-40',
+                        className: 'ellipsis-cell-lg w-30',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
@@ -57,6 +57,12 @@ $(document).ready(function () {
                                 dtb.attr('data-trans-product-modification'),
                             ]
                             return `<span class="text-muted fst-italic">${type_trans[row?.['goods_issue_type']]}</span>`
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-sm w-10',
+                        render: (data, type, row) => {
+                            return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
                         }
                     },
                     {

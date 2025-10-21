@@ -20,36 +20,39 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
+                        className: 'w-5',
                         render: () => {
                             return ``;
                         }
                     },
                     {
-                        data: 'code',
                         className: 'ellipsis-cell-xs w-10',
                         render: (data, type, row) => {
-                            const link = dtb.attr('data-url-detail').replace('0', row.id);
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
-                        data: 'title',
-                        className: 'w-50',
+                        className: 'ellipsis-cell-lg w-50',
                         render: (data, type, row) => {
-                            const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}"><span class="text-primary"><b>${row.title}</b></span></a>`
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
+                            return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                         }
                     },
                     {
-                        data: 'date_transfer',
-                        className: 'text-center w-30',
+                        className: 'ellipsis-cell-sm w-15',
                         render: (data, type, row) => {
-                            return moment(data.split(' ')[0]).format('DD/MM/YYYY')
+                            return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
                         }
                     },
                     {
-                        data: 'system_status',
-                        className: 'text-center w-10',
+                        className: 'ellipsis-cell-sm w-15',
+                        render: (data, type, row) => {
+                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
+                        }
+                    },
+                    {
+                        className: 'text-center w-5',
                         render: (data, type, row) => {
                             return WFRTControl.displayRuntimeStatus(row?.['system_status'], row?.['system_auto_create']);
                         }

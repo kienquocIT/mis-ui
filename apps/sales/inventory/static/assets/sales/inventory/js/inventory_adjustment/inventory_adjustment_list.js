@@ -7,6 +7,13 @@ $(document).ready(function () {
                 useDataServer: true,
                 rowIdx: true,
                 reloadCurrency: true,
+                scrollX: true,
+                scrollY: '64vh',
+                scrollCollapse: true,
+                fixedColumns: {
+                    leftColumns: 2,
+                    rightColumns: window.innerWidth <= 768 ? 0 : 1
+                },
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -26,46 +33,48 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'code',
                         className: 'ellipsis-cell-xs w-10',
                         render: (data, type, row) => {
-                            const link = dtb.attr('data-url-detail').replace('0', row.id);
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
-                        data: 'title',
                         className: 'w-30',
                         render: (data, type, row) => {
-                            const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}"><span class="text-primary fw-bold">${row.title}</span></a>`
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
+                            return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                         }
                     },
                     {
-                        data: 'warehouses',
-                        className: 'w-30',
+                        className: 'w-15',
                         render: (data, type, row) => {
                             let html = ``;
                             for (let i = 0; i < row?.['warehouses'].length; i++) {
-                                html = html + `<span class="badge badge-light mr-1 mb-1">${row?.['warehouses'][i]['warehouse_title']}</span>`
+                                let item = row?.['warehouses'][i]
+                                html += `<span class="badge badge-sm badge-light mr-1">${item['code']}</span><span>${item['title']}</span><br>`
                             }
                             return html;
                         }
                     },
                     {
-                        data: 'date_created',
-                        className: 'w-15',
+                        className: 'ellipsis-cell-sm w-15',
                         render: (data, type, row) => {
-                            return `${moment(row.date_created.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY')}`
+                            return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
                         }
                     },
                     {
-                        data: 'state_detail',
-                        className: 'text-center w-10',
+                        className: 'ellipsis-cell-sm w-15',
                         render: (data, type, row) => {
-                            return `<span class="text-muted">${data}</span>`
+                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
+                    {
+                        className: 'w-10',
+                        render: (data, type, row) => {
+                            return `<span class="${['text-primary', 'text-blue', 'text-success'][row?.['state']]}">${row?.['state_detail']} ${['<i class="fa-solid fa-calendar-plus"></i>', '<i class="fa-solid fa-spinner"></i>', '<i class="fa-solid fa-check"></i>'][row?.['state']]}</span>`
+                        }
+                    }
                 ],
             });
         }

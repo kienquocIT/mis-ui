@@ -52,7 +52,7 @@ $(document).ready(function () {
                             let html = ``;
                             for (let i = 0; i < row?.['warehouses'].length; i++) {
                                 let item = row?.['warehouses'][i]
-                                html += `<span class="badge badge-sm badge-light mr-1">${item['code']}</span><span>${item['title']}</span><br>`
+                                html += `<span class="badge badge-sm badge-light mr-1">${item?.['code']}</span><span>${item?.['title']}</span><br>`
                             }
                             return html;
                         }

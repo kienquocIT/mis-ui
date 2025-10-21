@@ -22,7 +22,7 @@ class ServiceOrderPageHandler {
         formInstance.dataForm['work_order_data'] = ServiceOrder.getWorkOrderData();
         formInstance.dataForm['payment_data'] = ServiceOrder.getPaymentData();
         formInstance.dataForm['shipment'] = TabShipmentFunction.combineShipmentData();
-        formInstance.dataForm['expense'] = TabExpenseFunction.combineExpenseData();
+        formInstance.dataForm['expenses_data'] = TabExpenseFunction.combineExpenseData();
 
         ServiceOrderPageHandler.setTotalFields(formInstance);
         ServiceOrderPageHandler.setIndicatorData(formInstance);
@@ -383,9 +383,9 @@ class ServiceOrderPageHandler {
         ServiceOrder.loadPaymentRelatedData(paymentData);
 
         // Expense
-        tabExpenseElements.$preTaxAmount.attr('value', data?.expense_pretax_value || 0);
-        tabExpenseElements.$taxEle.attr('value', data?.expense_tax_value || 0);
-        tabExpenseElements.$totalValueEle.attr('value', data?.expense_total_value || 0);
-        TabExpenseFunction.initExpenseTable(data?.expense || [], isReadOnly);
+        tabExpenseElements.$preTaxAmount.attr('value', data?.['total_expense_pretax_amount'] || 0);
+        tabExpenseElements.$taxEle.attr('value', data?.['total_expense_tax'] || 0);
+        tabExpenseElements.$totalValueEle.attr('value', data?.['total_expense'] || 0);
+        TabExpenseFunction.initExpenseTable(data?.['expenses_data'] || [], isReadOnly);
     }
 }

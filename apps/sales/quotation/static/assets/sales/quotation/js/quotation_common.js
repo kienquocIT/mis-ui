@@ -2824,6 +2824,9 @@ class QuotationLoadDataHandle {
             for (let ele of table[0].querySelectorAll('.table-row-quantity')) {
                 ele.setAttribute('readonly', 'true');
             }
+            for (let ele of table[0].querySelectorAll('.table-row-quantity-time')) {
+                ele.setAttribute('readonly', 'true');
+            }
             for (let ele of table[0].querySelectorAll('.table-row-price')) {
                 ele.setAttribute('readonly', 'true');
             }
@@ -3123,7 +3126,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: '12%',
+                    width: '10%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -3197,7 +3200,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 6,
-                    width: '6%',
+                    width: '8%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -5501,6 +5504,10 @@ class QuotationCalculateCaseHandle {
         // Quotation: discount on row apply to subtotal => pretax includes discount on row => discount on total = pretax * %discountTotalRate
         // Sale order: discount on row not apply to subtotal => pretax not includes discount on row => discount on total = (pretax - discountRows) * %discountTotalRate
         let form = QuotationLoadDataHandle.$form[0];
+        let app = 'quotation';
+        if (form.classList.contains('sale-order')) {
+            app = 'sale_order';
+        }
         let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
         let tableCostWrapper = document.getElementById('datable-quotation-create-cost_wrapper');
         let tableExpenseWrapper = document.getElementById('datable-quotation-create-expense_wrapper');
@@ -5608,9 +5615,18 @@ class QuotationCalculateCaseHandle {
                 // calculate Discount Amount
                 let eleRowDiscount = row.querySelector('.table-row-discount-amount');
                 let eleRowQuantity = row.querySelector('.table-row-quantity');
-                if (eleRowDiscount && eleRowQuantity) {
+                let eleRowQuantityTime = row.querySelector('.table-row-quantity-time');
+                if (eleRowDiscount && eleRowQuantity && eleRowQuantityTime) {
                     if ($(eleRowDiscount).valCurrency() && $(eleRowQuantity).val()) {
-                        discountAmount += (parseFloat($(eleRowDiscount).valCurrency()) * parseFloat($(eleRowQuantity).val()));
+                        if (app === 'quotation') {
+                            discountAmount += parseFloat($(eleRowDiscount).valCurrency()) * parseFloat($(eleRowQuantity).val());
+                        }
+                        if (app === 'sale_order') {
+                            if ($(eleRowQuantityTime).val()) {
+                                discountAmount += parseFloat($(eleRowDiscount).valCurrency()) * parseFloat($(eleRowQuantity).val()) * parseFloat($(eleRowQuantityTime).val());
+                            }
+
+                        }
                     }
                 }
             });
@@ -5624,11 +5640,11 @@ class QuotationCalculateCaseHandle {
                     }
                 }
             }
-            if (form.classList.contains('sale-order')) {
+            if (app === 'sale_order') {
                 discountTotalRate = $('#quotation-copy-discount-on-total').val();
             }
             if (discountTotalRate && eleDiscount) {
-                if (!form.classList.contains('sale-order')) {  // quotation
+                if (app === 'quotation') {
                     discount_on_total = parseFloat(discountTotalRate);
                     discountAmount = ((pretaxAmount * discount_on_total) / 100);
                     // check if shipping fee then minus before calculate discount
@@ -5636,7 +5652,8 @@ class QuotationCalculateCaseHandle {
                         discountAmount = (((pretaxAmount - shippingFee) * discount_on_total) / 100);
                     }
                     discountAmountTotal += discountAmount;
-                } else {  // sale order
+                }
+                if (app === 'sale_order') {
                     discount_on_total = parseFloat(discountTotalRate);
                     // check if shipping fee then minus before calculate discount
                     let discountAmountOnTotal = (((pretaxAmount - discountAmount) * discount_on_total) / 100);
@@ -5664,9 +5681,10 @@ class QuotationCalculateCaseHandle {
             }
 
             if (finalRevenueBeforeTax) {
-                if (!form.classList.contains('sale-order')) {  // quotation (revenue = pretaxAmount - discountAmountTotal)
+                if (app === 'quotation') {  // quotation (revenue = pretaxAmount - discountAmountTotal)
                     finalRevenueBeforeTax.value = pretaxAmount - discountAmountTotal;
-                } else {  // sale order (revenue = pretaxAmount - discountAmount)
+                }
+                if (app === 'sale_order') {  // sale order (revenue = pretaxAmount - discountAmount)
                     finalRevenueBeforeTax.value = pretaxAmount - discountAmount;
                 }
             }
@@ -5703,19 +5721,21 @@ class QuotationCalculateCaseHandle {
                 quantity = 0;
             }
         }
-        let tax = 0;
         let discountRate = 0;
         let discount = 0;
         let subtotal = QuotationCalculateCaseHandle.rowSubtotal(price, quantity);
+        let subtotalAfterDiscount = 0;
+        let subtotalAfterDiscountTotal = 0;
+        let taxRate = 0;
+        let tax = 0;
         let eleUOMTime = row.querySelector('.table-row-uom-time');
         let eleQuantityTime = row.querySelector('.table-row-quantity-time');
-        let subtotalAfterDiscountTotal = 0;
         let eleTax = row.querySelector('.table-row-tax');
         if (eleTax) {
             if ($(eleTax).val()) {
                 let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
                 if (dataTax.hasOwnProperty('rate')) {
-                    tax = parseInt(dataTax.rate);
+                    taxRate = parseInt(dataTax.rate);
                 }
             }
         }
@@ -5739,8 +5759,7 @@ class QuotationCalculateCaseHandle {
                     discount = $(eleDiscountAmount).valCurrency();
                 }
                 if (price > 0) {
-                    let percent = (discount / price) * 100;
-                    discountRate = percent;
+                    discountRate = (discount / price) * 100;
                     // discountRate = Number(percent.toFixed(1));
                 }
                 $(eleDiscount).val(discountRate);
@@ -5748,6 +5767,9 @@ class QuotationCalculateCaseHandle {
             let priceAfterDiscount = (price - discount);
             if (app === 'quotation') {
                 subtotal = subtotal - QuotationCalculateCaseHandle.rowDiscount(subtotal, discountRate);
+            }
+            if (app === 'sale_order') {
+                subtotalAfterDiscount = subtotal - QuotationCalculateCaseHandle.rowDiscount(subtotal, discountRate);
             }
             // handle check discount total
             let discountRateTotal = 0;
@@ -5758,7 +5780,6 @@ class QuotationCalculateCaseHandle {
                         if (tableProductFt.querySelector('.quotation-create-product-discount').value) {
                             discountRateTotal = parseFloat(tableProductFt.querySelector('.quotation-create-product-discount').value);
                         }
-
                     }
                 }
             }
@@ -5784,6 +5805,7 @@ class QuotationCalculateCaseHandle {
             }
             if (isTime === true) {
                 subtotal = QuotationCalculateCaseHandle.rowSubtotal(subtotal, quantityTime);
+                subtotalAfterDiscount = QuotationCalculateCaseHandle.rowSubtotal(subtotalAfterDiscount, quantityTime);
             }
             let discountAmountOnTotal = ((priceAfterDiscount * discountRateTotal) / 100);
             // store discount amount
@@ -5793,19 +5815,25 @@ class QuotationCalculateCaseHandle {
                 }
             }
             subtotalAfterDiscountTotal = subtotal - QuotationCalculateCaseHandle.rowDiscount(subtotal, discountRateTotal);
-            if (isTime === true) {
-                subtotalAfterDiscountTotal = QuotationCalculateCaseHandle.rowSubtotal(subtotalAfterDiscountTotal, quantityTime);
-            }
+            // if (isTime === true) {
+            //     subtotalAfterDiscountTotal = QuotationCalculateCaseHandle.rowSubtotal(subtotalAfterDiscountTotal, quantityTime);
+            // }
             // calculate tax
             if (eleTaxAmount) {
-                let taxAmount = QuotationCalculateCaseHandle.rowTax(subtotalAfterDiscountTotal, tax);
-                $(eleTaxAmount).attr('value', String(taxAmount));
+                if (app === 'quotation') {
+                    tax = QuotationCalculateCaseHandle.rowTax(subtotalAfterDiscountTotal, taxRate);
+                }
+                if (app === 'sale_order') {
+                    let subSO = subtotalAfterDiscount - QuotationCalculateCaseHandle.rowDiscount(subtotalAfterDiscount, discountRateTotal);
+                    tax = QuotationCalculateCaseHandle.rowTax(subSO, taxRate);
+                }
+                $(eleTaxAmount).attr('value', String(tax));
             }
         } else {
             // calculate tax no discount on total
             if (eleTaxAmount) {
-                let taxAmount = QuotationCalculateCaseHandle.rowTax(subtotal, tax);
-                $(eleTaxAmount).attr('value', String(taxAmount));
+                tax = QuotationCalculateCaseHandle.rowTax(subtotal, taxRate);
+                $(eleTaxAmount).attr('value', String(tax));
             }
         }
         // set subtotal value
@@ -8073,21 +8101,6 @@ function filterDataProductNotPromotion(data_products) {
         }
     }
     return finalList
-}
-
-// math functions
-function max(data_list) {
-    return Math.max(...data_list);
-}
-
-function min(data_list) {
-    return Math.min(...data_list);
-}
-
-function sum() {
-    return Array.prototype.reduce.call(arguments, function (acc, val) {
-        return acc + val;
-    }, 0);
 }
 
 // date

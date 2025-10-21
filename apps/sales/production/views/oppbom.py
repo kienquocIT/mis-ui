@@ -75,6 +75,7 @@ class OpportunityBOMCreate(View):
     def get(self, request, *args, **kwargs):
         return {
             'list_from_app': 'production.bom.create',
+            'app_id': '2de9fb91-4fb9-48c8-b54e-c03bd12f952b'
         }, status.HTTP_200_OK
 
 
@@ -103,6 +104,7 @@ class OpportunityBOMUpdate(View):
     def get(self, request, *args, **kwargs):
         return {
             'list_from_app': 'production.bom.edit',
+            'app_id': '2de9fb91-4fb9-48c8-b54e-c03bd12f952b'
         }, status.HTTP_200_OK
 
 

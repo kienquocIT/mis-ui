@@ -629,7 +629,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     REPORT_INVENTORY_COST_LIST = StringUrl('report/inventory-cost-report/list')
     REPORT_INVENTORY_STOCK_LIST = StringUrl('report/inventory-stock-report/list')
     BALANCE_INIT_LIST = StringUrl('report/balance-init/list')
-    BALANCE_INIT_IMPORT_DB = StringUrl('report/balance-init-import-db')
     WAREHOUSE_AVAILABLE_PRODUCT_LIST = StringUrl('report/warehouse-available-product-list')
     WAREHOUSE_AVAILABLE_PRODUCT_DETAIL = StringUrl('report/warehouse-available-product-detail')
     REPORT_GENERAL_LIST = StringUrl('report/general/list')
@@ -852,6 +851,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     FINANCIAL_CASHOUTFLOW_DETAIL = StringUrl('financial-cashflow/cashoutflow/{pk}')
     PO_PAYMENT_STAGE_LIST_FOR_COF = StringUrl('financial-cashflow/po-payment-stage-list-for-cof')
     AP_INVOICE_PO_PAYMENT_STAGE_LIST_FOR_COF = StringUrl('financial-cashflow/ap-invoice-po-payment-stage-list-for-cof')
+    SO_EXPENSE_LIST_FOR_COF = StringUrl('financial-cashflow/so-expense-list-for-cof')
+    SO_LIST_FOR_COF = StringUrl('financial-cashflow/so-list-for-cof')
+    LO_EXPENSE_LIST_FOR_COF = StringUrl('financial-cashflow/lo-expense-list-for-cof')
+    LO_LIST_FOR_COF = StringUrl('financial-cashflow/lo-list-for-cof')
 
     # Recon
     FINANCIAL_RECON_LIST = StringUrl('financial-reconciliation/list')

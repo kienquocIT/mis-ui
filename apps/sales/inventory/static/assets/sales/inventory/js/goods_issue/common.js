@@ -2,7 +2,8 @@ const script_url = $('#script-url')
 const script_trans = $('#script-trans')
 const gis_type = $('#type')
 const IAEle = $('#box-select-ia')
-const POEle = $('#box-select-production-order')
+const POWOEle = $('#box-select-powo')
+const PMEle = $('#box-select-pm')
 const IAItemTable = $('#dtbProductIA')
 const POItemTable = $('#dtbProductProduction')
 const PMItemTable = $('#dtbProductPM')
@@ -59,34 +60,38 @@ class GISLoadPage {
                     render: (data, type, row) => {
                         return ``
                     }
-                }, {
-                    className: 'w-20',
-                    render: (data, type, row) => {
-                        return `<span class="badge badge-primary w-80">${row?.['code']}</span>`
-                    }
-                }, {
-                    className: 'w-35',
-                    render: (data, type, row) => {
-                        return `<span data-id="${row?.['id']}" class="ia-title text-primary">${row?.['title']}</span>`
-                    }
-                }, {
-                    className: 'w-20',
-                    render: (data, type, row) => {
-                        return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
-                    }
-                }, {
-                    className: 'text-right w-20',
+                },
+                {
+                    className: 'text-center w-5',
                     render: (data, type, row) => {
                         return `<div class="form-check">
                             <input ${row?.['id'] === selected_ia ? 'checked' : ''} type="radio" name="ia-group" class="ia-selected form-check-input">
                         </div>`
                     }
                 },
+                {
+                    className: 'w-50',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-sm badge-soft-secondary">${row?.['code']}</span><br><span data-id="${row?.['id']}" class="ia-title">${row?.['title']}</span>`
+                    }
+                },
+                {
+                    className: 'ellipsis-cell-sm w-20',
+                    render: (data, type, row) => {
+                        return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
+                    }
+                },
+                {
+                    className: 'ellipsis-cell-sm w-20',
+                    render: (data, type, row) => {
+                        return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
+                    }
+                },
             ],
         });
     }
     static LoadPOWO(dataList) {
-        let selected_powo = POEle.attr('data-id')
+        let selected_powo = POWOEle.attr('data-id')
         powo_table.DataTable().clear().destroy()
         powo_table.DataTableDefault({
             rowIdx: true,
@@ -102,27 +107,37 @@ class GISLoadPage {
                     render: (data, type, row) => {
                         return ``
                     }
-                }, {
-                    className: 'w-30',
-                    render: (data, type, row) => {
-                        return `<span class="badge badge-soft-primary">${row?.['app']}</span> <span class="badge badge-primary">${row?.['code']}</span>`
-                    }
-                }, {
-                    className: 'w-35',
-                    render: (data, type, row) => {
-                        return `<span data-id="${row?.['id']}" data-type="${row?.['type']}" class="powo-title text-primary">${row?.['title']}</span>`
-                    }
-                }, {
-                    className: 'w-20',
-                    render: (data, type, row) => {
-                        return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
-                    }
-                }, {
-                    className: 'text-right w-10',
+                },
+                {
+                    className: 'text-center w-5',
                     render: (data, type, row) => {
                         return `<div class="form-check">
                             <input ${row?.['id'] === selected_powo ? 'checked' : ''} type="radio" name="powo-group" class="powo-selected form-check-input">
                         </div>`
+                    }
+                },
+                {
+                    className: 'w-25',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['app']}</span>`
+                    }
+                },
+                {
+                    className: 'w-35',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-sm badge-soft-secondary">${row?.['code']}</span><br><span data-id="${row?.['id']}" data-type="${row?.['type']}" class="powo-title">${row?.['title']}</span>`
+                    }
+                },
+                {
+                    className: 'ellipsis-cell-sm w-15',
+                    render: (data, type, row) => {
+                        return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
+                    }
+                },
+                {
+                    className: 'ellipsis-cell-sm w-15',
+                    render: (data, type, row) => {
+                        return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                     }
                 },
             ],
@@ -144,63 +159,72 @@ class GISLoadTab {
             data: data_list,
             columns: [
                 {
+                    className: 'w-5',
                     render: () => {
                         return ``;
                     }
                 },
                 {
+                    className: 'w-15',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-primary">${row?.['product_mapped']?.['code'] || ''}</span>
-                                <br><span class="fw-bold text-primary">${row?.['product_mapped']?.['title'] || ''}</span>
-                                <br><span class="small">${row?.['product_mapped']?.['description'] || ''}</span>`;
+                        return `<span class="badge badge-sm badge-light">${row?.['product_mapped']?.['code'] || ''}</span><br>
+                                <span>${row?.['product_mapped']?.['title'] || ''}</span>`;
                     }
                 },
                 {
+                    className: 'w-15',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-blue">${row?.['warehouse_mapped']?.['code'] || ''}</span> <span>${row?.['warehouse_mapped']?.['title'] || ''}</span>`;
+                        return `<span>${row?.['product_mapped']?.['description'] || ''}</span>`;
                     }
                 },
                 {
-                    className: 'text-center',
+                    className: 'w-15',
                     render: (data, type, row) => {
-                        return `${row?.['uom_mapped']?.['title']}`;
+                        return `<span class="badge badge-sm badge-light">${row?.['warehouse_mapped']?.['code'] || ''}</span> <span>${row?.['warehouse_mapped']?.['title'] || ''}</span>`;
                     }
                 },
                 {
-                    className: 'text-center',
+                    className: 'w-10',
                     render: (data, type, row) => {
-                        return `<span class="sum-quantity">${row?.['sum_quantity'] ? row?.['sum_quantity'] : 0}</span>`;
+                        return `${row?.['uom_mapped']?.['title'] || ''}`;
                     }
                 },
                 {
-                    className: 'text-center',
+                    className: 'text-center w-10',
                     render: (data, type, row) => {
-                        return `<span class="before-quantity">${row?.['before_quantity'] ? row?.['before_quantity'] : 0}</span>`;
+                        return `<span class="sum-quantity">${row?.['sum_quantity'] || 0}</span>`;
                     }
                 },
                 {
-                    className: 'text-center',
+                    className: 'text-center w-10',
                     render: (data, type, row) => {
-                        return `<span class="remain-quantity">${row?.['remain_quantity'] ? row?.['remain_quantity'] : 0}</span>`;
+                        return `<span class="before-quantity">${row?.['before_quantity'] || 0}</span>`;
                     }
                 },
                 {
+                    className: 'text-center w-10',
+                    render: (data, type, row) => {
+                        return `<span class="remain-quantity">${row?.['remain_quantity'] || 0}</span>`;
+                    }
+                },
+                {
+                    className: 'w-10',
                     render: (data, type, row) => {
                         return `<div class="input-group">
-                                    <input readonly disabled class="form-control selected-quantity" type="number" value="${row?.['issued_quantity'] ? row?.['issued_quantity'] : 0}">
-                                    <button ${(row?.['product_mapped']?.['general_traceability_method'] === 0 && IS_DONE_GIS || row?.['issued_quantity'] === 0 && IS_DONE_GIS) ? 'disabled' : ''}
-                                            data-uom-id="${row?.['uom_mapped']?.['id']}"
-                                            data-uom-code="${row?.['uom_mapped']?.['code']}"
-                                            data-uom-title="${row?.['uom_mapped']?.['title']}"
-                                            data-prd-id="${row?.['product_mapped']?.['id']}"
-                                            data-prd-code="${row?.['product_mapped']?.['code']}"
-                                            data-prd-title="${row?.['product_mapped']?.['title']}"
-                                            data-prd-type="${row?.['product_mapped']?.['general_traceability_method']}"
-                                            data-wh-id="${row?.['warehouse_mapped']?.['id']}"
-                                            data-wh-code="${row?.['warehouse_mapped']?.['code']}"
-                                            data-wh-title="${row?.['warehouse_mapped']?.['title']}"
-                                            data-remain-quantity="${row?.['remain_quantity'] ? row?.['remain_quantity'] : 0}"
-                                            data-item-id="${row?.['id']}"
+                                    <input readonly disabled class="form-control selected-quantity" type="number" value="${row?.['issued_quantity'] || 0}">
+                                    <button ${((row?.['product_mapped']?.['general_traceability_method'] || '') === 0 && IS_DONE_GIS || (row?.['issued_quantity'] || '') === 0 && IS_DONE_GIS) ? 'disabled' : ''}
+                                            data-uom-id="${row?.['uom_mapped']?.['id'] || ''}"
+                                            data-uom-code="${row?.['uom_mapped']?.['code'] || ''}"
+                                            data-uom-title="${row?.['uom_mapped']?.['title'] || ''}"
+                                            data-prd-id="${row?.['product_mapped']?.['id'] || ''}"
+                                            data-prd-code="${row?.['product_mapped']?.['code'] || ''}"
+                                            data-prd-title="${row?.['product_mapped']?.['title'] || ''}"
+                                            data-prd-type="${row?.['product_mapped']?.['general_traceability_method'] || ''}"
+                                            data-wh-id="${row?.['warehouse_mapped']?.['id'] || ''}"
+                                            data-wh-code="${row?.['warehouse_mapped']?.['code'] || ''}"
+                                            data-wh-title="${row?.['warehouse_mapped']?.['title'] || ''}"
+                                            data-remain-quantity="${row?.['remain_quantity'] || 0}"
+                                            data-item-id="${row?.['id'] || ''}"
                                             data-bs-toggle="modal"
                                             data-bs-target="#select-detail-modal"
                                             type="button"
@@ -229,63 +253,72 @@ class GISLoadTab {
             data: data_list,
             columns: [
                 {
+                    className: 'w-5',
                     render: () => {
                         return ``;
                     }
                 },
                 {
+                    className: 'w-15',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-primary">${row?.['product_mapped']?.['code'] || ''}</span>
-                                <br><span class="fw-bold text-primary">${row?.['product_mapped']?.['title'] || ''}</span>
-                                <br><span class="small">${row?.['product_mapped']?.['description'] || ''}</span>`;
+                        return `<span class="badge badge-sm badge-light">${row?.['product_mapped']?.['code'] || ''}</span><br>
+                                <span>${row?.['product_mapped']?.['title'] || ''}</span>`;
                     }
                 },
                 {
+                    className: 'w-15',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['product_mapped']?.['description'] || ''}</span>`;
+                    }
+                },
+                {
+                    className: 'w-15',
                     render: (data, type, row) => {
                         return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 selected-warehouse"></select>`;
                     }
                 },
                 {
-                    className: 'text-center',
+                    className: 'w-10',
                     render: (data, type, row) => {
-                        return `${row?.['uom_mapped']?.['title']}`;
+                        return `${row?.['uom_mapped']?.['title'] || ''}`;
                     }
                 },
                 {
-                    className: 'text-center',
+                    className: 'text-center w-10',
                     render: (data, type, row) => {
-                        return `<span class="sum-quantity">${row?.['sum_quantity'] ? row?.['sum_quantity'] : 0}</span>`;
+                        return `<span class="sum-quantity">${row?.['sum_quantity'] || 0}</span>`;
                     }
                 },
                 {
-                    className: 'text-center',
+                    className: 'text-center w-10',
                     render: (data, type, row) => {
-                        return `<span class="before-quantity">${row?.['before_quantity'] ? row?.['before_quantity'] : 0}</span>`;
+                        return `<span class="before-quantity">${row?.['before_quantity'] || 0}</span>`;
                     }
                 },
                 {
-                    className: 'text-center',
+                    className: 'text-center w-10',
                     render: (data, type, row) => {
-                        return `<span class="remain-quantity">${row?.['remain_quantity'] ? row?.['remain_quantity'] : 0}</span>`;
+                        return `<span class="remain-quantity">${row?.['remain_quantity'] || 0}</span>`;
                     }
                 },
                 {
+                    className: 'w-10',
                     render: (data, type, row) => {
                         return `<div class="input-group">
-                                    <input readonly disabled class="form-control selected-quantity" type="number" value="${row?.['issued_quantity'] ? row?.['issued_quantity'] : 0}">
-                                    <button ${(row?.['product_mapped']?.['general_traceability_method'] === 0 && IS_DONE_GIS || row?.['issued_quantity'] === 0 && IS_DONE_GIS) ? 'disabled' : ''}
-                                            data-uom-id="${row?.['uom_mapped']?.['id']}"
-                                            data-uom-code="${row?.['uom_mapped']?.['code']}"
-                                            data-uom-title="${row?.['uom_mapped']?.['title']}"
-                                            data-prd-id="${row?.['product_mapped']?.['id']}"
-                                            data-prd-code="${row?.['product_mapped']?.['code']}"
-                                            data-prd-title="${row?.['product_mapped']?.['title']}"
-                                            data-prd-type="${row?.['product_mapped']?.['general_traceability_method']}"
-                                            data-wh-id="${row?.['warehouse_mapped']?.['id']}"
-                                            data-wh-code="${row?.['warehouse_mapped']?.['code']}"
-                                            data-wh-title="${row?.['warehouse_mapped']?.['title']}"
-                                            data-remain-quantity="${row?.['remain_quantity'] ? row?.['remain_quantity'] : 0}"
-                                            data-item-id="${row?.['id']}"
+                                    <input readonly disabled class="form-control selected-quantity" type="number" value="${row?.['issued_quantity']|| 0}">
+                                    <button ${((row?.['product_mapped']?.['general_traceability_method'] || '') === 0 && IS_DONE_GIS || (row?.['issued_quantity'] || '') === 0 && IS_DONE_GIS) ? 'disabled' : ''}
+                                            data-uom-id="${row?.['uom_mapped']?.['id'] || ''}"
+                                            data-uom-code="${row?.['uom_mapped']?.['code'] || ''}"
+                                            data-uom-title="${row?.['uom_mapped']?.['title'] || ''}"
+                                            data-prd-id="${row?.['product_mapped']?.['id'] || ''}"
+                                            data-prd-code="${row?.['product_mapped']?.['code'] || ''}"
+                                            data-prd-title="${row?.['product_mapped']?.['title'] || ''}"
+                                            data-prd-type="${row?.['product_mapped']?.['general_traceability_method'] || ''}"
+                                            data-wh-id="${row?.['warehouse_mapped']?.['id'] || ''}"
+                                            data-wh-code="${row?.['warehouse_mapped']?.['code'] || ''}"
+                                            data-wh-title="${row?.['warehouse_mapped']?.['title'] || ''}"
+                                            data-remain-quantity="${row?.['remain_quantity'] || 0}"
+                                            data-item-id="${row?.['id'] || ''}"
                                             data-bs-toggle="modal"
                                             data-bs-target="#select-detail-modal"
                                             type="button"
@@ -321,51 +354,60 @@ class GISLoadTab {
             data: data_list,
             columns: [
                 {
-                        render: () => {
+                    className: 'w-5',
+                    render: () => {
                         return ``;
                     }
                 },
                 {
+                    className: 'w-35',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-primary">${row?.['product_mapped']?.['code'] || ''}</span>
-                                <br><span class="fw-bold text-primary">${row?.['product_mapped']?.['title'] || ''}</span>
-                                <br><span class="small">${row?.['product_mapped']?.['description'] || ''}</span>`;
+                        return `<span class="badge badge-sm badge-light">${row?.['product_mapped']?.['code'] || ''}</span><br>
+                                <span>${row?.['product_mapped']?.['title'] || ''}</span>`;
                     }
                 },
                 {
+                    className: 'w-20',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-blue">${row?.['warehouse_mapped']?.['code'] || ''}</span> <span>${row?.['warehouse_mapped']?.['title'] || ''}</span>`;
+                        return `<span>${row?.['product_mapped']?.['description'] || ''}</span>`;
                     }
                 },
                 {
-                    className: 'text-center',
+                    className: 'w-10',
                     render: (data, type, row) => {
-                        return `${row?.['uom_mapped']?.['title']}`;
+                        return `<span class="badge badge-sm badge-light">${row?.['warehouse_mapped']?.['code'] || ''}</span> <span>${row?.['warehouse_mapped']?.['title'] || ''}</span>`;
                     }
                 },
                 {
-                    className: 'text-center',
+                    className: 'w-10',
                     render: (data, type, row) => {
-                        return `<span class="sum-quantity">${row?.['sum_quantity'] ? row?.['sum_quantity'] : 0}</span>`;
+                        return `${row?.['uom_mapped']?.['title'] || ''}`;
                     }
                 },
                 {
+                    className: 'text-center w-10',
+                    render: (data, type, row) => {
+                        return `<span class="sum-quantity">${row?.['sum_quantity'] || 0}</span>`;
+                    }
+                },
+                {
+                    className: 'w-10',
                     render: (data, type, row) => {
                         return `<div class="input-group">
-                                    <input readonly disabled class="form-control selected-quantity" type="number" value="${row?.['issued_quantity'] ? row?.['issued_quantity'] : 0}">
-                                    <button ${(row?.['product_mapped']?.['general_traceability_method'] === 0 && IS_DONE_GIS || row?.['issued_quantity'] === 0 && IS_DONE_GIS) ? 'disabled' : ''}
-                                            data-uom-id="${row?.['uom_mapped']?.['id']}"
-                                            data-uom-code="${row?.['uom_mapped']?.['code']}"
-                                            data-uom-title="${row?.['uom_mapped']?.['title']}"
-                                            data-prd-id="${row?.['product_mapped']?.['id']}"
-                                            data-prd-code="${row?.['product_mapped']?.['code']}"
-                                            data-prd-title="${row?.['product_mapped']?.['title']}"
-                                            data-prd-type="${row?.['product_mapped']?.['general_traceability_method']}"
-                                            data-wh-id="${row?.['warehouse_mapped']?.['id']}"
-                                            data-wh-code="${row?.['warehouse_mapped']?.['code']}"
-                                            data-wh-title="${row?.['warehouse_mapped']?.['title']}"
-                                            data-remain-quantity="${row?.['remain_quantity'] ? row?.['remain_quantity'] : 0}"
-                                            data-item-id="${row?.['id']}"
+                                    <input readonly disabled class="form-control selected-quantity" type="number" value="${row?.['issued_quantity'] || 0}">
+                                    <button ${((row?.['product_mapped']?.['general_traceability_method'] || '') === 0 && IS_DONE_GIS || (row?.['issued_quantity'] || '') === 0 && IS_DONE_GIS) ? 'disabled' : ''}
+                                            data-uom-id="${row?.['uom_mapped']?.['id'] || ''}"
+                                            data-uom-code="${row?.['uom_mapped']?.['code'] || ''}"
+                                            data-uom-title="${row?.['uom_mapped']?.['title'] || ''}"
+                                            data-prd-id="${row?.['product_mapped']?.['id'] || ''}"
+                                            data-prd-code="${row?.['product_mapped']?.['code'] || ''}"
+                                            data-prd-title="${row?.['product_mapped']?.['title'] || ''}"
+                                            data-prd-type="${row?.['product_mapped']?.['general_traceability_method'] || ''}"
+                                            data-wh-id="${row?.['warehouse_mapped']?.['id'] || ''}"
+                                            data-wh-code="${row?.['warehouse_mapped']?.['code'] || ''}"
+                                            data-wh-title="${row?.['warehouse_mapped']?.['title'] || ''}"
+                                            data-remain-quantity="${row?.['remain_quantity'] || 0}"
+                                            data-item-id="${row?.['id'] || ''}"
                                             data-bs-toggle="modal"
                                             data-bs-target="#select-detail-modal"
                                             type="button"
@@ -579,7 +621,7 @@ class GISHandle {
                         gis_type.val(0)
                         IAEle.val(data?.['inventory_adjustment']?.['title'])
                         IAEle.attr('data-id', data?.['inventory_adjustment']?.['id'])
-                        $('#inventory-adjustment-select-space').prop('hidden', false)
+                        $('#ia-select-space').prop('hidden', false)
                         GISLoadTab.DrawTableIAItems(data?.['detail_data_ia'])
                         IAItemTableDiv.prop('hidden', false)
                         POItemTableDiv.prop('hidden', true)
@@ -590,32 +632,31 @@ class GISHandle {
                     else if (data?.['goods_issue_type'] === 2) {
                         gis_type.val(2)
                         if (Object.keys(data?.['production_order']).length > 0) {
-                            POEle.val(data?.['production_order']?.['title'])
-                            POEle.attr('data-id', data?.['production_order']?.['id'])
-                            POEle.attr('data-type', 0)
-                            $('#inventory-adjustment-select-space').prop('hidden', true)
-                            $('#production-order-select-space').prop('hidden', false)
+                            POWOEle.val(data?.['production_order']?.['title'])
+                            POWOEle.attr('data-id', data?.['production_order']?.['id'])
+                            POWOEle.attr('data-type', 0)
                             GISLoadTab.DrawTablePOItems(data?.['detail_data_po'], option)
-                            IAItemTableDiv.prop('hidden', true)
-                            POItemTableDiv.prop('hidden', false)
-                            PMItemTableDiv.prop('hidden', true)
                         }
                         else {
-                            POEle.val(data?.['work_order']?.['title'])
-                            POEle.attr('data-id', data?.['work_order']?.['id'])
-                            POEle.attr('data-type', 1)
-                            $('#inventory-adjustment-select-space').prop('hidden', true)
-                            $('#production-order-select-space').prop('hidden', false)
+                            POWOEle.val(data?.['work_order']?.['title'])
+                            POWOEle.attr('data-id', data?.['work_order']?.['id'])
+                            POWOEle.attr('data-type', 1)
                             GISLoadTab.DrawTablePOItems(data?.['detail_data_wo'], option)
-                            IAItemTableDiv.prop('hidden', true)
-                            POItemTableDiv.prop('hidden', false)
-                            PMItemTableDiv.prop('hidden', true)
                         }
+                        $('#ia-select-space').prop('hidden', true)
+                        $('#powo-select-space').prop('hidden', false)
+                        $('#pm-select-space').prop('hidden', true)
+                        IAItemTableDiv.prop('hidden', true)
+                        POItemTableDiv.prop('hidden', false)
+                        PMItemTableDiv.prop('hidden', true)
                     }
                     else if (data?.['goods_issue_type'] === 3) {
                         gis_type.val(3)
-                        $('#inventory-adjustment-select-space').prop('hidden', true)
-                        $('#production-order-select-space').prop('hidden', true)
+                        $('#ia-select-space').prop('hidden', true)
+                        $('#powo-select-space').prop('hidden', true)
+                        $('#pm-select-space').prop('hidden', false)
+
+                        PMEle.val(data?.['product_modification']?.['title'])
 
                         const merged = {}
                         for (const item of (data?.['detail_data_pm'] || [])) {
@@ -636,8 +677,6 @@ class GISHandle {
                                 mergedItem.sn_data = mergedItem.sn_data.concat(item.sn_data);
                             }
                         }
-
-                        console.log(merged)
 
                         const result = Object.values(merged);
 
@@ -689,9 +728,9 @@ class GISHandle {
         }
         else if (gis_type.val() === '2') {
             frm.dataForm['goods_issue_type'] = 2
-            let type = POEle.attr('data-type')
+            let type = POWOEle.attr('data-type')
             if (type === '0') {
-                frm.dataForm['production_order_id'] = POEle.attr('data-id')
+                frm.dataForm['production_order_id'] = POWOEle.attr('data-id')
                 POItemTable.find('tbody tr').each(function () {
                     let row = $(this);
                     detail_data_po.push({
@@ -708,7 +747,7 @@ class GISHandle {
                 })
             }
             else {
-                frm.dataForm['work_order_id'] = POEle.attr('data-id')
+                frm.dataForm['work_order_id'] = POWOEle.attr('data-id')
                 POItemTable.find('tbody tr').each(function () {
                     let row = $(this);
                     detail_data_wo.push({
@@ -741,16 +780,16 @@ gis_type.on('change', function () {
     if ($(this).val() === '0') {
         GISLoadPage.LoadIA()
         GISLoadTab.DrawTableIAItems()
-        $('#inventory-adjustment-select-space').prop('hidden', false)
-        $('#production-order-select-space').prop('hidden', true)
+        $('#ia-select-space').prop('hidden', false)
+        $('#powo-select-space').prop('hidden', true)
         IAItemTableDiv.prop('hidden', false)
         POItemTableDiv.prop('hidden', true)
     }
     else if ($(this).val() === '2') {
         GISLoadPage.LoadPOWO()
         GISLoadTab.DrawTablePOItems()
-        $('#inventory-adjustment-select-space').prop('hidden', true)
-        $('#production-order-select-space').prop('hidden', false)
+        $('#ia-select-space').prop('hidden', true)
+        $('#powo-select-space').prop('hidden', false)
         IAItemTableDiv.prop('hidden', true)
         POItemTableDiv.prop('hidden', false)
     }
@@ -1131,15 +1170,15 @@ btn_accept_select_ia.on('click', function () {
 btn_accept_select_powo.on('click', function () {
     powo_table.find('tbody tr').each(function () {
         if ($(this).find('.powo-selected').prop('checked')) {
-            POEle.val($(this).find('.powo-title').text())
-            POEle.attr('data-id', $(this).find('.powo-title').attr('data-id'))
-            POEle.attr('data-type', $(this).find('.powo-title').attr('data-type'))
+            POWOEle.val($(this).find('.powo-title').text())
+            POWOEle.attr('data-id', $(this).find('.powo-title').attr('data-id'))
+            POWOEle.attr('data-type', $(this).find('.powo-title').attr('data-type'))
 
             let type = $(this).find('.powo-title').attr('data-type')
             if (type === '0') {
                 let dataParam = {}
                 let po_detail_ajax = $.fn.callAjax2({
-                    url: `${script_url.attr('data-url-po').replace('/0', `/${POEle.attr('data-id')}`)}`,
+                    url: `${script_url.attr('data-url-po').replace('/0', `/${POWOEle.attr('data-id')}`)}`,
                     data: dataParam,
                     method: 'GET'
                 }).then(
@@ -1164,7 +1203,7 @@ btn_accept_select_powo.on('click', function () {
             else {
                 let dataParam = {}
                 let wo_detail_ajax = $.fn.callAjax2({
-                    url: `${script_url.attr('data-url-wo').replace('/0', `/${POEle.attr('data-id')}`)}`,
+                    url: `${script_url.attr('data-url-wo').replace('/0', `/${POWOEle.attr('data-id')}`)}`,
                     data: dataParam,
                     method: 'GET'
                 }).then(

@@ -3,7 +3,6 @@
 {% block title %}{% trans 'Goods Issue List' %}{% endblock %}
 {% block cssHeader %}
 {% endblock %}
-
 {% block pageAction %}
     <a href="{% url 'GoodsIssueCreate' %}"
        data-bs-toggle="tooltip"
@@ -20,7 +19,6 @@
         </button>
     </a>
 {% endblock %}
-
 {% block pageContent %}
     <script hidden id="direct-btn-group-url"
         data-url-list-api="{% url 'GoodsIssueListAPI' %}"
@@ -42,19 +40,19 @@
             >
                 <thead>
                     <tr>
-                        <th></th>
+                        <th style="min-width: 50px"></th>
                         <th style="min-width: 100px">{% trans "Code" %}</th>
                         <th style="min-width: 300px">{% trans "Name" %}</th>
                         <th style="min-width: 150px">{% trans 'Type' %}</th>
+                        <th style="min-width: 150px">{% trans 'Employee created' %}</th>
                         <th style="min-width: 150px">{% trans 'Created date' %}</th>
-                        <th style="min-width: 80px">{% trans "System status" %}</th>
+                        <th style="min-width: 80px">{% trans 'System status' %}</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
         </div>
     </div>
-
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/sales/inventory/js/goods_issue/list.js' %}"></script>

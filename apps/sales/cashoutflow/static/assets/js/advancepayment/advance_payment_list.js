@@ -99,7 +99,6 @@ function InitAdvancePaymentTable(data_param={}) {
                 }
             },
             {
-                targets: 7,
                 className: 'w-10',
                 render: (data, type, row) => {
                     return $x.fn.displayRelativeTime(row?.['return_date'], {'outputFormat': 'DD/MM/YYYY'});
@@ -127,7 +126,7 @@ function InitAdvancePaymentTable(data_param={}) {
                 }
             },
             {
-                className: 'text-center status-col bg-white w-5',
+                className: 'text-center w-5',
                 render: (data, type, row) => {
                     return WFRTControl.displayRuntimeStatus(row?.['system_status']);
                 }

@@ -38,9 +38,8 @@
                     <th style="min-width: 150px">{% trans "Return date" %}</th>
                     <th style="min-width: 150px">{% trans "Employee created" %}</th>
                     <th style="min-width: 150px">{% trans "Date created" %}</th>
-                    <th style="min-width: 100px">{% trans "Loan product" %}</th>
                     <th style="min-width: 80px">{% trans "System status" %}</th>
-                    <th style="min-width: 100px">{% trans "State" %}</th>
+                    <th style="min-width: 120px">{% trans "State" %}</th>
                 </tr>
                 </thead>
             </table>
@@ -48,33 +47,6 @@
     </div>
 {% endblock %}
 {% block modalData %}
-    <div class="modal fade" id="modal-detail-product-loan" tabindex="-1" role="dialog" aria-labelledby="modal-detail-product-loan">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Loan product' %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-12">
-                            <table class="table nowrap w-100" id="table-loan-product">
-                                <thead class="bg-secondary-light-5">
-                                    <tr>
-                                        <th></th>
-                                        <th>{% trans 'Product' %}</th>
-                                        <th>{% trans 'Quantity' %}</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/equipmentloan/equipment_loan_list.js' %}"></script>

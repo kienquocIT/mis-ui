@@ -116,9 +116,12 @@ $(document).ready(function () {
                 rowIdx: true,
                 useDataServer: true,
                 reloadCurrency: true,
+                scrollX: true,
+                scrollY: '45vh',
+                scrollCollapse: true,
                 paging: false,
                 ajax: {
-                    url: wh_list_table.attr('data-url'),
+                    url: wh_list_table.attr('data-url') + '?get_all_active=1',
                     type: 'GET',
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
@@ -143,12 +146,12 @@ $(document).ready(function () {
                     },
                     {
                         render: (data, type, row) => {
-                            return `<span class="badge badge-sm badge-secondary">${row?.['code']}</span> <span>${row?.['title']}</span>`;
+                            return `<span class="badge badge-sm badge-light">${row?.['code']}</span><br><span>${row?.['title']}</span>`;
                         }
                     },
                     {
                         render: (data, type, row) => {
-                            return `<span>${row?.['full_address']}</span>`;
+                            return `<span>${row?.['detail_address'] || ''}</span>`;
                         }
                     },
                 ],

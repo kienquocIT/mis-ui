@@ -168,10 +168,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Quotation
     QUOTATION_CONFIG_PAGE = BreadcrumbChildren(_('Quotation'), 'QuotationConfigDetail')
-    QUOTATION_LIST_PAGE = BreadcrumbChildren(_('Quotation'), 'QuotationList')
-    QUOTATION_CREATE_PAGE = BreadcrumbChildren(_('Quotation create'), 'QuotationCreate')
-    QUOTATION_DETAIL_PAGE = BreadcrumbChildren(_('Quotation detail'))
-    QUOTATION_UPDATE_PAGE = BreadcrumbChildren(_('Quotation update'))
+    QUOTATION_LIST_PAGE = BreadcrumbChildren(_('Sale quotation'), 'QuotationList')
+    QUOTATION_CREATE_PAGE = BreadcrumbChildren(_('Sale quotation create'), 'QuotationCreate')
+    QUOTATION_DETAIL_PAGE = BreadcrumbChildren(_('Sale quotation detail'))
+    QUOTATION_UPDATE_PAGE = BreadcrumbChildren(_('Sale quotation update'))
 
     # Bidding
     BIDDING_LIST_PAGE = BreadcrumbChildren(_('Bidding list'), 'BiddingList')
@@ -190,7 +190,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     SALE_ORDER_UPDATE_PAGE = BreadcrumbChildren(_('Sale order update'))
 
     # WareHouse
-    WAREHOUSE_LIST_PAGE = BreadcrumbChildren(_('Warehouse'), 'WareHouseList')
+    WAREHOUSE_LIST_PAGE = BreadcrumbChildren(_('Warehouse list'), 'WareHouseList')
 
     # Good receipt
     GOOD_RECEIPT_LIST_PAGE = BreadcrumbChildren(_('Good receipt'), 'GoodReceiptList')

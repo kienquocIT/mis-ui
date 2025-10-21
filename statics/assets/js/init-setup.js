@@ -353,11 +353,20 @@ class MaskMoney2 {
                 let dataCompany = SelectDDControl.get_data_from_idx($currencyCompanyEle, $currencyCompanyEle.val());
                 let dataExchange = SelectDDControl.get_data_from_idx($currencyExchangeEle, $currencyExchangeEle.val());
                 dataSubmit['is_currency_exchange'] = $currencyAllowEle[0].checked;
-                dataSubmit['currency_company_id'] = $currencyCompanyEle.val();
-                dataSubmit['currency_company_data'] = dataCompany;
-                dataSubmit['currency_exchange_id'] = $currencyExchangeEle.val();
-                dataSubmit['currency_exchange_data'] = dataExchange;
-                dataSubmit['currency_exchange_rate'] = dataExchange?.['rate'] ? dataExchange?.['rate'] : 1;
+                if ($currencyAllowEle[0].checked === true) {
+                    dataSubmit['currency_company_id'] = $currencyCompanyEle.val();
+                    dataSubmit['currency_company_data'] = dataCompany;
+                    dataSubmit['currency_exchange_id'] = $currencyExchangeEle.val();
+                    dataSubmit['currency_exchange_data'] = dataExchange;
+                    dataSubmit['currency_exchange_rate'] = dataExchange?.['rate'] ? dataExchange?.['rate'] : 1;
+                }
+                if ($currencyAllowEle[0].checked === false) {
+                    dataSubmit['currency_company_id'] = null;
+                    dataSubmit['currency_company_data'] = {};
+                    dataSubmit['currency_exchange_id'] = null;
+                    dataSubmit['currency_exchange_data'] = {};
+                    dataSubmit['currency_exchange_rate'] = 1;
+                }
             }
         }
         return dataSubmit;
@@ -392,7 +401,7 @@ class MaskMoney2 {
         this.configData = configData;
     }
 
-    applyConfig(other_abbreviation, strAttrValue) {
+    applyConfig($ele, strAttrValue) {
         let strDataParsed = parseFloat(strAttrValue);
         if (strAttrValue !== null && Number.isFinite(strDataParsed)) {
             // strAttrValue = strDataParsed.toString();
@@ -405,16 +414,32 @@ class MaskMoney2 {
             let thousand = this.configData?.['thousands'];
             let precision = parseInt(this.configData?.['precision']);
 
-            if (other_abbreviation) {
-                if (prefix) {
-                    prefix = prefix.replace(prefix.trim(), other_abbreviation)
+            if ($ele) {
+                let other_abbreviation = $ele.attr('data-other-abbreviation');
+                if (other_abbreviation) {
+                    if (prefix) {
+                        prefix = prefix.replace(prefix.trim(), other_abbreviation)
+                    }
+                    if (suffix) {
+                        suffix = suffix.replace(suffix.trim(), other_abbreviation)
+                    }
                 }
-                if (suffix) {
-                    suffix = suffix.replace(suffix.trim(), other_abbreviation)
+                // Check has data exchange
+                let dataExchange = $ele.attr('data-exchange');
+                if (dataExchange) {
+                    let dataExchangeParse = JSON.parse($ele.attr('data-exchange'));
+                    if (dataExchangeParse?.['currency_exchange_data']?.['abbreviation']) {
+                        if (prefix) {
+                            prefix = dataExchangeParse?.['currency_exchange_data']?.['abbreviation'];
+                        }
+                        if (suffix) {
+                            suffix = dataExchangeParse?.['currency_exchange_data']?.['abbreviation'];
+                        }
+                    }
                 }
             }
 
-            // Check currency exchange
+            // Check currency exchange global
             let $currencyExchangeEle = $('#currency_exchange_id');
             if ($currencyExchangeEle) {
                 let dataSelected = SelectDDControl.get_data_from_idx($currencyExchangeEle, $currencyExchangeEle.val());
@@ -459,11 +484,11 @@ class MaskMoney2 {
         // inputOrDisplay choice in ['input', 'display']
         switch (inputOrDisplay) {
             case 'input':
-                $($ele).val(this.applyConfig($($ele).attr('data-other-abbreviation'), $($ele).attr('value')));
+                $($ele).val(this.applyConfig($($ele), $($ele).attr('value')));
                 this.runAllowExchange($($ele), $($ele).attr('value'), inputOrDisplay);
                 break
             case 'display':
-                $($ele).text(this.applyConfig($($ele).attr('data-other-abbreviation'), $($ele).attr('data-init-money')));
+                $($ele).text(this.applyConfig($($ele), $($ele).attr('data-init-money')));
                 this.runAllowExchange($($ele), $($ele).attr('data-init-money'), inputOrDisplay);
                 break
             default:
@@ -520,13 +545,14 @@ class MaskMoney2 {
     }
 
     applyMaskMoneyExchange($ele, value, inputOrDisplay) {
+        $ele.attr("data-bs-toggle", "tooltip");
+        $ele.attr("data-bs-placement", "bottom");
         switch (inputOrDisplay) {
             case 'input':
-                $ele.text(this.applyConfigExchange(value));
-                // $ele.html(`<span class="fs-5 mr-1">~</span>${this.applyConfigExchange(value)}`);
+                $ele.attr('title', this.applyConfigExchange(value));
                 break
             case 'display':
-                $ele.text(this.applyConfigExchange(value));
+                $ele.attr('title', this.applyConfigExchange(value));
                 break
             default:
                 if ($.fn.isDebug() === true) throw Error('strData must be required!')
@@ -537,12 +563,9 @@ class MaskMoney2 {
     runAllowExchange($ele, value, inputOrDisplay) {
         let $currencyAllowEle = $('#is_currency_exchange');
         if ($currencyAllowEle.length > 0) {
-            MaskMoney2.appendTextExchangeMoney($($ele));
+            // MaskMoney2.appendTextExchangeMoney($($ele));
             if ($currencyAllowEle.is(':checked')) {
-                let $next = $ele.next('.mask-money-exchange');
-                if ($next.length > 0) {
-                    this.applyMaskMoneyExchange($next, value, inputOrDisplay);
-                }
+                this.applyMaskMoneyExchange($ele, value, inputOrDisplay);
             }
         }
         return true;
@@ -2439,6 +2462,7 @@ class WFRTControl {
             // check currency
             let dataCurrency = MaskMoney2.setupSubmitCurrencyExchange();
             if (Object.keys(dataCurrency).length !== 0) {
+                _form.dataForm['is_currency_exchange'] = dataCurrency?.['is_currency_exchange'];
                 _form.dataForm['currency_company_id'] = dataCurrency?.['currency_company_id'];
                 _form.dataForm['currency_company_data'] = dataCurrency?.['currency_company_data'];
                 _form.dataForm['currency_exchange_id'] = dataCurrency?.['currency_exchange_id'];
@@ -2521,8 +2545,9 @@ class WFRTControl {
                                 if (_form.dataForm['system_status'] === 1) {  // WF
 
                                     // check submit baseline
-                                    if ($formEle.attr('data-baseline') === 'true') {
+                                    if (appBaseline.includes(appID)) {
                                         _form.dataForm['system_status'] = 0;
+                                        _form.dataForm['run_baseline'] = true;
                                     }
 
                                     WFRTControl.submitCheckAssociation(_form, associationData, 0);
@@ -2561,13 +2586,14 @@ class WFRTControl {
                     let $formEle = _form.formSelected;
                     let docData = WFRTControl.getRuntimeDocData();
                     let associationData = WFAssociateControl.checkNextNode(_form.dataForm);
-                    if ($formEle.attr('data-baseline') === 'true' && docData?.['id']) {
+                    if (_form.dataForm?.['run_baseline'] === true && docData?.['id']) {
                         let docRootID = docData?.['id'];
                         _form.dataMethod = 'POST';
                         _form.dataUrl = $formEle.attr('data-url-cr');
                         _form.dataForm['document_root_id'] = docRootID;
                         _form.dataForm['system_status'] = 1;
                         WFRTControl.submitCheckAssociation(_form, associationData, 0);
+                        _form.dataForm['run_baseline'] = false;
                     }
 
                     setTimeout(() => {

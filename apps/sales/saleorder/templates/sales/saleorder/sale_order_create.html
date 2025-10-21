@@ -123,44 +123,51 @@
 
         <div class="row">
             <div class="row">
-                <ul class="nav nav-pills-bfl" id="quotation-tabs">
-                    <li class="nav-item tab-detail" data-zone="sale_order_products_data">
-                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
-                            <span class="nav-icon-wrap mr-1"><i class="fas fa-cube"></i></span>
-                            <span class="nav-link-text">{% trans 'Product' %}</span>
-                        </a>
-                    </li>
-                    <li class="nav-item tab-cost" data-zone="sale_order_costs_data">
-                        <a class="nav-link" data-bs-toggle="tab" href="#tab_cost">
-                            <span class="nav-icon-wrap mr-1"><i class="fas fa-dollar-sign"></i></span>
-                            <span class="nav-link-text">{% trans 'Cost' %}</span>
-                        </a>
-                    </li>
-                    <li class="nav-item tab-expense" data-zone="sale_order_expenses_data">
-                        <a class="nav-link" data-bs-toggle="tab" href="#tab_expense">
-                            <span class="nav-icon-wrap mr-1"><i class="fas fa-hand-holding-usd"></i></span>
-                            <span class="nav-link-text">{% trans 'Expense' %}</span>
-                        </a>
-                    </li>
-                    <li class="nav-item tab-payment">
-                        <a class="nav-link" data-bs-toggle="tab" href="#tab_payment">
-                            <span class="nav-icon-wrap mr-1"><i class="fas fa-receipt"></i></span>
-                            <span class="nav-link-text">{% trans 'Payment' %}</span>
-                        </a>
-                    </li>
-                    <li class="nav-item tab-logistic">
-                        <a class="nav-link" data-bs-toggle="tab" href="#tab_logistic">
-                            <span class="nav-icon-wrap mr-1"><i class="fas fa-truck"></i></span>
-                            <span class="nav-link-text">{% trans 'Logistics' %}</span>
-                        </a>
-                    </li>
-                    <li class="nav-item tab-attachment">
-                        <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
-                            <span class="nav-icon-wrap mr-1"><i class="fas fa-paperclip"></i></span>
-                            <span class="nav-link-text">{% trans 'Attachment' %}</span>
-                        </a>
-                    </li>
-                </ul>
+                <div class="col-12 col-md-6 col-lg-6">
+                    <ul class="nav nav-pills-bfl" id="quotation-tabs">
+                        <li class="nav-item tab-detail" data-zone="sale_order_products_data">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
+                                <span class="nav-icon-wrap mr-1"><i class="fas fa-cube"></i></span>
+                                <span class="nav-link-text">{% trans 'Product' %}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item tab-cost" data-zone="sale_order_costs_data">
+                            <a class="nav-link" data-bs-toggle="tab" href="#tab_cost">
+                                <span class="nav-icon-wrap mr-1"><i class="fas fa-dollar-sign"></i></span>
+                                <span class="nav-link-text">{% trans 'Cost' %}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item tab-expense" data-zone="sale_order_expenses_data">
+                            <a class="nav-link" data-bs-toggle="tab" href="#tab_expense">
+                                <span class="nav-icon-wrap mr-1"><i class="fas fa-hand-holding-usd"></i></span>
+                                <span class="nav-link-text">{% trans 'Expense' %}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item tab-payment">
+                            <a class="nav-link" data-bs-toggle="tab" href="#tab_payment">
+                                <span class="nav-icon-wrap mr-1"><i class="fas fa-receipt"></i></span>
+                                <span class="nav-link-text">{% trans 'Payment' %}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item tab-logistic">
+                            <a class="nav-link" data-bs-toggle="tab" href="#tab_logistic">
+                                <span class="nav-icon-wrap mr-1"><i class="fas fa-truck"></i></span>
+                                <span class="nav-link-text">{% trans 'Logistics' %}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item tab-attachment">
+                            <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
+                                <span class="nav-icon-wrap mr-1"><i class="fas fa-paperclip"></i></span>
+                                <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="d-flex justify-content-end">
+{#                        {% include 'extends/currency/all.html' %}#}
+                    </div>
+                </div>
             </div>
 
             <div class="tab-content" id="tab-content-quotation-product">
@@ -176,9 +183,9 @@
                                 <th>{% trans 'Product' %}</th>
                                 <th>{% trans 'Serial no.' %}</th>
                                 <th>{% trans 'Description' %}</th>
-                                <th>{% trans 'UoM' %}</th>
+                                <th>{% trans 'UOM' %}</th>
                                 <th>{% trans 'Quantity' %}</th>
-                                <th>{% trans 'Duration UoM' %}</th>
+                                <th>{% trans 'Duration UOM' %}</th>
                                 <th>{% trans 'Duration' %}</th>
                                 <th>{% trans 'Unit Price' %}</th>
                                 <th>{% trans 'Discount' %}</th>
@@ -347,7 +354,7 @@
                                 <th>{% trans 'Product' %}</th>
                                 <th>{% trans 'Serial no.' %}</th>
                                 <th>{% trans 'Description' %}</th>
-                                <th>{% trans 'supplied by' %}</th>
+                                <th>{% trans 'Supplied by' %}</th>
                                 <th>{% trans 'UOM' %}</th>
                                 <th>{% trans 'Quantity' %}</th>
                                 <th>{% trans 'Cost Price' %}</th>
@@ -409,7 +416,7 @@
                                 <th>#</th>
                                 <th>{% trans 'Expense name' %}</th>
                                 <th>{% trans 'Expense items' %}</th>
-                                <th>{% trans 'UoM' %}</th>
+                                <th>{% trans 'UOM' %}</th>
                                 <th>{% trans 'Quantity' %}</th>
                                 <th>{% trans 'Expense Price' %}</th>
                                 <th>{% trans 'Tax' %}</th>

@@ -3562,7 +3562,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 4,
-                    width: '8%',
+                    width: '10%',
                     render: (data, type, row) => {
                         let dataZone = "quotation_costs_data";
                         if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
@@ -3648,7 +3648,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 8,
-                    width: '8%',
+                    width: '6%',
                     render: (data, type, row) => {
                         let dataZone = "quotation_costs_data";
                         if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
@@ -5647,7 +5647,7 @@ class QuotationCalculateCaseHandle {
                     discountAmountTotal += discountAmountOnTotal;
 
                     if (pretaxAmount > 0) {
-                        discount_on_total = ((discountAmount / pretaxAmount) * 100).toFixed(2);
+                        discount_on_total = (discountAmount / pretaxAmount) * 100;
                         if (eleDiscountRateTotal) {
                             eleDiscountRateTotal.value = discount_on_total;
                         }
@@ -5739,7 +5739,9 @@ class QuotationCalculateCaseHandle {
                     discount = $(eleDiscountAmount).valCurrency();
                 }
                 if (price > 0) {
-                    discountRate = Math.round((discount / price) * 100);
+                    let percent = (discount / price) * 100;
+                    discountRate = percent;
+                    // discountRate = Number(percent.toFixed(1));
                 }
                 $(eleDiscount).val(discountRate);
             }

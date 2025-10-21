@@ -7,6 +7,13 @@ $(document).ready(function () {
                 useDataServer: true,
                 rowIdx: true,
                 reloadCurrency: true,
+                scrollX: true,
+                scrollY: '64vh',
+                scrollCollapse: true,
+                fixedColumns: {
+                    leftColumns: 2,
+                    rightColumns: window.innerWidth <= 768 ? 0 : 1
+                },
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -20,59 +27,57 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
+                        className: 'w-5',
                         render: () => {
                             return ``;
                         }
                     },
                     {
-                        data: 'code',
                         className: 'ellipsis-cell-xs w-10',
                         render: (data, type, row) => {
-                            const link = dtb.attr('data-url-detail').replace('0', row.id);
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
-                        data: 'title',
-                        className: 'w-25',
+                        className: 'ellipsis-cell-lg w-15',
                         render: (data, type, row) => {
-                            const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}" class="text-primary"><b>${row.title}</b></a>`;
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
+                            return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                         }
                     },
                     {
-                        data: 'customer',
-                        className: 'w-20',
+                        className: 'ellipsis-cell-lg w-20',
                         render: (data, type, row) => {
-                            return `${row?.['sale_order']?.['customer']?.['name']}`
+                            return `${row?.['sale_order']?.['customer']?.['name'] || ''}`
                         }
                     },
                     {
-                        data: 'sale_person',
-                        className: 'w-15',
+                        className: 'ellipsis-cell-sm w-15',
                         render: (data, type, row) => {
-                            return `${row?.['sale_order']?.['sale_person']?.['fullname']}`
+                            return `<span>${row?.['sale_order']?.['sale_person']?.['fullname'] || ''}</span>`;
                         }
                     },
                     {
-                        data: 'sale_order',
-                        className: 'w-10',
+                        className: 'ellipsis-cell-sm w-10',
                         render: (data, type, row) => {
-                            return `<button type="button" class="btn btn-sm btn-light">
-                                ${row?.['sale_order']?.['code']} <span class="badge badge-sm badge-secondary">${row?.['delivery']?.['code']}</span>
-                            </button>`
+                            return `<span>${row?.['sale_order']?.['code']}</span> | <span>${row?.['delivery']?.['code']}</span>`
                         }
                     },
                     {
-                        data: 'date_created',
-                        className: 'text-center w-10',
+                        className: 'ellipsis-cell-sm w-10',
                         render: (data, type, row) => {
-                            return `${moment(row.date_created.split(' ')[0]).format('DD/MM/YYYY')}`
+                            return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
                         }
                     },
                     {
-                        data: 'system_status',
-                        className: 'text-center w-10',
+                        className: 'ellipsis-cell-sm w-10',
+                        render: (data, type, row) => {
+                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
+                        }
+                    },
+                    {
+                        className: 'text-center w-5',
                         render: (data, type, row) => {
                             return WFRTControl.displayRuntimeStatus(row?.['system_status']);
                         }

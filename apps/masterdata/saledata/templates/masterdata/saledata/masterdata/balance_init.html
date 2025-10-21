@@ -11,114 +11,103 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
+    <a href="#" data-bs-toggle="modal" data-bs-target="#modal-add-balance">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
 {% endblock %}
 {% block pageContent %}
     {{ data.data.period_setup_sw_start_using_time | json_script:"period_setup_sw_start_using_time" }}
-    {{ data.data.import_db_form_cfg | json_script:"import_db_form_cfg" }}
 
     <script id="trans-script"
+            data-trans-vm="{% trans 'Valuation method' %}"
+            data-trans-we="{% trans 'Weighted average' %}"
+            data-trans-fifo="{% trans 'FIFO' %}"
+            data-trans-si="{% trans 'Specific identification' %}"
             data-trans-notify-clear="{% trans 'This action can not be undo!' %}"
             data-trans-warning="{% trans 'Consider carefully when clear balance init. The system will delete this balance init after checking that the data preservation conditions are satisfied.' %}"
     ></script>
     <div class="row">
         <div class="col-12">
-            <span class="text-orange fw-bold"><i class="fa-solid fa-triangle-exclamation"></i> {% trans 'The initial balance will be inserted from the month of starting to use the software.' %} {% trans 'The Opening Balance should be created before these activities take place to avoid reporting errors.' %}</span>
+            <span class="text-danger"><i class="fa-solid fa-triangle-exclamation"></i> {% trans 'The initial balance will be inserted from the month of starting to use the software.' %} {% trans 'The Opening Balance should be created before these activities take place to avoid reporting errors.' %}</span>
         </div>
     </div>
     <div class="row mt-3" id="main-div">
         <div class="col-12">
-            <div class="import-db-space">
-                {% include 'extends/import-datatable/button-import-db.html' %}
-                <script class="import-db-form-url"
-                        data-import-db-method="POST"
-                        data-import-db-url="{% url 'BalanceInitializationListImportDBAPI' %}"
-                ></script>
-                <table class="table table-hover nowrap w-100" id="table-balance-product"
-                       data-method="GET"
-                       data-url="{% url 'BalanceInitListAPI' %}"
-                >
-                    <thead class="bg-primary-light-5">
-                        <th style="min-width: 50px"></th>
-                        <th style="min-width: 200px">{% trans 'Product' %}</th>
+            <table class="table nowrap w-100" id="table-balance-product"
+                   data-method="GET"
+                   data-url="{% url 'BalanceInitListAPI' %}"
+            >
+                <thead class="bg-secondary-light-5">
+                    <tr>
+                        <th style="min-width: 30px"></th>
+                        <th style="min-width: 250px">{% trans 'Product' %}</th>
+                        <th style="min-width: 150px">{% trans 'Traceability method' %}</th>
                         <th style="min-width: 150px">{% trans 'Warehouse' %}</th>
-                        <th style="min-width: 150px">{% trans 'Quantity' %} {% trans "According to inventory UOM" %}</th>
+                        <th style="min-width: 150px">{% trans 'Quantity' %} ({% trans "According to inventory UOM" %})</th>
                         <th style="min-width: 200px">{% trans 'Pretax value' %}</th>
                         <th style="min-width: 50px"></th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <button type="button"
-                    id="btn-add-balance"
-                    class="btn btn-outline-primary btn-sm mt-3"
-                    data-bs-toggle="modal" data-bs-target="#modal-add-balance"
-            >
-                <i class="fas fa-plus-circle"></i>
-                {% trans 'Add balance' %}
-            </button>
-        </div>
-    </div>
-    <div class="row mt-5">
-        <div class="col-12" style="overflow: auto; max-height: 30vh;">
-            <table id="table-detail-space-lot" hidden class="table nowrap w-30 border">
-                <thead class="bg-secondary-light-5" style="position: sticky; top: 0">
-                <tr>
-                    <th>{% trans 'Lot number' %}</th>
-                    <th>{% trans 'Quantity' %}</th>
-                    <th>{% trans 'UOM' %}</th>
-                    <th>{% trans 'Expired date' %}</th>
-                    <th>{% trans 'Manufacture date' %}</th>
-                </tr>
+                    </tr>
                 </thead>
-                <tbody id="detail-space-lot"></tbody>
-            </table>
-            <table id="table-detail-space-sn" hidden class="table nowrap w-30 border">
-                <thead class="bg-secondary-light-5" style="position: sticky; top: 0">
-                <tr>
-                    <th>{% trans 'Vendor serial no.' %}</th>
-                    <th>{% trans 'Serial no.' %}</th>
-                    <th>{% trans 'Expired date' %}</th>
-                    <th>{% trans 'Manufacture date' %}</th>
-                    <th>{% trans 'Warranty start' %}</th>
-                    <th>{% trans 'Warranty end' %}</th>
-                </tr>
-                </thead>
-                <tbody id="detail-space-sn"></tbody>
+                <tbody></tbody>
             </table>
         </div>
     </div>
-
-    <table hidden data-table-id="table-balance-product-import-db" class="nowrap w-100 table table-bordered mt-1">
-        <thead class="sticky">
-            <tr>
-                <th>#</th>
-                <th>{% trans 'Status' %}</th>
-                <th>{% trans 'Product code' %}</th>
-                <th>{% trans 'Warehouse code' %}</th>
-                <th>{% trans 'Quantity' %} {% trans "According to inventory UOM" %}</th>
-                <th>{% trans 'Pretax value' %}</th>
-                <th>
-                    {% trans 'Lot data' %}
-                    <i class="fas fa-info-circle icon-info"
-                       data-bs-toggle="tooltip"
-                       data-bs-placement="left"
-                       title='Data sample: [{"lot_number": "L001", "quantity_import": 15, "expire_date": "2025-01-01", "manufacture_date": "2025-01-01"}]'
-                    ></i>
-                </th>
-                <th>
-                    {% trans 'Serial data' %}
-                    <i class="fas fa-info-circle icon-info"
-                       data-bs-toggle="tooltip"
-                       data-bs-placement="left"
-                       title='Data sample: [{"vendor_serial_number": "VDS001", "serial_number": "S001", "expire_date": "2025-01-01", "manufacture_date": "2025-01-01", "warranty_start": "2025-01-01", "warranty_end": "2025-01-01"}]'
-                    ></i>
-                </th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
 {% endblock %}
 {% block modalData %}
+    <div class="modal fade" id="modal-view-detail" tabindex="-1" role="dialog" aria-labelledby="modal-view-detail" aria-hidden="true">
+        <div class="modal-dialog modal-lg" style="min-width: 50%" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{% trans 'Detail' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: auto; max-height: 64vh">
+                    <div class="row">
+                        <div class="col-12">
+                            <table id="table-detail-space-lot" hidden class="table nowrap w-100">
+                                <thead class="bg-secondary-light-5">
+                                    <tr>
+                                        <th>{% trans 'Lot number' %}</th>
+                                        <th>{% trans 'Quantity' %}</th>
+                                        <th>{% trans 'UOM' %}</th>
+                                        <th>{% trans 'Expired date' %}</th>
+                                        <th>{% trans 'Manufacture date' %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="detail-space-lot"></tbody>
+                            </table>
+                            <table id="table-detail-space-sn" hidden class="table nowrap w-100">
+                                <thead class="bg-secondary-light-5">
+                                    <tr>
+                                        <th>{% trans 'Vendor serial no.' %}</th>
+                                        <th>{% trans 'Serial no.' %}</th>
+                                        <th>{% trans 'Expired date' %}</th>
+                                        <th>{% trans 'Manufacture date' %}</th>
+                                        <th>{% trans 'Warranty start' %}</th>
+                                        <th>{% trans 'Warranty end' %}</th>
+                                        <th>{% trans 'Specific value' %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="detail-space-sn"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="modal-add-balance" tabindex="-1" role="dialog" aria-labelledby="modal-add-balance" aria-hidden="true">
         <div class="modal-dialog modal-lg" style="min-width: 90%" role="document">
             <div class="modal-content">
@@ -128,7 +117,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body" style="overflow: auto; max-height: 64vh">
+                <div class="modal-body" style="overflow: auto; max-height: 72vh">
                     <form id="form-balance"
                           data-method="POST"
                           data-url="{% url 'BalanceInitListAPI' %}"
@@ -170,34 +159,59 @@
                         </div>
                         <div class="row">
                             <div class="col-12" id="table-load-lot-space" hidden>
-                                <table class="table nowrap w-100" id="table-load-lot">
-                                    <thead class="bg-secondary-light-5">
-                                        <th></th>
-                                        <th>{% trans 'Lot number' %}</th>
-                                        <th>{% trans 'Lot quantity' %}</th>
-                                        <th>{% trans 'Expiration date' %}</th>
-                                        <th>{% trans 'Manufacture date' %}</th>
-                                        <th></th>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                                <button type="button" class="btn btn-primary btn-xs" id="add-row-lot">{% trans 'Add new row' %}</button>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <table class="table nowrap w-100" id="table-load-lot">
+                                            <thead class="bg-secondary-light-5">
+                                                <tr>
+                                                    <th></th>
+                                                    <th>{% trans 'Lot number' %}</th>
+                                                    <th>{% trans 'Lot quantity' %}</th>
+                                                    <th>{% trans 'Expiration date' %}</th>
+                                                    <th>{% trans 'Manufacture date' %}</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                        <button type="button" class="btn btn-primary btn-xs mt-2" id="add-row-lot">{% trans 'Add new row' %}</button>
+                                    </div>
+                                    <div class="col-12 col-md-3 col-lg-3 mt-2">
+                                        <div class="form-group">
+                                            <label class="form-label" for="prd-value">({% trans 'or import here' %})</label>
+                                            <input type="file" class="form-control excelFileInput" accept=".xlsx,.xls,.csv,.ods,.xlsm,.xlsb,.xml,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-12" id="table-load-sn-space" hidden>
-                                <table class="table nowrap w-100" id="table-load-sn">
-                                    <thead class="bg-secondary-light-5">
-                                        <th></th>
-                                        <th>{% trans 'Vendor serial no.' %}</th>
-                                        <th>{% trans 'Serial no.' %}</th>
-                                        <th>{% trans 'Expiration date' %}</th>
-                                        <th>{% trans 'Manufacture date' %}</th>
-                                        <th>{% trans 'Warranty start' %}</th>
-                                        <th>{% trans 'Warranty end' %}</th>
-                                        <th></th>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                                <button type="button" class="btn btn-primary btn-xs" id="add-row-sn">{% trans 'Add new row' %}</button>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <table class="table nowrap w-100" id="table-load-sn">
+                                            <thead class="bg-secondary-light-5">
+                                                <tr>
+                                                    <th></th>
+                                                    <th>{% trans 'Vendor serial no.' %}</th>
+                                                    <th>{% trans 'Serial no.' %}</th>
+                                                    <th>{% trans 'Expiration date' %}</th>
+                                                    <th>{% trans 'Manufacture date' %}</th>
+                                                    <th>{% trans 'Warranty start' %}</th>
+                                                    <th>{% trans 'Warranty end' %}</th>
+                                                    <th>{% trans 'Specific value' %}</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                        <button type="button" class="btn btn-primary btn-xs mt-2" id="add-row-sn">{% trans 'Add new row' %}</button>
+                                    </div>
+                                    <div class="col-12 col-md-3 col-lg-3 mt-2">
+                                        <div class="form-group">
+                                            <label class="form-label" for="prd-value">({% trans 'or import here' %})</label>
+                                            <input type="file" class="form-control excelFileInput" accept=".xlsx,.xls,.csv,.ods,.xlsm,.xlsb,.xml,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -209,68 +223,14 @@
             </div>
         </div>
     </div>
-    {% include 'extends/import-datatable/modal-import-db.html' %}
 {% endblock %}
 {% block jsFooter %}
     <!-- Select2 -->
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
-
-    <script>
-        $(document).on("input", '.json-input', function () {
-            const allowedKeys = $(this).attr('data-fixed-key') ? JSON.parse($(this).attr('data-fixed-key')) : [];
-            const text = $(this).val().trim();
-
-            if (!text) {
-                $(this).removeClass('is-valid is-invalid');
-                return;
-            }
-
-            try {
-                const parsed = JSON.parse(text);
-                let invalidKeys = [];
-
-                if (Array.isArray(parsed)) {
-                    parsed.forEach((item, index) => {
-                        if (typeof item === 'object' && item !== null) {
-                            const keys = Object.keys(item);
-                            const invalid = keys.filter(k => !allowedKeys.includes(k));
-                            if (invalid.length > 0) {
-                                invalidKeys.push(`Phần tử ${index + 1}: ${invalid.join(", ")}`);
-                            }
-                        } else {
-                            invalidKeys.push(`Phần tử ${index + 1} không phải object`);
-                        }
-                    });
-                } else {
-                    invalidKeys.push("Nội dung phải là một mảng JSON");
-                }
-
-                if (invalidKeys.length > 0) {
-                    $(this).removeClass('is-valid').addClass('is-invalid');
-                    console.warn("Key không hợp lệ:", invalidKeys.join("; "));
-                    return;
-                }
-
-                $(this).removeClass('is-invalid').addClass('is-valid');
-
-                const formatted = JSON.stringify(parsed, null, 2);
-                if (formatted !== text) {
-                    const cursorPos = formatted.length;
-                    $(this).val(formatted);
-                    $(this)[0].setSelectionRange(cursorPos, cursorPos);
-                }
-
-            } catch {
-                $(this).removeClass('is-valid').addClass('is-invalid');
-            }
-        });
-    </script>
-
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/masterdata/balance_init.js' %}"></script>
     <script src="{% static 'assets/js/xlsx-0.18.5.full.min.js' %}"></script>
-    <script src="{% static 'assets/js/import-datatable.js' %}"></script>
 {% endblock %}
 

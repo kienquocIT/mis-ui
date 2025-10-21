@@ -109,6 +109,17 @@ $(function () {
                         targets: 6,
                         width: '15%',
                         render: (data, type, row) => {
+                            if (row?.['is_currency_exchange'] === true) {
+                                let dataCurrency = JSON.stringify({
+                                    'is_currency_exchange': row?.['is_currency_exchange'],
+                                    'currency_company_id': row?.['currency_company_id'],
+                                    'currency_company_data': row?.['currency_company_data'],
+                                    'currency_exchange_id': row?.['currency_exchange_id'],
+                                    'currency_exchange_data': row?.['currency_exchange_data'],
+                                    'currency_exchange_rate': row?.['currency_exchange_rate'],
+                                }).replace(/"/g, "&quot;")
+                                return `<span class="mask-money" data-exchange="${dataCurrency}" data-init-money="${parseFloat(row?.['indicator_revenue'])}"></span>`;
+                            }
                             return `<span class="mask-money" data-init-money="${parseFloat(row?.['indicator_revenue'])}"></span>`;
                         }
                     },
@@ -124,18 +135,6 @@ $(function () {
                         width: '5%',
                         className: 'action-center',
                         render: (data, type, row) => {
-                            // let link = urlsEle.data('link-update').format_url_with_uuid(row?.['id']);
-                            // let disabled = '';
-                            // if ([2, 3, 4].includes(row?.['system_status'])) {
-                            //     disabled = 'disabled';
-                            // }
-                            // return `<div class="dropdown">
-                            //         <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
-                            //         <div role="menu" class="dropdown-menu">
-                            //             <a class="dropdown-item ${disabled}" href="${link}"><i class="dropdown-icon far fa-edit"></i><span>${transEle.attr('data-edit')}</span></a>
-                            //         </div>
-                            //     </div>`;
-
                             return DTBControl.addCommonAction({"data-edit": urlsEle.data('link-update')}, row);
                         },
                     }

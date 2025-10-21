@@ -14,8 +14,9 @@ from apps.masterdata.saledata.views.accounts import (
 )
 from apps.masterdata.saledata.views.attribute import AttributeListAPI, AttributeList, AttributeDetailAPI, \
     ProductAttributeListAPI
-from apps.masterdata.saledata.views.balance_init import BalanceInitList, BalanceInitListAPI, \
-    ImportBalanceInitDBAPIViews, BalanceInitializationListImportDBAPI
+from apps.masterdata.saledata.views.balance_init import (
+    BalanceInitList, BalanceInitListAPI, ImportBalanceInitDBAPIViews
+)
 from apps.masterdata.saledata.views.bank import BankMasterDataListAPI, BankMasterDataDetailAPI, \
     BankAccountMasterDataListAPI, BankAccountMasterDataDetailAPI, BankMasterDataList
 from apps.masterdata.saledata.views.budget_plan_config import BudgetPlanConfigList, BudgetPlanConfigListAPI, \
@@ -379,12 +380,7 @@ urlpatterns += [
     path(
         'balance-init/api', BalanceInitListAPI.as_view(),
         name='BalanceInitListAPI'
-    ),
-    path(
-        'balance-init-import-db/api',
-        BalanceInitializationListImportDBAPI.as_view(),
-        name='BalanceInitializationListImportDBAPI'
-    ),
+    )
 ]
 
 urlpatterns += [

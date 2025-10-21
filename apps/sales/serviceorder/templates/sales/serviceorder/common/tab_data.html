@@ -1,10 +1,10 @@
 {% load i18n %}
 
 <!-- tabs -->
-<div class="row mt-5 mb-10">
+<div class="row mt-5">
     <div class="col-12">
         <!-- tabs navigation -->
-        <ul class="nav nav-light nav-tabs" id="service-order-tabs">
+        <ul class="nav nav-pills-bfl" id="service-order-tabs">
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="tab" href="#tab_service_detail">
                     <span class="nav-link-text">{% trans 'Service detail' %}</span>
@@ -12,7 +12,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_work_order">
-                    <span class="nav-link-text">{% trans 'Work order' %}</span>
+                    <span class="nav-link-text">{% trans 'Work' %}</span>
                 </a>
             </li>
             <li class="nav-item hidden">
@@ -42,24 +42,9 @@
                     </a>
                 </li>
             {% endif %}
-            <li class="nav-item ms-auto">
-                <button hidden type="button" class="btn btn-xs btn-light" id="btn-export-cost-excel">
-                    <span>
-                        <span class="icon"><i class="fas fa-file-excel"></i></span>
-                        <span>{% trans 'Export to Excel' %}</span>
-                    </span>
-                </button>
-                <button type="button" class="btn btn-xs btn-blue" id="btn-open-exchange-modal" data-bs-toggle="modal" data-bs-target="#modal-exchange-rate">
-                    <span>
-                        <span class="icon"><i class="fa-solid fa-exchange"></i></span>
-                        <span>{% trans 'Exchange Rate' %}</span>
-                    </span>
-                </button>
-            </li>
         </ul>
         <!-- tabs content -->
         <div class="tab-content" id="service-order-tab-content">
-
             <div class="tab-pane fade show active" id="tab_service_detail">
                 <div class="row">
                     <div class="col-12">
@@ -69,7 +54,7 @@
                                     <th style="min-width: 50px"></th>
                                     <th style="min-width: 250px">{% trans 'Name' %}</th>
                                     <th style="min-width: 250px">{% trans 'Description' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Weight' %} %</th>
+                                    <th style="min-width: 150px">{% trans 'Weight contribution' %}</th>
                                     <th style="min-width: 100px">{% trans 'Quantity' %}</th>
                                     <th style="min-width: 100px">{% trans 'UOM' %}</th>
                                     <th style="min-width: 100px">{% trans 'Duration' %}</th>
@@ -118,7 +103,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="tab-pane fade" id="tab_work_order">
                 <div class="row">
                     <div class="col-12">
@@ -176,7 +160,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="tab-pane fade" id="tab_shipment">
                 <div class="row">
                     <div class="col-12">
@@ -220,7 +203,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="tab-pane fade" id="tab_expense">
                 <!-- main expense table -->
                 <table class="table nowrap w-100" id="table_expense">
@@ -270,7 +252,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="tab-pane fade" id="tab_payment">
                 <table id="table-payment" class="table nowrap w-100 min-w-1350p">
                     <thead class="bg-secondary-light-5"></thead>
@@ -281,7 +262,6 @@
                     {% trans 'Add Installment' %}
                 </button>
             </div>
-
             <div class="tab-pane fade" id="tab_attachment">
                 <div class="form-group content_attached">
                     <div id="attachment" class="{{ addClass }}">{% include 'extends/files/all.html' %}</div>

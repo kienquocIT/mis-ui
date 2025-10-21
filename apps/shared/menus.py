@@ -366,8 +366,18 @@ class MenusCRM:
         icon='<i class="fas far fa-lightbulb"></i>',
     )
     QUOTATION = MenuCommon(
-        name='Quotation', code='menu_quotation_list', view_name='QuotationList',
-        icon='<i class="fas fa-file-invoice-dollar"></i>',
+        name='Quotation', code='', view_name='#',
+        icon='<i class="fas fa-file-signature"></i>',
+        child=[
+            MenuCommon(
+                name='Sale quotation', code='menu_quotation_list', view_name='QuotationList',
+                icon='<i class="fas fa-file-invoice-dollar"></i>',
+            ),
+            MenuCommon(
+                name='Service quotation', code='menu_service_quotation_list', view_name='ServiceQuotationList',
+                icon='<i class="fas fa-file-invoice-dollar"></i>',
+            )
+        ],
     )
     BIDDING = MenuCommon(
         name='Bidding', code='menu_bidding_list', view_name='BiddingList',
@@ -390,10 +400,6 @@ class MenusCRM:
                 icon='<i class="fas fa-concierge-bell"></i>',
             )
         ],
-    )
-    SERVICE_QUOTATION = MenuCommon(
-        name='Service quotation', code='menu_service_quotation_list', view_name='ServiceQuotationList',
-        icon='<i class="fas fa-file-invoice-dollar"></i>',
     )
     # GROUP_ORDER = MenuCommon(
     #     name='Group order', code='menu_group_order_list', view_name='GroupOrderList',
@@ -1063,7 +1069,6 @@ class SpaceItem:
                 MenusCRM.OPPORTUNITY,
                 MenusCRM.QUOTATION,
                 MenusCRM.ORDERS,
-                MenusCRM.SERVICE_QUOTATION,
                 MenusCRM.CALENDAR,
                 MenusCRM.CONSULTING,
                 MenusCRM.BIDDING,

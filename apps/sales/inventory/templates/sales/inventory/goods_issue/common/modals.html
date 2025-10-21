@@ -75,7 +75,7 @@
 </div>
 
 <div class="modal fade" id="select-ia-modal" tabindex="-1" role="dialog" aria-labelledby="select-ia-modal">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-lg" style="min-width: 50%" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{% trans 'Select' %} {% trans 'Inventory adjustment' %}</h5>
@@ -86,11 +86,13 @@
             <div class="modal-body">
                 <table class="table nowrap w-100" id="select-ia-table" data-ia-url="{% url 'InventoryAdjustmentListAPIForGIS' %}">
                     <thead>
-                        <tr>
-                            <th style="min-width: 30px"></th>
-                            <th style="min-width: 30px"></th>
-                            <th style="min-width: 250px">{% trans 'Title' %}</th>
-                        </tr>
+                    <tr>
+                        <th style="min-width: 30px"></th>
+                        <th style="min-width: 30px"></th>
+                        <th style="min-width: 250px">{% trans 'Title' %}</th>
+                        <th style="min-width: 150px">{% trans 'Employee created' %}</th>
+                        <th style="min-width: 150px">{% trans 'Created date' %}</th>
+                    </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
@@ -103,7 +105,7 @@
 </div>
 
 <div class="modal fade" id="select-powo-modal" tabindex="-1" role="dialog" aria-labelledby="select-powo-modal">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-lg" style="min-width: 60%" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{% trans 'Select' %} {% trans 'Production order' %}/{% trans 'Work order' %}</h5>
@@ -122,6 +124,8 @@
                             <th style="min-width: 30px"></th>
                             <th style="min-width: 150px">{% trans 'Application' %}</th>
                             <th style="min-width: 250px">{% trans 'Title' %}</th>
+                            <th style="min-width: 150px">{% trans 'Employee created' %}</th>
+                            <th style="min-width: 150px">{% trans 'Created date' %}</th>
                         </tr>
                     </thead>
                     <tbody></tbody>

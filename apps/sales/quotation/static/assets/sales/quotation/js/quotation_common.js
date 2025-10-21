@@ -7642,7 +7642,9 @@ class QuotationSubmitHandle {
             keyInd = "quotation_indicator_data";
         }
         let datasDetail = QuotationLoadDataHandle.loadGetDatasDetail();
-        let indicators_data_setup = IndicatorControl.loadIndicator(result, datasDetail);
+        let _form = new SetupFormSubmit(QuotationLoadDataHandle.$form);
+        let dataForm = QuotationSubmitHandle.setupDataSubmit(_form, 1);
+        let indicators_data_setup = IndicatorControl.loadIndicator(dataForm, datasDetail);
         if (indicators_data_setup.length > 0) {
             result[quotation_indicators_data] = indicators_data_setup;
             for (let indicator of indicators_data_setup) {
@@ -7901,6 +7903,15 @@ class QuotationSubmitHandle {
                 _form.dataForm['total_product_revenue_before_tax'] = parseFloat(tableProductFt.querySelector('.quotation-final-revenue-before-tax').value);
                 if (!_form.dataForm['total_product_revenue_before_tax']) {
                     _form.dataForm['total_product_revenue_before_tax'] = 0;
+                }
+                if (type === 1) {
+                    let pretaxEle = tableProductFt.querySelector('.quotation-create-product-pretax-amount');
+                    if (pretaxEle) {
+                        if ($(pretaxEle).attr('data-exchange')) {
+                            let dataExchange = JSON.parse($(pretaxEle).attr('data-exchange'));
+                            _form.dataForm['total_product_revenue_before_tax'] = _form.dataForm['total_product_revenue_before_tax'] * parseFloat(dataExchange?.['currency_exchange_rate'] || 0);
+                        }
+                    }
                 }
             }
         }

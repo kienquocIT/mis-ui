@@ -109,17 +109,6 @@ $(function () {
                         targets: 6,
                         width: '15%',
                         render: (data, type, row) => {
-                            if (row?.['is_currency_exchange'] === true) {
-                                let dataCurrency = JSON.stringify({
-                                    'is_currency_exchange': row?.['is_currency_exchange'],
-                                    'currency_company_id': row?.['currency_company_id'],
-                                    'currency_company_data': row?.['currency_company_data'],
-                                    'currency_exchange_id': row?.['currency_exchange_id'],
-                                    'currency_exchange_data': row?.['currency_exchange_data'],
-                                    'currency_exchange_rate': row?.['currency_exchange_rate'],
-                                }).replace(/"/g, "&quot;")
-                                return `<span class="mask-money" data-exchange="${dataCurrency}" data-init-money="${parseFloat(row?.['indicator_revenue'])}"></span>`;
-                            }
                             return `<span class="mask-money" data-init-money="${parseFloat(row?.['indicator_revenue'])}"></span>`;
                         }
                     },

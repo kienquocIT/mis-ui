@@ -12,6 +12,12 @@
     </div>
     <div class="col-sm-12 col-md-9 left-content bg-blue-light-5">
         <div class="row">
+            <!-- Contract Information Section -->
+            <div class="col-12">
+                <h6 class="section-title mb-3 mt-2">
+                    <i class="fa-solid fa-file-contract me-2"></i>{% trans 'Contract Information' %}
+                </h6>
+            </div>
             <div class="col-md-12 col-lg-6 form-group">
                 <label for="contract_type_id">{% trans 'Contract type' %}</label>
                 <select class="select2" id="contract_type_id" name="contract_type"
@@ -42,8 +48,7 @@
                 <select class="form-select select2" id="company_representative"
                         data-url="{% url 'EmployeeListAPI' %}"
                         data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"
-                        name="company_representative"
-                ></select>
+                        name="company_representative"></select>
             </div>
             <div class="col-md-12 col-lg-6 form-group">
                 <label class="form-label" for="signing_date">{% trans 'Signing date' %}</label>
@@ -52,19 +57,54 @@
                     <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                 </div>
             </div>
+
+            <!-- Salary Information Section -->
+            <div class="col-12">
+                <hr class="my-3">
+                <h6 class="section-title mb-3">
+                    <i class="fa-solid fa-money-bill-wave me-2"></i>{% trans 'Salary Information' %}
+                </h6>
+            </div>
+
+            <div class="col-md-12 col-lg-6 form-group">
+                <label class="form-label" for="hi_employer_rate">{% trans 'Salary level' %}</label>
+                <div class="input-group">
+                    <input type="number" class="form-control" id="salary_level"
+                           name="salary_level" placeholder="0" step="1" min="0">
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-6 form-group">
+                <label class="form-label" for="employee_salary">{% trans 'Employee salary' %}</label>
+                <div class="input-group">
+                    <input class="form-control mask-money" name="employee_salary" id="employee_salary" placeholder="0 VND">
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-6 form-group">
+                <label class="form-label" for="insurance_salary">{% trans 'Salary for insurance' %}</label>
+                <div class="input-group">
+                    <input class="form-control mask-money" name="insurance_salary" id="insurance_salary" placeholder="0 VND">
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-6 form-group">
+                <label class="form-label" for="salary_rate">{% trans 'Rate' %}</label>
+                <div class="input-group">
+                    <input type="number" class="form-control" id="salary_rate" name="salary_rate"
+                           placeholder="0" step="0.01" min="0" max="100">
+                    <span class="input-group-text">%</span>
+                </div>
+            </div>
+
+            <!-- File Type Section -->
+            <div class="col-12"><hr class="my-2"></div>
             <div class="col-md-12 col-lg-6">
                 <div class="title required">{% trans 'File type' %}</div>
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="file_type" id="file_type1" value="0">
-                    <label class="form-check-label" for="file_type1">
-                        {% trans 'Attached files' %}
-                    </label>
+                    <label class="form-check-label" for="file_type1">{% trans 'Attached files' %}</label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="file_type" id="file_type2" value="1">
-                    <label class="form-check-label mr-4" for="file_type2">
-                        {% trans 'Online template' %}
-                    </label>
+                    <label class="form-check-label mr-4" for="file_type2">{% trans 'Online template' %}</label>
                 </div>
             </div>
             {% if edit %}
@@ -83,10 +123,8 @@
             <div class="col-md-12 col-lg-12">
                 <input type="hidden" name="content_info" id="extra_data">
                 <textarea
-                        id="inp-remarks"
+                        id="inp-remarks" type="text" name="remarks"
                         data-css-url-render="{% static 'assets/hrm/css/contract/style.css' %}"
-                        type="text"
-                        name="remarks"
                         class="form-control {{ addClass }}"
                 ></textarea>
             </div>

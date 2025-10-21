@@ -119,66 +119,72 @@ class EmployeeHRMInit {
         })
     }
 
-    static loadDetail(){
-        const $form = $('#frm_employee_hrm')
+    static loadDetail(option = 'detail'){
         $.fn.callAjax2({
-            url: $form.attr('data-hrm-detail'),
+            url: $('#frm_employee_hrm').attr('data-hrm-detail'),
             method: 'get',
             isLoading: true,
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                const employee = data.employee
-                let middName = employee.last_name.split(" ")
-                middName.shift()
-                $form.append(`<input type="hidden" name="id" value="${data.id}">`)
-                $('.switch-choice, .select-wrap').addClass('is-select')
-                $('#select-box-employee').attr('data-onload', {...employee, selected: true}).append(`<option value="${employee.id}" selected>${employee.full_name}</option>`).trigger('change')
-                $('#employee-first_name').val(employee.first_name);
+                const employee = data?.employee || {};
+                let middName = (employee?.last_name|| "").split(" ");
+                middName.shift();
+                $('#frm_employee_hrm').append(`<input type="hidden" name="id" value="${data?.id || ''}">`);
+                $('.switch-choice, .select-wrap').addClass('is-select');
+                $('#select-box-employee').attr('data-onload', {
+                    ...employee,
+                    selected: true
+                }).append(`<option value="${employee?.id || ''}" selected>${employee?.full_name || ''}</option>`).trigger('change');
+                $('#employee-first_name').val(employee?.first_name || '');
                 $('#employee-middle_name').val(middName.join(" "));
-                $('#employee-last_name').val(employee.last_name.split(" ")[0]);
-                $('#date_joined')[0]._flatpickr.setDate(new Date(employee.date_joined))
-                $('#employee-email').val(employee.email)
-                $('#employee-phone').val(employee.phone)
-                $('#employee-code').val(employee.code)
+                $('#employee-last_name').val((employee?.last_name || '').split(" ")[0]);
+                $('#date_joined')[0]._flatpickr.setDate(new Date(employee.date_joined));
+                $('#employee-email').val(employee?.email || '');
+                $('#employee-phone').val(employee?.phone || '');
+                $('#employee-code').val(employee?.code || '');
 
                 if (data.employee.user?.id) {
-                    $('#select-box-user').attr('data-onload', {...data.employee.user, selected: true})
-                        .append(`<option value="${data.employee.user.id}" selected>${
+                    $('#select-box-user').attr(
+                        'data-onload',
+                        {
+                            ...data.employee.user,
+                            selected: true
+                        }
+                    ).append(
+                        `<option value="${data.employee.user.id}" selected>${
                             data.employee.user.first_name + ' ' + data.employee.user.last_name}</option>`).trigger('change')
-                }
-                if (data?.['citizen_id'])
-                    $('#employee-citizen_id').val(data['citizen_id'])
-                if (data?.['date_of_issue'])
-                    $('#employee_doi')[0]._flatpickr.setDate(new Date(data['date_of_issue']))
-                if (data?.['place_of_issue'])
-                    $('#place_of_issue').val(data['place_of_issue'])
-                if (data.employee.dob)
-                    $('#employee-dob')[0]._flatpickr.setDate(new Date(data.employee.dob))
+                };
+                $('#employee-citizen_id').val(data?.['citizen_id'] || '');
+                $('#employee_doi')[0]._flatpickr.setDate(new Date(data?.['date_of_issue'] || ''));
+                $('#place_of_issue').val(data?.['place_of_issue'] || '');
+                $('#employee-dob')[0]._flatpickr.setDate(new Date(employee?.dob || ''));
                 if (Object.keys(data['place_of_birth']).length > 0)
                     $('#employee-pob').attr('data-onload', JSON.stringify(data?.['place_of_birth'])).append(
                         `<option value="${data?.['place_of_birth'].id}" selected>${data?.['place_of_birth'].title}</option>`
-                    ).trigger('change')
+                    ).trigger('change');
                 if (Object.keys(data['nationality']).length > 0)
                     $('#employee-nationality').attr('data-onload', JSON.stringify(data['nationality'])).append(
                         `<option value="${data['nationality'].id}" selected>${data['nationality'].title}</option>`
-                    ).trigger('change')
+                    ).trigger('change');
                 if (Object.keys(data['place_of_origin']).length > 0)
                     $('#employee-poo').attr('data-onload', JSON.stringify(data['place_of_origin'])).append(
                         `<option value="${data['place_of_origin'].id}" selected>${data['place_of_origin'].title}</option>`
-                    ).trigger('change')
-                $('#employee-ethnicity').val(data['ethnicity'])
-                $('#employee-religion').val(data['religion'])
-                $('#employee-gender').val(data['gender']).trigger('change')
-                $('#employee-mstt').val(data['marital_status']).trigger('change')
-                $('#employee-ban').val(data['bank_acc_no'])
-                $('#employee-acc_name').val(data['acc_name'])
-                $('#employee-bank_name').val(data['bank_name']).trigger('change')
-                $('#employee-tax_code').val(data['tax_code'])
-                $('#employee-permanent_address').val(data['permanent_address'])
-                $('#employee-current_resident').val(data['current_resident'])
+                    ).trigger('change');
+                $('#employee-ethnicity').val(data?.['ethnicity'] || '');
+                $('#employee-religion').val(data?.['religion'] || '');
+                $('#employee-gender').val(data['gender']).trigger('change');
+                $('#employee-mstt').val(data['marital_status']).trigger('change');
+                $('#employee-ban').val(data?.['bank_acc_no'] || '');
+                $('#employee-acc_name').val(data?.['acc_name'] || '');
+                $('#employee-bank_name').val(data['bank_name']).trigger('change');
+                $('#employee-tax_code').val(data?.['tax_code'] || '');
+                $('#employee-permanent_address').val(data?.['permanent_address'] || '');
+                $('#employee-current_resident').val(data?.['current_resident'] || '');
+                EmployeeHRMInit.initDependentTable(data?.['dependent_deduction'] || [], option);
 
-                $(document).trigger('detail.DetailLoaded')
+                $(document).trigger('detail.DetailLoaded');
+                UsualLoadPageFunction.DisablePage(option === 'detail' ? true : false);
             }
         })
     }
@@ -237,8 +243,28 @@ class EmployeeHRMInit {
                               </button>`;
                     }
                 },
-            ]
+            ],
+            initComplete: function() {
+                EmployeeHRMInit.$tableDependentInfo.find('tbody tr').each(function (index, ele) {
+                    $(ele).find('.row-dependent-id').val(data[index]?.citizen_id || '')
+                    $(ele).find('.row-dependent-title').val(data[index]?.dependent_full_name || '')
+                    $(ele).find('.row-dependent-address').val(data[index]?.address || '')
+                })
+            }
         });
+    }
+
+    static combineDependentTable() {
+        const dependentData = [];
+        EmployeeHRMInit.$tableDependentInfo.find('tbody tr').each(function () {
+            let item = {
+                citizen_id: $(this).find('.row-dependent-id').val() || '',
+                dependent_full_name: $(this).find('.row-dependent-title').val() || '',
+                address: $(this).find('.row-dependent-address').val() || '',
+            };
+            dependentData.push(item);
+        });
+        return dependentData;
     }
 }
 
@@ -668,6 +694,6 @@ class EmployeeInfoEventHandler {
                 $('#table_dependent'),
                 parseInt($(this).closest('tr').find('td:first-child').text())
             )
-        })
+        });
     }
 }

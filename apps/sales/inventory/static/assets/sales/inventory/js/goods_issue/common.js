@@ -70,11 +70,23 @@ class GISLoadPage {
                     }
                 },
                 {
-                    className: 'w-90',
+                    className: 'w-50',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-soft-secondary mr-1">${row?.['code']}</span><span data-id="${row?.['id']}" class="ia-title">${row?.['title']}</span>`
+                        return `<span class="badge badge-sm badge-soft-secondary">${row?.['code']}</span><br><span data-id="${row?.['id']}" class="ia-title">${row?.['title']}</span>`
                     }
-                }
+                },
+                {
+                    className: 'ellipsis-cell-sm w-20',
+                    render: (data, type, row) => {
+                        return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
+                    }
+                },
+                {
+                    className: 'ellipsis-cell-sm w-20',
+                    render: (data, type, row) => {
+                        return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
+                    }
+                },
             ],
         });
     }
@@ -105,15 +117,27 @@ class GISLoadPage {
                     }
                 },
                 {
-                    className: 'w-30',
+                    className: 'w-25',
                     render: (data, type, row) => {
                         return `<span>${row?.['app']}</span>`
                     }
                 },
                 {
-                    className: 'w-60',
+                    className: 'w-35',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-soft-secondary mr-1">${row?.['code']}</span><span data-id="${row?.['id']}" data-type="${row?.['type']}" class="powo-title">${row?.['title']}</span>`
+                        return `<span class="badge badge-sm badge-soft-secondary">${row?.['code']}</span><br><span data-id="${row?.['id']}" data-type="${row?.['type']}" class="powo-title">${row?.['title']}</span>`
+                    }
+                },
+                {
+                    className: 'ellipsis-cell-sm w-15',
+                    render: (data, type, row) => {
+                        return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
+                    }
+                },
+                {
+                    className: 'ellipsis-cell-sm w-15',
+                    render: (data, type, row) => {
+                        return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                     }
                 },
             ],

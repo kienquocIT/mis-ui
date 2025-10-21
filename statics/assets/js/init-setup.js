@@ -2593,6 +2593,7 @@ class WFRTControl {
                         _form.dataForm['document_root_id'] = docRootID;
                         _form.dataForm['system_status'] = 1;
                         WFRTControl.submitCheckAssociation(_form, associationData, 0);
+                        _form.dataForm['run_baseline'] = false;
                     }
 
                     setTimeout(() => {

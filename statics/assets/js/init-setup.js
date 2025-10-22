@@ -434,7 +434,6 @@ class MaskMoney2 {
                         nonExchange = true;
                     }
                     if (!$ele[0].closest('.non-exchange')) {
-                        $ele.attr('data-exchange', JSON.stringify(dataExchange));
                         this.runAllowExchange($($ele), $($ele).attr('value'));
                     }
                 }

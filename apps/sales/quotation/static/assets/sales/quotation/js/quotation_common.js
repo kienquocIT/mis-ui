@@ -768,16 +768,21 @@ class QuotationLoadDataHandle {
                             }
                             for (let priceData of data?.['price_list']) {
                                 if (priceData?.['price_status'] === 1) {
+                                    let price = priceData?.['value'] ? priceData?.['value'] : 0;
+                                    let dataExchange = MaskMoney2.setupSubmitCurrencyExchange();
+                                    if (dataExchange?.['is_currency_exchange'] === true) {
+                                        price = price / parseFloat(dataExchange?.['currency_exchange_rate'] || 1);
+                                    }
                                     let checked = '';
                                     if (typeChecked === 0) {  // Load default
                                         if (account_price_id) {
                                             if (priceData?.['id'] === account_price_id) { // Check CUSTOMER_PRICE then set customer_price
-                                                lastPrice = parseFloat(priceData?.['value']);
+                                                lastPrice = parseFloat(price);
                                                 checked = 'checked';
                                             }
                                         } else {
                                             if (priceData?.['is_default'] === true) { // Check GENERAL_PRICE_LIST OF PRODUCT then set general_price
-                                                lastPrice = parseFloat(priceData?.['value']);
+                                                lastPrice = parseFloat(price);
                                                 checked = 'checked';
                                             }
                                         }
@@ -789,11 +794,11 @@ class QuotationLoadDataHandle {
                                     }
                                     htmlPriceList += `<div class="d-flex justify-content-between align-items-center">
                                                     <div class="form-check form-check-lg">
-                                                        <input type="radio" name="row-price-option" class="form-check-input table-row-price-option" id="price-${priceData?.['id'].replace(/-/g, "")}" data-value="${parseFloat(priceData?.['value'])}" data-price="${JSON.stringify(priceData).replace(/"/g, "&quot;")}" data-zone="${dataZone}" ${checked}>
+                                                        <input type="radio" name="row-price-option" class="form-check-input table-row-price-option" id="price-${priceData?.['id'].replace(/-/g, "")}" data-value="${parseFloat(price)}" data-price="${JSON.stringify(priceData).replace(/"/g, "&quot;")}" data-zone="${dataZone}" ${checked}>
                                                         <label class="form-check-label" for="price-${priceData?.['id'].replace(/-/g, "")}">${priceData?.['title']}</label>
                                                     </div>
                                                     <div class="d-flex justify-content-between align-items-center">
-                                                        <div class="mr-2"><span class="mask-money" data-init-money="${parseFloat(priceData?.['value'])}"></span></div>
+                                                        <div class="mr-2"><span class="mask-money" data-init-money="${parseFloat(price)}"></span></div>
                                                         <span class="badge badge-light">${priceData?.['uom']?.['title']}</span>
                                                     </div>
                                                 </div>`;
@@ -7905,12 +7910,9 @@ class QuotationSubmitHandle {
                     _form.dataForm['total_product_revenue_before_tax'] = 0;
                 }
                 if (type === 1) {
-                    let pretaxEle = tableProductFt.querySelector('.quotation-create-product-pretax-amount');
-                    if (pretaxEle) {
-                        if ($(pretaxEle).attr('data-exchange')) {
-                            let dataExchange = JSON.parse($(pretaxEle).attr('data-exchange'));
-                            _form.dataForm['total_product_revenue_before_tax'] = _form.dataForm['total_product_revenue_before_tax'] * parseFloat(dataExchange?.['currency_exchange_rate'] || 0);
-                        }
+                    let dataExchange = MaskMoney2.setupSubmitCurrencyExchange();
+                    if (dataExchange?.['is_currency_exchange'] === true) {
+                        _form.dataForm['total_product_revenue_before_tax'] = _form.dataForm['total_product_revenue_before_tax'] * parseFloat(dataExchange?.['currency_exchange_rate'] || 1);
                     }
                 }
             }

@@ -334,7 +334,7 @@ class MaskMoney2 {
 
             });
             if (window.location.href.includes('/detail/')) {
-                $currencyAllowEle.attr('disabled', 'true');
+                $currencyAllowEle.attr('hidden', 'true');
                 $currencyExchangeEle.attr('readonly', 'true');
                 $currencyExchangeEleRateEle.attr('readonly', 'true');
             }
@@ -424,31 +424,25 @@ class MaskMoney2 {
                         suffix = suffix.replace(suffix.trim(), other_abbreviation)
                     }
                 }
-                // Check has data exchange
-                let dataExchange = $ele.attr('data-exchange');
-                if (dataExchange) {
-                    let dataExchangeParse = JSON.parse($ele.attr('data-exchange'));
-                    if (dataExchangeParse?.['currency_exchange_data']?.['abbreviation']) {
-                        if (prefix) {
-                            prefix = dataExchangeParse?.['currency_exchange_data']?.['abbreviation'];
-                        }
-                        if (suffix) {
-                            suffix = dataExchangeParse?.['currency_exchange_data']?.['abbreviation'];
-                        }
+            }
+            // Check currency exchange global
+            let dataExchange = MaskMoney2.setupSubmitCurrencyExchange();
+            if (dataExchange?.['is_currency_exchange'] === true) {
+                let nonExchange = false;
+                if ($ele) {
+                    if ($ele[0].closest('.non-exchange')) {
+                        nonExchange = true;
+                    }
+                    if (!$ele[0].closest('.non-exchange')) {
+                        this.runAllowExchange($($ele), $($ele).attr('value'));
                     }
                 }
-            }
-
-            // Check currency exchange global
-            let $currencyExchangeEle = $('#currency_exchange_id');
-            if ($currencyExchangeEle) {
-                let dataSelected = SelectDDControl.get_data_from_idx($currencyExchangeEle, $currencyExchangeEle.val());
-                if (dataSelected?.['abbreviation']) {
+                if (nonExchange === false) {
                     if (prefix) {
-                        prefix = dataSelected?.['abbreviation'];
+                        prefix = dataExchange?.['currency_exchange_data']?.['abbreviation'];
                     }
                     if (suffix) {
-                        suffix = dataSelected?.['abbreviation'];
+                        suffix = dataExchange?.['currency_exchange_data']?.['abbreviation'];
                     }
                 }
             }
@@ -485,11 +479,9 @@ class MaskMoney2 {
         switch (inputOrDisplay) {
             case 'input':
                 $($ele).val(this.applyConfig($($ele), $($ele).attr('value')));
-                this.runAllowExchange($($ele), $($ele).attr('value'), inputOrDisplay);
                 break
             case 'display':
                 $($ele).text(this.applyConfig($($ele), $($ele).attr('data-init-money')));
-                this.runAllowExchange($($ele), $($ele).attr('data-init-money'), inputOrDisplay);
                 break
             default:
                 if ($.fn.isDebug() === true) throw Error('strData must be required!')
@@ -544,28 +536,19 @@ class MaskMoney2 {
         }
     }
 
-    applyMaskMoneyExchange($ele, value, inputOrDisplay) {
+    applyMaskMoneyExchange($ele, value) {
         $ele.attr("data-bs-toggle", "tooltip");
         $ele.attr("data-bs-placement", "bottom");
-        switch (inputOrDisplay) {
-            case 'input':
-                $ele.attr('title', this.applyConfigExchange(value));
-                break
-            case 'display':
-                $ele.attr('title', this.applyConfigExchange(value));
-                break
-            default:
-                if ($.fn.isDebug() === true) throw Error('strData must be required!')
-        }
+        $ele.attr('title', this.applyConfigExchange(value));
         return true;
     }
 
-    runAllowExchange($ele, value, inputOrDisplay) {
+    runAllowExchange($ele, value) {
         let $currencyAllowEle = $('#is_currency_exchange');
         if ($currencyAllowEle.length > 0) {
             // MaskMoney2.appendTextExchangeMoney($($ele));
             if ($currencyAllowEle.is(':checked')) {
-                this.applyMaskMoneyExchange($ele, value, inputOrDisplay);
+                this.applyMaskMoneyExchange($ele, value);
             }
         }
         return true;

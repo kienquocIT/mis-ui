@@ -87,15 +87,15 @@ class ProductModificationPageFunction {
                     }
                 },
                 {
-                    className: 'w-40',
+                    className: 'w-25',
                     render: (data, type, row) => {
-                        return `<textarea ${option === 'detail' ? 'disabled readonly' : ''} class="form-control new-des">${new_description || row?.['description'] || ''}</textarea>`
+                        return `<span class="prd-modified-text-detail"></span>`;
                     }
                 },
                 {
-                    className: 'text-right w-25',
+                    className: 'w-40',
                     render: (data, type, row) => {
-                        return `<span class="prd-modified-text-detail"></span>`;
+                        return `<textarea ${option === 'detail' ? 'disabled readonly' : ''} class="form-control new-des">${new_description || row?.['description'] || ''}</textarea>`
                     }
                 },
             ],
@@ -275,7 +275,7 @@ class ProductModificationPageFunction {
             {
                 className: 'w-60',
                 render: (data, type, row) => {
-                    return `<span class="badge badge-sm badge-soft-blue warehouse-code">${row?.['warehouse_data']?.['code'] || ''}</span> <span>${row?.['warehouse_data']?.['title'] || ''}</span>`
+                    return `<span class="badge badge-sm badge-soft-blue warehouse-code">${row?.['warehouse_data']?.['code'] || ''}</span> <span class="warehouse-title">${row?.['warehouse_data']?.['title'] || ''}</span>`
                 }
             },
             {
@@ -1487,6 +1487,8 @@ class ProductModificationEventHandler {
 
                     pageElements.$insert_component_btn.prop('hidden', false)
                 }
+
+                pageElements.$btn_open_modal_product.removeClass('btn-secondary').addClass('btn-success')
             }
             else {
                 $.fn.notifyB({description: 'Nothing is selected'}, 'failure')
@@ -1499,7 +1501,7 @@ class ProductModificationEventHandler {
             pageElements.$table_select_lot.closest('.table-serial-space').prop('hidden', true)
             pageElements.$table_select_serial.closest('.table-lot-space').prop('hidden', true)
             let product_id = pageVariables.current_product_modified?.['id']
-            let url = `${pageElements.$script_url.attr('data-url-warehouse-list-by-product')}?product_id=${product_id}&warehouse__is_pm_warehouse=True`
+            let url = `${pageElements.$script_url.attr('data-url-warehouse-list-by-product')}?product_id=${product_id}`
             ProductModificationPageFunction.LoadTableWarehouseByProduct(url)
             ProductModificationPageFunction.LoadTableLotListByWarehouse()
             ProductModificationPageFunction.LoadTableSerialListByWarehouse()
@@ -1523,6 +1525,7 @@ class ProductModificationEventHandler {
         pageElements.$accept_picking_product_btn.on('click', function () {
             let flag = true
             let warehouse_code = ''
+            let warehouse_title = ''
             let serial_number = ''
             let lot_number = ''
             const $checked_prd_wh = pageElements.$table_select_warehouse.find('.product-warehouse-select:checked').first()
@@ -1534,6 +1537,7 @@ class ProductModificationEventHandler {
             else {
                 pageVariables.current_product_modified['warehouse_id'] = $checked_prd_wh.attr('data-warehouse-id')
                 warehouse_code = $checked_prd_wh.closest('tr').find('.warehouse-code').text()
+                warehouse_title = $checked_prd_wh.closest('tr').find('.warehouse-title').text()
             }
 
             if (Number(pageVariables.current_product_modified?.['general_traceability_method']) === 0) {
@@ -1593,7 +1597,7 @@ class ProductModificationEventHandler {
 
                 if (Number(pageVariables.current_product_modified?.['general_traceability_method']) === 0) {
                     pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`
-                        <span class="badge badge-sm badge-soft-blue">${warehouse_code}</span>
+                        <span class="badge badge-sm badge-soft-blue mr-1">${warehouse_code}</span><span>${warehouse_title}</span>
                     `)
                 }
                 if (Number(pageVariables.current_product_modified?.['general_traceability_method']) === 1) {
@@ -1608,6 +1612,8 @@ class ProductModificationEventHandler {
                 }
                 pageElements.$picking_product_modal.modal('hide')
                 pageElements.$insert_component_btn.prop('hidden', false)
+
+                pageElements.$btn_modal_picking_product.removeClass('btn-secondary').addClass('btn-success')
             }
         })
         $(document).on('click', '.delete-init-component-btn', function () {
@@ -1657,20 +1663,6 @@ class ProductModificationEventHandler {
             pageElements.$confirm_initial_components_modal.modal('hide')
         })
         // space
-        $('.layout-btn').on('click', function () {
-            if ($(this).closest('.main-space').attr('class') === 'main-space col-12 border-right mt-3') {
-                $('.main-space').attr('class', 'main-space col-12 col-md-6 col-lg-6 border-right mt-3')
-            }
-            else if ($(this).closest('.main-space').attr('class') === 'main-space col-12 mt-3') {
-                $('.main-space').attr('class', 'main-space col-12 col-md-6 col-lg-6 mt-3')
-            }
-            else if ($(this).closest('.main-space').attr('class') === 'main-space col-12 col-md-6 col-lg-6 border-right mt-3') {
-                $('.main-space').attr('class', 'main-space col-12 border-right mt-3')
-            }
-            else if ($(this).closest('.main-space').attr('class') === 'main-space col-12 col-md-6 col-lg-6 mt-3') {
-                $('.main-space').attr('class', 'main-space col-12 mt-3')
-            }
-        })
         pageElements.$insert_component_btn.on('click', function () {
             ProductModificationPageFunction.LoadTableComponentInserted()
         })

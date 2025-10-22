@@ -5628,7 +5628,13 @@ class QuotationCalculateCaseHandle {
                         }
                         if (app === 'sale_order') {
                             if ($(eleRowQuantityTime).val()) {
-                                discountAmount += parseFloat($(eleRowDiscount).valCurrency()) * parseFloat($(eleRowQuantity).val()) * parseFloat($(eleRowQuantityTime).val());
+                                let time = parseFloat($(eleRowQuantityTime).val());
+                                if (time === 0) {
+                                    discountAmount += parseFloat($(eleRowDiscount).valCurrency()) * parseFloat($(eleRowQuantity).val());
+                                }
+                                if (time > 0) {
+                                    discountAmount += parseFloat($(eleRowDiscount).valCurrency()) * parseFloat($(eleRowQuantity).val()) * parseFloat($(eleRowQuantityTime).val());
+                                }
                             }
 
                         }

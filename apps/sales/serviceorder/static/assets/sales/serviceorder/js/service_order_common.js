@@ -1175,8 +1175,8 @@ const ServiceOrder = (function($) {
                             badgeClass = 'badge-soft-warning'  // Under-allocated
                         }
 
-                        const displayNumber = remaining + contribution
-
+                        // const displayNumber = remaining + contribution
+                        const displayNumber = remaining
                         return `<span class="badge ${badgeClass} remaining-contribution"  data-remaining-contribution="${remaining}">
                                     ${displayNumber.toFixed(2)}%
                                 </span>`

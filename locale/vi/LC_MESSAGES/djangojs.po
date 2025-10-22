@@ -570,9 +570,5 @@ msgid "Virtual warehouse"
 msgstr "Kho ảo"
 
 #
-msgid "Warehouse for PM"
-msgstr "Kho cho ráp-rã"
-
-#
 msgid "Use for Equipment Loan"
 msgstr "Dùng cho Mượn hàng"

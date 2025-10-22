@@ -11,6 +11,7 @@ class ProductModificationPageElements {
         // modal
         this.$btn_open_modal_product = $('#btn-open-modal-product')
         this.$btn_modal_picking_product = $('#btn-modal-picking-product')
+
         this.$select_product_modified_modal = $('#select-product-modified-modal')
         this.$table_select_product_modified = $('#table-select-product-modified')
         this.$table_select_product_modified_before = $('#table-select-product-modified-before')
@@ -21,6 +22,8 @@ class ProductModificationPageElements {
         this.$table_select_serial = $('#table-select-serial')
         this.$accept_picking_product_btn = $('#accept-picking-product-btn')
         // space
+        this.$specific_tracking = $('#specific-tracking')
+        this.$root_product = $('#root-product')
         this.$table_current_product_modified = $('#table-current-product-modified')
         this.$btn_add_row_init_component = $('#btn-add-row-init-component')
         this.$confirm_initial_components_modal = $('#confirm-initial-components-modal')
@@ -59,7 +62,7 @@ const pageVariables = new ProductModificationPageVariables()
  * Các hàm load page và hàm hỗ trợ
  */
 class ProductModificationPageFunction {
-    static LoadTableCurrentProductModified(data_list=[], warehouse_code='', serial_number='', lot_number='', new_description='', option='create') {
+    static LoadTableCurrentProductModified(data_list=[], warehouse_code='', warehouse_title='', serial_number='', lot_number='', new_description='', option='create') {
         pageElements.$table_current_product_modified.DataTable().clear().destroy()
         pageElements.$table_current_product_modified.DataTableDefault({
             dom: 't',
@@ -102,13 +105,13 @@ class ProductModificationPageFunction {
             initComplete: function () {
                 if (warehouse_code) {
                     if (lot_number) {
-                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-soft-blue">${warehouse_code}</span><br><span>Lot: ${lot_number}</span>`)
+                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-soft-blue mr-1">${warehouse_code}</span><span>${warehouse_title}</span><br><span>Lot: ${lot_number}</span>`)
                     }
                     else if (serial_number) {
-                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-soft-blue">${warehouse_code}</span><br><span>Serial: ${serial_number}</span>`)
+                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-soft-blue mr-1">${warehouse_code}</span><span>${warehouse_title}</span><br><span>Serial: ${serial_number}</span>`)
                     }
                     else {
-                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-soft-blue">${warehouse_code}</span>`)
+                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-soft-blue mr-1">${warehouse_code}</span><span>${warehouse_title}</span>`)
                     }
                 }
             }
@@ -153,6 +156,7 @@ class ProductModificationPageFunction {
                             data-product-title="${row?.['title']}"
                             data-product-description="${row?.['description'] || ''}"
                             data-product-general-traceability-method="${row?.['general_traceability_method']}"
+                            data-product-valuation-method="${row?.['valuation_method']}"
                             >
                         </div>`;
                     }
@@ -172,6 +176,22 @@ class ProductModificationPageFunction {
                 }
             ]
         });
+    }
+    static LoadRootProduct(data) {
+        pageElements.$root_product.initSelect2({
+            data: data,
+            ajax: {
+                data: {},
+                url: pageElements.$root_product.attr('data-url'),
+                method: 'GET',
+            },
+            templateResult: function(data) {
+                return $(`<span class="badge badge-light badge-sm">${data.data?.['code']}</span><br><span>${data.data?.['title']}</span>`);
+            },
+            keyResp: 'product_modified_list',
+            keyId: 'id',
+            keyText: 'title',
+        })
     }
     static LoadTableProductModifiedBefore() {
         pageElements.$table_select_product_modified_before.DataTable().clear().destroy()
@@ -1289,11 +1309,12 @@ class ProductModificationHandler {
         let frm = new SetupFormSubmit($(frmEle))
 
         frm.dataForm['title'] = pageElements.$title.val()
-        frm.dataForm['product_modified'] = pageVariables.current_product_modified?.['id']
+        frm.dataForm['product_modified'] = pageVariables.current_product_modified?.['id'] || null
         frm.dataForm['new_description'] = pageVariables.current_product_modified?.['description']
-        frm.dataForm['warehouse_id'] = pageVariables.current_product_modified?.['warehouse_id']
-        frm.dataForm['prd_wh_lot'] = pageVariables.current_product_modified?.['lot_id']
-        frm.dataForm['prd_wh_serial'] = pageVariables.current_product_modified?.['serial_id']
+        frm.dataForm['warehouse_id'] = pageVariables.current_product_modified?.['warehouse_id'] || null
+        frm.dataForm['prd_wh_lot'] = pageVariables.current_product_modified?.['lot_id'] || null
+        frm.dataForm['prd_wh_serial'] = pageVariables.current_product_modified?.['serial_id'] || null
+        frm.dataForm['root_product_modified'] = pageElements.$root_product.val() || null
 
         let current_component_data = []
         pageElements.$table_product_current_component.find('tbody tr').each(function (index, ele) {
@@ -1345,6 +1366,9 @@ class ProductModificationHandler {
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
 
+                    pageElements.$btn_open_modal_product.removeClass('btn-secondary').addClass('btn-success')
+                    pageElements.$btn_modal_picking_product.removeClass('btn-secondary').addClass('btn-success')
+
                     pageElements.$title.val(data?.['title'])
                     pageElements.$created_date.val(data?.['date_created'] ? DateTimeControl.formatDateType("YYYY-MM-DD hh:mm:ss", "DD/MM/YYYY", data?.['date_created']) : '')
                     pageVariables.current_product_modified = data?.['prd_wh_data']?.['product']
@@ -1356,11 +1380,17 @@ class ProductModificationHandler {
                     ProductModificationPageFunction.LoadTableCurrentProductModified(
                         [pageVariables.current_product_modified],
                         data?.['prd_wh_data']?.['warehouse']?.['code'],
+                        data?.['prd_wh_data']?.['warehouse']?.['title'],
                         data?.['prd_wh_serial_data']?.['serial_number'],
                         data?.['prd_wh_lot_data']?.['lot_number'],
                         data?.['new_description'],
                         option
                     )
+
+                    $('#specific-option-space').prop('hidden', Number(pageVariables.current_product_modified?.['valuation_method']) === 2)
+                    pageElements.$specific_tracking.prop('checked', Object.keys(data?.['root_product_modified'] || {}).length > 0)
+                    pageElements.$root_product.closest('.form-group').prop('hidden', !pageElements.$specific_tracking.is(':checked'))
+                    ProductModificationPageFunction.LoadRootProduct(data?.['root_product_modified'] || {})
 
                     pageElements.$insert_component_btn.prop('hidden', false)
 
@@ -1408,13 +1438,15 @@ class ProductModificationEventHandler {
                     'title': $checkedEle.attr('data-product-title'),
                     'description': $checkedEle.attr('data-product-description'),
                     'general_traceability_method': $checkedEle.attr('data-product-general-traceability-method'),
+                    'valuation_method': $checkedEle.attr('data-product-valuation-method'),
                 }
                 // nếu có modified number
                 const warehouse_data = $checkedEle.attr('data-warehouse-data') ? JSON.parse($checkedEle.attr('data-warehouse-data')) : {}
                 let warehouse_code = warehouse_data?.['code'] || ''
+                let warehouse_title = warehouse_data?.['title'] || ''
                 let serial_number = $checkedEle.attr('data-serial-number') || ''
                 let lot_number = $checkedEle.attr('data-lot-number') || ''
-                ProductModificationPageFunction.LoadTableCurrentProductModified([pageVariables.current_product_modified], warehouse_code, serial_number, lot_number)
+                ProductModificationPageFunction.LoadTableCurrentProductModified([pageVariables.current_product_modified], warehouse_code, warehouse_title, serial_number, lot_number)
                 pageElements.$select_product_modified_modal.modal('hide')
 
                 if ($checkedEle.attr('data-modified-number')) {
@@ -1488,11 +1520,22 @@ class ProductModificationEventHandler {
                     pageElements.$insert_component_btn.prop('hidden', false)
                 }
 
+                $('#specific-notify-space').prop('hidden', Number(pageVariables.current_product_modified?.['valuation_method']) === 2)
+                $('#specific-option-space').prop('hidden', Number(pageVariables.current_product_modified?.['valuation_method']) === 2)
+
+                pageElements.$specific_tracking.prop('checked', false)
+                if (pageVariables.current_product_modified?.['valuation_method'] === '2') {
+                    ProductModificationPageFunction.LoadRootProduct()
+                }
+
                 pageElements.$btn_open_modal_product.removeClass('btn-secondary').addClass('btn-success')
             }
             else {
                 $.fn.notifyB({description: 'Nothing is selected'}, 'failure')
             }
+        })
+        pageElements.$specific_tracking.on('change', function () {
+            pageElements.$root_product.closest('.form-group').prop('hidden', !$(this).is(':checked'))
         })
         $(document).on('change', '.new-des', function () {
             pageVariables.current_product_modified['description'] = $(this).val()
@@ -1602,12 +1645,12 @@ class ProductModificationEventHandler {
                 }
                 if (Number(pageVariables.current_product_modified?.['general_traceability_method']) === 1) {
                     pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`
-                        <span class="badge badge-sm badge-soft-blue">${warehouse_code}</span><br><span>Lot: ${lot_number}</span>
+                        <span class="badge badge-sm badge-soft-blue mr-1">${warehouse_code}</span><span>${warehouse_title}</span><br><span>Lot: ${lot_number}</span>
                     `)
                 }
                 if (Number(pageVariables.current_product_modified?.['general_traceability_method']) === 2) {
                     pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`
-                        <span class="badge badge-sm badge-soft-blue">${warehouse_code}</span><br><span>Serial: ${serial_number}</span>
+                        <span class="badge badge-sm badge-soft-blue mr-1">${warehouse_code}</span><span>${warehouse_title}</span><br><span>Serial: ${serial_number}</span>
                     `)
                 }
                 pageElements.$picking_product_modal.modal('hide')

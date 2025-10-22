@@ -57,120 +57,115 @@
 <div class="tab-content">
     <div class="tab-pane fade show active" id="tab_general">
         <div class="row">
-            <div class="col-12 col-md-3 col-lg-2">
-                <div class="form-group">
-                    <label for="general-product-type" class="form-label required">{% trans "Product Type" %}</label>
-                    <select id="general-product-type" class="form-select select2" data-method="GET"
-                            data-url="{% url 'ProductTypeListAPI' %}"></select>
-                </div>
-            </div>
-            <div class="col-12 col-md-3 col-lg-2">
-                <div class="form-group">
-                    <label for="general-product-category" class="form-label required">{% trans "Product Category" %}</label>
-                    <select id="general-product-category" class="form-select" data-method="GET"
-                            data-url="{% url "ProductCategoryListAPI" %}"></select>
-                </div>
-            </div>
-            <div class="col-12 col-md-3 col-lg-2">
-                <div class="form-group">
-                    <label for="general-uom-group" class="form-label required">{% trans "UOM Group" %}</label>
-                    <select id="general-uom-group" class="form-select" data-method="GET"
-                            data-url="{% url "UnitOfMeasureGroupListAPI" %}"
-                            data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"></select>
-                </div>
-            </div>
-            <div class="col-12 col-md-3 col-lg-2">
-                <div class="form-group">
-                    <label for="general-manufacturer" class="form-label">{% trans "Manufacturer" %}</label>
-                    <select id="general-manufacturer" class="form-select" data-method="GET"
-                            data-url="{% url "ManufacturerListAPI" %}"></select>
-                </div>
-            </div>
-            <div class="col-12 col-md-3 col-lg-2">
-                <div class="form-group">
-                    <label for="general-traceability-method" class="form-label">{% trans "Traceability method" %}</label>
-                    <select id="general-traceability-method" class="form-select" data-method="GET">
-                        <option value="0">{% trans "None" %}</option>
-                        <option value="1">{% trans "Batch/Lot number" %}</option>
-                        <option value="2">{% trans "Serial number" %}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-12 col-md-3 col-lg-2">
-                <div class="form-group">
-                    <label for="general-standard-price" class="form-label">{% trans "Standard cost" %}</label>
-                    <input id="general-standard-price" class="form-control mask-money" value="0">
-                </div>
-            </div>
-        </div>
-        <div class="row mt-3">
-            <div class="col-12 col-lg-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h6 class="heading-wth-icon text-primary">
-                            <span class="head-icon"><i data-feather="package"></i></span>
-                            {% trans "Product Dimension and Weight Control" %}
-                        </h6>
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="general-product-type" class="form-label required">{% trans "Product Type" %}</label>
+                            <select id="general-product-type" class="form-select select2" data-method="GET"
+                                    data-url="{% url 'ProductTypeListAPI' %}"></select>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-12 col-md-4 col-lg-4">
-                                <div class="form-group">
-                                    <label for="length" class="form-label">{% trans "Length" %}</label>
-                                    <span class="input-affix-wrapper affix-wth-text">
-                                        <input class="form-control inpDimension" id="length">
-                                        <span class="input-suffix">cm</span>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-4 col-lg-4">
-                                <div class="form-group">
-                                    <label for="width" class="form-label">{% trans "Width" %}</label>
-                                    <span class="input-affix-wrapper affix-wth-text">
-                                        <input class="form-control inpDimension" id="width">
-                                        <span class="input-suffix">cm</span>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-4 col-lg-4">
-                                <div class="form-group">
-                                    <label for="height" class="form-label">{% trans "Height" %}</label>
-                                    <span class="input-affix-wrapper affix-wth-text">
-                                        <input class="form-control inpDimension" id="height">
-                                        <span class="input-suffix">cm</span>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-4 col-lg-4">
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <label for="volume" class="form-label">{% trans "Volume" %}</label>
-                                        </div>
-                                        <div class="col-6 text-right">
-                                            <a href="#" id="to-fix-left"><i class="fas fa-caret-left text-primary"></i></a>
-                                            <span style="font-size: small">.00</span>
-                                            <a href="#" id="to-fix-right"><i class="fas fa-caret-right text-primary"></i></a>
-                                        </div>
-                                    </div>
-                                    <span class="input-affix-wrapper affix-wth-text">
-                                        <input class="form-control" id="volume">
-                                        <span id="VolumeSpan" class="input-suffix"></span>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-4 col-lg-4">
-                                <div class="form-group">
-                                    <label for="weight" class="form-label">{% trans "Weight" %}</label>
-                                    <span class="input-affix-wrapper affix-wth-text">
-                                        <input class="form-control" id="weight">
-                                        <span id="WeightSpan" class="input-suffix"></span>
-                                    </span>
-                                </div>
-                            </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="general-product-category" class="form-label required">{% trans "Product Category" %}</label>
+                            <select id="general-product-category" class="form-select" data-method="GET"
+                                    data-url="{% url "ProductCategoryListAPI" %}"></select>
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="general-uom-group" class="form-label required">{% trans "UOM Group" %}</label>
+                            <select id="general-uom-group" class="form-select" data-method="GET"
+                                    data-url="{% url "UnitOfMeasureGroupListAPI" %}"
+                                    data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="general-manufacturer" class="form-label">{% trans "Manufacturer" %}</label>
+                            <select id="general-manufacturer" class="form-select" data-method="GET"
+                                    data-url="{% url "ManufacturerListAPI" %}"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="general-traceability-method" class="form-label required">{% trans "Traceability method" %}</label>
+                            <select id="general-traceability-method" class="form-select" data-method="GET">
+                                <option value="0">{% trans "None" %}</option>
+                                <option value="1">{% trans "Batch/Lot number" %}</option>
+                                <option value="2">{% trans "Serial number" %}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="general-standard-price" class="form-label">{% trans "Standard cost" %}</label>
+                            <input id="general-standard-price" class="form-control mask-money" value="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="representative-for-pm-product">{% trans "Representative for Product Modification product" %}</label>
+                            <select class="form-select select2" id="representative-for-pm-product" data-url="{% url 'ProductListAPI' %}"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3"></div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <table class="table nowrap w-100 border">
+                    <thead>
+                    <tr class="bg-primary-light-5">
+                        <th colspan="3">
+                            <span class="text-primary h6">{% trans "Product Dimension and Weight Control" %}</span>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="w-20"><label for="length" class="form-label">{% trans "Length" %}</label></td>
+                        <td class="w-70"><input type="number" step="0.1" class="form-control inpDimension" id="length"></td>
+                        <td class="w-10"><span>cm</span></td>
+                    </tr>
+                    <tr>
+                        <td class="w-20"><label for="width" class="form-label">{% trans "Width" %}</label></td>
+                        <td class="w-70"><input type="number" step="0.1" class="form-control inpDimension" id="width"></td>
+                        <td class="w-10"><span>cm</span></td>
+                    </tr>
+                    <tr>
+                        <td class="w-20"><label for="height" class="form-label">{% trans "Height" %}</label></td>
+                        <td class="w-70"><input type="number" step="0.1" class="form-control inpDimension" id="height"></td>
+                        <td class="w-10"><span>cm</span></td>
+                    </tr>
+                    <tr>
+                        <td class="w-20">
+                            <div class="d-flex">
+                                <label for="volume" class="form-label">{% trans "Volume" %}</label>
+                                <div class="ml-5">
+                                    <a href="#" id="to-fix-left"><i class="fas fa-caret-left text-primary"></i></a>
+                                    <span style="font-size: small">.00</span>
+                                    <a href="#" id="to-fix-right"><i
+                                            class="fas fa-caret-right text-primary"></i></a>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="w-70"><input class="form-control" id="volume"></td>
+                        <td class="w-10"><span id="VolumeSpan"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="w-20"><label for="weight" class="form-label">{% trans "Weight" %}</label></td>
+                        <td class="w-70"><input type="number" step="0.1" class="form-control" id="weight"></td>
+                        <td class="w-10"><span id="WeightSpan"></span></td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -180,23 +175,37 @@
             <label class="form-check-label" for="check-tab-sale">{% trans "Enable tab" %}</label>
         </div>
         <div hidden class="row mt-5">
-            <div class="col-12 col-md-12 col-lg-4">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="row">
-                    <div class="col-12 col-md-12 col-lg-6">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label for="sale-uom" class="form-label required">{% trans "UOM" %}</label>
                             <select id="sale-uom" class="form-select" data-method="GET"
                                     data-url="{% url "UnitOfMeasureListAPI" %}"></select>
                         </div>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-6">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label for="sale-tax" class="form-label required">{% trans "Tax" %}</label>
                             <select id="sale-tax" class="form-select" data-method="GET"
                                     data-url="{% url "TaxListAPI" %}"></select>
                         </div>
                     </div>
-                    <div class="col-12">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="available_notify_checkbox">
+                                        <label class="form-check-label" for="available_notify_checkbox">{% trans "Notify when available quantity is less than" %}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <input id="less_than_number" type="number" min="0" class="form-control">
+                            <label for="less_than_number"></label>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-6">
@@ -212,32 +221,18 @@
                             <select id="price_list_for_sale_online" data-url="{% url 'PriceListAPI' %}" class="select2 form-select" data-placeholder="{% trans 'From Price List in right side' %}"></select>
                         </div>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-12">
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="available_notify_checkbox">
-                                        <label class="form-check-label" for="available_notify_checkbox">{% trans "Notify when available quantity is less than" %}</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <input id="less_than_number" type="number" min="0" class="form-control">
-                            <label for="less_than_number"></label>
-                        </div>
-                    </div>
                 </div>
             </div>
-            <div class="col-12 col-md-12 col-lg-8 ul-price-list" id="sale-select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}">
-                <table class="table nowrap w-100" id="table_price_list" data-method="GET" data-url="{% url "PriceListAPI" %}">
+            <div class="col-12 col-md-6 col-lg-6 ul-price-list" id="sale-select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}">
+                <table class="table nowrap w-100 border" id="table_price_list" data-method="GET" data-url="{% url "PriceListAPI" %}">
                     <thead class="bg-secondary-light-5">
                         <tr>
                             <th style="min-width: 50px"></th>
                             <th style="min-width: 50px">{% trans 'Select' %}</th>
                             <th style="min-width: 150px">{% trans 'Price list' %}</th>
-                            <th style="min-width: 150px">{% trans 'Start' %}</th>
-                            <th style="min-width: 150px">{% trans 'End' %}</th>
-                            <th style="min-width: 150px">{% trans 'Price' %}</th>
+                            <th style="min-width: 100px">{% trans 'Start' %}</th>
+                            <th style="min-width: 100px">{% trans 'End' %}</th>
+                            <th style="min-width: 200px">{% trans 'Price' %}</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -254,49 +249,50 @@
             {% trans 'Inventory tab is not allowed for Service product.' %}
         </span>
         <div hidden class="row mt-5">
-            <div class="col-12 col-md-3 col-lg-2">
-                <div class="form-group">
-                    <label for="inventory-uom" class="form-label required">{% trans "UOM" %}</label>
-                    <select id="inventory-uom" class="form-select" data-method="GET"
-                            data-url="{% url 'UnitOfMeasureListAPI' %}">
-                    </select>
-                </div>
-            </div>
-            <div class="col-12 col-md-3 col-lg-2">
-                <div class="form-group">
-                    <label for="inventory-level-min" class="form-label">{% trans "Inventory Level Min" %}</label>
-                    <div class="input-group">
-                        <span class="input-group-text" id="inputGroup-sizing-sm">MIN</span>
-                        <input id="inventory-level-min" type="number" class="form-control" min="0" step="1">
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="inventory-uom" class="form-label required">{% trans "UOM" %}</label>
+                            <select id="inventory-uom" class="form-select" data-method="GET"
+                                    data-url="{% url 'UnitOfMeasureListAPI' %}">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="valuation-method" class="form-label required">{% trans "Valuation method" %}</label>
+                            <select id="valuation-method" class="form-select required">
+                                <option value="0">{% trans 'FIFO' %}</option>
+                                <option value="1">{% trans 'Weighted average' %}</option>
+                                <option value="2">{% trans 'Specific identification' %}</option>
+                            </select>
+                        </div>
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#modal-specific-serial-number" class="btn btn-soft-danger" id="specific-modal-btn" hidden>{% trans 'Specific serial number' %}</button>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-3 col-lg-2">
-                <div class="form-group">
-                    <label for="inventory-level-max" class="form-label">{% trans "Inventory Level Max" %}</label>
-                    <div class="input-group">
-                        <span class="input-group-text" id="inputGroup-sizing-sm">MAX</span>
-                        <input id="inventory-level-max" type="number" class="form-control" min="0" step="1">
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-3 col-lg-2">
-                <div class="form-group">
-                    <label for="valuation-method" class="form-label required">{% trans "Valuation method" %}</label>
-                    <select id="valuation-method" class="form-select required">
-                        <option value="0">{% trans 'FIFO' %}</option>
-                        <option value="1">{% trans 'Weighted average' %}</option>
-                        <option value="2">{% trans 'Specific identification' %}</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div hidden class="row">
-            <div class="col-12 mt-5">
+            <div class="col-12 col-md-3 col-lg-3">
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="inventory-level-min" class="form-label">{% trans "Inventory Level Min" %}</label>
+                            <input id="inventory-level-min" type="number" class="form-control" min="0" step="1">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="inventory-level-max" class="form-label">{% trans "Inventory Level Max" %}</label>
+                            <input id="inventory-level-max" type="number" class="form-control" min="0" step="1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="row">
+                    <div class="col-12">
                         <span class="text-muted">{% trans 'Product overview' %}</span>
-                        <table id="datatable-warehouse-overview" class="table nowrap w-100">
+                        <table id="datatable-warehouse-overview" class="table nowrap w-100 border">
                             <thead>
                                 <tr class="bg-secondary-light-5">
                                     <th>{% trans "Stock" %}</th>
@@ -309,9 +305,9 @@
                             <tbody></tbody>
                         </table>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12 mt-5">
                         <span class="text-muted">{% trans 'Product warehouse detail' %}</span>
-                        <table id="datatable-warehouse-list" class="table nowrap w-100"
+                        <table id="datatable-warehouse-list" class="table nowrap w-100 border"
                                data-url="{% url "WareHouseListAPI" %}"
                                data-method="GET">
                             <thead>
@@ -323,9 +319,6 @@
                             <tbody></tbody>
                         </table>
                     </div>
-                    <div class="col-12 mt-5">
-                        <button type="button" data-bs-toggle="modal" data-bs-target="#modal-specific-serial-number" class="btn btn-soft-danger" id="specific-modal-btn" hidden>{% trans 'Specific serial number' %}</button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -336,21 +329,21 @@
             <label class="form-check-label" for="check-tab-purchase">{% trans "Enable tab" %}</label>
         </div>
         <div hidden class="row mt-5">
-            <div class="col-12 col-md-3 col-lg-2">
+            <div class="col-12 col-md-3 col-lg-3">
                 <div class="form-group">
                     <label for="purchase-uom" class="form-label required">{% trans "UOM" %}</label>
                     <select id="purchase-uom" class="form-select" data-method="GET"
                             data-url="{% url "UnitOfMeasureListAPI" %}"></select>
                 </div>
             </div>
-            <div class="col-12 col-md-3 col-lg-2">
+            <div class="col-12 col-md-3 col-lg-3">
                 <div class="form-group">
                     <label for="purchase-tax" class="form-label required">{% trans "Tax" %}</label>
                     <select id="purchase-tax" class="form-select" data-method="GET"
                             data-url="{% url "TaxListAPI" %}"></select>
                 </div>
             </div>
-            <div class="col-12 col-md-3 col-lg-2">
+            <div class="col-12 col-md-3 col-lg-3">
                 <div class="form-group">
                     <label for="purchase-supplied-by" class="form-label required">{% trans "Supplied by" %}</label>
                     <select id="purchase-supplied-by" class="form-select">
@@ -389,7 +382,7 @@
     </div>
     <div class="tab-pane fade" id="tab_attribute">
         <div class="row">
-            <div class="col-12 col-md-3 col-lg-2">
+            <div class="col-12 col-md-3 col-lg-3">
                 <div class="form-group">
                     <label for="duration-unit" class="form-label">{% trans "Duration unit" %}</label>
                     <select id="duration-unit" class="form-select" data-method="GET" data-url="{% url "UnitOfMeasureListAPI" %}"></select>
@@ -473,7 +466,7 @@
     </div>
     <div class="tab-pane fade" id="tab_account_determination">
         <div class="row">
-            <div class="col-12 col-md-4 col-lg-2">
+            <div class="col-12 col-md-3 col-lg-3">
                 <div class="form-group">
                     <label for="account-deter-referenced-by" class="form-label required">{% trans "Referenced by" %}</label>
                     <select id="account-deter-referenced-by" class="form-select">

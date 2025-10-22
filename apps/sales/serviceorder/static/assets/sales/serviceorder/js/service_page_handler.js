@@ -1,11 +1,13 @@
 class ServiceOrderPageHandler {
     // Hàm load sẵn data cần thiết cho các page
     static async initializeCommonData() {
+        WindowControl.showLoading()
         await Promise.all([
             ServiceOrder.loadCurrencyRateData(),
             ServiceOrder.loadTaxData(),
             ServiceOrder.loadUoMData()
         ]);
+        WindowControl.hideLoading()
     }
 
     // Hàm set up form data

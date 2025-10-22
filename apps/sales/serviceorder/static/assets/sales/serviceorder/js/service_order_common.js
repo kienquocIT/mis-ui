@@ -4023,7 +4023,7 @@ const ServiceOrder = (function($) {
                     }
                     else {
                         // tổng đã cấn trừ, trừ cho giá trị cấn trừ cũ
-                        totalReconciledValue = totalReconciledValue - reconcileValue
+                        totalReconciledValue = totalReconciledValue - currReconcileValue
                     }
                 }
                 else {

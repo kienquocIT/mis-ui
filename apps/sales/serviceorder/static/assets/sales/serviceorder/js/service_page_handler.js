@@ -24,7 +24,7 @@ class ServiceOrderPageHandler {
         formInstance.dataForm['work_order_data'] = ServiceOrder.getWorkOrderData();
         formInstance.dataForm['payment_data'] = ServiceOrder.getPaymentData();
         formInstance.dataForm['shipment'] = TabShipmentFunction.combineShipmentData();
-        formInstance.dataForm['expenses_data'] = TabExpenseFunction.combineExpenseData();
+        formInstance.dataForm['expense'] = TabExpenseFunction.combineExpenseData();
 
         ServiceOrderPageHandler.setTotalFields(formInstance);
         ServiceOrderPageHandler.setIndicatorData(formInstance);

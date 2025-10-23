@@ -246,6 +246,7 @@ class ProductPageFunction {
     }
     static LoadRepresentativeForPMProduct(data) {
         pageElements.$representative_for_pm_product.initSelect2({
+            allowClear: true,
             data: data,
             ajax: {
                 data: {},

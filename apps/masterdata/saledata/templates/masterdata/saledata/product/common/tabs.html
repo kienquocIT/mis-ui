@@ -10,6 +10,12 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" id="link-tab-purchase" href="#tab_purchase">
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-cart-shopping"></i></span></span>
+                    <span class="nav-link-text">{% trans 'Purchase' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_sale" id="link-tab-sale">
                     <span class="nav-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-sack-dollar"></i></span></span>
                     <span class="nav-link-text">{% trans 'Sale' %}</span>
@@ -19,12 +25,6 @@
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_inventory" id="link-tab-inventory">
                     <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-warehouse"></i></span></span>
                     <span class="nav-link-text">{% trans 'Inventory' %}</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" id="link-tab-purchase" href="#tab_purchase">
-                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-cart-shopping"></i></span></span>
-                    <span class="nav-link-text">{% trans 'Purchase' %}</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -54,7 +54,7 @@
         </ul>
     </div>
 </div>
-<div class="tab-content">
+<div class="tab-content mb-5">
     <div class="tab-pane fade show active" id="tab_general">
         <div class="row">
             <div class="col-12 col-md-6 col-lg-6">
@@ -169,43 +169,72 @@
             </div>
         </div>
     </div>
+    <div class="tab-pane fade" id="tab_purchase">
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="check-tab-purchase">
+            <label class="form-check-label" for="check-tab-purchase">{% trans "Enable tab" %}</label>
+        </div>
+        <div hidden class="row mt-5">
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="purchase-uom" class="form-label required">{% trans "UOM" %}</label>
+                            <select id="purchase-uom" class="form-select" data-method="GET"
+                                    data-url="{% url "UnitOfMeasureListAPI" %}"></select>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="purchase-tax" class="form-label required">{% trans "Tax" %}</label>
+                            <select id="purchase-tax" class="form-select" data-method="GET"
+                                    data-url="{% url "TaxListAPI" %}"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="purchase-supplied-by" class="form-label required">{% trans "Supplied by" %}</label>
+                            <select id="purchase-supplied-by" class="form-select">
+                                <option value="0">{% trans 'Purchasing' %}</option>
+                                <option value="1">{% trans 'Making' %}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="tab-pane fade" id="tab_sale">
         <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" id="check-tab-sale">
             <label class="form-check-label" for="check-tab-sale">{% trans "Enable tab" %}</label>
         </div>
         <div hidden class="row mt-5">
-            <div class="col-12 col-md-6 col-lg-6">
+            <div class="col-12 col-md-3 col-lg-3">
                 <div class="row">
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12">
                         <div class="form-group">
                             <label for="sale-uom" class="form-label required">{% trans "UOM" %}</label>
                             <select id="sale-uom" class="form-select" data-method="GET"
                                     data-url="{% url "UnitOfMeasureListAPI" %}"></select>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12">
                         <div class="form-group">
                             <label for="sale-tax" class="form-label required">{% trans "Tax" %}</label>
                             <select id="sale-tax" class="form-select" data-method="GET"
                                     data-url="{% url "TaxListAPI" %}"></select>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="available_notify_checkbox">
-                                        <label class="form-check-label" for="available_notify_checkbox">{% trans "Notify when available quantity is less than" %}</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <input id="less_than_number" type="number" min="0" class="form-control">
-                            <label for="less_than_number"></label>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-6">
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="row">
+                    <div class="col-12">
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-6">
@@ -219,6 +248,20 @@
                                 </div>
                             </div>
                             <select id="price_list_for_sale_online" data-url="{% url 'PriceListAPI' %}" class="select2 form-select" data-placeholder="{% trans 'From Price List in right side' %}"></select>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="available_notify_checkbox">
+                                        <label class="form-check-label" for="available_notify_checkbox">{% trans "Notify when available quantity is less than" %}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <input id="less_than_number" type="number" min="0" class="form-control">
+                            <label for="less_than_number"></label>
                         </div>
                     </div>
                 </div>
@@ -268,19 +311,21 @@
                                 <option value="2">{% trans 'Specific identification' %}</option>
                             </select>
                         </div>
-                        <button type="button" data-bs-toggle="modal" data-bs-target="#modal-specific-serial-number" class="btn btn-soft-danger" id="specific-modal-btn" hidden>{% trans 'Specific serial number' %}</button>
+                    </div>
+                    <div class="col-12">
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#modal-specific-serial-number" class="btn btn-primary" id="specific-modal-btn" hidden>{% trans 'Specific serial number' %}</button>
                     </div>
                 </div>
             </div>
             <div class="col-12 col-md-3 col-lg-3">
                 <div class="row">
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12">
                         <div class="form-group">
                             <label for="inventory-level-min" class="form-label">{% trans "Inventory Level Min" %}</label>
                             <input id="inventory-level-min" type="number" class="form-control" min="0" step="1">
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12">
                         <div class="form-group">
                             <label for="inventory-level-max" class="form-label">{% trans "Inventory Level Max" %}</label>
                             <input id="inventory-level-max" type="number" class="form-control" min="0" step="1">
@@ -305,7 +350,7 @@
                             <tbody></tbody>
                         </table>
                     </div>
-                    <div class="col-12 mt-5">
+                    <div class="col-12 mt-3">
                         <span class="text-muted">{% trans 'Product warehouse detail' %}</span>
                         <table id="datatable-warehouse-list" class="table nowrap w-100 border"
                                data-url="{% url "WareHouseListAPI" %}"
@@ -319,37 +364,6 @@
                             <tbody></tbody>
                         </table>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="tab-pane fade" id="tab_purchase">
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="check-tab-purchase">
-            <label class="form-check-label" for="check-tab-purchase">{% trans "Enable tab" %}</label>
-        </div>
-        <div hidden class="row mt-5">
-            <div class="col-12 col-md-3 col-lg-3">
-                <div class="form-group">
-                    <label for="purchase-uom" class="form-label required">{% trans "UOM" %}</label>
-                    <select id="purchase-uom" class="form-select" data-method="GET"
-                            data-url="{% url "UnitOfMeasureListAPI" %}"></select>
-                </div>
-            </div>
-            <div class="col-12 col-md-3 col-lg-3">
-                <div class="form-group">
-                    <label for="purchase-tax" class="form-label required">{% trans "Tax" %}</label>
-                    <select id="purchase-tax" class="form-select" data-method="GET"
-                            data-url="{% url "TaxListAPI" %}"></select>
-                </div>
-            </div>
-            <div class="col-12 col-md-3 col-lg-3">
-                <div class="form-group">
-                    <label for="purchase-supplied-by" class="form-label required">{% trans "Supplied by" %}</label>
-                    <select id="purchase-supplied-by" class="form-select">
-                        <option value="0">{% trans 'Purchasing' %}</option>
-                        <option value="1">{% trans 'Making' %}</option>
-                    </select>
                 </div>
             </div>
         </div>
@@ -406,7 +420,7 @@
                     </thead>
                     <tbody></tbody>
                 </table>
-                <button id="btn-select-attribute" class="btn btn-sm btn-blue mt-2" type="button" data-bs-toggle="modal" data-bs-target="#modal-product-attribute">
+                <button id="btn-select-attribute" class="btn btn-sm btn-primary mt-2" type="button" data-bs-toggle="modal" data-bs-target="#modal-product-attribute">
                     <span>
                         <span>{% trans "Change attribute" %}</span>
                         <span class="icon">

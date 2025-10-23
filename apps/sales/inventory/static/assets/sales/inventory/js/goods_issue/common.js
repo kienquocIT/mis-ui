@@ -829,7 +829,7 @@ class GISHandler {
                         name: 'attachment'
                     })
 
-                    UsualLoadPageFunction.DisablePage(option==='detail')
+                    UsualLoadPageFunction.DisablePage(option==='detail', ['.select-detail'])
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             })

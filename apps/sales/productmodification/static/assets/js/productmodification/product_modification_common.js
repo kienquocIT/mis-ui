@@ -22,7 +22,6 @@ class ProductModificationPageElements {
         this.$table_select_serial = $('#table-select-serial')
         this.$accept_picking_product_btn = $('#accept-picking-product-btn')
         // space
-        this.$specific_tracking = $('#specific-tracking')
         this.$root_product = $('#root-product')
         this.$table_current_product_modified = $('#table-current-product-modified')
         this.$btn_add_row_init_component = $('#btn-add-row-init-component')
@@ -149,14 +148,15 @@ class ProductModificationPageFunction {
                     render: (data, type, row) => {
                         return `<div class="form-check">
                             <input type="radio"
-                            name="product-modified-select"
-                            class="form-check-input product-modified-select"
-                            data-product-id="${row?.['id']}"
-                            data-product-code="${row?.['code']}"
-                            data-product-title="${row?.['title']}"
-                            data-product-description="${row?.['description'] || ''}"
-                            data-product-general-traceability-method="${row?.['general_traceability_method']}"
-                            data-product-valuation-method="${row?.['valuation_method']}"
+                                name="product-modified-select"
+                                class="form-check-input product-modified-select"
+                                data-product-id="${row?.['id']}"
+                                data-product-code="${row?.['code']}"
+                                data-product-title="${row?.['title']}"
+                                data-product-description="${row?.['description'] || ''}"
+                                data-product-general-traceability-method="${row?.['general_traceability_method']}"
+                                data-product-valuation-method="${row?.['valuation_method']}"
+                                data-representative-for-pm-product="${JSON.stringify(row?.['representative_for_pm_product'] || {}).replace(/"/g, "&quot;")}"
                             >
                         </div>`;
                     }
@@ -180,15 +180,6 @@ class ProductModificationPageFunction {
     static LoadRootProduct(data) {
         pageElements.$root_product.initSelect2({
             data: data,
-            ajax: {
-                data: {},
-                url: pageElements.$root_product.attr('data-url'),
-                method: 'GET',
-            },
-            templateResult: function(data) {
-                return $(`<span class="badge badge-light badge-sm">${data.data?.['code']}</span><br><span>${data.data?.['title']}</span>`);
-            },
-            keyResp: 'product_modified_list',
             keyId: 'id',
             keyText: 'title',
         })
@@ -1388,8 +1379,6 @@ class ProductModificationHandler {
                     )
 
                     $('#specific-option-space').prop('hidden', Number(pageVariables.current_product_modified?.['valuation_method']) === 2)
-                    pageElements.$specific_tracking.prop('checked', Object.keys(data?.['root_product_modified'] || {}).length > 0)
-                    pageElements.$root_product.closest('.form-group').prop('hidden', !pageElements.$specific_tracking.is(':checked'))
                     ProductModificationPageFunction.LoadRootProduct(data?.['root_product_modified'] || {})
 
                     pageElements.$insert_component_btn.prop('hidden', false)
@@ -1439,6 +1428,7 @@ class ProductModificationEventHandler {
                     'description': $checkedEle.attr('data-product-description'),
                     'general_traceability_method': $checkedEle.attr('data-product-general-traceability-method'),
                     'valuation_method': $checkedEle.attr('data-product-valuation-method'),
+                    'representative_for_pm_product': JSON.parse($checkedEle.attr('data-representative-for-pm-product') || '{}')
                 }
                 // nếu có modified number
                 const warehouse_data = $checkedEle.attr('data-warehouse-data') ? JSON.parse($checkedEle.attr('data-warehouse-data')) : {}
@@ -1521,10 +1511,13 @@ class ProductModificationEventHandler {
                 }
 
                 $('#specific-notify-space').prop('hidden', Number(pageVariables.current_product_modified?.['valuation_method']) === 2)
-                $('#specific-option-space').prop('hidden', Number(pageVariables.current_product_modified?.['valuation_method']) === 2)
 
-                pageElements.$specific_tracking.prop('checked', false)
-                if (pageVariables.current_product_modified?.['valuation_method'] === '2') {
+                if (Object.keys(pageVariables.current_product_modified?.['representative_for_pm_product'] || {}).length > 0) {
+                    $('#specific-option-space').prop('hidden', false)
+                    ProductModificationPageFunction.LoadRootProduct(pageVariables.current_product_modified?.['representative_for_pm_product'] || {})
+                }
+                else {
+                    $('#specific-option-space').prop('hidden', true)
                     ProductModificationPageFunction.LoadRootProduct()
                 }
 
@@ -1533,9 +1526,6 @@ class ProductModificationEventHandler {
             else {
                 $.fn.notifyB({description: 'Nothing is selected'}, 'failure')
             }
-        })
-        pageElements.$specific_tracking.on('change', function () {
-            pageElements.$root_product.closest('.form-group').prop('hidden', !$(this).is(':checked'))
         })
         $(document).on('change', '.new-des', function () {
             pageVariables.current_product_modified['description'] = $(this).val()

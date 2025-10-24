@@ -68,6 +68,7 @@
                         <div class="form-group">
                             <label for="inputSaleOrder" class="form-label deli-for sale-order">{% trans 'Sale Order' %}</label>
                             <label for="inputSaleOrder" class="form-label deli-for lease-order" hidden>{% trans 'Lease order' %}</label>
+                            <label for="inputSaleOrder" class="form-label deli-for service-order" hidden>{% trans 'Service order' %}</label>
                             <input type="text" class="form-control form-control-line mt-1" id="inputSaleOrder" value="{% trans 'None' %}" readonly>
                         </div>
                     </div>
@@ -195,6 +196,7 @@
                                    data-bs-placement="bottom"
                                    title="{% trans 'Press row here to open detail page.' %}"></i>
                             </th>
+                            <th>{% trans 'Work' %}</th>
                             <th>{% trans 'UoM' %}</th>
                             <th>{% trans 'Total order' %}</th>
                             <th>{% trans 'Delivery before' %}</th>

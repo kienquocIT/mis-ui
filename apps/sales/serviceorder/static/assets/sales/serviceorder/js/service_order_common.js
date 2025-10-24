@@ -1199,7 +1199,8 @@ const ServiceOrder = (function($) {
                     render: (data, type, row) => {
                         const quantity = row.delivered_quantity || 0
                         const balance = row.balance_quantity || 0
-                        return `<div class="input-group">
+                        return `<div class="d-flex justify-content-between align-items-center">
+                                <div class="input-group w-60">
                                     <input
                                         ${!isDelivery ? 'disabled' : ''}
                                         type="number"
@@ -1208,7 +1209,15 @@ const ServiceOrder = (function($) {
                                         min="0"
                                         max="${balance}"
                                     />
-                                </div>`
+                                </div>
+                                <button 
+                                    type="button" 
+                                    class="btn btn-icon btn-rounded btn-soft-secondary btn-sm btn-delivery-log"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delivery logs"
+                                >
+                                    <span class="icon"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                                </button>
+                                </div>`;
                     }
                 },
                 // {
@@ -2832,6 +2841,19 @@ const ServiceOrder = (function($) {
             }
             pageVariable.productContributionData[rowId] = JSON.parse(JSON.stringify(productContributionData))
             initProductContributionModalDataTable(productContributionData)
+
+            // set work description
+            let desEle = $row[0].querySelector('.work-order-description');
+            let desModalEle = pageElement.modalData.$modalProductContribution[0].querySelector('.work-order-description');
+            if (desEle && desModalEle) {
+                $(desModalEle).text($(desEle).val());
+
+                let row = this.closest('tr');
+                let rowIndex = pageElement.workOrder.$table.DataTable().row(row).index();
+                let $rowCost = pageElement.workOrder.$table.DataTable().row(rowIndex);
+                let dataRow = $rowCost.data();
+                $(desModalEle).attr('data-work-id', dataRow?.['order']);
+            }
         })
     }
 
@@ -3272,6 +3294,52 @@ const ServiceOrder = (function($) {
                 })
                 .text(`${displayNumber.toFixed(2)}%`)
         })
+    }
+
+    function handleClickOpenDeliveryLogs() {
+        pageElement.modalData.$tableProductContribution.on('click', '.btn-delivery-log', function () {
+            WindowControl.showLoading();
+            let row = this.closest('tr');
+            let desModalEle = pageElement.modalData.$modalProductContribution[0].querySelector('.work-order-description');
+            let $modalEle = $('#deliveryLogModal');
+            let $formEle = $('#form-update-service-order');
+            if (row && desModalEle && $modalEle.length > 0 && $formEle.length > 0) {
+                let bodyEle = $modalEle[0].querySelector('.modal-body');
+                let rowIndex = pageElement.modalData.$tableProductContribution.DataTable().row(row).index();
+                let $row = pageElement.modalData.$tableProductContribution.DataTable().row(rowIndex);
+                let dataRow = $row.data();
+                if (bodyEle) {
+                    $.fn.callAjax2({
+                            'url': pageElement.$urlScript.attr('data-delivery-log-url'),
+                            'method': 'GET',
+                            'data': {'service_order__document_root_id': $formEle.attr('data-idx')},
+                            'isDropdown': true,
+                        }
+                    ).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                if (data.hasOwnProperty('delivery_work_log') && Array.isArray(data.delivery_work_log)) {
+                                    let dataLogs = data.delivery_work_log;
+                                    let workID = $(desModalEle).attr('data-work-id');
+                                    $(bodyEle).empty();
+                                    for (let dataLog of dataLogs) {
+                                        for (let dataProd of dataLog?.['products']) {
+                                            if (dataProd?.['product_data']?.['code'] === dataRow?.['code'] && String(dataProd?.['work_data']?.['order']) === workID) {
+                                                $(bodyEle).append(`<div><b>Phiên bản: </b><span>${dataLog?.['service_order_data']?.['code']}</span></div>
+                                                                    <div><b>SL giao hàng: </b><span>${dataProd?.['delivery_quantity']}</span></div>`);
+                                            }
+                                        }
+                                    }
+                                    $modalEle.modal('show');
+                                    WindowControl.hideLoading();
+                                }
+                            }
+                        }
+                    )
+                }
+            }
+        });
     }
 
     // ============ payment =============
@@ -5006,6 +5074,7 @@ const ServiceOrder = (function($) {
         handleTogglePackageChildren,
         handleSelectContainer,
         handleChangeProductContributionPercentage,
+        handleClickOpenDeliveryLogs,
 
         handleChangePaymentDate,
         handleAddPaymentRow,

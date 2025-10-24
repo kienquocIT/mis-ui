@@ -30,7 +30,15 @@
     {% include 'sales/serviceorder/common/modal_data.html' %}
 {% endblock %}
 {% block dataHiddenGroup %}
-    <input type="hidden" id="url-factory" data-url-create-delivery-service="{% url 'ServiceOrderDetailDeliveryAPI' %}">
+    <input
+            type="hidden" id="trans-factory"
+            data-required-delivery-quantity="{% trans 'Delivery quantity is required' %}"
+    >
+    <input
+            type="hidden" id="url-factory"
+            data-create-delivery="{% url 'ServiceOrderDetailDeliveryAPI' 1 %}"
+            data-delivery="{% url 'OrderDeliveryList' %}" data-picking="{% url 'OrderPickingList' %}"
+    >
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/sales/serviceorder/js/service_order_list.js' %}"></script>

@@ -76,3 +76,11 @@ msgstr "Lấy thành phần"
 #
 msgid "New description"
 msgstr "Mô tả mới"
+
+#
+msgid "Specific tracking"
+msgstr "Theo dõi đích danh"
+
+#
+msgid "This product is not managed under the Specific Identification method. If you perform a Product modification, its cost will be mixed with the remaining stock in the warehouse. You can select a representative product to enable specific tracking. The representative product should be identical to the current original one and must be configured to use the Specific Identification method."
+msgstr "Sản phẩm này không được quản lý theo phương pháp Thực tế đích danh. Nếu bạn thực hiện thao tác Ráp-Rã, giá vốn của sản phẩm sẽ bị trộn với số còn lại trong kho. Bạn có thể chọn một sản phẩm đại diện để dùng chế độ theo dõi đích danh. Sản phẩm đại diện này phải giống hệt với sản phẩm gốc hiện tại và được cấu hình theo phương pháp Thực tế đích danh."

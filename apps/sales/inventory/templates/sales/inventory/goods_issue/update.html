@@ -47,6 +47,7 @@
             data-url-ia="{% url 'InventoryAdjustmentDetailAPI' '0' %}"
             data-url-po="{% url 'ProductionOrderDetailAPIForGIS' '0' %}"
             data-url-wo="{% url 'WorkOrderDetailAPIForGIS' '0' %}"
+            data-url-pm="{% url 'ProductModificationDetailAPIForGIS' '0' %}"
             data-url-warehouse-list="{% url 'WareHouseListAPI' %}"
 
     ></script>
@@ -66,7 +67,7 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
-
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goods_issue/common.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goods_issue/update.js' %}"></script>
     <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>

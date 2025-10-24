@@ -6,83 +6,100 @@
             <thead class="bg-secondary-light-5">
                 <tr>
                     <th style="min-width: 30px"></th>
-                    <th style="min-width: 200px">
-                        <button id="btn-open-modal-product" class="btn btn-xs btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#select-product-modified-modal">
-                            <span>
-                                <span class="icon">
-                                    <span class="feather-icon"><i class="fa-solid fa-circle-check"></i></span>
-                                </span>
-                                <span>{% trans 'Select modified product' %}</span>
-                            </span>
-                        </button>
-                    </th>
-                    <th style="min-width: 200px">{% trans 'New description' %}</th>
-                    <th style="min-width: 100px">
-                        <button type="button" class="btn btn-xs btn-primary"
-                                id="btn-modal-picking-product"
-                                data-url="{% url 'CustomerListAPI' %}"
-                                data-bs-toggle="modal"
-                                data-bs-target="#picking-product-modal">
-                            <span>
-                                <span class="icon">
-                                    <span class="feather-icon"><i class="fa-solid fa-ellipsis-vertical"></i></span>
-                                </span>
-                                <span>{% trans 'Select detail' %}</span>
-                            </span>
-                        </button>
-                    </th>
+                    <th style="min-width: 200px">{% trans 'Product' %}</th>
+                    <th style="min-width: 100px">{% trans 'Detail' %}</th>
+                    <th style="min-width: 250px">{% trans 'New description' %}</th>
                 </tr>
             </thead>
         </table>
     </div>
-</div>
+    <div class="col-12">
+        <div class="d-flex align-items-center gap-1 mt-2">
+            <button id="btn-open-modal-product"
+                    class="btn btn-xs btn-secondary"
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#select-product-modified-modal">
+                {% trans 'Select modified product' %}
+            </button>
 
-<div class="row">
-    <div class="main-space col-12 col-md-6 col-lg-6 border-right mt-3">
-        <div class="p-2 h-100" style="min-height: 89vh">
-            <div class="d-flex justify-content-between align-items-center">
-                <span class="h5 text-primary">{% trans "Current component" %}</span>
-                <a href="#" class="layout-btn"><i class="bi bi-square-half"></i></a>
-            </div>
-            <table class="table nowrap w-100" id="table-product-current-component">
-                <thead class="bg-light">
-                    <tr>
-                        <th style="min-width: 30px"></th>
-                        <th style="min-width: 250px">{% trans 'Component' %}</th>
-                        <th style="min-width: 100px">{% trans 'Quantity' %}</th>
-                        <th style="min-width: 30px"></th>
-                    </tr>
-                </thead>
-            </table>
-            <button hidden type="button" class="btn btn-xs btn-primary mt-2" id="insert-component-btn" data-bs-toggle="offcanvas" data-bs-target="#insert-component-offcanvas">
-                <span>
-                    <span class="icon">
-                        <span class="feather-icon">
-                            <i class="fa-solid fa-plus"></i>
-                        </span>
-                    </span>
-                    <span>{% trans "Insert component" %}</span>
-                </span>
+            <i class="fa-solid fa-caret-right text-muted"></i>
+
+            <button type="button"
+                    class="btn btn-xs btn-secondary"
+                    id="btn-modal-picking-product"
+                    data-url="{% url 'CustomerListAPI' %}"
+                    data-bs-toggle="modal"
+                    data-bs-target="#picking-product-modal">
+                {% trans 'Select detail' %}
             </button>
         </div>
     </div>
-    <div class="main-space col-12 col-md-6 col-lg-6 mt-3">
-        <div class="p-2 h-100" style="min-height: 89vh">
-            <div class="d-flex justify-content-between align-items-center">
-                <span class="h5 text-danger">{% trans "Removed component" %}</span>
-                <a href="#" class="layout-btn"><i class="bi bi-square-half"></i></a>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="form-check">
+            <input id="specific-tracking" class="form-check-input" type="checkbox">
+            <label for="specific-tracking" class="form-check-label">{% trans 'Specific tracking' %}</label>
+        </div>
+        <span class="text-primary">{% trans "This product is not managed under the Specific Identification method. If you perform a Product modification, its cost will be mixed with the remaining stock in the warehouse. You can select a representative product to enable specific tracking. The representative product should be identical to the current original one and must be configured to use the Specific Identification method." %}</span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 col-md-6 col-lg-6 mt-10">
+        <div class="card-refresh card">
+            <div class="card-header-action card-header bg-primary-light-5">
+                <span class="h5 text-primary">{% trans "Current component" %}</span>
             </div>
-            <table class="table nowrap w-100" id="table-product-removed-component">
-                <thead class="bg-light">
-                    <tr>
-                        <th style="min-width: 30px"></th>
-                        <th style="min-width: 250px">{% trans 'Component' %}</th>
-                        <th style="min-width: 100px">{% trans 'Quantity' %}</th>
-                        <th style="min-width: 80px">{% trans 'Mapping' %}</th>
-                        <th style="min-width: 30px"></th>
-                    </tr>
-                </thead>
-            </table>
+            <div class="card-body collapse show">
+                <div class="h-100" style="min-height: 74vh">
+                    <table class="table nowrap w-100" id="table-product-current-component">
+                        <thead class="bg-light">
+                        <tr>
+                            <th style="min-width: 30px"></th>
+                            <th style="min-width: 250px">{% trans 'Component' %}</th>
+                            <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                            <th style="min-width: 30px"></th>
+                        </tr>
+                        </thead>
+                    </table>
+                    <button hidden type="button" class="btn btn-xs btn-primary mt-2" id="insert-component-btn"
+                            data-bs-toggle="offcanvas" data-bs-target="#insert-component-offcanvas">
+                    <span>
+                        <span class="icon">
+                            <span class="feather-icon">
+                                <i class="fa-solid fa-plus"></i>
+                            </span>
+                        </span>
+                        <span>{% trans "Insert component" %}</span>
+                    </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6 mt-10">
+        <div class="card-refresh card">
+            <div class="card-header-action card-header bg-danger-light-5">
+                <span class="h5 text-danger">{% trans "Removed component" %}</span>
+            </div>
+            <div class="card-body collapse show">
+                <div class="h-100" style="min-height: 74vh">
+                    <table class="table nowrap w-100" id="table-product-removed-component">
+                        <thead class="bg-light">
+                            <tr>
+                                <th style="min-width: 30px"></th>
+                                <th style="min-width: 250px">{% trans 'Component' %}</th>
+                                <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                                <th style="min-width: 80px">{% trans 'Mapping' %}</th>
+                                <th style="min-width: 30px"></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

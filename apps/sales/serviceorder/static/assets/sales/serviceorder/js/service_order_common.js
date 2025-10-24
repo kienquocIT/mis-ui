@@ -1175,8 +1175,8 @@ const ServiceOrder = (function($) {
                             badgeClass = 'badge-soft-warning'  // Under-allocated
                         }
 
-                        const displayNumber = remaining + contribution
-
+                        // const displayNumber = remaining + contribution
+                        const displayNumber = remaining
                         return `<span class="badge ${badgeClass} remaining-contribution"  data-remaining-contribution="${remaining}">
                                     ${displayNumber.toFixed(2)}%
                                 </span>`
@@ -4023,7 +4023,7 @@ const ServiceOrder = (function($) {
                     }
                     else {
                         // tổng đã cấn trừ, trừ cho giá trị cấn trừ cũ
-                        totalReconciledValue = totalReconciledValue - reconcileValue
+                        totalReconciledValue = totalReconciledValue - currReconcileValue
                     }
                 }
                 else {

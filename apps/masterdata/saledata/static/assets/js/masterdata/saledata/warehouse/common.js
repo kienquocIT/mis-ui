@@ -31,7 +31,6 @@ class WarehouseLoadPage {
             'is_dropship': $('#checkDropShip').prop('checked'),
             'is_bin_location': $('#checkBinLocation').prop('checked'),
             'is_virtual': $('#checkVirtual').prop('checked'),
-            'is_pm_warehouse': $('#checkPM').prop('checked'),
             'shelf_data_new': shelf_data_new,
         }
     }
@@ -54,7 +53,6 @@ class WarehouseLoadPage {
                 $('#checkBinLocation').prop('checked', detail?.['is_bin_location']);
                 $('.bin-location-area').prop('hidden', !detail?.['is_bin_location']);
                 $('#checkVirtual').prop('checked', detail?.['is_virtual']);
-                $('#checkPM').prop('checked', detail?.['is_pm_warehouse']);
 
                 $('#inputActive').prop('checked', detail.is_active);
                 // for location

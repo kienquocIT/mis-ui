@@ -51,9 +51,6 @@ $(document).ready(function () {
                         if (row?.['is_virtual']) {
                             type_html += `<span>${$.fn.gettext('Virtual warehouse')}</span>` + (row?.['use_for'] === 1 ? `<span class="ml-1">(${$.fn.gettext('Use for Equipment Loan')})</span>` : '') + `<br>`;
                         }
-                        if (row?.['is_pm_warehouse']) {
-                            type_html += `<span>${$.fn.gettext('Warehouse for PM')}</span><br>`;
-                        }
                         return type_html;
                     },
                 }, {

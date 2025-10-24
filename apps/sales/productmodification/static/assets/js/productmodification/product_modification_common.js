@@ -22,7 +22,7 @@ class ProductModificationPageElements {
         this.$table_select_serial = $('#table-select-serial')
         this.$accept_picking_product_btn = $('#accept-picking-product-btn')
         // space
-        this.$root_product = $('#root-product')
+        this.$root_product_modified = $('#root-product-modified')
         this.$table_current_product_modified = $('#table-current-product-modified')
         this.$btn_add_row_init_component = $('#btn-add-row-init-component')
         this.$confirm_initial_components_modal = $('#confirm-initial-components-modal')
@@ -85,7 +85,7 @@ class ProductModificationPageFunction {
                                     <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code'] || ''}</span><br>
                                 </div>
                                 <span>${row?.['title'] || ''}</span>
-                                <div class="collapse d1_${row?.['id']}"><span class="small">${new_description || row?.['description'] || ''}</span></div>`
+                                <div class="collapse d1_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
                     }
                 },
                 {
@@ -126,7 +126,7 @@ class ProductModificationPageFunction {
             scrollCollapse: true,
             reloadCurrency: true,
             ajax: {
-                url: pageElements.$table_select_product_modified.attr('data-product-modified-list-url'),
+                url: pageElements.$table_select_product_modified.attr('data-product-modified-list-url') + '?is_representative_product=0',
                 type: 'GET',
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
@@ -156,7 +156,7 @@ class ProductModificationPageFunction {
                                 data-product-description="${row?.['description'] || ''}"
                                 data-product-general-traceability-method="${row?.['general_traceability_method']}"
                                 data-product-valuation-method="${row?.['valuation_method']}"
-                                data-representative-for-pm-product="${JSON.stringify(row?.['representative_for_pm_product'] || {}).replace(/"/g, "&quot;")}"
+                                data-representative-product="${JSON.stringify(row?.['representative_product'] || {}).replace(/"/g, "&quot;")}"
                             >
                         </div>`;
                     }
@@ -176,13 +176,6 @@ class ProductModificationPageFunction {
                 }
             ]
         });
-    }
-    static LoadRootProduct(data) {
-        pageElements.$root_product.initSelect2({
-            data: data,
-            keyId: 'id',
-            keyText: 'title',
-        })
     }
     static LoadTableProductModifiedBefore() {
         pageElements.$table_select_product_modified_before.DataTable().clear().destroy()
@@ -261,6 +254,11 @@ class ProductModificationPageFunction {
                 },
             ]
         });
+    }
+    static LoadRepresentativeProduct(data) {
+        pageElements.$root_product_modified.html(`
+            <span class="badge badge-sm badge-primary mr-1">${data?.['code'] || ''}</span><span>${data?.['title'] || ''}</span>
+        `)
     }
     static LoadTableWarehouseByProduct(url='') {
         const table_columns_cfg = [
@@ -741,7 +739,7 @@ class ProductModificationPageFunction {
             scrollCollapse: true,
             reloadCurrency: true,
             ajax: {
-                url: pageElements.$table_select_component_inserted.attr('data-component-inserted-list-url'),
+                url: pageElements.$table_select_component_inserted.attr('data-component-inserted-list-url') + '?is_representative_product=0',
                 type: 'GET',
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
@@ -1204,7 +1202,7 @@ class ProductModificationPageFunction {
             scrollCollapse: true,
             reloadCurrency: true,
             ajax: {
-                url: pageElements.$table_select_product_mapping.attr('data-product-mapping-list-url'),
+                url: pageElements.$table_select_product_mapping.attr('data-product-mapping-list-url') + '?is_representative_product=0',
                 type: 'GET',
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
@@ -1300,12 +1298,12 @@ class ProductModificationHandler {
         let frm = new SetupFormSubmit($(frmEle))
 
         frm.dataForm['title'] = pageElements.$title.val()
-        frm.dataForm['product_modified'] = pageVariables.current_product_modified?.['id'] || null
-        frm.dataForm['new_description'] = pageVariables.current_product_modified?.['description']
+        frm.dataForm['product_modified'] = pageVariables.current_product_modified?.['representative_product']?.['id'] || pageVariables.current_product_modified?.['id'] || null
+        frm.dataForm['new_description'] = pageVariables.current_product_modified?.['new_description']
         frm.dataForm['warehouse_id'] = pageVariables.current_product_modified?.['warehouse_id'] || null
         frm.dataForm['prd_wh_lot'] = pageVariables.current_product_modified?.['lot_id'] || null
         frm.dataForm['prd_wh_serial'] = pageVariables.current_product_modified?.['serial_id'] || null
-        frm.dataForm['root_product_modified'] = pageElements.$root_product.val() || null
+        frm.dataForm['root_product_modified'] = pageVariables.current_product_modified?.['representative_product']?.['id'] ? pageVariables.current_product_modified?.['id'] : null
 
         let current_component_data = []
         pageElements.$table_product_current_component.find('tbody tr').each(function (index, ele) {
@@ -1352,7 +1350,7 @@ class ProductModificationHandler {
                 if (data) {
                     data = data['product_modification_detail'];
 
-                    // console.log(data)
+                    console.log(data)
 
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
@@ -1362,14 +1360,15 @@ class ProductModificationHandler {
 
                     pageElements.$title.val(data?.['title'])
                     pageElements.$created_date.val(data?.['date_created'] ? DateTimeControl.formatDateType("YYYY-MM-DD hh:mm:ss", "DD/MM/YYYY", data?.['date_created']) : '')
-                    pageVariables.current_product_modified = data?.['prd_wh_data']?.['product']
+                    pageVariables.current_product_modified['id'] = Object.keys(data?.['root_product_modified'] || {}).length > 0 ? data?.['root_product_modified']?.['id'] : data?.['prd_wh_data']?.['product']?.['id']
+                    pageVariables.current_product_modified = Object.keys(data?.['root_product_modified'] || {}).length > 0 ? data?.['root_product_modified'] : data?.['prd_wh_data']?.['product']
+                    pageVariables.current_product_modified['representative_product'] = Object.keys(data?.['root_product_modified'] || {}).length > 0 ? data?.['prd_wh_data']?.['product'] : {}
                     pageVariables.current_product_modified['warehouse_id'] = data?.['prd_wh_data']?.['warehouse']?.['id']
-                    pageVariables.current_product_modified['id'] = data?.['prd_wh_data']?.['product']?.['id']
                     pageVariables.current_product_modified['serial_id'] = data?.['prd_wh_serial_data']?.['id']
                     pageVariables.current_product_modified['lot_id'] = data?.['prd_wh_lot_data']?.['id']
                     pageVariables.current_product_modified['new_description'] = data?.['new_description']
                     ProductModificationPageFunction.LoadTableCurrentProductModified(
-                        [pageVariables.current_product_modified],
+                        [Object.keys(data?.['root_product_modified']).length > 0 ? data?.['root_product_modified'] : pageVariables.current_product_modified],
                         data?.['prd_wh_data']?.['warehouse']?.['code'],
                         data?.['prd_wh_data']?.['warehouse']?.['title'],
                         data?.['prd_wh_serial_data']?.['serial_number'],
@@ -1378,8 +1377,10 @@ class ProductModificationHandler {
                         option
                     )
 
-                    $('#specific-option-space').prop('hidden', Number(pageVariables.current_product_modified?.['valuation_method']) === 2)
-                    ProductModificationPageFunction.LoadRootProduct(data?.['root_product_modified'] || {})
+                    if (Object.keys(data?.['root_product_modified'] || {}).length > 0) {
+                        $('#specific-notify-space').prop('hidden', false)
+                        ProductModificationPageFunction.LoadRepresentativeProduct(pageVariables.current_product_modified)
+                    }
 
                     pageElements.$insert_component_btn.prop('hidden', false)
 
@@ -1428,7 +1429,7 @@ class ProductModificationEventHandler {
                     'description': $checkedEle.attr('data-product-description'),
                     'general_traceability_method': $checkedEle.attr('data-product-general-traceability-method'),
                     'valuation_method': $checkedEle.attr('data-product-valuation-method'),
-                    'representative_for_pm_product': JSON.parse($checkedEle.attr('data-representative-for-pm-product') || '{}')
+                    'representative_product': JSON.parse($checkedEle.attr('data-representative-product') || '{}')
                 }
                 // nếu có modified number
                 const warehouse_data = $checkedEle.attr('data-warehouse-data') ? JSON.parse($checkedEle.attr('data-warehouse-data')) : {}
@@ -1452,7 +1453,7 @@ class ProductModificationEventHandler {
                         pageVariables.current_product_modified['serial_id'] = $checkedEle.attr('data-prd-wh-serial')
                     }
 
-                    let product_id = pageVariables.current_product_modified?.['id']
+                    let product_id = pageVariables.current_product_modified?.['representative_product']?.['id'] || pageVariables.current_product_modified?.['id']
                     let latest_component_list_ajax = $.fn.callAjax2({
                         url: pageElements.$script_url.attr('data-url-latest-component-list'),
                         data: {'product_warehouse__product_id': product_id, 'modified_number': $checkedEle.attr('data-modified-number') || ''},
@@ -1512,28 +1513,24 @@ class ProductModificationEventHandler {
 
                 $('#specific-notify-space').prop('hidden', Number(pageVariables.current_product_modified?.['valuation_method']) === 2)
 
-                if (Object.keys(pageVariables.current_product_modified?.['representative_for_pm_product'] || {}).length > 0) {
-                    $('#specific-option-space').prop('hidden', false)
-                    ProductModificationPageFunction.LoadRootProduct(pageVariables.current_product_modified?.['representative_for_pm_product'] || {})
-                }
-                else {
-                    $('#specific-option-space').prop('hidden', true)
-                    ProductModificationPageFunction.LoadRootProduct()
+                if (Object.keys(pageVariables.current_product_modified?.['representative_product'] || {}).length > 0) {
+                    ProductModificationPageFunction.LoadRepresentativeProduct(pageVariables.current_product_modified?.['representative_product'] || {})
                 }
 
                 pageElements.$btn_open_modal_product.removeClass('btn-secondary').addClass('btn-success')
+                pageElements.$btn_modal_picking_product.removeClass('btn-success').addClass('btn-secondary')
             }
             else {
                 $.fn.notifyB({description: 'Nothing is selected'}, 'failure')
             }
         })
         $(document).on('change', '.new-des', function () {
-            pageVariables.current_product_modified['description'] = $(this).val()
+            pageVariables.current_product_modified['new_description'] = $(this).val()
         })
         pageElements.$btn_modal_picking_product.on('click', function () {
             pageElements.$table_select_lot.closest('.table-serial-space').prop('hidden', true)
             pageElements.$table_select_serial.closest('.table-lot-space').prop('hidden', true)
-            let product_id = pageVariables.current_product_modified?.['id']
+            let product_id = pageVariables.current_product_modified?.['representative_product']?.['id'] || pageVariables.current_product_modified?.['id']
             let url = `${pageElements.$script_url.attr('data-url-warehouse-list-by-product')}?product_id=${product_id}`
             ProductModificationPageFunction.LoadTableWarehouseByProduct(url)
             ProductModificationPageFunction.LoadTableLotListByWarehouse()
@@ -1543,13 +1540,13 @@ class ProductModificationEventHandler {
             pageElements.$table_select_lot.closest('.table-lot-space').prop('hidden', Number(pageVariables.current_product_modified?.['general_traceability_method']) !== 1)
             pageElements.$table_select_serial.closest('.table-serial-space').prop('hidden', Number(pageVariables.current_product_modified?.['general_traceability_method']) !== 2)
             if (Number(pageVariables.current_product_modified?.['general_traceability_method']) === 1) {
-                let product_id = pageVariables.current_product_modified?.['id']
+                let product_id = pageVariables.current_product_modified?.['representative_product']?.['id'] || pageVariables.current_product_modified?.['id']
                 let warehouse_id = $(this).attr('data-warehouse-id')
                 let url = `${pageElements.$script_url.attr('data-url-lot-list-by-warehouse')}?product_warehouse__product_id=${product_id}&product_warehouse__warehouse_id=${warehouse_id}`
                 ProductModificationPageFunction.LoadTableLotListByWarehouse(url)
             }
             if (Number(pageVariables.current_product_modified?.['general_traceability_method']) === 2) {
-                let product_id = pageVariables.current_product_modified?.['id']
+                let product_id = pageVariables.current_product_modified?.['representative_product']?.['id'] || pageVariables.current_product_modified?.['id']
                 let warehouse_id = $(this).attr('data-warehouse-id')
                 let url = `${pageElements.$script_url.attr('data-url-serial-list-by-warehouse')}?product_warehouse__product_id=${product_id}&product_warehouse__warehouse_id=${warehouse_id}`
                 ProductModificationPageFunction.LoadTableSerialListByWarehouse(url)

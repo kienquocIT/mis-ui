@@ -78,21 +78,17 @@ msgid "New description"
 msgstr "Mô tả mới"
 
 #
-msgid "Specific tracking"
-msgstr "Theo dõi đích danh"
+msgid "Specific tracking through product"
+msgstr "Đang theo dõi đích danh thông qua sản phẩm"
 
 #
-msgid "Representative for Product Modification product"
-msgstr "Đại diện cho sản phẩm Ráp-Rã"
+msgid "Representative product (for Product Modification)"
+msgstr "Sản phẩm đại diện (cho Ráp-Rã)"
 
 #
-msgid "Representative product"
-msgstr "Sản phẩm đại diện"
+msgid "Due to the selected product does not use the Specific Identification valuation method. When you perform the Product modification, the cost of this product will be mixed with the remaining inventory. Using a representative product to accurately track details as the original item."
+msgstr "Vì sản phẩm được chọn không áp dụng phương pháp tính giá Thực tế đích danh. Khi bạn thực hiện thao tác Ráp-Rã, giá cost của sản phẩm này sẽ được gộp chung với tồn kho còn lại. Sử dụng sản phẩm đại diện để có thể theo dõi chi tiết như sản phẩm gốc ban đầu."
 
 #
-msgid "Root product"
-msgstr "Sản phẩm gốc"
-
-#
-msgid "The selected product is not managed under the Specific Identification method. If you perform a Product modification, its cost will be mixed with the remaining stock in the warehouse. You can choose a representative product to enable specific tracking. This representative product should be created identical to the one you just selected and configured to use the Specific Identification method. Then, select the main product below (the one you actually want to modified)."
-msgstr "Sản phẩm được chọn không được quản lý theo phương pháp Thực tế đích danh. Nếu bạn thực hiện Ráp-Rã, giá cost của sản phẩm này sẽ được trộn lẫn với tồn kho còn lại. Bạn có thể chọn một sản phẩm đại diện để có thể theo dõi đích danh. Sản phẩm đại diện này cần được tạo giống hệt với sản phẩm bạn vừa chọn và được cấu hình sử dụng phương pháp Thực tế đích danh. Sau đó, hãy chọn sản phẩm chính ở phía dưới đây (chính là sản phẩm mà bạn muốn thực hiện ráp-rã)."
+msgid "If the modified product has a representative product, the detailed selection data will be retrieved based on this representative product."
+msgstr "Nếu sản phẩm Ráp - Rã có một sản phẩm đại diện, dữ liệu lựa chọn chi tiết sẽ được lấy dựa trên sản phẩm đại diện này."

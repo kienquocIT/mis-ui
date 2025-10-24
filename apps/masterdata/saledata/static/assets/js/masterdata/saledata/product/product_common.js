@@ -22,7 +22,7 @@ class ProductPageElements {
         this.$height = $('#height')
         this.$volume = $('#volume')
         this.$weight = $('#weight')
-        this.$representative_for_pm_product = $('#representative-for-pm-product')
+        this.$representative_product = $('#representative-product')
         // sale tab
         this.$check_tab_sale = $('#check-tab-sale')
         this.$sale_uom = $('#sale-uom')
@@ -245,12 +245,12 @@ class ProductPageFunction {
         }
     }
     static LoadRepresentativeForPMProduct(data) {
-        pageElements.$representative_for_pm_product.initSelect2({
+        pageElements.$representative_product.initSelect2({
             allowClear: true,
             data: data,
             ajax: {
                 data: {},
-                url: pageElements.$representative_for_pm_product.attr('data-url'),
+                url: pageElements.$representative_product.attr('data-url'),
                 method: 'GET',
             },
             templateResult: function(data) {
@@ -1328,7 +1328,7 @@ class ProductHandler {
         data['general_manufacturer'] = pageElements.$general_manufacturer.val() || null;
         data['general_traceability_method'] = $('#general-traceability-method').val();
         data['standard_price'] = pageElements.$general_standard_price.attr('value')
-        data['representative_for_pm_product'] = pageElements.$representative_for_pm_product.val() || null
+        data['representative_product'] = pageElements.$representative_product.val() || null
 
         let component_create_valid = true;
         let component_list_data = []
@@ -1618,7 +1618,7 @@ class ProductHandler {
                             pageElements.$volume.val(general_information['product_size']['volume']['value']);
                             pageElements.$weight.val(general_information['product_size']['weight']['value']);
                         }
-                        ProductPageFunction.LoadRepresentativeForPMProduct(general_information?.['representative_for_pm_product'])
+                        ProductPageFunction.LoadRepresentativeForPMProduct(general_information?.['representative_product'])
                     }
 
                     if (Object.keys(product_detail?.['sale_information']).length !== 0) {

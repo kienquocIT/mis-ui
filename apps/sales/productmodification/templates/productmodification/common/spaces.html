@@ -3,10 +3,10 @@
 <div class="row">
     <div class="col-12">
         <table class="table nowrap w-100" id="table-current-product-modified">
-            <thead class="bg-secondary-light-5">
+            <thead>
                 <tr>
                     <th style="min-width: 30px"></th>
-                    <th style="min-width: 200px">{% trans 'Product' %} | {% trans 'Representative product' %}</th>
+                    <th style="min-width: 200px">{% trans 'Product' %}</th>
                     <th style="min-width: 100px">{% trans 'Detail' %}</th>
                     <th style="min-width: 250px">{% trans 'New description' %}</th>
                 </tr>
@@ -39,32 +39,9 @@
 
 <div class="row mt-2" id="specific-notify-space" hidden>
     <div class="col-12">
-        <div class="card-refresh card">
-            <div class="card-body collapse show">
-                <span class="text-primary">{% trans "The selected product is not managed under the Specific Identification method. If you perform a Product modification, its cost will be mixed with the remaining stock in the warehouse. You can choose a representative product to enable specific tracking. This representative product should be created identical to the one you just selected and configured to use the Specific Identification method. Then, select the main product below (the one you actually want to modified)." %}</span>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row mt-2" id="specific-option-space" hidden>
-    <div class="col-12 col-md-6 col-lg-6"></div>
-    <div class="col-12 col-md-6 col-lg-6">
-        <div class="card-refresh card">
-            <div class="card-header-action card-header bg-success-light-5">
-                <span class="text-success">{% trans 'Specific tracking' %} <i class="fa-solid fa-check"></i></span>
-            </div>
-            <div class="card-body collapse show">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label class="form-label required" for="root-product">{% trans "Root product" %}</label>
-                            <select class="form-select select2" disabled id="root-product"></select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <span class="text-primary">{% trans 'Specific tracking through product' %}</span>
+        <span class="text-primary fw-bold" id="root-product-modified"></span><br>
+        <span class="text-primary">{% trans "Due to the selected product does not use the Specific Identification valuation method. When you perform the Product modification, the cost of this product will be mixed with the remaining inventory. Using a representative product to accurately track details as the original item." %}</span>
     </div>
 </div>
 

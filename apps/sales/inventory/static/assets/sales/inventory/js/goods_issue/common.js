@@ -826,7 +826,7 @@ class GISHandler {
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
 
-                    console.log(data)
+                    // console.log(data)
 
                     pageVariables.IS_DETAIL_PAGE = option === 'detail'
                     pageVariables.IS_DONE_GIS = data?.['system_status'] === 3

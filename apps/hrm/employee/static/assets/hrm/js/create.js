@@ -36,7 +36,7 @@ $(document).ready(function () {
             employeeData['dependent_deduction'] = EmployeeHRMInit.combineDependentTable();
 
             // contract part
-            let contract = _clsContract.valid_data();
+            let contract = _clsContract.combineFormData();
             employeeData['contract'] = contract ? contract : [];
             employeeData['last_name'] = `${serializerArray.last_name} ${serializerArray['middle_name']}`;
             const keyToDelete = $('.select-wrap').hasClass('is-select') ? 'employee_create' : 'employee';

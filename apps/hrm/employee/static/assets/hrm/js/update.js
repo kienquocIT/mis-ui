@@ -10,6 +10,8 @@ $(document).ready(function () {
     EmployeeHRMInit.loadPOI($('#employee-poo'));
     EmployeeHRMInit.switchChoice();
     EmployeeHRMInit.loadBank();
+    EmployeeHRMInit.initDependentTable();
+    EmployeeInfoEventHandler.InitPageEvent();
 
     EmployeeHRMInit.loadDetail('update');
 
@@ -38,7 +40,7 @@ $(document).ready(function () {
             employeeData['dependent_deduction'] = EmployeeHRMInit.combineDependentTable();
 
             // contract part
-            let contract = _clsContract.valid_data()
+            let contract = _clsContract.combineFormData();
             employeeData['contract'] = contract ? contract : [];
             employeeData['last_name'] = `${serializerArray.last_name} ${serializerArray['middle_name']}`;
 

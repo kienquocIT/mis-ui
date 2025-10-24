@@ -4,9 +4,7 @@
         <button class="btn btn-primary">
             <span>
                 <span>{% trans 'Attachment file' %}</span>
-                <span class="icon">
-                    <i class="fa-solid fa-paperclip"></i>
-                </span>
+                <span class="icon"><i class="fa-solid fa-paperclip"></i></span>
             </span>
         </button>
     </div>
@@ -20,26 +18,23 @@
             </div>
             <div class="col-md-12 col-lg-6 form-group">
                 <label for="contract_type_id">{% trans 'Contract type' %}</label>
-                <select class="select2" id="contract_type_id" name="contract_type"
-                        data-onload="{{ data.contract_type }}"></select>
+                <select class="select2" id="contract_type_id" name="contract_type" data-onload="{{ data.contract_type }}"></select>
             </div>
             <div class="col-md-12 col-lg-6 form-check style-checkbox">
                 <input class="form-check-input" type="checkbox" id="gridCheck" name="limit_time" checked>
-                <label class="form-check-label" for="gridCheck">
-                    {% trans 'Limited time' %}
-                </label>
+                <label class="form-check-label" for="gridCheck">{% trans 'Limited time' %}</label>
             </div>
             <div class="col-md-12 col-lg-6 form-group">
                 <label class="form-label" for="effected_date">{% trans 'Effected date' %}</label>
                 <div class="input-affix-wrapper">
-                    <input class="form-control pl-2" id="effected_date" type="text" name="effected_date"/>
+                    <input class="form-control pl-2" id="effected_date" type="text" name="effected_date">
                     <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                 </div>
             </div>
             <div class="col-md-12 col-lg-6 form-group">
                 <label class="form-label" for="expired_date">{% trans 'Expired date' %}</label>
                 <div class="input-affix-wrapper">
-                    <input class="form-control pl-2" id="expired_date" type="text" name="expired_date"/>
+                    <input class="form-control pl-2" id="expired_date" type="text" name="expired_date">
                     <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                 </div>
             </div>
@@ -65,12 +60,19 @@
                     <i class="fa-solid fa-money-bill-wave me-2"></i>{% trans 'Salary Information' %}
                 </h6>
             </div>
-
-            <div class="col-md-12 col-lg-6 form-group">
-                <label class="form-label" for="hi_employer_rate">{% trans 'Salary level' %}</label>
+            <div class="col-12 col-lg-6 form-group">
+                <label class="form-label" for="salary_level">{% trans 'Salary level' %}</label>
                 <div class="input-group">
                     <input type="number" class="form-control" id="salary_level"
                            name="salary_level" placeholder="0" step="1" min="0">
+                </div>
+            </div>
+            <div class="col-12 col-lg-6 form-group"></div>
+            <div class="col-md-12 col-lg-6 form-group">
+                <label class="form-label" for="salary_coefficient">{% trans 'Salary coefficient' %}</label>
+                <div class="input-group">
+                    <input type="number" class="form-control" id="salary_coefficient"
+                           name="salary_coefficient" step="0.5" min="0" value="1">
                 </div>
             </div>
             <div class="col-md-12 col-lg-6 form-group">
@@ -115,18 +117,15 @@
             {% endif %}
             {% if show_icon %}
                 <div class="col-md-12 col-lg-12 request_sign text-right hidden">
-                    <button class="btn btn-outline-primary btn-sm" type="button">
-                        {% trans 'Sign a contract' %}</button>
+                    <button class="btn btn-outline-primary btn-sm" type="button">{% trans 'Sign a contract' %}</button>
                 </div>
             {% endif %}
             <div class="clearfix mt-4"></div>
             <div class="col-md-12 col-lg-12">
                 <input type="hidden" name="content_info" id="extra_data">
-                <textarea
-                        id="inp-remarks" type="text" name="remarks"
+                <textarea id="inp-remarks" type="text" name="remarks"
                         data-css-url-render="{% static 'assets/hrm/css/contract/style.css' %}"
-                        class="form-control {{ addClass }}"
-                ></textarea>
+                        class="form-control {{ addClass }}"></textarea>
             </div>
         </div>
     </div>

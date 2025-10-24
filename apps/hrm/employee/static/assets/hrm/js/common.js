@@ -499,20 +499,31 @@ class contract_data {
                 if (data) {
                     const wrapElmContractForm = $('.contract-edit')
                     $('.contract-edit input[name="contract_id"]').remove()
-                    wrapElmContractForm.append(`<input type="hidden" value="${data.id}" id="contract_id" name="contract_id"/>`)
-                    .removeClass('hidden')
+                    wrapElmContractForm.append(
+                        `<input type="hidden" value="${data.id}" id="contract_id" name="contract_id"/>`
+                    ).removeClass('hidden');
 
                     $('.contract-list').addClass('hidden')
                     $('#contract_type_id').val(data.contract_type).trigger('change')
                     $('#gridCheck').prop('checked', data.limit_time)
                     $('#effected_date')[0]._flatpickr.setDate(data.effected_date)
                     $('#expired_date')[0]._flatpickr.setDate(data.expired_date)
-                    $('#company_representative').attr('data-onload', JSON.stringify({...data.represent, selected: true}))
-                        .append(`<option value="${data.represent.id}" selected>${data.represent.full_name}</option>`).trigger('change')
+                    $('#company_representative')
+                        .attr('data-onload', JSON.stringify({
+                            ...data.represent,
+                            selected: true
+                        }))
+                        .append(`<option value="${data.represent.id}" selected>${data.represent.full_name}</option>`)
+                        .trigger('change');
                     $('#signing_date')[0]._flatpickr.setDate(data.signing_date)
                     $('input[name="file_type"]').prop('checked', false)
                     $(`input[name="file_type"][value="${data.file_type}"]`).prop('checked', true)
                     $('#extra_data').attr('value', data?.['content_info'] ? JSON.stringify(data.content_info) : '{}')
+                    $('#salary_level').val(data?.employee_salary_level || 0)
+                    $('#salary_coefficient').val(data?.employee_salary_coefficient || 1)
+                    $('#employee_salary').attr('value', data?.employee_salary || 0)
+                    $('#insurance_salary').attr('value', data?.employee_salary_insurance || 0)
+                    $('#salary_rate').val(data?.employee_salary_rate || 0)
 
                     const signStt = [
                         {'text': $.fn.gettext('Unsigned'), 'class': 'badge-soft-danger'},
@@ -548,11 +559,54 @@ class contract_data {
 
                     if (data['sign_status'] === 0)
                         $('.request_sign').removeClass('hidden')
+
+                    $.fn.initMaskMoney2()
                 }
             });
     }
 
-    valid_data(){
+    valid_data(dataList){
+        // validate expired date and effected date
+        if (dataList.effected_date && dataList.expired_date) {
+            const effectedDate = new Date(dataList.effected_date);
+            const expiredDate = new Date(dataList.expired_date);
+
+            if (expiredDate <= effectedDate) {
+                $.fn.notifyB({description: $.fn.gettext('Expired date must be larger than effected date')}, 'failure');
+                $('#effected_date').css('border', '2px solid red');
+                $('#expired_date').css('border', '2px solid red');
+                throw new Error('Expired date must be larger than effected date');
+            }
+        }
+
+        // validate salary information
+        let contract_type = parseInt(dataList?.['contract_type'] ?? 0);
+        if (contract_type === 0 || contract_type === 2) {
+            if (Object.keys(dataList).length < 9)
+                return {}
+        } else {
+            if (dataList.employee_salary == null || dataList.employee_salary === '') {
+                $.fn.notifyB(
+                    {description: $.fn.gettext('Employee salary is compulsory for Labor contract')},
+                    'failure'
+                );
+                throw new Error('Employee salary is compulsory for Labor contract');
+            }
+
+            if (dataList.employee_salary_insurance == null || dataList.employee_salary_insurance === '') {
+                $.fn.notifyB(
+                    {description: $.fn.gettext('Salary for insurance is compulsory for Labor contract')},
+                    'failure'
+                );
+                throw new Error('Salary for insurance is compulsory for Labor contract');
+            }
+            if (Object.keys(dataList).length < 11)
+                return {}
+        }
+        return dataList;
+    }
+
+    combineFormData() {
         const formSer = $('#frm_employee_hrm').serializeObject()
         let dataList = {};
         if (formSer['contract_type']) dataList.contract_type = parseInt(formSer['contract_type'])
@@ -564,8 +618,22 @@ class contract_data {
         if (formSer['company_representative']) dataList.represent = formSer['company_representative']
         if (formSer['signing_date']) dataList.signing_date = formSer['signing_date']
         if (formSer['file_type']) dataList.file_type = parseInt(formSer['file_type'])
-        if (formSer['remarks'] && dataList.file_type === 1) dataList.content = formSer['remarks']
-        if (formSer['content_info']){
+        if (formSer['remarks'] && dataList.file_type === 1) dataList.content = formSer?.['remarks']?.replace(/<[^>]*>/g, '') || '';
+        if (formSer['salary_level']) dataList.employee_salary_level = formSer['salary_level'];
+        if (formSer['salary_coefficient']) dataList.employee_salary_coefficient = formSer['salary_coefficient'];
+        if ($('#employee_salary').attr('value')) dataList.employee_salary = parseFloat($('#employee_salary').attr('value'));
+        if ($('#insurance_salary').attr('value')) dataList.employee_salary_insurance = parseFloat($('#insurance_salary').attr('value'));
+        if (formSer['salary_rate']) dataList.employee_salary_rate = formSer?.['salary_rate'];
+
+        let contentInfo = formSer['content_info'];
+        if (typeof contentInfo === 'string') {
+            try {
+                contentInfo = JSON.parse(contentInfo);
+            } catch (e) {
+                contentInfo = {};
+            }
+        }
+        if (contentInfo && Object.keys(contentInfo).length > 0){
             let dataParse = {}
             try {
                 dataParse = JSON.parse(formSer['content_info']);
@@ -591,9 +659,10 @@ class contract_data {
         }
         if (formSer['attachment'] && dataList.file_type === 0)
             dataList.attachment = $x.cls.file.get_val(formSer['attachment'], [])
-        if (Object.keys(dataList).length < 8)
-            return {}
-        return dataList
+
+        let contractData = this.valid_data(dataList);
+
+        return contractData
     }
 
     modal_add_user_signing(data){

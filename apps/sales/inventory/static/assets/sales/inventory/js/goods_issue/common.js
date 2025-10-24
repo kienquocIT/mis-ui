@@ -97,7 +97,7 @@ class GISPageFunction {
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `${row?.['uom_mapped']?.['title'] || ''}`;
+                        return `<span>${row?.['uom_mapped']?.['title'] || ''}</span>`;
                     }
                 },
                 {
@@ -125,15 +125,10 @@ class GISPageFunction {
                                     <input readonly disabled class="form-control selected-quantity" type="number" value="${row?.['issued_quantity'] || 0}">
                                     <button ${((row?.['product_mapped']?.['general_traceability_method'] || '') === 0 && pageVariables.IS_DONE_GIS || (row?.['issued_quantity'] || '') === 0 && pageVariables.IS_DONE_GIS) ? 'disabled' : ''}
                                             data-uom-id="${row?.['uom_mapped']?.['id'] || ''}"
-                                            data-uom-code="${row?.['uom_mapped']?.['code'] || ''}"
                                             data-uom-title="${row?.['uom_mapped']?.['title'] || ''}"
                                             data-prd-id="${row?.['product_mapped']?.['id'] || ''}"
-                                            data-prd-code="${row?.['product_mapped']?.['code'] || ''}"
-                                            data-prd-title="${row?.['product_mapped']?.['title'] || ''}"
                                             data-prd-type="${row?.['product_mapped']?.['general_traceability_method'] || ''}"
                                             data-wh-id="${row?.['warehouse_mapped']?.['id'] || ''}"
-                                            data-wh-code="${row?.['warehouse_mapped']?.['code'] || ''}"
-                                            data-wh-title="${row?.['warehouse_mapped']?.['title'] || ''}"
                                             data-remain-quantity="${row?.['remain_quantity'] || 0}"
                                             data-item-id="${row?.['id'] || ''}"
                                             data-bs-toggle="modal"
@@ -191,7 +186,7 @@ class GISPageFunction {
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `${row?.['uom_mapped']?.['title'] || ''}`;
+                        return `<span>${row?.['uom_mapped']?.['title'] || ''}</span>`;
                     }
                 },
                 {
@@ -219,15 +214,10 @@ class GISPageFunction {
                                     <input readonly disabled class="form-control selected-quantity" type="number" value="${row?.['issued_quantity']|| 0}">
                                     <button ${((row?.['product_mapped']?.['general_traceability_method'] || '') === 0 && pageVariables.IS_DONE_GIS || (row?.['issued_quantity'] || '') === 0 && pageVariables.IS_DONE_GIS) ? 'disabled' : ''}
                                             data-uom-id="${row?.['uom_mapped']?.['id'] || ''}"
-                                            data-uom-code="${row?.['uom_mapped']?.['code'] || ''}"
                                             data-uom-title="${row?.['uom_mapped']?.['title'] || ''}"
                                             data-prd-id="${row?.['product_mapped']?.['id'] || ''}"
-                                            data-prd-code="${row?.['product_mapped']?.['code'] || ''}"
-                                            data-prd-title="${row?.['product_mapped']?.['title'] || ''}"
                                             data-prd-type="${row?.['product_mapped']?.['general_traceability_method'] || ''}"
                                             data-wh-id="${row?.['warehouse_mapped']?.['id'] || ''}"
-                                            data-wh-code="${row?.['warehouse_mapped']?.['code'] || ''}"
-                                            data-wh-title="${row?.['warehouse_mapped']?.['title'] || ''}"
                                             data-remain-quantity="${row?.['remain_quantity'] || 0}"
                                             data-item-id="${row?.['id'] || ''}"
                                             data-bs-toggle="modal"
@@ -252,18 +242,8 @@ class GISPageFunction {
             }
         })
     }
-    static DrawTablePMItems(data_list=[]) {
-        pageElements.PMItemTable.DataTable().clear().destroy()
-        pageElements.PMItemTable.DataTableDefault({
-            dom: 't',
-            rowIdx: true,
-            reloadCurrency: true,
-            paging: false,
-            scrollY: '68vh',
-            scrollX: true,
-            scrollCollapse: true,
-            data: data_list,
-            columns: [
+    static DrawTablePMItems(data_list=[], for_root=false) {
+        let table_columns_cfg = [
                 {
                     className: 'w-5',
                     render: () => {
@@ -271,14 +251,14 @@ class GISPageFunction {
                     }
                 },
                 {
-                    className: 'w-35',
+                    className: 'w-30',
                     render: (data, type, row) => {
                         return `<span class="badge badge-sm badge-light">${row?.['product_mapped']?.['code'] || ''}</span><br>
                                 <span>${row?.['product_mapped']?.['title'] || ''}</span>`;
                     }
                 },
                 {
-                    className: 'w-20',
+                    className: 'w-25',
                     render: (data, type, row) => {
                         return `<span>${row?.['product_mapped']?.['description'] || ''}</span>`;
                     }
@@ -292,7 +272,7 @@ class GISPageFunction {
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `${row?.['uom_mapped']?.['title'] || ''}`;
+                        return `<span>${row?.['uom_mapped']?.['title'] || ''}</span>`;
                     }
                 },
                 {
@@ -308,15 +288,10 @@ class GISPageFunction {
                                     <input readonly disabled class="form-control selected-quantity" type="number" value="${row?.['issued_quantity'] || 0}">
                                     <button ${((row?.['product_mapped']?.['general_traceability_method'] || '') === 0 && pageVariables.IS_DONE_GIS || (row?.['issued_quantity'] || '') === 0 && pageVariables.IS_DONE_GIS) ? 'disabled' : ''}
                                             data-uom-id="${row?.['uom_mapped']?.['id'] || ''}"
-                                            data-uom-code="${row?.['uom_mapped']?.['code'] || ''}"
                                             data-uom-title="${row?.['uom_mapped']?.['title'] || ''}"
                                             data-prd-id="${row?.['product_mapped']?.['id'] || ''}"
-                                            data-prd-code="${row?.['product_mapped']?.['code'] || ''}"
-                                            data-prd-title="${row?.['product_mapped']?.['title'] || ''}"
                                             data-prd-type="${row?.['product_mapped']?.['general_traceability_method'] || ''}"
                                             data-wh-id="${row?.['warehouse_mapped']?.['id'] || ''}"
-                                            data-wh-code="${row?.['warehouse_mapped']?.['code'] || ''}"
-                                            data-wh-title="${row?.['warehouse_mapped']?.['title'] || ''}"
                                             data-remain-quantity="${row?.['remain_quantity'] || 0}"
                                             data-item-id="${row?.['id'] || ''}"
                                             data-bs-toggle="modal"
@@ -331,7 +306,102 @@ class GISPageFunction {
                         `;
                     }
                 },
-            ],
+            ]
+        let table_columns_cfg_for_root = [
+            {
+                className: 'w-5',
+                render: () => {
+                    return ``;
+                }
+            },
+            {
+                className: 'w-30',
+                render: (data, type, row) => {
+                    return `<span class="badge badge-sm badge-light">${row?.['code'] || ''}</span><br>
+                            <span>${row?.['title'] || ''}</span>`;
+                }
+            },
+            {
+                className: 'w-25',
+                render: (data, type, row) => {
+                    return `<span>${row?.['description'] || ''}</span>`;
+                }
+            },
+            {
+                className: 'w-10',
+                render: (data, type, row) => {
+                    return `<select class="form-select select2 root-prd-wh-select"></select>`;
+                }
+            },
+            {
+                className: 'w-10',
+                render: (data, type, row) => {
+                    return `<span>${row?.['uom_mapped']?.['title'] || ''}</span>`;
+                }
+            },
+            {
+                className: 'text-center w-10',
+                render: (data, type, row) => {
+                    return `<span class="remain-quantity">1</span>`;
+                }
+            },
+            {
+                className: 'w-10',
+                render: (data, type, row) => {
+                    return `<div class="input-group">
+                                <input readonly disabled class="form-control selected-quantity" type="number" value="${row?.['issued_quantity'] || 0}">
+                                <button ${((row?.['general_traceability_method'] || '') === 0 && pageVariables.IS_DONE_GIS || (row?.['issued_quantity'] || '') === 0 && pageVariables.IS_DONE_GIS) ? 'disabled' : ''}
+                                        data-uom-id="${row?.['uom_mapped']?.['id'] || ''}"
+                                        data-uom-title="${row?.['uom_mapped']?.['title'] || ''}"
+                                        data-prd-id="${row?.['id'] || ''}"
+                                        data-prd-type="${row?.['general_traceability_method'] || ''}"
+                                        data-wh-id="${row?.['warehouse_mapped']?.['id'] || ''}"
+                                        data-remain-quantity="1"
+                                        data-item-id="${row?.['id'] || ''}"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#select-detail-modal"
+                                        type="button"
+                                        class="btn btn-sm btn-outline-secondary select-detail">
+                                    <i class="bi bi-list-check"></i>
+                                </button>
+                            </div>
+                            <script class="lot-data-script">${row?.['lot_data'] ? JSON.stringify(row?.['lot_data']) : JSON.stringify([])}</script>
+                            <script class="sn-data-script">${row?.['sn_data'] ? JSON.stringify(row?.['sn_data']) : JSON.stringify([])}</script>
+                    `;
+                }
+            },
+        ]
+        pageElements.PMItemTable.DataTable().clear().destroy()
+        pageElements.PMItemTable.DataTableDefault({
+            dom: 't',
+            rowIdx: true,
+            reloadCurrency: true,
+            paging: false,
+            scrollY: '68vh',
+            scrollX: true,
+            scrollCollapse: true,
+            data: data_list,
+            columns: for_root ? table_columns_cfg_for_root : table_columns_cfg,
+            initComplete: function () {
+                if (for_root) {
+                    pageElements.PMItemTable.find('tbody tr').each(function (index, ele) {
+                        UsualLoadPageFunction.LoadWarehouse({
+                            element: $(ele).find('.root-prd-wh-select'),
+                            data_url: pageElements.script_url.attr('data-url-warehouse-list'),
+                        })
+                    })
+
+                    if (data_list.length > 0) {
+                        pageElements.PMItemTable.find('tbody tr').each(function (index, ele) {
+                            UsualLoadPageFunction.LoadWarehouse({
+                                element: $(ele).find('.root-prd-wh-select'),
+                                data_url: pageElements.script_url.attr('data-url-warehouse-list'),
+                                data: data_list[index]?.['warehouse_mapped']
+                            })
+                        })
+                    }
+                }
+            }
         })
     }
     static DrawTableItemsLOT(data_list=[], selected_list=[]) {
@@ -341,7 +411,7 @@ class GISPageFunction {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollY: '68vh',
+            scrollY: '58vh',
             scrollX: true,
             scrollCollapse: true,
             data: data_list,
@@ -402,7 +472,7 @@ class GISPageFunction {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollY: '68vh',
+            scrollY: '58vh',
             scrollX: true,
             scrollCollapse: true,
             data: data_list,
@@ -638,8 +708,6 @@ class GISPageFunction {
             if (ele.val()) {
                 let warehouse_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
                 ele.closest('tr').find('.select-detail').attr('data-wh-id', warehouse_selected?.['id'])
-                ele.closest('tr').find('.select-detail').attr('data-wh-code', warehouse_selected?.['code'])
-                ele.closest('tr').find('.select-detail').attr('data-wh-title', warehouse_selected?.['title'])
                 ele.closest('tr').find('.selected-quantity').val(0)
                 ele.closest('tr').find('.lot-data-script').text('[]')
                 ele.closest('tr').find('.sn-data-script').text('[]')
@@ -659,6 +727,7 @@ class GISHandler {
         let detail_data_ia = []
         let detail_data_po = []
         let detail_data_wo = []
+        let detail_data_pm = []
         if (pageElements.gis_type.val() === '0') {
             frm.dataForm['goods_issue_type'] = 0
             frm.dataForm['inventory_adjustment_id'] = pageElements.IAEle.attr('data-id')
@@ -718,10 +787,29 @@ class GISHandler {
                 })
             }
         }
+        else if (pageElements.gis_type.val() === '3') {
+            frm.dataForm['goods_issue_type'] = 3
+            frm.dataForm['product_modification_id'] = pageElements.PMEle.attr('data-id')
+            pageElements.PMItemTable.find('tbody tr').each(function () {
+                let row = $(this);
+                detail_data_pm.push({
+                    'product_id': row.find('.select-detail').attr('data-prd-id'),
+                    'warehouse_id': row.find('.select-detail').attr('data-wh-id'),
+                    'uom_id': row.find('.select-detail').attr('data-uom-id'),
+                    'before_quantity': 1,
+                    'remain_quantity': 1,
+                    'issued_quantity': 1,
+                    'lot_data': row.find('.lot-data-script').text() ? JSON.parse(row.find('.lot-data-script').text()) : [],
+                    'sn_data': row.find('.sn-data-script').text() ? JSON.parse(row.find('.sn-data-script').text()) : []
+                })
+            })
+        }
+
         frm.dataForm['note'] = $('#note').val()
         frm.dataForm['detail_data_ia'] = detail_data_ia;
         frm.dataForm['detail_data_po'] = detail_data_po;
         frm.dataForm['detail_data_wo'] = detail_data_wo;
+        frm.dataForm['detail_data_pm'] = detail_data_pm;
 
         frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
 
@@ -738,7 +826,7 @@ class GISHandler {
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
 
-                    // console.log(data)
+                    console.log(data)
 
                     pageVariables.IS_DETAIL_PAGE = option === 'detail'
                     pageVariables.IS_DONE_GIS = data?.['system_status'] === 3
@@ -792,6 +880,7 @@ class GISHandler {
                         $('#powo-select-space').prop('hidden', true)
                         $('#pm-select-space').prop('hidden', false)
 
+                        pageElements.PMEle.attr('data-id', data?.['product_modification']?.['id'])
                         pageElements.PMEle.val(data?.['product_modification']?.['title'])
 
                         const merged = {}
@@ -874,7 +963,7 @@ class GISEventHandler {
             }
         })
         $(document).on("click", '.select-detail', function () {
-            if ($(this).attr('data-prd-id') !== 'undefined' && $(this).attr('data-wh-id') !== 'undefined') {
+            if ($(this).attr('data-prd-id') && $(this).attr('data-wh-id')) {
                 pageVariables.current_detail_row_btn = $(this)
                 if ($(this).attr('data-prd-type') === '0') {
                     let dataParam = {
@@ -1023,13 +1112,16 @@ class GISEventHandler {
                 }
             }
             else {
-                if ($(this).attr('data-prd-id') === 'undefined') {
+                if (!$(this).attr('data-prd-id')) {
                     $.fn.notifyB({description: "Product is required."}, 'warning')
                 }
-                if ($(this).attr('data-wh-id') === 'undefined') {
+                if (!$(this).attr('data-wh-id')) {
                     $.fn.notifyB({description: "Warehouse is required."}, 'warning')
                 }
             }
+        })
+        $(document).on("change", '.root-prd-wh-select', function () {
+            $(this).closest('tr').find('.select-detail').attr('data-wh-id', $(this).val())
         })
         pageElements.issue_quantity.on('change', function () {
             if (!pageElements.gis_type.val() === '2') {
@@ -1301,7 +1393,31 @@ class GISEventHandler {
                 if ($(this).find('.pm-selected').prop('checked')) {
                     pageElements.PMEle.val($(this).find('.pm-title').text())
                     pageElements.PMEle.attr('data-id', $(this).find('.pm-title').attr('data-id'))
-                    pageElements.select_pm_modal.modal('hide')
+
+                    let dataParam = {}
+                    let pm_detail_ajax = $.fn.callAjax2({
+                        url: `${pageElements.script_url.attr('data-url-pm').replace('/0', `/${pageElements.PMEle.attr('data-id')}`)}`,
+                        data: dataParam,
+                        method: 'GET'
+                    }).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && typeof data === 'object' && data.hasOwnProperty('product_modification_detail')) {
+                                return data?.['product_modification_detail'];
+                            }
+                            return {};
+                        },
+                        (errs) => {
+                            console.log(errs);
+                        }
+                    )
+
+                    Promise.all([pm_detail_ajax]).then(
+                        (results) => {
+                            console.log(results);
+                            GISPageFunction.DrawTablePMItems([results[0]?.['root_product_modified']], true)
+                            pageElements.select_pm_modal.modal('hide')
+                        })
                 }
             })
         })

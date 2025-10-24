@@ -1178,9 +1178,21 @@ $(document).ready(function () {
                                         if (activity?.['trans_title'] === 'Balance init input') {
                                             bg_in = 'text-secondary'
                                         }
+                                        let trans_title_sub = {
+                                            'Goods receipt': trans_script.attr('data-trans-grc'),
+                                            'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
+                                            'Goods return': trans_script.attr('data-trans-grt'),
+                                            'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
+                                            'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
+                                            'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
+                                            'Goods issue': trans_script.attr('data-trans-gis'),
+                                            'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
+                                        }
+
                                         table_inventory_report_data.push({
                                             'type': 'detail_row',
                                             'trans_code': activity?.['trans_code'] || '',
+                                            'trans_title': trans_title_sub?.[activity?.['trans_title']] || '',
                                             'product_code': warehouse_activities?.['product']?.['code'] || '',
                                             'date': activity?.['system_date'] ? moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm") : '',
                                             'lot_number': activity?.['lot_number'] || '',
@@ -1545,9 +1557,21 @@ $(document).ready(function () {
                                         if (activity?.['trans_title'] === 'Balance init input') {
                                             bg_in = 'text-secondary'
                                         }
+                                        let trans_title_sub = {
+                                            'Goods receipt': trans_script.attr('data-trans-grc'),
+                                            'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
+                                            'Goods return': trans_script.attr('data-trans-grt'),
+                                            'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
+                                            'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
+                                            'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
+                                            'Goods issue': trans_script.attr('data-trans-gis'),
+                                            'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
+                                        }
+
                                         table_inventory_report_data.push({
                                             'type': 'detail_row',
                                             'trans_code': activity?.['trans_code'] || '',
+                                            'trans_title': trans_title_sub?.[activity?.['trans_title']] || '',
                                             'product_code': warehouse_activities?.['product']?.['code'] || '',
                                             'date': activity?.['system_date'] ? moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm") : '',
                                             'lot_number': activity?.['lot_number'] || '',
@@ -1616,9 +1640,21 @@ $(document).ready(function () {
                                         if (activity?.['trans_title'] === 'Balance init input') {
                                             bg_in = 'text-secondary'
                                         }
+                                        let trans_title_sub = {
+                                            'Goods receipt': trans_script.attr('data-trans-grc'),
+                                            'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
+                                            'Goods return': trans_script.attr('data-trans-grt'),
+                                            'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
+                                            'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
+                                            'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
+                                            'Goods issue': trans_script.attr('data-trans-gis'),
+                                            'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
+                                        }
+
                                         table_inventory_report_data.push({
                                             'type': 'detail_row',
                                             'trans_code': activity?.['trans_code'] || '',
+                                            'trans_title': trans_title_sub?.[activity?.['trans_title']] || '',
                                             'product_code': warehouse_activities?.['product']?.['code'] || '',
                                             'date': activity?.['system_date'] ? moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm") : '',
                                             'lot_number': activity?.['lot_number'] || '',
@@ -1699,9 +1735,21 @@ $(document).ready(function () {
                                         if (activity?.['trans_title'] === 'Balance init input') {
                                             bg_in = 'text-secondary'
                                         }
+                                            let trans_title_sub = {
+                                                'Goods receipt': trans_script.attr('data-trans-grc'),
+                                                'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
+                                                'Goods return': trans_script.attr('data-trans-grt'),
+                                                'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
+                                                'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
+                                                'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
+                                                'Goods issue': trans_script.attr('data-trans-gis'),
+                                                'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
+                                            }
+
                                         table_inventory_report_data.push({
                                             'type': 'detail_row',
                                             'trans_code': activity?.['trans_code'] || '',
+                                            'trans_title': trans_title_sub?.[activity?.['trans_title']] || '',
                                             'product_code': warehouse_activities?.['product']?.['code'] || '',
                                             'date': activity?.['system_date'] ? moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm") : '',
                                             'lot_number': activity?.['lot_number'] || '',
@@ -1769,9 +1817,21 @@ $(document).ready(function () {
                                             if (activity?.['trans_title'] === 'Balance init input') {
                                                 bg_in = 'text-secondary'
                                             }
+                                            let trans_title_sub = {
+                                                'Goods receipt': trans_script.attr('data-trans-grc'),
+                                                'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
+                                                'Goods return': trans_script.attr('data-trans-grt'),
+                                                'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
+                                                'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
+                                                'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
+                                                'Goods issue': trans_script.attr('data-trans-gis'),
+                                                'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
+                                            }
+
                                             table_inventory_report_data.push({
                                                 'type': 'detail_row',
                                                 'trans_code': activity?.['trans_code'] || '',
+                                                'trans_title': trans_title_sub?.[activity?.['trans_title']] || '',
                                                 'product_code': warehouse_activities?.['product']?.['code'] || '',
                                                 'date': activity?.['system_date'] ? moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm") : '',
                                                 'lot_number': activity?.['lot_number'] || '',

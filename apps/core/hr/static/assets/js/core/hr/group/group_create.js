@@ -1,6 +1,5 @@
 $(function () {
     $(document).ready(function () {
-        let dataGroupEmployee = $('#data-group_employee');
         GroupLoadDataHandle.loadInit();
 
         GroupLoadDataHandle.$form.on('input', '.alphanumeric', function () {
@@ -21,12 +20,18 @@ $(function () {
             }
         });
 
+        GroupLoadDataHandle.$tblEmp.on('click', '.table-row-checkbox', function() {
+            GroupLoadDataHandle.loadStoreCheckEmployee(this);
+        });
+
         $('#button-add-group-employee').on('click', function() {
             GroupLoadDataHandle.loadDataEmployeeShow();
         });
 
-        $('#datable_employee_show_list').on('click', '.del-row', function() {
-            deleteEmployeeShow(this.id);
+        GroupLoadDataHandle.$tblEmpShow.on('click', '.del-row', function() {
+            deleteEmployeeShow(this.closest('tr'), GroupLoadDataHandle.$tblEmpShow);
+            reOrderSTTEmployeeShow(GroupLoadDataHandle.$tblEmpShow);
+            GroupLoadDataHandle.loadStoreSEmployee();
         });
 
         SetupFormSubmit.validate(GroupLoadDataHandle.$form, {
@@ -49,8 +54,8 @@ $(function () {
 
         function submitHandlerFunc() {
             let _form = new SetupFormSubmit(GroupLoadDataHandle.$form);
-            if (dataGroupEmployee.val()) {
-                _form.dataForm['group_employee'] = JSON.parse(dataGroupEmployee.val());
+            if (GroupLoadDataHandle.$eleGrEmp.val()) {
+                _form.dataForm['group_employee'] = JSON.parse(GroupLoadDataHandle.$eleGrEmp.val());
             }
             if (GroupLoadDataHandle.box1stManager.val()) {
                 _form.dataForm['first_manager'] = GroupLoadDataHandle.box1stManager.val();

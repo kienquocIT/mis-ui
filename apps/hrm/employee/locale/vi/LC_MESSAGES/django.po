@@ -263,10 +263,6 @@ msgid "Dependent's Full Name"
 msgstr "Tên người phụ thuộc"
 
 #
-msgid "Permanent address"
-msgstr "Địa chỉ thường trú"
-
-#
 msgid "Contract Information"
 msgstr "Thông tin hợp đồng"
 

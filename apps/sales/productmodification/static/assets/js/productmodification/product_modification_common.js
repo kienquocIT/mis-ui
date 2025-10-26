@@ -22,7 +22,7 @@ class ProductModificationPageElements {
         this.$table_select_serial = $('#table-select-serial')
         this.$accept_picking_product_btn = $('#accept-picking-product-btn')
         // space
-        this.$root_product_modified = $('#root-product-modified')
+        this.$representative_product_modified = $('#representative-product-modified')
         this.$table_current_product_modified = $('#table-current-product-modified')
         this.$btn_add_row_init_component = $('#btn-add-row-init-component')
         this.$confirm_initial_components_modal = $('#confirm-initial-components-modal')
@@ -256,7 +256,7 @@ class ProductModificationPageFunction {
         });
     }
     static LoadRepresentativeProduct(data) {
-        pageElements.$root_product_modified.html(`
+        pageElements.$representative_product_modified.html(`
             <span class="badge badge-sm badge-primary mr-1">${data?.['code'] || ''}</span><span>${data?.['title'] || ''}</span>
         `)
     }
@@ -595,31 +595,28 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-20',
                     render: (data, type, row) => {
-                        if (row?.['row_type'] === 'new_added') {
-                            let picking_component_btn = `
-                                <button type="button"
-                                        class="btn btn-outline-secondary btn-modal-picking-component"
-                                        data-product-id="${row?.['component_id'] || ''}"
-                                        data-product-code="${row?.['component_code'] || ''}"
-                                        data-product-title="${row?.['component_name'] || ''}"
-                                        data-product-description="${row?.['component_des'] || ''}"
-                                        data-product-general-traceability-method="${row?.['general_traceability_method']}"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#picking-component-modal">
-                                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                                </button>
-                            `;
-                            return `
-                                <div class="input-group">
-                                    <input class="form-control component-quantity" disabled readonly type="number" min="1" value="${row?.['component_quantity'] || 0}">
-                                    ${picking_component_btn}
-                                </div>
-                                <script class="data-component-none-detail">${JSON.stringify(row?.['component_product_none_detail'] || [])}</script>
-                                <script class="data-component-lot-detail">${JSON.stringify(row?.['component_product_lot_detail'] || [])}</script>
-                                <script class="data-component-sn-detail">${JSON.stringify(row?.['component_product_sn_detail'] || [])}</script>
-                            `;
-                        }
-                        return `<input class="form-control component-quantity" disabled readonly type="number" min="1" value="${row?.['component_quantity'] || 0}">`;
+                        let picking_component_btn = `
+                            <button type="button"
+                                    class="btn btn-outline-secondary btn-modal-picking-component"
+                                    data-product-id="${row?.['component_id'] || ''}"
+                                    data-product-code="${row?.['component_code'] || ''}"
+                                    data-product-title="${row?.['component_name'] || ''}"
+                                    data-product-description="${row?.['component_des'] || ''}"
+                                    data-product-general-traceability-method="${row?.['general_traceability_method']}"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#picking-component-modal">
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </button>
+                        `;
+                        return `
+                            <div class="input-group">
+                                <input class="form-control component-quantity" disabled readonly type="number" min="1" value="${row?.['component_quantity'] || 0}">
+                                ${picking_component_btn}
+                            </div>
+                            <script class="data-component-none-detail">${JSON.stringify(row?.['component_product_none_detail'] || [])}</script>
+                            <script class="data-component-lot-detail">${JSON.stringify(row?.['component_product_lot_detail'] || [])}</script>
+                            <script class="data-component-sn-detail">${JSON.stringify(row?.['component_product_sn_detail'] || [])}</script>
+                        `;
                     }
                 },
                 {
@@ -1298,12 +1295,12 @@ class ProductModificationHandler {
         let frm = new SetupFormSubmit($(frmEle))
 
         frm.dataForm['title'] = pageElements.$title.val()
-        frm.dataForm['product_modified'] = pageVariables.current_product_modified?.['representative_product']?.['id'] || pageVariables.current_product_modified?.['id'] || null
+        frm.dataForm['product_modified'] = pageVariables.current_product_modified?.['id'] || null
         frm.dataForm['new_description'] = pageVariables.current_product_modified?.['new_description']
         frm.dataForm['warehouse_id'] = pageVariables.current_product_modified?.['warehouse_id'] || null
         frm.dataForm['prd_wh_lot'] = pageVariables.current_product_modified?.['lot_id'] || null
         frm.dataForm['prd_wh_serial'] = pageVariables.current_product_modified?.['serial_id'] || null
-        frm.dataForm['root_product_modified'] = pageVariables.current_product_modified?.['representative_product']?.['id'] ? pageVariables.current_product_modified?.['id'] : null
+        frm.dataForm['representative_product_modified'] = pageVariables.current_product_modified?.['representative_product']?.['id'] || null
 
         let current_component_data = []
         pageElements.$table_product_current_component.find('tbody tr').each(function (index, ele) {
@@ -1360,15 +1357,15 @@ class ProductModificationHandler {
 
                     pageElements.$title.val(data?.['title'])
                     pageElements.$created_date.val(data?.['date_created'] ? DateTimeControl.formatDateType("YYYY-MM-DD hh:mm:ss", "DD/MM/YYYY", data?.['date_created']) : '')
-                    pageVariables.current_product_modified['id'] = Object.keys(data?.['root_product_modified'] || {}).length > 0 ? data?.['root_product_modified']?.['id'] : data?.['prd_wh_data']?.['product']?.['id']
-                    pageVariables.current_product_modified = Object.keys(data?.['root_product_modified'] || {}).length > 0 ? data?.['root_product_modified'] : data?.['prd_wh_data']?.['product']
-                    pageVariables.current_product_modified['representative_product'] = Object.keys(data?.['root_product_modified'] || {}).length > 0 ? data?.['prd_wh_data']?.['product'] : {}
+                    pageVariables.current_product_modified['id'] = data?.['prd_wh_data']?.['product']?.['id']
+                    pageVariables.current_product_modified = data?.['prd_wh_data']?.['product']
+                    pageVariables.current_product_modified['representative_product'] = data?.['representative_product_modified']
                     pageVariables.current_product_modified['warehouse_id'] = data?.['prd_wh_data']?.['warehouse']?.['id']
                     pageVariables.current_product_modified['serial_id'] = data?.['prd_wh_serial_data']?.['id']
                     pageVariables.current_product_modified['lot_id'] = data?.['prd_wh_lot_data']?.['id']
                     pageVariables.current_product_modified['new_description'] = data?.['new_description']
                     ProductModificationPageFunction.LoadTableCurrentProductModified(
-                        [Object.keys(data?.['root_product_modified']).length > 0 ? data?.['root_product_modified'] : pageVariables.current_product_modified],
+                        [pageVariables.current_product_modified],
                         data?.['prd_wh_data']?.['warehouse']?.['code'],
                         data?.['prd_wh_data']?.['warehouse']?.['title'],
                         data?.['prd_wh_serial_data']?.['serial_number'],
@@ -1377,9 +1374,9 @@ class ProductModificationHandler {
                         option
                     )
 
-                    if (Object.keys(data?.['root_product_modified'] || {}).length > 0) {
+                    if (Object.keys(data?.['representative_product_modified'] || {}).length > 0) {
                         $('#specific-notify-space').prop('hidden', false)
-                        ProductModificationPageFunction.LoadRepresentativeProduct(pageVariables.current_product_modified)
+                        ProductModificationPageFunction.LoadRepresentativeProduct(data?.['representative_product_modified'])
                     }
 
                     pageElements.$insert_component_btn.prop('hidden', false)
@@ -1453,7 +1450,7 @@ class ProductModificationEventHandler {
                         pageVariables.current_product_modified['serial_id'] = $checkedEle.attr('data-prd-wh-serial')
                     }
 
-                    let product_id = pageVariables.current_product_modified?.['representative_product']?.['id'] || pageVariables.current_product_modified?.['id']
+                    let product_id = pageVariables.current_product_modified?.['id']
                     let latest_component_list_ajax = $.fn.callAjax2({
                         url: pageElements.$script_url.attr('data-url-latest-component-list'),
                         data: {'product_warehouse__product_id': product_id, 'modified_number': $checkedEle.attr('data-modified-number') || ''},
@@ -1511,9 +1508,8 @@ class ProductModificationEventHandler {
                     pageElements.$insert_component_btn.prop('hidden', false)
                 }
 
-                $('#specific-notify-space').prop('hidden', Number(pageVariables.current_product_modified?.['valuation_method']) === 2)
-
                 if (Object.keys(pageVariables.current_product_modified?.['representative_product'] || {}).length > 0) {
+                    $('#specific-notify-space').prop('hidden', false)
                     ProductModificationPageFunction.LoadRepresentativeProduct(pageVariables.current_product_modified?.['representative_product'] || {})
                 }
 
@@ -1530,7 +1526,7 @@ class ProductModificationEventHandler {
         pageElements.$btn_modal_picking_product.on('click', function () {
             pageElements.$table_select_lot.closest('.table-serial-space').prop('hidden', true)
             pageElements.$table_select_serial.closest('.table-lot-space').prop('hidden', true)
-            let product_id = pageVariables.current_product_modified?.['representative_product']?.['id'] || pageVariables.current_product_modified?.['id']
+            let product_id = pageVariables.current_product_modified?.['id']
             let url = `${pageElements.$script_url.attr('data-url-warehouse-list-by-product')}?product_id=${product_id}`
             ProductModificationPageFunction.LoadTableWarehouseByProduct(url)
             ProductModificationPageFunction.LoadTableLotListByWarehouse()
@@ -1540,13 +1536,13 @@ class ProductModificationEventHandler {
             pageElements.$table_select_lot.closest('.table-lot-space').prop('hidden', Number(pageVariables.current_product_modified?.['general_traceability_method']) !== 1)
             pageElements.$table_select_serial.closest('.table-serial-space').prop('hidden', Number(pageVariables.current_product_modified?.['general_traceability_method']) !== 2)
             if (Number(pageVariables.current_product_modified?.['general_traceability_method']) === 1) {
-                let product_id = pageVariables.current_product_modified?.['representative_product']?.['id'] || pageVariables.current_product_modified?.['id']
+                let product_id = pageVariables.current_product_modified?.['id']
                 let warehouse_id = $(this).attr('data-warehouse-id')
                 let url = `${pageElements.$script_url.attr('data-url-lot-list-by-warehouse')}?product_warehouse__product_id=${product_id}&product_warehouse__warehouse_id=${warehouse_id}`
                 ProductModificationPageFunction.LoadTableLotListByWarehouse(url)
             }
             if (Number(pageVariables.current_product_modified?.['general_traceability_method']) === 2) {
-                let product_id = pageVariables.current_product_modified?.['representative_product']?.['id'] || pageVariables.current_product_modified?.['id']
+                let product_id = pageVariables.current_product_modified?.['id']
                 let warehouse_id = $(this).attr('data-warehouse-id')
                 let url = `${pageElements.$script_url.attr('data-url-serial-list-by-warehouse')}?product_warehouse__product_id=${product_id}&product_warehouse__warehouse_id=${warehouse_id}`
                 ProductModificationPageFunction.LoadTableSerialListByWarehouse(url)

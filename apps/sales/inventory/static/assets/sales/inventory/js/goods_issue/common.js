@@ -1415,7 +1415,7 @@ class GISEventHandler {
                     Promise.all([pm_detail_ajax]).then(
                         (results) => {
                             console.log(results);
-                            GISPageFunction.DrawTablePMItems([results[0]?.['root_product_modified']], true)
+                            GISPageFunction.DrawTablePMItems([results[0]?.['representative_product_modified']], true)
                             pageElements.select_pm_modal.modal('hide')
                         })
                 }

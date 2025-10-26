@@ -24,6 +24,7 @@ class EmployeeHRMInit {
     static userSelectEle = $('#select-box-user');
     static empSelectEle = $('#select-box-employee');
     static ElmNationality = $('#employee-nationality');
+    static $tableDependentInfo = $('#table_dependent');
 
     static loadUserList() {
         EmployeeHRMInit.userSelectEle.initSelect2({
@@ -118,66 +119,72 @@ class EmployeeHRMInit {
         })
     }
 
-    static loadDetail(){
-        const $form = $('#frm_employee_hrm')
+    static loadDetail(option = 'detail'){
         $.fn.callAjax2({
-            url: $form.attr('data-hrm-detail'),
+            url: $('#frm_employee_hrm').attr('data-hrm-detail'),
             method: 'get',
             isLoading: true,
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                const employee = data.employee
-                let middName = employee.last_name.split(" ")
-                middName.shift()
-                $form.append(`<input type="hidden" name="id" value="${data.id}">`)
-                $('.switch-choice, .select-wrap').addClass('is-select')
-                $('#select-box-employee').attr('data-onload', {...employee, selected: true}).append(`<option value="${employee.id}" selected>${employee.full_name}</option>`).trigger('change')
-                $('#employee-first_name').val(employee.first_name);
+                const employee = data?.employee || {};
+                let middName = (employee?.last_name|| "").split(" ");
+                middName.shift();
+                $('#frm_employee_hrm').append(`<input type="hidden" name="id" value="${data?.id || ''}">`);
+                $('.switch-choice, .select-wrap').addClass('is-select');
+                $('#select-box-employee').attr('data-onload', {
+                    ...employee,
+                    selected: true
+                }).append(`<option value="${employee?.id || ''}" selected>${employee?.full_name || ''}</option>`).trigger('change');
+                $('#employee-first_name').val(employee?.first_name || '');
                 $('#employee-middle_name').val(middName.join(" "));
-                $('#employee-last_name').val(employee.last_name.split(" ")[0]);
-                $('#date_joined')[0]._flatpickr.setDate(new Date(employee.date_joined))
-                $('#employee-email').val(employee.email)
-                $('#employee-phone').val(employee.phone)
-                $('#employee-code').val(employee.code)
+                $('#employee-last_name').val((employee?.last_name || '').split(" ")[0]);
+                $('#date_joined')[0]._flatpickr.setDate(new Date(employee.date_joined));
+                $('#employee-email').val(employee?.email || '');
+                $('#employee-phone').val(employee?.phone || '');
+                $('#employee-code').val(employee?.code || '');
 
                 if (data.employee.user?.id) {
-                    $('#select-box-user').attr('data-onload', {...data.employee.user, selected: true})
-                        .append(`<option value="${data.employee.user.id}" selected>${
+                    $('#select-box-user').attr(
+                        'data-onload',
+                        {
+                            ...data.employee.user,
+                            selected: true
+                        }
+                    ).append(
+                        `<option value="${data.employee.user.id}" selected>${
                             data.employee.user.first_name + ' ' + data.employee.user.last_name}</option>`).trigger('change')
-                }
-                if (data?.['citizen_id'])
-                    $('#employee-citizen_id').val(data['citizen_id'])
-                if (data?.['date_of_issue'])
-                    $('#employee_doi')[0]._flatpickr.setDate(new Date(data['date_of_issue']))
-                if (data?.['place_of_issue'])
-                    $('#place_of_issue').val(data['place_of_issue'])
-                if (data.employee.dob)
-                    $('#employee-dob')[0]._flatpickr.setDate(new Date(data.employee.dob))
+                };
+                $('#employee-citizen_id').val(data?.['citizen_id'] || '');
+                $('#employee_doi')[0]._flatpickr.setDate(new Date(data?.['date_of_issue'] || ''));
+                $('#place_of_issue').val(data?.['place_of_issue'] || '');
+                $('#employee-dob')[0]._flatpickr.setDate(new Date(employee?.dob || ''));
                 if (Object.keys(data['place_of_birth']).length > 0)
                     $('#employee-pob').attr('data-onload', JSON.stringify(data?.['place_of_birth'])).append(
                         `<option value="${data?.['place_of_birth'].id}" selected>${data?.['place_of_birth'].title}</option>`
-                    ).trigger('change')
+                    ).trigger('change');
                 if (Object.keys(data['nationality']).length > 0)
                     $('#employee-nationality').attr('data-onload', JSON.stringify(data['nationality'])).append(
                         `<option value="${data['nationality'].id}" selected>${data['nationality'].title}</option>`
-                    ).trigger('change')
+                    ).trigger('change');
                 if (Object.keys(data['place_of_origin']).length > 0)
                     $('#employee-poo').attr('data-onload', JSON.stringify(data['place_of_origin'])).append(
                         `<option value="${data['place_of_origin'].id}" selected>${data['place_of_origin'].title}</option>`
-                    ).trigger('change')
-                $('#employee-ethnicity').val(data['ethnicity'])
-                $('#employee-religion').val(data['religion'])
-                $('#employee-gender').val(data['gender']).trigger('change')
-                $('#employee-mstt').val(data['marital_status']).trigger('change')
-                $('#employee-ban').val(data['bank_acc_no'])
-                $('#employee-acc_name').val(data['acc_name'])
-                $('#employee-bank_name').val(data['bank_name']).trigger('change')
-                $('#employee-tax_code').val(data['tax_code'])
-                $('#employee-permanent_address').val(data['permanent_address'])
-                $('#employee-current_resident').val(data['current_resident'])
+                    ).trigger('change');
+                $('#employee-ethnicity').val(data?.['ethnicity'] || '');
+                $('#employee-religion').val(data?.['religion'] || '');
+                $('#employee-gender').val(data['gender']).trigger('change');
+                $('#employee-mstt').val(data['marital_status']).trigger('change');
+                $('#employee-ban').val(data?.['bank_acc_no'] || '');
+                $('#employee-acc_name').val(data?.['acc_name'] || '');
+                $('#employee-bank_name').val(data['bank_name']).trigger('change');
+                $('#employee-tax_code').val(data?.['tax_code'] || '');
+                $('#employee-permanent_address').val(data?.['permanent_address'] || '');
+                $('#employee-current_resident').val(data?.['current_resident'] || '');
+                EmployeeHRMInit.initDependentTable(data?.['dependent_deduction'] || [], option);
 
-                $(document).trigger('detail.DetailLoaded')
+                $(document).trigger('detail.DetailLoaded');
+                UsualLoadPageFunction.DisablePage(option === 'detail' ? true : false);
             }
         })
     }
@@ -187,6 +194,77 @@ class EmployeeHRMInit {
             allowClear: true,
             templateResult: renderTemplateBank,
         })
+    }
+
+    static initDependentTable(data = [], option='create') {
+        this.$tableDependentInfo.DataTable().destroy();
+        this.$tableDependentInfo.DataTableDefault({
+            data: data,
+            styleDom: 'hide-foot',
+            rowIdx: true,
+            scrollX: true,
+            scrollY: '70vh',
+            scrollCollapse: true,
+            reloadCurrency: true,
+            columns: [
+                {
+                    className: "w-5",
+                    render: () => {
+                        return '';
+                    }
+                },
+                {
+                    className: "w-25",
+                    render: (data, type, row) => {
+                        return `<input ${option === 'detail' ? 'disabled' : ''} class="form-control row-dependent-id" 
+                                type="text" required>`;
+                    }
+                },
+                {
+                    className: "w-30",
+                    render: (data, type, row) => {
+                        return `<input ${option === 'detail' ? 'disabled' : ''} class="form-control row-dependent-title" 
+                                type="text" required>`;
+                    }
+                },
+                {
+                    className: "w-30",
+                    render: (data, type, row) => {
+                        return `<input ${option === 'detail' ? 'disabled' : ''} class="form-control row-dependent-address" 
+                                type="text" required>`;
+                    }
+                },
+                {
+                    className: "w-10 text-center",
+                    render: () => {
+                        return `<button ${option === 'detail' ? 'disabled' : ''}
+                                   type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row">
+                                   <span class="icon"><i class="far fa-trash-alt"></i></span>
+                              </button>`;
+                    }
+                },
+            ],
+            initComplete: function() {
+                EmployeeHRMInit.$tableDependentInfo.find('tbody tr').each(function (index, ele) {
+                    $(ele).find('.row-dependent-id').val(data[index]?.citizen_id || '')
+                    $(ele).find('.row-dependent-title').val(data[index]?.dependent_full_name || '')
+                    $(ele).find('.row-dependent-address').val(data[index]?.address || '')
+                })
+            }
+        });
+    }
+
+    static combineDependentTable() {
+        const dependentData = [];
+        EmployeeHRMInit.$tableDependentInfo.find('tbody tr').each(function () {
+            let item = {
+                citizen_id: $(this).find('.row-dependent-id').val() || '',
+                dependent_full_name: $(this).find('.row-dependent-title').val() || '',
+                address: $(this).find('.row-dependent-address').val() || '',
+            };
+            dependentData.push(item);
+        });
+        return dependentData;
     }
 }
 
@@ -421,20 +499,31 @@ class contract_data {
                 if (data) {
                     const wrapElmContractForm = $('.contract-edit')
                     $('.contract-edit input[name="contract_id"]').remove()
-                    wrapElmContractForm.append(`<input type="hidden" value="${data.id}" id="contract_id" name="contract_id"/>`)
-                    .removeClass('hidden')
+                    wrapElmContractForm.append(
+                        `<input type="hidden" value="${data.id}" id="contract_id" name="contract_id"/>`
+                    ).removeClass('hidden');
 
                     $('.contract-list').addClass('hidden')
                     $('#contract_type_id').val(data.contract_type).trigger('change')
                     $('#gridCheck').prop('checked', data.limit_time)
                     $('#effected_date')[0]._flatpickr.setDate(data.effected_date)
                     $('#expired_date')[0]._flatpickr.setDate(data.expired_date)
-                    $('#company_representative').attr('data-onload', JSON.stringify({...data.represent, selected: true}))
-                        .append(`<option value="${data.represent.id}" selected>${data.represent.full_name}</option>`).trigger('change')
+                    $('#company_representative')
+                        .attr('data-onload', JSON.stringify({
+                            ...data.represent,
+                            selected: true
+                        }))
+                        .append(`<option value="${data.represent.id}" selected>${data.represent.full_name}</option>`)
+                        .trigger('change');
                     $('#signing_date')[0]._flatpickr.setDate(data.signing_date)
                     $('input[name="file_type"]').prop('checked', false)
                     $(`input[name="file_type"][value="${data.file_type}"]`).prop('checked', true)
                     $('#extra_data').attr('value', data?.['content_info'] ? JSON.stringify(data.content_info) : '{}')
+                    $('#salary_level').val(data?.employee_salary_level || 0)
+                    $('#salary_coefficient').val(data?.employee_salary_coefficient || 1)
+                    $('#employee_salary').attr('value', data?.employee_salary || 0)
+                    $('#insurance_salary').attr('value', data?.employee_salary_insurance || 0)
+                    $('#salary_rate').val(data?.employee_salary_rate || 0)
 
                     const signStt = [
                         {'text': $.fn.gettext('Unsigned'), 'class': 'badge-soft-danger'},
@@ -470,11 +559,54 @@ class contract_data {
 
                     if (data['sign_status'] === 0)
                         $('.request_sign').removeClass('hidden')
+
+                    $.fn.initMaskMoney2()
                 }
             });
     }
 
-    valid_data(){
+    valid_data(dataList){
+        // validate expired date and effected date
+        if (dataList.effected_date && dataList.expired_date) {
+            const effectedDate = new Date(dataList.effected_date);
+            const expiredDate = new Date(dataList.expired_date);
+
+            if (expiredDate <= effectedDate) {
+                $.fn.notifyB({description: $.fn.gettext('Expired date must be larger than effected date')}, 'failure');
+                $('#effected_date').css('border', '2px solid red');
+                $('#expired_date').css('border', '2px solid red');
+                throw new Error('Expired date must be larger than effected date');
+            }
+        }
+
+        // validate salary information
+        let contract_type = parseInt(dataList?.['contract_type'] ?? 0);
+        if (contract_type === 0 || contract_type === 2) {
+            if (Object.keys(dataList).length < 9)
+                return {}
+        } else {
+            if (dataList.employee_salary == null || dataList.employee_salary === '') {
+                $.fn.notifyB(
+                    {description: $.fn.gettext('Employee salary is compulsory for Labor contract')},
+                    'failure'
+                );
+                throw new Error('Employee salary is compulsory for Labor contract');
+            }
+
+            if (dataList.employee_salary_insurance == null || dataList.employee_salary_insurance === '') {
+                $.fn.notifyB(
+                    {description: $.fn.gettext('Salary for insurance is compulsory for Labor contract')},
+                    'failure'
+                );
+                throw new Error('Salary for insurance is compulsory for Labor contract');
+            }
+            if (Object.keys(dataList).length < 11)
+                return {}
+        }
+        return dataList;
+    }
+
+    combineFormData() {
         const formSer = $('#frm_employee_hrm').serializeObject()
         let dataList = {};
         if (formSer['contract_type']) dataList.contract_type = parseInt(formSer['contract_type'])
@@ -486,8 +618,22 @@ class contract_data {
         if (formSer['company_representative']) dataList.represent = formSer['company_representative']
         if (formSer['signing_date']) dataList.signing_date = formSer['signing_date']
         if (formSer['file_type']) dataList.file_type = parseInt(formSer['file_type'])
-        if (formSer['remarks'] && dataList.file_type === 1) dataList.content = formSer['remarks']
-        if (formSer['content_info']){
+        if (formSer['remarks'] && dataList.file_type === 1) dataList.content = formSer?.['remarks']?.replace(/<[^>]*>/g, '') || '';
+        if (formSer['salary_level']) dataList.employee_salary_level = formSer['salary_level'];
+        if (formSer['salary_coefficient']) dataList.employee_salary_coefficient = formSer['salary_coefficient'];
+        if ($('#employee_salary').attr('value')) dataList.employee_salary = parseFloat($('#employee_salary').attr('value'));
+        if ($('#insurance_salary').attr('value')) dataList.employee_salary_insurance = parseFloat($('#insurance_salary').attr('value'));
+        if (formSer['salary_rate']) dataList.employee_salary_rate = formSer?.['salary_rate'];
+
+        let contentInfo = formSer['content_info'];
+        if (typeof contentInfo === 'string') {
+            try {
+                contentInfo = JSON.parse(contentInfo);
+            } catch (e) {
+                contentInfo = {};
+            }
+        }
+        if (contentInfo && Object.keys(contentInfo).length > 0){
             let dataParse = {}
             try {
                 dataParse = JSON.parse(formSer['content_info']);
@@ -513,9 +659,10 @@ class contract_data {
         }
         if (formSer['attachment'] && dataList.file_type === 0)
             dataList.attachment = $x.cls.file.get_val(formSer['attachment'], [])
-        if (Object.keys(dataList).length < 8)
-            return {}
-        return dataList
+
+        let contractData = this.valid_data(dataList);
+
+        return contractData
     }
 
     modal_add_user_signing(data){
@@ -599,5 +746,23 @@ class contract_data {
             (error) => {
                 $.fn.notifyB({description: error.data.errors}, 'failure');
             });
+    }
+}
+
+/** EVENT HANDLE **/
+class EmployeeInfoEventHandler {
+    static InitPageEvent() {
+        // event when click add button
+        $('#add_dependent').on('click', function() {
+            UsualLoadPageFunction.AddTableRow($('#table_dependent'));
+        });
+
+        // event for deleting row
+        $('#table_dependent').on('click', '.del-row', function() {
+            UsualLoadPageFunction.DeleteTableRow(
+                $('#table_dependent'),
+                parseInt($(this).closest('tr').find('td:first-child').text())
+            )
+        });
     }
 }

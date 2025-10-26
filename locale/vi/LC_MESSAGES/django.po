@@ -12326,3 +12326,7 @@ msgstr "Báo giá dịch vụ"
 #
 msgid "Sale quotation"
 msgstr "Báo giá bán"
+
+#
+msgid "Payroll"
+msgstr "Tính lương"

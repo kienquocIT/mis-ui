@@ -35,8 +35,8 @@
     </div>
     <div class="row mb-5" style="display: none;">
         <div class="col-12 mb-3">
-            <h1 class="fw-bold text-white" style="opacity: 0.8;" id="employee-current-fullname"></h1>
-            <h6 class="fw-bold text-white" style="opacity: 0.8;" id="employee-current-company"></h6>
+            <h1 class="fw-bold text-white" style="opacity: 0.9;" id="employee-current-fullname"></h1>
+            <h6 class="fw-bold text-white" style="opacity: 0.9;" id="employee-current-company"></h6>
         </div>
         <div class="col-12 col-md-12 col-lg-9">
             <div class="row" id="my-task-summary-report" data-url="{% url 'MyTaskSummaryReport' %}">
@@ -302,11 +302,9 @@
                                 <h6>{% trans 'Bookmarks' %}</h6>
                                 <div id="boxBookmarkDisplay" data-url="{% url 'BookMarkListAPI' %}" data-url-delete="{% url 'BookMarkDetailAPI' pk=1 %}">
                                     <div class="row d-flex justify-content-start flex-wrap" id="boxBookmarkDisplayData">
-                                        <div id="boxBtnAddNewBM" class="bookmark-item d-15 m-2" data-bs-toggle="modal" data-bs-target="#modalAddBookMark">
-                                            <div class="bg-blue-light-4 text-light rounded-5 d-10 d-flex flex-column justify-content-center align-items-center overflow-hidden">
-                                                <span class="mb-1">
-                                                    <i class="fa-solid fa-plus"></i>
-                                                </span>
+                                        <div id="boxBtnAddNewBM" class="bookmark-item d-10 m-2" data-bs-toggle="modal" data-bs-target="#modalAddBookMark">
+                                            <div style="opacity: 0.5; border-radius: 12px;" class="bg-light d-15 d-flex flex-column justify-content-center align-items-center overflow-hidden">
+                                                <i class="fa-solid fa-plus"></i>
                                             </div>
                                         </div>
                                     </div>

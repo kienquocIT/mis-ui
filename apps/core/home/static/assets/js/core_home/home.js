@@ -143,7 +143,7 @@ function loadBookmarkList() {
                         data-view_name="${item?.['view_name']}"
                         data-customize_url="${item?.['customize_url']}"
                     >
-                        <div class="bookmark-item-body bg-${item.box_style?.['bg_cls']} text-${item.box_style?.['text_cls']} rounded-5 d-15 d-flex flex-column justify-content-center align-items-center overflow-hidden">
+                        <div style="border-radius: 12px;" class="bookmark-item-body bg-${item.box_style?.['bg_cls']} text-${item.box_style?.['text_cls']} d-15 d-flex flex-column justify-content-center align-items-center overflow-hidden">
                             <small class="text-center mb-1">${item.title}</small>
                             <span class="mb-1">
                                 <i class="${item.box_style?.['icon_cls']} fa-lg"></i>

@@ -1,6 +1,7 @@
 .bookmark-item {
     cursor: pointer;
     position: relative;
+    border-radius: 12px;
 }
 
 .bookmark-item-action {
@@ -238,7 +239,7 @@
     position: relative;
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background: rgba(255, 255, 255, 0.6)
+    background: rgba(255, 255, 255, 0.75)
 }
 
 .summary-icon {

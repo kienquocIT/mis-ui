@@ -801,6 +801,9 @@ $(async function () {
                 if (dataRow?.['product_data']?.['specific_data']?.['product_warehouse_serial_id']) {
                     dataParam['id'] = dataRow?.['product_data']?.['specific_data']?.['product_warehouse_serial_id'];
                 }
+                if (!dataRow?.['product_data']?.['specific_data']?.['product_warehouse_serial_id']) {
+                    dataParam['product_spec_product_warehouse_serial__delivery_product_product_specific__isnull'] = true;
+                }
             }
 
             prodTable.dataTableTableSerial(url, dataParam, keyResp, isRegis, dataCheck);
@@ -1073,6 +1076,16 @@ $(async function () {
                         render: (data, type, row) => {
                             if (row?.['is_regis_so'] === true || row?.['is_regis_common'] === true) {
                                 return ``;
+                            }
+                            let checkedEle = $tableProductNew[0].querySelector('.table-row-checkbox:checked');
+                            if (checkedEle) {
+                                let row = checkedEle.closest('tr');
+                                let rowIndex = $tableProductNew.DataTable().row(row).index();
+                                let $row = $tableProductNew.DataTable().row(rowIndex);
+                                let dataRow = $row.data();
+                                if (dataRow?.['product_data']?.['specific_data']?.['product_warehouse_serial_id']) {
+                                    return `<p class="table-row-available">1</p>`;
+                                }
                             }
                             return `<p class="table-row-available">${row?.['available_stock']}</p>`;
                         }

@@ -204,7 +204,7 @@ function loadTabTodo() {
                             stage__runtime?.['app_code'],
                             {'redirect': true},
                         );
-                        return `<span>${row?.['app_code_parsed']}</span><br><a href="${urlData}">${row?.['doc_title'] || "_"}</a>`;
+                        return `<span class="small">${row?.['app_code_parsed']}</span><br><a href="${urlData}">${row?.['doc_title'] || "_"}</a>`;
                     }
                 },
                 {
@@ -282,7 +282,7 @@ function loadTabFollowing() {
                             row?.['app_code'],
                             {'redirect': true},
                         );
-                        return `<span>${row?.['app_code_parsed']}</span><br><a href="${urlData}">${row?.['doc_title'] || "_"}</a>`;
+                        return `<span class="small">${row?.['app_code_parsed']}</span><br><a href="${urlData}">${row?.['doc_title'] || "_"}</a>`;
                     }
                 },
                 {
@@ -359,7 +359,7 @@ function loadTabPined() {
                             runtime?.['app_code'],
                             {'redirect': true},
                         );
-                        return `<span>${runtime?.['app_title']}</span><br><a href="${urlData}">${row?.['title'] || "_"}</a>`;
+                        return `<span class="small">${runtime?.['app_title']}</span><br><a href="${urlData}">${row?.['title'] || "_"}</a>`;
                     }
                 },
                 {

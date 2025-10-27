@@ -82,8 +82,8 @@ msgid "Specific tracking through product"
 msgstr "Đang theo dõi đích danh thông qua sản phẩm"
 
 #
-msgid "Representative product (for Product Modification)"
-msgstr "Sản phẩm đại diện (cho Ráp-Rã)"
+msgid "Select representative product (Product Modification)"
+msgstr "Chọn sản phẩm đại diện (cho Ráp-Rã)"
 
 #
 msgid "Due to the selected product does not use the Specific Identification valuation method. When you perform the Product modification, the cost of this product will be mixed with the remaining inventory. Using a representative product to accurately track details as the original item."

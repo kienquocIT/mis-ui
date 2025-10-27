@@ -23,6 +23,8 @@ class ProductPageElements {
         this.$volume = $('#volume')
         this.$weight = $('#weight')
         this.$representative_product = $('#representative-product')
+        this.$copy_config_from_product = $('#copy-config-from-product')
+        this.$datatable_config_content = $('#datatable-config-content')
         // sale tab
         this.$check_tab_sale = $('#check-tab-sale')
         this.$sale_uom = $('#sale-uom')
@@ -77,6 +79,7 @@ const pageElements = new ProductPageElements()
 class ProductPageVariables {
     constructor() {
         this.data_detail = null
+        this.data_detail_config = null
         this.current_row_variant_attribute = null
         this.current_row_variant_item = null
         // attribute tab
@@ -261,6 +264,200 @@ class ProductPageFunction {
             keyText: 'title',
         })
     }
+    static LoadCopyProductFrom(data) {
+        $('#copy-config-product-space').prop('hidden', false)
+        ProductPageFunction.LoadProductConfigContent()
+        pageElements.$copy_config_from_product.initSelect2({
+            allowClear: true,
+            data: data,
+            ajax: {
+                data: {},
+                url: pageElements.$copy_config_from_product.attr('data-url'),
+                method: 'GET',
+            },
+            templateResult: function(data) {
+                return $(`<span class="badge badge-light badge-sm">${data.data?.['code']}</span><br><span>${data.data?.['title']}</span>`);
+            },
+            keyResp: 'product_list',
+            keyId: 'id',
+            keyText: 'title',
+        }).on('change', function () {
+            if ($(this).val()) {
+                let ajax_detail_prd = $.fn.callAjax2({
+                        url: pageElements.$datatable_config_content.attr('data-url').replace('/0', `/${$(this).val()}`),
+                        data: {},
+                        method: 'GET'
+                    }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && typeof data === 'object' && data.hasOwnProperty('product')) {
+                            return data?.['product'];
+                        }
+                    },
+                    (errs) => {
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    }
+                )
+
+                Promise.all([ajax_detail_prd]).then(
+                    (results) => {
+                        if (results.length === 1) {
+                            pageVariables.data_detail_config = results[0]
+
+                            let data_list = []
+                            let product_detail = pageVariables.data_detail_config
+
+                            if (Object.keys(product_detail?.['general_information']).length !== 0) {
+                                let general_information = product_detail?.['general_information'];
+                                data_list.push({
+                                    'content': $.fn.gettext('Product type'),
+                                    'value': general_information['general_product_types_mapped'][0]?.['title'] || '--'
+                                })
+                                data_list.push({
+                                    'content': $.fn.gettext('Product category'),
+                                    'value': general_information['product_category']?.['title'] || '--'
+                                })
+                                data_list.push({
+                                    'content': $.fn.gettext('UOM group'),
+                                    'value': general_information['uom_group']?.['title'] || '--'
+                                })
+                                data_list.push({
+                                    'content': $.fn.gettext('Manufacturer'),
+                                    'value': general_information['general_manufacturer']?.['title'] || '--'
+                                })
+                                data_list.push({
+                                    'content': $.fn.gettext('Traceability method'),
+                                    'value': general_information['traceability_method'] || '--'
+                                })
+                                data_list.push({
+                                    'content': $.fn.gettext('Standard price'),
+                                    'value': general_information['standard_price'] || 0,
+                                    'type': 'currency'
+                                })
+                                if (Object.keys(general_information['product_size']).length !== 0) {
+                                    data_list.push({
+                                        'content': $.fn.gettext('Product size'),
+                                        'value': `${general_information['product_size']['length'] || 0} x ${general_information['product_size']['width'] || 0} x ${general_information['product_size']['height'] || 0} = ${general_information['product_size']['weight']['value'] || 0} (V = ${general_information['product_size']['volume']['value'] || 0})`
+                                    })
+                                }
+                            }
+                            if (Object.keys(product_detail?.['sale_information']).length !== 0) {
+                                let sale_information = product_detail?.['sale_information'];
+                                data_list.push({
+                                    'content': $.fn.gettext('Sale UOM'),
+                                    'value': sale_information['default_uom']?.['title'] || '--'
+                                })
+                                data_list.push({
+                                    'content': $.fn.gettext('Sale tax'),
+                                    'value': sale_information['tax']?.['code'] || '--'
+                                })
+                                data_list.push({
+                                    'content': $.fn.gettext('Price list'),
+                                    'value': '--'
+                                })
+                                data_list.push({
+                                    'content': $.fn.gettext('Sale online price list'),
+                                    'value': sale_information['price_list_for_online_sale']?.['title'] || '--'
+                                })
+                                data_list.push({
+                                    'content': $.fn.gettext('Public website'),
+                                    'value': product_detail?.['is_public_website'] ? $.fn.gettext('Yes') : $.fn.gettext('No')
+                                })
+                                if (sale_information?.['available_notify']) {
+                                    data_list.push({
+                                        'content': $.fn.gettext('Notify when available quantity less than'),
+                                        'value': sale_information?.['available_notify_quantity'] || '--'
+                                    })
+                                }
+                            }
+                            if (Object.keys(product_detail?.['inventory_information']).length !== 0) {
+                                let inventory_information = product_detail?.['inventory_information'];
+                                data_list.push({
+                                    'content': $.fn.gettext('Inventory UOM'),
+                                    'value': inventory_information['uom']?.['title'] || '--'
+                                })
+                                data_list.push({
+                                    'content': $.fn.gettext('Inventory level min'),
+                                    'value': inventory_information['inventory_level_min'] || 0
+                                })
+                                data_list.push({
+                                    'content': $.fn.gettext('Inventory level max'),
+                                    'value': inventory_information['inventory_level_max'] || 0
+                                })
+                                data_list.push({
+                                    'content': $.fn.gettext('Valuation method'),
+                                    'value': inventory_information['valuation_method'] || '--'
+                                })
+                            }
+                            if (Object.keys(product_detail?.['purchase_information']).length !== 0) {
+                                let purchase_information = product_detail?.['purchase_information'];
+                                data_list.push({
+                                    'content': $.fn.gettext('Purchase UOM'),
+                                    'value': purchase_information['default_uom']?.['title'] || '--'
+                                })
+                                data_list.push({
+                                    'content': $.fn.gettext('Purchase tax'),
+                                    'value': purchase_information['tax']?.['code'] || '--'
+                                })
+                                data_list.push({
+                                    'content': $.fn.gettext('Purchase supplied by'),
+                                    'value': product_detail?.['purchase_information']?.['supplied_by'] || '--'
+                                })
+                            }
+                            ProductPageFunction.LoadProductConfigContent(data_list)
+                        }
+                    }
+                )
+            }
+            else {
+                ProductPageFunction.LoadProductConfigContent()
+            }
+        })
+    }
+    static LoadProductConfigContent(data_list=[]) {
+        pageElements.$datatable_config_content.DataTable().clear().destroy();
+        pageElements.$datatable_config_content.DataTableDefault({
+            dom: 't',
+            paging: false,
+            rowIdx: true,
+            reloadCurrency: true,
+            scrollY: '55vh',
+            scrollX: true,
+            scrollCollapse: true,
+            data: data_list,
+            columns: [
+                {
+                    className: 'w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'w-10 text-center',
+                    render: (data, type, row) => {
+                        return `<div class="form-check">
+                            <input type="checkbox" name="content-select" checked disabled class="form-check-input content-select">
+                        </div>`;
+                    }
+                },
+                {
+                    className: 'w-40',
+                    render: (data, type, row) => {
+                        return `<span class="config-content">${row?.['content']}</span>`
+                    }
+                },
+                {
+                    className: 'w-45',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'currency') {
+                            return `<span class="config-value mask-money" data-init-money="${row?.['value']}"></span>`;
+                        }
+                        return `<span class="config-value">${row?.['value']}</span>`;
+                    }
+                },
+            ]
+        });
+    }
     // sale tab
     static LoadSaleUom(data) {
         pageElements.$sale_uom.empty()
@@ -320,6 +517,7 @@ class ProductPageFunction {
     }
     static LoadPriceListTable(price_list_from_detail=[], option) {
         let disabled_all_input = option === 'detail' ? 'disabled readonly' : ''
+        pageElements.$table_price_list.DataTable().clear().destroy()
         pageElements.$table_price_list.DataTableDefault({
             styleDom: 'hide-foot',
             rowIdx: true,
@@ -450,11 +648,15 @@ class ProductPageFunction {
     }
     static LoadSpecificSerialNumberList(data_list=[]) {
         $('#specific-modal-btn').prop('hidden', data_list.length === 0)
+        pageElements.$datatable_specific_serial_number_list.DataTable().clear().destroy()
         pageElements.$datatable_specific_serial_number_list.DataTableDefault({
             dom: 't',
             paging: false,
             rowIdx: true,
             reloadCurrency: true,
+            scrollY: '55vh',
+            scrollX: true,
+            scrollCollapse: true,
             data: data_list,
             columns: [
                 {
@@ -497,6 +699,7 @@ class ProductPageFunction {
         });
     }
     static LoadWareHouseListDetail(data_list=[]) {
+        pageElements.$datatable_warehouse_list.DataTable().clear().destroy()
         pageElements.$datatable_warehouse_list.DataTableDefault({
             dom: 't',
             paging: false,
@@ -1577,6 +1780,8 @@ class ProductHandler {
                     $x.fn.renderCodeBreadcrumb(product_detail);
 
                     // console.log(product_detail)
+                    $('#copy-config-product-space').remove()
+                    $('#modal-copy-config-product').remove()
 
                     pageElements.$code.val(product_detail?.['code']).prop('disabled', true).prop('readonly', true).addClass('form-control-line fw-bold text-primary')
                     pageElements.$title.val(product_detail?.['title'])
@@ -1637,12 +1842,7 @@ class ProductHandler {
                         ProductPageFunction.LoadSalePriceListForSaleOnline(sale_information['price_list_for_online_sale'], price_list_filter)
 
                         pageElements.$is_publish_website.prop('checked', product_detail?.['is_public_website'])
-                        if (product_detail?.['is_public_website']) {
-                            pageElements.$price_list_for_sale_online.prop('disabled', false)
-                        }
-                        else {
-                            pageElements.$price_list_for_sale_online.prop('disabled', true)
-                        }
+                        pageElements.$price_list_for_sale_online.prop('disabled', !product_detail?.['is_public_website'])
 
                         pageElements.$available_notify_checkbox.prop('checked', sale_information?.['available_notify']);
                         if (sale_information?.['available_notify']) {
@@ -1931,6 +2131,84 @@ class ProductEventHandler {
             else {
                 pageElements.$volume.val('');
             }
+        })
+        $('#btn-accept-product-config').on("click", function () {
+            let option = 'create'
+            let product_detail = pageVariables.data_detail_config
+
+            if (product_detail?.['product_choice'].includes(0)) {
+                $('#check-tab-sale').attr('checked', true);
+                $('#link-tab-sale').removeClass('disabled');
+                $('#tab_sale').find('.row').prop('hidden', false)
+            }
+            if (product_detail?.['product_choice'].includes(1)) {
+                $('#check-tab-inventory').attr('checked', true);
+                $('#link-tab-inventory').removeClass('disabled');
+                $('#tab_inventory').find('.row').prop('hidden', false)
+                pageElements.$duration_unit.prop('disabled', true)
+            }
+            if (product_detail?.['product_choice'].includes(2)) {
+                $('#check-tab-purchase').attr('checked', true);
+                $('#link-tab-purchase').removeClass('disabled');
+                $('#tab_purchase').find('.row').prop('hidden', false)
+            }
+
+            if (Object.keys(product_detail?.['general_information']).length !== 0) {
+                let general_information = product_detail?.['general_information'];
+                ProductPageFunction.LoadGeneralProductType(general_information['general_product_types_mapped'][0]);
+                pageElements.$general_product_type.trigger('change');
+                ProductPageFunction.LoadGeneralProductCategory(general_information['product_category']);
+                ProductPageFunction.LoadGeneralUoMGroup(general_information['uom_group']);
+                ProductPageFunction.LoadGeneralManufacturer(general_information['general_manufacturer']);
+                pageElements.$general_traceability_method.val(general_information['traceability_method'])
+                pageElements.$general_standard_price.attr('value', general_information['standard_price'])
+                if (Object.keys(general_information['product_size']).length !== 0) {
+                    pageElements.$length.val(general_information['product_size']['length']);
+                    pageElements.$width.val(general_information['product_size']['width']);
+                    pageElements.$height.val(general_information['product_size']['height']);
+                    pageElements.$volume.val(general_information['product_size']['volume']['value']);
+                    pageElements.$weight.val(general_information['product_size']['weight']['value']);
+                }
+            }
+            if (Object.keys(product_detail?.['sale_information']).length !== 0) {
+                let sale_information = product_detail?.['sale_information'];
+                ProductPageFunction.LoadSaleUom(sale_information['default_uom']);
+                ProductPageFunction.LoadSaleTax(sale_information['tax']);
+
+                let price_list_filter = []
+                for (let i = 0; i < sale_information['sale_product_price_list'].length; i++) {
+                    let item = sale_information['sale_product_price_list'][i];
+                    price_list_filter.push(item.id)
+                }
+
+                ProductPageFunction.LoadPriceListTable(sale_information['sale_product_price_list'] || [], option);
+                ProductPageFunction.LoadSalePriceListForSaleOnline(sale_information['price_list_for_online_sale'], price_list_filter)
+                pageElements.$is_publish_website.prop('checked', product_detail?.['is_public_website'])
+                pageElements.$price_list_for_sale_online.prop('disabled', !product_detail?.['is_public_website'])
+
+                pageElements.$available_notify_checkbox.prop('checked', sale_information?.['available_notify']);
+                if (sale_information?.['available_notify']) {
+                    pageElements.$less_than_number.prop('disabled', false).val(sale_information?.['available_notify_quantity']);
+                } else {
+                    pageElements.$less_than_number.prop('disabled', true).val('')
+                }
+                $.fn.initMaskMoney2();
+            }
+            if (Object.keys(product_detail?.['inventory_information']).length !== 0) {
+                let inventory_information = product_detail?.['inventory_information'];
+                ProductPageFunction.LoadInventoryUom(inventory_information['uom']);
+                pageElements.$inventory_level_min.val(inventory_information['inventory_level_min']);
+                pageElements.$inventory_level_max.val(inventory_information['inventory_level_max']);
+                pageElements.$valuation_method.val(inventory_information['valuation_method'])
+            }
+            if (Object.keys(product_detail?.['purchase_information']).length !== 0) {
+                let purchase_information = product_detail?.['purchase_information'];
+                ProductPageFunction.LoadPurchaseUom(purchase_information['default_uom']);
+                ProductPageFunction.LoadPurchaseTax(purchase_information['tax']);
+                pageElements.$purchase_supplied_by.val(product_detail?.['purchase_information']?.['supplied_by'])
+            }
+
+            $('#modal-copy-config-product').modal('hide')
         })
         // inventory tab
         pageElements.$check_tab_inventory.change(function () {

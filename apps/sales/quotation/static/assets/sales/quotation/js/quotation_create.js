@@ -75,6 +75,33 @@ $(function () {
             QuotationLoadDataHandle.loadStoreCheckProduct(this);
         });
 
+        QuotationDataTableHandle.$tableSProduct.on('click', '.table-row-checkbox-spec', function () {
+            QuotationLoadDataHandle.loadStoreCheckSpecProduct(this);
+        });
+
+        QuotationDataTableHandle.$tableSProduct.on('click', '.btn-collapse-parent', function (event) {
+            event.preventDefault();
+            let trEle = $(this).closest('tr');
+            let iconEle = $(this).find('.icon-collapse');
+
+            iconEle.toggleClass('fa-chevron-right').toggleClass('fa-chevron-down');
+
+            if (iconEle.hasClass('fa-chevron-right')) {
+                iconEle.removeClass('text-dark').addClass('text-secondary');
+                trEle.next().find('.child-workflow-group').slideToggle({
+                    complete: function () {
+                        trEle.next().addClass('hidden');
+                    }
+                });
+            }
+
+            if (iconEle.hasClass('fa-chevron-down')) {
+                iconEle.removeClass('text-secondary').addClass('text-dark');
+                QuotationLoadDataHandle.loadPushDtbSpecProduct(trEle, $(this).attr('data-product-id'));
+                trEle.next().removeClass('hidden').find('.child-workflow-group').slideToggle();
+            }
+        });
+
         QuotationLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
             QuotationLoadDataHandle.loadNewProduct();
         });
@@ -135,7 +162,7 @@ $(function () {
                     if (data && (data['status'] === 201 || data['status'] === 200)) {
                         $.fn.notifyB({description: data.message}, 'success');
                         QuotationLoadDataHandle.loadModalSProduct();
-                        $('#selectProductModal').modal('show');
+                        $('#selectProductCanvas').offcanvas('hide');
                         setTimeout(() => {
                             WindowControl.hideLoading();
                         }, 1000);
@@ -209,7 +236,7 @@ $(function () {
             }
         });
 
-        QuotationDataTableHandle.$tableProduct.on('change', '.table-row-item, .table-row-uom, .table-row-quantity, .table-row-uom-time, .table-row-quantity-time, .table-row-price, .table-row-tax, .table-row-discount', function () {
+        QuotationDataTableHandle.$tableProduct.on('change', '.table-row-item, .table-row-uom, .table-row-quantity, .table-row-uom-time, .table-row-quantity-time, .table-row-price, .table-row-tax, .table-row-discount, .table-row-discount-amount', function () {
             if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 let row = this.closest('tr');
                 if ($(this).hasClass('table-row-price')) {
@@ -248,6 +275,17 @@ $(function () {
                         }
                         if (!$(this).val()) {
                             quantityTimeEle.value = "0";
+                        }
+                    }
+                }
+                if ($(this).hasClass('table-row-discount') || $(this).hasClass('table-row-discount-amount')) {
+                    let discountCheckEle = row.querySelector('.table-row-discount-check');
+                    if (discountCheckEle) {
+                        if ($(this).hasClass('table-row-discount')) {
+                            discountCheckEle.checked = true;
+                        }
+                        if ($(this).hasClass('table-row-discount-amount')) {
+                            discountCheckEle.checked = false;
                         }
                     }
                 }

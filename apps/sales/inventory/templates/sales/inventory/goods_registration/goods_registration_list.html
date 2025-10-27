@@ -18,17 +18,20 @@
     ></script>
     <div class="row">
         <div class="col-12">
-            <table id="goods_registration_list" class="table nowrap w-100 mb-5" data-method="GET"
+            <table id="goods_registration_list" class="table nowrap w-100" data-method="GET"
                    data-url="{% url 'GoodsRegistrationListAPI' %}"
                    data-url-detail="{% url 'GoodsRegistrationDetail' '0' %}"
             >
                 <thead>
-                <th></th>
-                <th>{% trans "Code" %}</th>
-                <th>{% trans "Title" %}</th>
-                <th>{% trans "Sale order" %}</th>
-                <th>{% trans "Sale person" %}</th>
-                <th>{% trans "Date created" %}</th>
+                <tr>
+                    <th style="min-width: 50px"></th>
+                    <th style="min-width: 100px">{% trans "Code" %}</th>
+                    <th style="min-width: 300px">{% trans "Title" %}</th>
+                    <th style="min-width: 100px">{% trans "Sale order" %}</th>
+                    <th style="min-width: 150px">{% trans "Sale person" %}</th>
+                    <th style="min-width: 150px">{% trans "Employee created" %}</th>
+                    <th style="min-width: 150px">{% trans "Date created" %}</th>
+                </tr>
                 </thead>
             </table>
         </div>
@@ -37,12 +40,12 @@
     <div class="row mt-20" hidden>
         <div class="col-4">
             <div class="form-group">
-                <label>{% trans 'Sale order' %}</label>
-                <select class="form-select mb-1" id="sale_order_id_box" data-url="{% url 'SaleOrderListAPI' %}"></select>
+                <label class="form-label" for="sale_order_id_box">{% trans 'Sale order' %}</label>
+                <select class="form-select" id="sale_order_id_box" data-url="{% url 'SaleOrderListAPI' %}"></select>
             </div>
             <div class="form-group">
-                <label>{% trans 'Product' %}</label>
-                <select class="form-select mb-1" id="product_id_box" data-url="{% url 'ProductListAPI' %}"></select>
+                <label class="form-label" for="product_id_box">{% trans 'Product' %}</label>
+                <select class="form-select" id="product_id_box" data-url="{% url 'ProductListAPI' %}"></select>
             </div>
             <button type="button"
                     class="btn btn-light w-30"

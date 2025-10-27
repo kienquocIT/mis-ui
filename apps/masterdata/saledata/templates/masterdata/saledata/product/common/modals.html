@@ -154,7 +154,7 @@
 </div>
 
 <div class="modal fade" id="modal-specific-serial-number" tabindex="-1" role="dialog" aria-labelledby="modal-specific-serial-number" aria-hidden="true">
-    <div class="modal-dialog modal-lg" style="min-width: 50%" role="document">
+    <div class="modal-dialog modal-lg" style="min-width: 60%" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{% trans 'Specific serial number' %}</h5>
@@ -173,12 +173,53 @@
                                     <th>{% trans "Serial number" %}</th>
                                     <th>{% trans "Cost" %}</th>
                                     <th>{% trans "Status" %}</th>
+                                    <th>{% trans "Source" %}</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-copy-config-product" tabindex="-1" role="dialog" aria-labelledby="modal-copy-config-product" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="min-width: 50%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Copy configuration from product' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label" for="copy-config-from-product">{% trans "Select product" %}</label>
+                            <select class="form-select select2" id="copy-config-from-product" data-url="{% url 'ProductListAPI' %}"></select>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <table id="datatable-config-content" class="table nowrap w-100" data-url="{% url 'ProductDetailAPI' '0' %}">
+                            <thead>
+                                <tr class="bg-secondary-light-5">
+                                    <th></th>
+                                    <th>{% trans "Copy" %}</th>
+                                    <th>{% trans "Content" %}</th>
+                                    <th>{% trans "Value" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" id="btn-accept-product-config" class="btn btn-primary">{% trans 'Copy' %}</button>
             </div>
         </div>
     </div>

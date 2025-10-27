@@ -201,8 +201,6 @@ class ServiceOrderDetailDeliveryAPI(APIView):
         auth_require=True,
         is_api=True,
     )
-    def post(self, request, *args, **kwargs):
-        resp = ServerAPI(
-            user=request.user, url=ApiURL.DELIVERY_SERVICEORDER_CALL
-        ).post(data=request.data)
+    def post(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_SERVICEORDER_CALL.fill_key(pk=pk)).post(data=request.data)
         return resp.auto_return()

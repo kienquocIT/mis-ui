@@ -6,9 +6,6 @@ $(document).ready(function () {
     UsualLoadPageFunction.LoadCustomerTable({
         element: pageElements.$table_select_customer,
     })
-    UsualLoadPageFunction.LoadEmployeeTable({
-        element: pageElements.$table_select_employee,
-    })
     UsualLoadPageFunction.LoadDate({
         element: pageElements.$posting_date
     })
@@ -18,6 +15,10 @@ $(document).ready(function () {
     COFPageFunction.LoadAdvanceToSupplierTable()
     COFPageFunction.LoadAPInvoiceTable()
     COFPageFunction.LoadPaymentOnAccountTable()
+    COFPageFunction.LoadSaleOrder()
+    COFPageFunction.LoadLeaseOrder()
+    COFPageFunction.LoadServiceOrder()
+    COFPageFunction.LoadOrderCostTable()
     WFRTControl.setWFInitialData('cashoutflow')
 
     // SUBMIT FORM CREATE

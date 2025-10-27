@@ -64,7 +64,7 @@ const ServiceOrder = (function($) {
 
         /**
          * @type {{ [work_order_id: string]: [{ service_id: string, contribution_percent: number, delivered_quantity: number}] }}
-         * @description Biến lưu dữ liệu đóng góp của 1 hàng work order (còn gồm nhiều field khác)
+         * @description Biến lưu dữ liệu đóng góp của 1 hàng work (còn gồm nhiều field khác)
          */
         productContributionData: {},
 
@@ -481,7 +481,7 @@ const ServiceOrder = (function($) {
                 {
                     className: 'w-25',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-soft-secondary mr-1">${row?.['code'] || ''}</span><span>${row?.['title'] || ''}</span>`
+                        return `<span class="badge badge-sm badge-soft-secondary">${row?.['code'] || ''}</span><br><span>${row?.['title'] || ''}</span>`
                     }
                 },
                 {
@@ -503,7 +503,7 @@ const ServiceOrder = (function($) {
                 {
                     className: 'w-5',
                     render: (data, type, row) => {
-                        return `<input type="number" class="form-control service-quantity" value="${row?.['quantity'] || 1}" min="0">`
+                        return `<input type="number" class="form-control service-quantity" value="${row?.['quantity'] || 0}" min="0">`
                     }
                 },
                 {
@@ -633,7 +633,7 @@ const ServiceOrder = (function($) {
                     className: 'w-15',
                     render: (data, type, row) => {
                         if (row?.['product_id']){
-                            return `<span class="badge badge-sm badge-soft-secondary mr-1">${row?.['code'] || ''}</span><span class="" title="${row?.['title'] || ''}">${row?.['title'] || ''}</span>`
+                            return `<span class="badge badge-sm badge-soft-secondary">${row?.['code'] || ''}</span><br><span class="" title="${row?.['title'] || ''}">${row?.['title'] || ''}</span>`
                         } else {
                             return `<textarea class="form-control work-order-description" rows="2">${row?.['title'] || ''}</textarea>`
                         }
@@ -674,7 +674,7 @@ const ServiceOrder = (function($) {
                 {
                     className: 'w-5',
                     render: (data, type, row) => {
-                        return `<input type="number" class="form-control work-order-quantity" value="${row?.['quantity'] || 1}" min="0">`
+                        return `<input type="number" class="form-control work-order-quantity" value="${row?.['quantity'] || 0}" min="0">`
                     }
                 },
                 {
@@ -812,7 +812,7 @@ const ServiceOrder = (function($) {
                 {
                     className: 'w-5',
                     render: (data, type, row) => {
-                        return `<input type="number" class="form-control work-order-quantity" value="${row?.['quantity'] || 1}" min="0">`
+                        return `<input type="number" class="form-control work-order-quantity" value="${row?.['quantity'] || 0}" min="0">`
                     }
                 },
                 {
@@ -1175,8 +1175,8 @@ const ServiceOrder = (function($) {
                             badgeClass = 'badge-soft-warning'  // Under-allocated
                         }
 
-                        const displayNumber = remaining + contribution
-
+                        // const displayNumber = remaining + contribution
+                        const displayNumber = remaining
                         return `<span class="badge ${badgeClass} remaining-contribution"  data-remaining-contribution="${remaining}">
                                     ${displayNumber.toFixed(2)}%
                                 </span>`
@@ -1195,11 +1195,12 @@ const ServiceOrder = (function($) {
                 },
                 {
                     width: '10%',
-                    title: $.fn.gettext('No of Service Delivered'),
+                    title: $.fn.gettext('No. of Service Delivered'),
                     render: (data, type, row) => {
                         const quantity = row.delivered_quantity || 0
                         const balance = row.balance_quantity || 0
-                        return `<div class="input-group">
+                        return `<div class="d-flex justify-content-between align-items-center">
+                                <div class="input-group w-60">
                                     <input
                                         ${!isDelivery ? 'disabled' : ''}
                                         type="number"
@@ -1208,36 +1209,44 @@ const ServiceOrder = (function($) {
                                         min="0"
                                         max="${balance}"
                                     />
-                                </div>`
+                                </div>
+                                <button 
+                                    type="button" 
+                                    class="btn btn-icon btn-rounded btn-soft-secondary btn-sm btn-delivery-log"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delivery logs"
+                                >
+                                    <span class="icon"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                                </button>
+                                </div>`;
                     }
                 },
-                {
-                    width: '10%',
-                    title: $.fn.gettext('Package'),
-                    render: (data, type, row) => {
-                        const hasPackage = row.has_package || false
-                        const rowId = row.id
-                        return `<div class="d-flex align-items-center">
-                                    <div class="form-check me-2">
-                                        <input 
-                                            ${!isDelivery ? 'disabled' : ''}
-                                            type="checkbox"  
-                                            class="form-check-input contribution-package"
-                                            ${hasPackage ? 'checked' : ''}
-                                        />
-                                    </div>
-                                    <button 
-                                        ${!isDelivery ? 'disabled' : ''}
-                                        type="button" 
-                                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-open-contribution-package"
-                                        data-contribution-id="${rowId}"
-                                        title="Open package"
-                                    >
-                                        <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
-                                    </button>
-                                </div>`
-                    }
-                },
+                // {
+                //     width: '10%',
+                //     title: $.fn.gettext('Package'),
+                //     render: (data, type, row) => {
+                //         const hasPackage = row.has_package || false
+                //         const rowId = row.id
+                //         return `<div class="d-flex align-items-center">
+                //                     <div class="form-check me-2">
+                //                         <input
+                //                             ${!isDelivery ? 'disabled' : ''}
+                //                             type="checkbox"
+                //                             class="form-check-input contribution-package"
+                //                             ${hasPackage ? 'checked' : ''}
+                //                         />
+                //                     </div>
+                //                     <button
+                //                         ${!isDelivery ? 'disabled' : ''}
+                //                         type="button"
+                //                         class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-open-contribution-package"
+                //                         data-contribution-id="${rowId}"
+                //                         title="Open package"
+                //                     >
+                //                         <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
+                //                     </button>
+                //                 </div>`
+                //     }
+                // },
                 {
                     width: '15%',
                     title: $.fn.gettext('Unit Cost'),
@@ -2082,8 +2091,8 @@ const ServiceOrder = (function($) {
                             rowData.quantity = newQuantity
 
                             // Calculate new total (quantity * price)
-                            const attrTotalCost = rowData.attributes_total_cost
-                            const duration = rowData.duration
+                            const attrTotalCost = rowData?.['attributes_total_cost'] || 0
+                            const duration = rowData.duration || 1
                             const price = parseFloat(rowData.price) || 0;
                             const taxRate = parseFloat(rowData.tax_data?.rate || 0) / 100
                             const subtotal = newQuantity * price * duration + attrTotalCost
@@ -2493,7 +2502,7 @@ const ServiceOrder = (function($) {
     }
 
 
-    // ============ work order =============
+    // ============ work =============
 
     function handleChangeWorkOrderDetail(){
         function validateDates(rowData) {
@@ -2655,7 +2664,7 @@ const ServiceOrder = (function($) {
         pageElement.workOrder.$btnAddNonItem.on('click', function(e) {
             const uniqueStr = Math.random().toString(36).slice(2)
 
-            // Add empty row to work order for manual entry
+            // Add empty row to work for manual entry
             const emptyWorkOrderItem = {
                 id: uniqueStr,
                 code: '',
@@ -2832,6 +2841,19 @@ const ServiceOrder = (function($) {
             }
             pageVariable.productContributionData[rowId] = JSON.parse(JSON.stringify(productContributionData))
             initProductContributionModalDataTable(productContributionData)
+
+            // set work description
+            let desEle = $row[0].querySelector('.work-order-description');
+            let desModalEle = pageElement.modalData.$modalProductContribution[0].querySelector('.work-order-description');
+            if (desEle && desModalEle) {
+                $(desModalEle).text($(desEle).val());
+
+                let row = this.closest('tr');
+                let rowIndex = pageElement.workOrder.$table.DataTable().row(row).index();
+                let $rowCost = pageElement.workOrder.$table.DataTable().row(rowIndex);
+                let dataRow = $rowCost.data();
+                $(desModalEle).attr('data-work-id', dataRow?.['order']);
+            }
         })
     }
 
@@ -3248,7 +3270,7 @@ const ServiceOrder = (function($) {
             // Get current contribution value from input
             const currentContribution = parseFloat($row.find('.pc-contribution').val()) || 0
 
-            // Old contribution from work order
+            // Old contribution from work
             const oldContribution = rowData.contribution_percent || 0
 
             // Get the badge
@@ -3272,6 +3294,52 @@ const ServiceOrder = (function($) {
                 })
                 .text(`${displayNumber.toFixed(2)}%`)
         })
+    }
+
+    function handleClickOpenDeliveryLogs() {
+        pageElement.modalData.$tableProductContribution.on('click', '.btn-delivery-log', function () {
+            WindowControl.showLoading();
+            let row = this.closest('tr');
+            let desModalEle = pageElement.modalData.$modalProductContribution[0].querySelector('.work-order-description');
+            let $modalEle = $('#deliveryLogModal');
+            let $formEle = $('#form-update-service-order');
+            if (row && desModalEle && $modalEle.length > 0 && $formEle.length > 0) {
+                let bodyEle = $modalEle[0].querySelector('.modal-body');
+                let rowIndex = pageElement.modalData.$tableProductContribution.DataTable().row(row).index();
+                let $row = pageElement.modalData.$tableProductContribution.DataTable().row(rowIndex);
+                let dataRow = $row.data();
+                if (bodyEle) {
+                    $.fn.callAjax2({
+                            'url': pageElement.$urlScript.attr('data-delivery-log-url'),
+                            'method': 'GET',
+                            'data': {'service_order__document_root_id': $formEle.attr('data-idx')},
+                            'isDropdown': true,
+                        }
+                    ).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                if (data.hasOwnProperty('delivery_work_log') && Array.isArray(data.delivery_work_log)) {
+                                    let dataLogs = data.delivery_work_log;
+                                    let workID = $(desModalEle).attr('data-work-id');
+                                    $(bodyEle).empty();
+                                    for (let dataLog of dataLogs) {
+                                        for (let dataProd of dataLog?.['products']) {
+                                            if (dataProd?.['product_data']?.['code'] === dataRow?.['code'] && String(dataProd?.['work_data']?.['order']) === workID) {
+                                                $(bodyEle).append(`<div><b>Phiên bản: </b><span>${dataLog?.['service_order_data']?.['code']}</span></div>
+                                                                    <div><b>SL giao hàng: </b><span>${dataProd?.['delivery_quantity']}</span></div>`);
+                                            }
+                                        }
+                                    }
+                                    $modalEle.modal('show');
+                                    WindowControl.hideLoading();
+                                }
+                            }
+                        }
+                    )
+                }
+            }
+        });
     }
 
     // ============ payment =============
@@ -4023,7 +4091,7 @@ const ServiceOrder = (function($) {
                     }
                     else {
                         // tổng đã cấn trừ, trừ cho giá trị cấn trừ cũ
-                        totalReconciledValue = totalReconciledValue - reconcileValue
+                        totalReconciledValue = totalReconciledValue - currReconcileValue
                     }
                 }
                 else {
@@ -4199,7 +4267,7 @@ const ServiceOrder = (function($) {
                 }
             }
 
-            // Collect the work order data
+            // Collect the work data
             const workOrder = {
                 id: rowData.id,
                 order: rowIdx + 1,
@@ -4214,7 +4282,7 @@ const ServiceOrder = (function($) {
                 unit_cost: unitCost,
                 total_value: currentTotal,
                 work_status: rowData.status || 0,
-                // Include work order cost breakdown if exists
+                // Include work cost breakdown if exists
                 cost_data: costData,
                 // Include product contribution data if exists and is delivery point
                 product_contribution: contributionData,
@@ -4296,7 +4364,7 @@ const ServiceOrder = (function($) {
     }
 
     function validateDates() {
-        // Validate work order dates
+        // Validate work dates
         const workOrderTable = ServiceOrder.pageElement.workOrder.$table.DataTable()
         let hasError = false
 
@@ -4307,7 +4375,7 @@ const ServiceOrder = (function($) {
 
             if (!startDate) {
                 $.fn.notifyB({
-                    description: $.fn.gettext(`Work Order row ${rowIdx + 1}: Start Date is required`)
+                    description: $.fn.gettext(`Work row ${rowIdx + 1}: Start Date is required`)
                 }, 'failure')
                 hasError = true
                 return false // Break the loop
@@ -4315,7 +4383,7 @@ const ServiceOrder = (function($) {
 
             if (!endDate) {
                 $.fn.notifyB({
-                    description: $.fn.gettext(`Work Order row ${rowIdx + 1}: End Date is required`)
+                    description: $.fn.gettext(`Work row ${rowIdx + 1}: End Date is required`)
                 }, 'failure')
                 hasError = true
                 return false
@@ -4511,7 +4579,7 @@ const ServiceOrder = (function($) {
         }
 
         // 3. Clean up productContributionData
-        // Remove this service from all work order contributions
+        // Remove this service from all work contributions
         Object.keys(pageVariable.productContributionData).forEach(workOrderId => {
             const contributions = pageVariable.productContributionData[workOrderId];
             if (contributions) {
@@ -4617,7 +4685,7 @@ const ServiceOrder = (function($) {
             const rowData = table.row($row).data();
             const workOrderId = rowData.id;
 
-            const confirmTitle = $.fn.gettext('Delete Work Order?')
+            const confirmTitle = $.fn.gettext('Delete Work?')
             Swal.fire({
                 html: `
                     <div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>
@@ -4646,7 +4714,7 @@ const ServiceOrder = (function($) {
     }
 
     function cleanupWorkOrderRelatedData(workOrderId) {
-        // 1. Clean up work order cost data
+        // 1. Clean up work cost data
         if (pageVariable.workOrderCostData[workOrderId]) {
             delete pageVariable.workOrderCostData[workOrderId];
         }
@@ -4662,7 +4730,7 @@ const ServiceOrder = (function($) {
                     const totalContributionData = pageVariable.serviceDetailTotalContributionData[serviceId];
 
                     if (totalContributionData) {
-                        // Subtract this work order's contribution from totals
+                        // Subtract this work's contribution from totals
                         totalContributionData.total_contribution_percent -= contribution.contribution_percent;
                         totalContributionData.delivery_balance_value += contribution.delivered_quantity;
 
@@ -4670,20 +4738,15 @@ const ServiceOrder = (function($) {
                         if (totalContributionData.total_contribution_percent < 0) {
                             totalContributionData.total_contribution_percent = 0;
                         }
-
-                        // If no contributions left, could optionally delete the entry
-                        if (totalContributionData.total_contribution_percent === 0) {
-                            totalContributionData.delivery_balance_value = null; // Reset to use quantity
-                        }
                     }
                 }
             });
 
-            // Delete the work order's contribution data
+            // Delete the work's contribution data
             delete pageVariable.productContributionData[workOrderId];
         }
 
-        // 3. Update any other work orders' contribution data to reflect the new balances
+        // 3. Update any other work's contribution data to reflect the new balances
         Object.keys(pageVariable.productContributionData).forEach(otherWorkOrderId => {
             if (otherWorkOrderId !== workOrderId) {
                 const otherContributions = pageVariable.productContributionData[otherWorkOrderId];
@@ -5011,6 +5074,7 @@ const ServiceOrder = (function($) {
         handleTogglePackageChildren,
         handleSelectContainer,
         handleChangeProductContributionPercentage,
+        handleClickOpenDeliveryLogs,
 
         handleChangePaymentDate,
         handleAddPaymentRow,

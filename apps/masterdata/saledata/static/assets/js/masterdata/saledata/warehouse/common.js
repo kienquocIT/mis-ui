@@ -1,50 +1,8 @@
-let [cityEle, districtEle, wardEle] = [$('#warehouseCity'), $('#warehouseDistrict'), $('#warehouseWard')];
-
 class WarehouseLoadPage {
-    static loadCities(cityData) {
-        cityEle.initSelect2({
-            data: (cityData ? cityData : null),
-            keyResp: 'cities',
-        }).on('change', function () {
-            let dataParams = JSON.stringify({'city_id': $(this).val()});
-            districtEle.empty();
-            wardEle.empty();
-            districtEle.attr('data-params', dataParams).val("");
-            wardEle.attr('data-params', '{}').val("");
-        });
-    }
-
-    static loadDistrict(disData) {
-        districtEle.initSelect2({
-            data: (disData ? disData : null),
-            keyResp: 'districts',
-        }).on('change', function () {
-            let dataParams = JSON.stringify({'district_id': $(this).val()});
-            wardEle.empty();
-            wardEle.attr('data-params', dataParams).val("");
-        });
-    }
-
-    static loadWard(wardData) {
-        wardEle.initSelect2({
-            data: (wardData ? wardData : null),
-            keyResp: 'wards',
-        });
-    }
-
     static getFormData() {
         let shelf_data_new = []
-        let shelf_data_update = []
         $('.shelf').each(function () {
             if ($(this).attr('data-shelf-id')) {
-                // shelf_data_update.push({
-                //     'shelf_id': $(this).attr('data-shelf-id'),
-                //     'shelf_title': $(this).find('.shelf-title').text(),
-                //     'shelf_position': $(this).attr('style'),
-                //     'shelf_order': $(this).attr('data-shelf-order'),
-                //     'shelf_row': $(this).attr('data-shelf-row'),
-                //     'shelf_column': $(this).attr('data-shelf-col')
-                // })
                 shelf_data_new.push({
                     'shelf_title': $(this).find('.shelf-title').text(),
                     'shelf_position': $(this).attr('style'),
@@ -67,22 +25,13 @@ class WarehouseLoadPage {
         return {
             'title': $('#inpTitle').val(),
             'remarks': $('#inpRemarks').val(),
-            'address': $('#addressDetail').val(),
-            'city': $('.location_province').val(),
-            'district': $('.location_province').val(),
-            'ward': $('.location_province').val(),
-            // 'city': cityEle.val(),
-            // 'district': districtEle.val(),
-            // 'ward': wardEle.val(),
+            'is_active': $('#inputActive').is(':checked'),
             'detail_address': $('#warehouseAddress').val(),
             'address_data': $('#warehouseAddress').attr('data-work-address') ? JSON.parse($('#warehouseAddress').attr('data-work-address')) : {},
-            // 'full_address': $('#warehouseAddress').val(),
-            'is_active': $('#inputActive').is(':checked'),
             'is_dropship': $('#checkDropShip').prop('checked'),
             'is_bin_location': $('#checkBinLocation').prop('checked'),
             'is_virtual': $('#checkVirtual').prop('checked'),
             'shelf_data_new': shelf_data_new,
-            'shelf_data_update': shelf_data_update
         }
     }
 
@@ -95,6 +44,7 @@ class WarehouseLoadPage {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 let detail = data?.['warehouse_detail'];
+                console.log(detail)
                 $x.fn.renderCodeBreadcrumb(detail);
                 $('#inpTitle').val(detail.title);
                 $('#inpRemarks').val(detail.remarks);
@@ -105,16 +55,11 @@ class WarehouseLoadPage {
                 $('#checkVirtual').prop('checked', detail?.['is_virtual']);
 
                 $('#inputActive').prop('checked', detail.is_active);
-                $('#warehouseAddress').val(detail.full_address);
-                $('#addressDetail').val(detail.address);
-                // this.loadCities(detail.city);
-                // this.loadDistrict(detail.district);
-                // this.loadWard(detail.ward);
                 // for location
                 UsualLoadPageFunction.LoadLocationCountry($('#modalWarehouseAddress .location_country'))
                 UsualLoadPageFunction.LoadLocationProvince($('#modalWarehouseAddress .location_province'))
                 UsualLoadPageFunction.LoadLocationWard($('#modalWarehouseAddress .location_ward'))
-                $('#warehouseAddress').attr(
+                $('#warehouseAddress').val(detail.detail_address).attr(
                     'data-work-address',
                     JSON.stringify(detail?.address_data || {})
                 )
@@ -156,16 +101,6 @@ class WarehouseLoadPage {
 
 function eventPage() {
     $('#saveWarehouseAddress').on('click', function () {
-        // let city = SelectDDControl.get_data_from_idx(cityEle, cityEle.val());
-        // let district = SelectDDControl.get_data_from_idx(districtEle, districtEle.val());
-        // let ward = SelectDDControl.get_data_from_idx(wardEle, wardEle.val());
-        // let detail = $('#addressDetail').val();
-        //
-        // let fullAddress = `${detail}, ${ward.title}, ${district.title}, ${city.title}`;
-        //
-        // $('#warehouseAddress').val(fullAddress);
-        //
-        // $('#modalWarehouseAddress').modal('hide');
         let country_id = $('#modalWarehouseAddress .location_country').val()
         let province_id = $('#modalWarehouseAddress .location_province').val()
         let ward_id = $('#modalWarehouseAddress .location_ward').val()

@@ -19,7 +19,7 @@ msgstr ""
 
 #
 msgid "Sale order indicator"
-msgstr "Chỉ tiêu Đơn bán hàng"
+msgstr "Chỉ tiêu Đơn hàng bán"
 
 #
 msgid "Lease order indicator"

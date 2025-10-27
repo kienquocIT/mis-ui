@@ -11,6 +11,7 @@ class ProductModificationPageElements {
         // modal
         this.$btn_open_modal_product = $('#btn-open-modal-product')
         this.$btn_modal_picking_product = $('#btn-modal-picking-product')
+
         this.$select_product_modified_modal = $('#select-product-modified-modal')
         this.$table_select_product_modified = $('#table-select-product-modified')
         this.$table_select_product_modified_before = $('#table-select-product-modified-before')
@@ -21,6 +22,7 @@ class ProductModificationPageElements {
         this.$table_select_serial = $('#table-select-serial')
         this.$accept_picking_product_btn = $('#accept-picking-product-btn')
         // space
+        this.$representative_product_modified = $('#representative-product-modified')
         this.$table_current_product_modified = $('#table-current-product-modified')
         this.$btn_add_row_init_component = $('#btn-add-row-init-component')
         this.$confirm_initial_components_modal = $('#confirm-initial-components-modal')
@@ -59,7 +61,7 @@ const pageVariables = new ProductModificationPageVariables()
  * Các hàm load page và hàm hỗ trợ
  */
 class ProductModificationPageFunction {
-    static LoadTableCurrentProductModified(data_list=[], warehouse_code='', serial_number='', lot_number='', new_description='', option='create') {
+    static LoadTableCurrentProductModified(data_list=[], warehouse_code='', warehouse_title='', serial_number='', lot_number='', new_description='', option='create') {
         pageElements.$table_current_product_modified.DataTable().clear().destroy()
         pageElements.$table_current_product_modified.DataTableDefault({
             dom: 't',
@@ -83,7 +85,13 @@ class ProductModificationPageFunction {
                                     <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code'] || ''}</span><br>
                                 </div>
                                 <span>${row?.['title'] || ''}</span>
-                                <div class="collapse d1_${row?.['id']}"><span class="small">${new_description || row?.['description'] || ''}</span></div>`
+                                <div class="collapse d1_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
+                    }
+                },
+                {
+                    className: 'w-25',
+                    render: (data, type, row) => {
+                        return `<span class="prd-modified-text-detail"></span>`;
                     }
                 },
                 {
@@ -92,23 +100,17 @@ class ProductModificationPageFunction {
                         return `<textarea ${option === 'detail' ? 'disabled readonly' : ''} class="form-control new-des">${new_description || row?.['description'] || ''}</textarea>`
                     }
                 },
-                {
-                    className: 'text-right w-25',
-                    render: (data, type, row) => {
-                        return `<span class="prd-modified-text-detail"></span>`;
-                    }
-                },
             ],
             initComplete: function () {
                 if (warehouse_code) {
                     if (lot_number) {
-                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-soft-blue">${warehouse_code}</span><br><span>Lot: ${lot_number}</span>`)
+                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-soft-blue mr-1">${warehouse_code}</span><span>${warehouse_title}</span><br><span>Lot: ${lot_number}</span>`)
                     }
                     else if (serial_number) {
-                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-soft-blue">${warehouse_code}</span><br><span>Serial: ${serial_number}</span>`)
+                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-soft-blue mr-1">${warehouse_code}</span><span>${warehouse_title}</span><br><span>Serial: ${serial_number}</span>`)
                     }
                     else {
-                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-soft-blue">${warehouse_code}</span>`)
+                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-soft-blue mr-1">${warehouse_code}</span><span>${warehouse_title}</span>`)
                     }
                 }
             }
@@ -124,7 +126,7 @@ class ProductModificationPageFunction {
             scrollCollapse: true,
             reloadCurrency: true,
             ajax: {
-                url: pageElements.$table_select_product_modified.attr('data-product-modified-list-url'),
+                url: pageElements.$table_select_product_modified.attr('data-product-modified-list-url') + '?is_representative_product=0',
                 type: 'GET',
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
@@ -146,13 +148,15 @@ class ProductModificationPageFunction {
                     render: (data, type, row) => {
                         return `<div class="form-check">
                             <input type="radio"
-                            name="product-modified-select"
-                            class="form-check-input product-modified-select"
-                            data-product-id="${row?.['id']}"
-                            data-product-code="${row?.['code']}"
-                            data-product-title="${row?.['title']}"
-                            data-product-description="${row?.['description'] || ''}"
-                            data-product-general-traceability-method="${row?.['general_traceability_method']}"
+                                name="product-modified-select"
+                                class="form-check-input product-modified-select"
+                                data-product-id="${row?.['id']}"
+                                data-product-code="${row?.['code']}"
+                                data-product-title="${row?.['title']}"
+                                data-product-description="${row?.['description'] || ''}"
+                                data-product-general-traceability-method="${row?.['general_traceability_method']}"
+                                data-product-valuation-method="${row?.['valuation_method']}"
+                                data-representative-product="${JSON.stringify(row?.['representative_product'] || {}).replace(/"/g, "&quot;")}"
                             >
                         </div>`;
                     }
@@ -251,6 +255,11 @@ class ProductModificationPageFunction {
             ]
         });
     }
+    static LoadRepresentativeProduct(data) {
+        pageElements.$representative_product_modified.html(`
+            <span class="badge badge-sm badge-primary mr-1">${data?.['code'] || ''}</span><span>${data?.['title'] || ''}</span>
+        `)
+    }
     static LoadTableWarehouseByProduct(url='') {
         const table_columns_cfg = [
             {
@@ -275,13 +284,13 @@ class ProductModificationPageFunction {
             {
                 className: 'w-60',
                 render: (data, type, row) => {
-                    return `<span class="badge badge-sm badge-soft-blue warehouse-code">${row?.['warehouse_data']?.['code'] || ''}</span> <span>${row?.['warehouse_data']?.['title'] || ''}</span>`
+                    return `<span class="badge badge-sm badge-soft-blue warehouse-code">${row?.['warehouse_data']?.['code'] || ''}</span> <span class="warehouse-title">${row?.['warehouse_data']?.['title'] || ''}</span>`
                 }
             },
             {
                 className: 'text-right w-30',
                 render: (data, type, row) => {
-                    return `<span>${row?.['stock_amount']}</span></span>`
+                    return `<span>${row?.['stock_amount']}</span>`
                 }
             }
         ]
@@ -586,31 +595,28 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-20',
                     render: (data, type, row) => {
-                        if (row?.['row_type'] === 'new_added') {
-                            let picking_component_btn = `
-                                <button type="button"
-                                        class="btn btn-outline-secondary btn-modal-picking-component"
-                                        data-product-id="${row?.['component_id'] || ''}"
-                                        data-product-code="${row?.['component_code'] || ''}"
-                                        data-product-title="${row?.['component_name'] || ''}"
-                                        data-product-description="${row?.['component_des'] || ''}"
-                                        data-product-general-traceability-method="${row?.['general_traceability_method']}"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#picking-component-modal">
-                                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                                </button>
-                            `;
-                            return `
-                                <div class="input-group">
-                                    <input class="form-control component-quantity" disabled readonly type="number" min="1" value="${row?.['component_quantity'] || 0}">
-                                    ${picking_component_btn}
-                                </div>
-                                <script class="data-component-none-detail">${JSON.stringify(row?.['component_product_none_detail'] || [])}</script>
-                                <script class="data-component-lot-detail">${JSON.stringify(row?.['component_product_lot_detail'] || [])}</script>
-                                <script class="data-component-sn-detail">${JSON.stringify(row?.['component_product_sn_detail'] || [])}</script>
-                            `;
-                        }
-                        return `<input class="form-control component-quantity" disabled readonly type="number" min="1" value="${row?.['component_quantity'] || 0}">`;
+                        let picking_component_btn = `
+                            <button type="button"
+                                    class="btn btn-outline-secondary btn-modal-picking-component"
+                                    data-product-id="${row?.['component_id'] || ''}"
+                                    data-product-code="${row?.['component_code'] || ''}"
+                                    data-product-title="${row?.['component_name'] || ''}"
+                                    data-product-description="${row?.['component_des'] || ''}"
+                                    data-product-general-traceability-method="${row?.['general_traceability_method']}"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#picking-component-modal">
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </button>
+                        `;
+                        return `
+                            <div class="input-group">
+                                <input class="form-control component-quantity" disabled readonly type="number" min="1" value="${row?.['component_quantity'] || 0}">
+                                ${picking_component_btn}
+                            </div>
+                            <script class="data-component-none-detail">${JSON.stringify(row?.['component_product_none_detail'] || [])}</script>
+                            <script class="data-component-lot-detail">${JSON.stringify(row?.['component_product_lot_detail'] || [])}</script>
+                            <script class="data-component-sn-detail">${JSON.stringify(row?.['component_product_sn_detail'] || [])}</script>
+                        `;
                     }
                 },
                 {
@@ -730,7 +736,7 @@ class ProductModificationPageFunction {
             scrollCollapse: true,
             reloadCurrency: true,
             ajax: {
-                url: pageElements.$table_select_component_inserted.attr('data-component-inserted-list-url'),
+                url: pageElements.$table_select_component_inserted.attr('data-component-inserted-list-url') + '?is_representative_product=0',
                 type: 'GET',
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
@@ -1193,7 +1199,7 @@ class ProductModificationPageFunction {
             scrollCollapse: true,
             reloadCurrency: true,
             ajax: {
-                url: pageElements.$table_select_product_mapping.attr('data-product-mapping-list-url'),
+                url: pageElements.$table_select_product_mapping.attr('data-product-mapping-list-url') + '?is_representative_product=0',
                 type: 'GET',
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
@@ -1289,11 +1295,12 @@ class ProductModificationHandler {
         let frm = new SetupFormSubmit($(frmEle))
 
         frm.dataForm['title'] = pageElements.$title.val()
-        frm.dataForm['product_modified'] = pageVariables.current_product_modified?.['id']
-        frm.dataForm['new_description'] = pageVariables.current_product_modified?.['description']
-        frm.dataForm['warehouse_id'] = pageVariables.current_product_modified?.['warehouse_id']
-        frm.dataForm['prd_wh_lot'] = pageVariables.current_product_modified?.['lot_id']
-        frm.dataForm['prd_wh_serial'] = pageVariables.current_product_modified?.['serial_id']
+        frm.dataForm['product_modified'] = pageVariables.current_product_modified?.['id'] || null
+        frm.dataForm['new_description'] = pageVariables.current_product_modified?.['new_description']
+        frm.dataForm['warehouse_id'] = pageVariables.current_product_modified?.['warehouse_id'] || null
+        frm.dataForm['prd_wh_lot'] = pageVariables.current_product_modified?.['lot_id'] || null
+        frm.dataForm['prd_wh_serial'] = pageVariables.current_product_modified?.['serial_id'] || null
+        frm.dataForm['representative_product_modified'] = pageVariables.current_product_modified?.['representative_product']?.['id'] || null
 
         let current_component_data = []
         pageElements.$table_product_current_component.find('tbody tr').each(function (index, ele) {
@@ -1340,27 +1347,37 @@ class ProductModificationHandler {
                 if (data) {
                     data = data['product_modification_detail'];
 
-                    // console.log(data)
+                    console.log(data)
 
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
 
+                    pageElements.$btn_open_modal_product.removeClass('btn-secondary').addClass('btn-success')
+                    pageElements.$btn_modal_picking_product.removeClass('btn-secondary').addClass('btn-success')
+
                     pageElements.$title.val(data?.['title'])
                     pageElements.$created_date.val(data?.['date_created'] ? DateTimeControl.formatDateType("YYYY-MM-DD hh:mm:ss", "DD/MM/YYYY", data?.['date_created']) : '')
-                    pageVariables.current_product_modified = data?.['prd_wh_data']?.['product']
-                    pageVariables.current_product_modified['warehouse_id'] = data?.['prd_wh_data']?.['warehouse']?.['id']
                     pageVariables.current_product_modified['id'] = data?.['prd_wh_data']?.['product']?.['id']
+                    pageVariables.current_product_modified = data?.['prd_wh_data']?.['product']
+                    pageVariables.current_product_modified['representative_product'] = data?.['representative_product_modified']
+                    pageVariables.current_product_modified['warehouse_id'] = data?.['prd_wh_data']?.['warehouse']?.['id']
                     pageVariables.current_product_modified['serial_id'] = data?.['prd_wh_serial_data']?.['id']
                     pageVariables.current_product_modified['lot_id'] = data?.['prd_wh_lot_data']?.['id']
                     pageVariables.current_product_modified['new_description'] = data?.['new_description']
                     ProductModificationPageFunction.LoadTableCurrentProductModified(
                         [pageVariables.current_product_modified],
                         data?.['prd_wh_data']?.['warehouse']?.['code'],
+                        data?.['prd_wh_data']?.['warehouse']?.['title'],
                         data?.['prd_wh_serial_data']?.['serial_number'],
                         data?.['prd_wh_lot_data']?.['lot_number'],
                         data?.['new_description'],
                         option
                     )
+
+                    if (Object.keys(data?.['representative_product_modified'] || {}).length > 0) {
+                        $('#specific-notify-space').prop('hidden', false)
+                        ProductModificationPageFunction.LoadRepresentativeProduct(data?.['representative_product_modified'])
+                    }
 
                     pageElements.$insert_component_btn.prop('hidden', false)
 
@@ -1408,13 +1425,16 @@ class ProductModificationEventHandler {
                     'title': $checkedEle.attr('data-product-title'),
                     'description': $checkedEle.attr('data-product-description'),
                     'general_traceability_method': $checkedEle.attr('data-product-general-traceability-method'),
+                    'valuation_method': $checkedEle.attr('data-product-valuation-method'),
+                    'representative_product': JSON.parse($checkedEle.attr('data-representative-product') || '{}')
                 }
                 // nếu có modified number
                 const warehouse_data = $checkedEle.attr('data-warehouse-data') ? JSON.parse($checkedEle.attr('data-warehouse-data')) : {}
                 let warehouse_code = warehouse_data?.['code'] || ''
+                let warehouse_title = warehouse_data?.['title'] || ''
                 let serial_number = $checkedEle.attr('data-serial-number') || ''
                 let lot_number = $checkedEle.attr('data-lot-number') || ''
-                ProductModificationPageFunction.LoadTableCurrentProductModified([pageVariables.current_product_modified], warehouse_code, serial_number, lot_number)
+                ProductModificationPageFunction.LoadTableCurrentProductModified([pageVariables.current_product_modified], warehouse_code, warehouse_title, serial_number, lot_number)
                 pageElements.$select_product_modified_modal.modal('hide')
 
                 if ($checkedEle.attr('data-modified-number')) {
@@ -1487,13 +1507,21 @@ class ProductModificationEventHandler {
 
                     pageElements.$insert_component_btn.prop('hidden', false)
                 }
+
+                if (Object.keys(pageVariables.current_product_modified?.['representative_product'] || {}).length > 0) {
+                    $('#specific-notify-space').prop('hidden', false)
+                    ProductModificationPageFunction.LoadRepresentativeProduct(pageVariables.current_product_modified?.['representative_product'] || {})
+                }
+
+                pageElements.$btn_open_modal_product.removeClass('btn-secondary').addClass('btn-success')
+                pageElements.$btn_modal_picking_product.removeClass('btn-success').addClass('btn-secondary')
             }
             else {
                 $.fn.notifyB({description: 'Nothing is selected'}, 'failure')
             }
         })
         $(document).on('change', '.new-des', function () {
-            pageVariables.current_product_modified['description'] = $(this).val()
+            pageVariables.current_product_modified['new_description'] = $(this).val()
         })
         pageElements.$btn_modal_picking_product.on('click', function () {
             pageElements.$table_select_lot.closest('.table-serial-space').prop('hidden', true)
@@ -1523,6 +1551,7 @@ class ProductModificationEventHandler {
         pageElements.$accept_picking_product_btn.on('click', function () {
             let flag = true
             let warehouse_code = ''
+            let warehouse_title = ''
             let serial_number = ''
             let lot_number = ''
             const $checked_prd_wh = pageElements.$table_select_warehouse.find('.product-warehouse-select:checked').first()
@@ -1534,6 +1563,7 @@ class ProductModificationEventHandler {
             else {
                 pageVariables.current_product_modified['warehouse_id'] = $checked_prd_wh.attr('data-warehouse-id')
                 warehouse_code = $checked_prd_wh.closest('tr').find('.warehouse-code').text()
+                warehouse_title = $checked_prd_wh.closest('tr').find('.warehouse-title').text()
             }
 
             if (Number(pageVariables.current_product_modified?.['general_traceability_method']) === 0) {
@@ -1593,21 +1623,23 @@ class ProductModificationEventHandler {
 
                 if (Number(pageVariables.current_product_modified?.['general_traceability_method']) === 0) {
                     pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`
-                        <span class="badge badge-sm badge-soft-blue">${warehouse_code}</span>
+                        <span class="badge badge-sm badge-soft-blue mr-1">${warehouse_code}</span><span>${warehouse_title}</span>
                     `)
                 }
                 if (Number(pageVariables.current_product_modified?.['general_traceability_method']) === 1) {
                     pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`
-                        <span class="badge badge-sm badge-soft-blue">${warehouse_code}</span><br><span>Lot: ${lot_number}</span>
+                        <span class="badge badge-sm badge-soft-blue mr-1">${warehouse_code}</span><span>${warehouse_title}</span><br><span>Lot: ${lot_number}</span>
                     `)
                 }
                 if (Number(pageVariables.current_product_modified?.['general_traceability_method']) === 2) {
                     pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`
-                        <span class="badge badge-sm badge-soft-blue">${warehouse_code}</span><br><span>Serial: ${serial_number}</span>
+                        <span class="badge badge-sm badge-soft-blue mr-1">${warehouse_code}</span><span>${warehouse_title}</span><br><span>Serial: ${serial_number}</span>
                     `)
                 }
                 pageElements.$picking_product_modal.modal('hide')
                 pageElements.$insert_component_btn.prop('hidden', false)
+
+                pageElements.$btn_modal_picking_product.removeClass('btn-secondary').addClass('btn-success')
             }
         })
         $(document).on('click', '.delete-init-component-btn', function () {
@@ -1657,20 +1689,6 @@ class ProductModificationEventHandler {
             pageElements.$confirm_initial_components_modal.modal('hide')
         })
         // space
-        $('.layout-btn').on('click', function () {
-            if ($(this).closest('.main-space').attr('class') === 'main-space col-12 border-right mt-3') {
-                $('.main-space').attr('class', 'main-space col-12 col-md-6 col-lg-6 border-right mt-3')
-            }
-            else if ($(this).closest('.main-space').attr('class') === 'main-space col-12 mt-3') {
-                $('.main-space').attr('class', 'main-space col-12 col-md-6 col-lg-6 mt-3')
-            }
-            else if ($(this).closest('.main-space').attr('class') === 'main-space col-12 col-md-6 col-lg-6 border-right mt-3') {
-                $('.main-space').attr('class', 'main-space col-12 border-right mt-3')
-            }
-            else if ($(this).closest('.main-space').attr('class') === 'main-space col-12 col-md-6 col-lg-6 mt-3') {
-                $('.main-space').attr('class', 'main-space col-12 mt-3')
-            }
-        })
         pageElements.$insert_component_btn.on('click', function () {
             ProductModificationPageFunction.LoadTableComponentInserted()
         })

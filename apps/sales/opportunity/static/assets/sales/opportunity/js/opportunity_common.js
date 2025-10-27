@@ -982,7 +982,6 @@ class OpportunityPageFunction {
                     let create_ap_sc = $('#create-advance-payment-shortcut')
                     create_ap_sc.removeClass('disabled');
                     let param_url = UsualLoadPageFunction.Push_param_to_url(create_ap_sc.attr('data-url'), {
-                        'create_open': true,
                         'opp_id': results_perm_app[2]?.['id'],
                         'opp_code': results_perm_app[2]?.['code'],
                         'opp_title': results_perm_app[2]?.['title'],
@@ -995,7 +994,6 @@ class OpportunityPageFunction {
                     let create_payment_sc = $('#create-payment-shortcut')
                     create_payment_sc.removeClass('disabled');
                     let param_url = UsualLoadPageFunction.Push_param_to_url(create_payment_sc.attr('data-url'), {
-                        'create_open': true,
                         'opp_id': results_perm_app[3]?.['id'],
                         'opp_code': results_perm_app[3]?.['code'],
                         'opp_title': results_perm_app[3]?.['title'],
@@ -1008,7 +1006,6 @@ class OpportunityPageFunction {
                     let create_bom_sc = $('#create-project-bom-shortcut')
                     create_bom_sc.removeClass('disabled');
                     let param_url = UsualLoadPageFunction.Push_param_to_url(create_bom_sc.attr('data-url'), {
-                        'create_open': true,
                         'opp_id': results_perm_app[4]?.['id'],
                         'opp_code': results_perm_app[4]?.['code'],
                         'opp_title': results_perm_app[4]?.['title'],
@@ -1057,6 +1054,9 @@ class OpportunityPageFunction {
                         'opp_title': results_perm_app[8]?.['title'],
                         'inherit_id': results_perm_app[8]?.['sale_person']?.['id'],
                         'inherit_title': results_perm_app[8]?.['sale_person']?.['full_name'],
+                        'customer_id': results_perm_app[8]?.['customer']?.['id'],
+                        'customer_code': results_perm_app[8]?.['customer']?.['code'],
+                        'customer_title': results_perm_app[8]?.['customer']?.['name'],
                         'customer': encodeURIComponent(JSON.stringify(results_perm_app[8]?.['customer'])),
                     })
                     create_svo_sc.attr('href', param_url)
@@ -1111,7 +1111,6 @@ class OpportunityPageFunction {
                                         }
                                     }
                                     const paramData = $.param({
-                                        'create_open': true,
                                         'opp_id': pageVariables.opp_detail_data?.['id'],
                                         'opp_title': pageVariables.opp_detail_data?.['title'],
                                         'opp_code': pageVariables.opp_detail_data?.['code'],
@@ -1639,7 +1638,6 @@ class OpportunityHandler {
         // 4. LOAD GENERAL INFO
         // a. Load action button url
         let common_opp_params = {
-            'create_open': true,
             'opp_id': pageVariables.opp_detail_data?.['id'],
             'opp_title': pageVariables.opp_detail_data?.['title'],
             'opp_code': pageVariables.opp_detail_data?.['code'],

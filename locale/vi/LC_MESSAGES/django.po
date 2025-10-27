@@ -3169,7 +3169,7 @@ msgstr "Báo giá"
 
 #
 msgid "Sale Order"
-msgstr "Đơn bán hàng"
+msgstr "Đơn hàng bán"
 
 #
 msgid "Master data config"
@@ -3188,7 +3188,7 @@ msgid "Pricing"
 msgstr "Giá"
 
 #
-msgid "WareHouse List"
+msgid "Warehouse list"
 msgstr "Danh sách kho"
 
 #
@@ -3333,7 +3333,7 @@ msgstr "Không có thông tin ngân hàng"
 
 #
 msgid "Sale Order/Quotation is not selected!"
-msgstr "Đơn bán hàng/Báo giá chưa được chọn"
+msgstr "Đơn hàng bán/Báo giá chưa được chọn"
 
 #
 msgid "Quotation config update successfully"
@@ -4816,10 +4816,6 @@ msgid "My Website"
 msgstr "Website của tôi"
 
 #
-msgid "Working calendar update successfully"
-msgstr "Lịch làm việc cập nhật thành công"
-
-#
 msgid "Working year create successfully"
 msgstr "Năm làm việc tạo thành công"
 
@@ -4854,10 +4850,6 @@ msgstr "Tăng"
 #
 msgid "Decrease"
 msgstr "Giảm"
-
-#
-msgid "Working calendar"
-msgstr "Lịch làm việc"
 
 #
 msgid "Holidays"
@@ -5410,7 +5402,7 @@ msgstr "Vui lòng chọn đơn bán hàng"
 
 #
 msgid "Select Sale order"
-msgstr "Chọn Đơn bán hàng"
+msgstr "Chọn Đơn hàng bán"
 
 #
 msgid "Load last storage local"
@@ -6466,7 +6458,7 @@ msgstr "Số ngày công tác không chính xác"
 
 #
 msgid "Sale order"
-msgstr "Đơn bán hàng"
+msgstr "Đơn hàng bán"
 
 #
 msgid "Copy successfully"
@@ -7117,8 +7109,12 @@ msgid "Back"
 msgstr "Quay lại"
 
 #
-msgid "Save and apply workflow"
-msgstr "Lưu và áp dụng quy trình"
+msgid "Save document"
+msgstr "Lưu phiếu"
+
+#
+msgid "Run the approval workflow"
+msgstr "Chạy quy trình phê duyệt"
 
 #
 msgid "Save changes"
@@ -7189,8 +7185,16 @@ msgid "Goods issue type"
 msgstr "Loại xuất hàng"
 
 #
-msgid "Select inventory adjustment"
-msgstr "Chọn phiếu kiểm kê kho"
+msgid "Select Inventory adjustment"
+msgstr "Chọn Phiếu kiểm kê kho"
+
+#
+msgid "Select Production order/Work order"
+msgstr "Chọn Lệnh sản xuất/Yêu cầu sản xuất"
+
+#
+msgid "Select Product modification"
+msgstr "Chọn Phiếu Ráp-Rã thiết bị"
 
 #
 msgid "Input data later"
@@ -8546,7 +8550,7 @@ msgstr "Đơn hàng hiện tại"
 
 #
 msgid "Other order"
-msgstr "Đơn bán hàng khác"
+msgstr "Đơn hàng bán khác"
 
 #
 msgid "Labor summary"
@@ -8790,11 +8794,11 @@ msgstr "Hãy cân nhắc cẩn thận khi xóa số dư đã khởi tạo. Hệ 
 
 #
 msgid "The Opening Balance should be created before these activities take place to avoid reporting errors."
-msgstr "SDDK nên được tạo trước khi các hoạt động nhập - xuất kho diễn ra để tránh sai sót số liệu báo cáo."
+msgstr "SDĐK nên được tạo trước khi các hoạt động nhập - xuất kho diễn ra để tránh sai sót số liệu báo cáo."
 
 #
 msgid "The initial balance will be inserted from the month of starting to use the software."
-msgstr "SDDK sẽ được nhập bắt đầu từ tháng sử dụng phần mềm đã cài đặt."
+msgstr "SDĐK sẽ được nhập bắt đầu từ tháng sử dụng phần mềm đã cài đặt."
 
 #
 msgid "Pretax value"
@@ -8825,10 +8829,6 @@ msgid "Receipted"
 msgstr "Đã nhập"
 
 #
-msgid "For Serial and Lot products, click on the Detail button in the last column to view/select detail."
-msgstr "Đối với sản phẩm Serial và LOT, click vào nút Chi tiết ở cột cuối để xem/chọn chi tiết."
-
-#
 msgid "Logs"
 msgstr "Nhật ký"
 
@@ -8846,7 +8846,7 @@ msgstr "Kế hoạch"
 
 #
 msgid "Work order"
-msgstr "Yêu cầu công việc"
+msgstr "Yêu cầu sản xuất"
 
 #
 msgid "Goods receipt for"
@@ -8981,8 +8981,8 @@ msgid "Close/ open production order"
 msgstr "Đóng/ mở lệnh sản xuất"
 
 #
-msgid "Close/ open work order"
-msgstr "Đóng/ mở yêu cầu công vệc"
+msgid "Close/ open order"
+msgstr "Đóng/ mở công vệc"
 
 #
 msgid "Status close/ open"
@@ -8991,10 +8991,6 @@ msgstr "Trạng thái đóng/ mở"
 #
 msgid "Open"
 msgstr "Mở"
-
-#
-msgid "Issue this time"
-msgstr "Xuất lần này"
 
 #
 msgid "WH Code"
@@ -9621,10 +9617,6 @@ msgid "Warehouse Address"
 msgstr "Địa chỉ kho"
 
 #
-msgid "Edit Warehouse Address"
-msgstr "Sửa địa chỉ kho"
-
-#
 msgid "Click to edit"
 msgstr "Nhấn để chỉnh sửa"
 
@@ -10033,7 +10025,7 @@ msgstr "Giá trị còn lại"
 
 #
 msgid "Customers pay in advance (not according to Sale order)"
-msgstr "Khách hàng tạm ứng trước (không theo Đơn bán hàng)"
+msgstr "Khách hàng tạm ứng trước (không theo Đơn hàng bán)"
 
 #
 msgid "Payment method"
@@ -10061,7 +10053,7 @@ msgstr "Chủ tài khoản"
 
 #
 msgid "Customers pay in advance (according to Sale order)"
-msgstr "Khách hàng tạm ứng trước (theo Đơn bán hàng)"
+msgstr "Khách hàng tạm ứng trước (theo Đơn hàng bán)"
 
 #
 msgid "Add Company Bank Account"
@@ -10361,7 +10353,7 @@ msgstr "Biểu đồ Hoạt động bán hàng"
 
 #
 msgid "Purchase request for Sale order"
-msgstr "Yêu cầu mua hàng cho Đơn bán hàng"
+msgstr "Yêu cầu mua hàng cho Đơn hàng bán"
 
 #
 msgid "Purchase request for Distribution plan"
@@ -10373,11 +10365,11 @@ msgstr "Chọn Kế hoạch nhập hàng"
 
 #
 msgid "Only create Purchase request your own Sale order"
-msgstr "Chỉ được làm Yêu cầu mua hàng cho Đơn bán hàng của bản thân"
+msgstr "Chỉ được làm Yêu cầu mua hàng cho Đơn hàng bán của bản thân"
 
 #
 msgid "Configured to create Purchase request for all Sale order"
-msgstr "Được cấu hình để làm Yêu cầu mua hàng cho mọi Đơn bán hàng"
+msgstr "Được cấu hình để làm Yêu cầu mua hàng cho mọi Đơn hàng bán"
 
 #
 msgid "Assets"
@@ -12244,11 +12236,7 @@ msgid "Profit plan"
 msgstr "Kế hoạch LN"
 
 #
-msgid "UoM"
-msgstr "ĐV"
-
-#
-msgid "Duration UoM"
+msgid "Duration UOM"
 msgstr "ĐV thời gian"
 
 #
@@ -12304,9 +12292,41 @@ msgid "List task assigned"
 msgstr "Danh sách nhiệm vụ được giao"
 
 #
+msgid "Not available yet"
+msgstr "Chưa hỗ trợ"
+
+#
+msgid "Select budget"
+msgstr "Chọn ngân sách"
+
+#
+msgid "Total budget"
+msgstr "Tổng ngân sách"
+
+#
+msgid "Specific value"
+msgstr "Giá đích danh"
+
+#
 msgid "Specific serial number"
 msgstr "Serial đích danh"
 
 #
-msgid "Not available yet"
-msgstr "Chưa hỗ trợ"
+msgid "or import here"
+msgstr "hoặc nhập tại đây"
+
+#
+msgid "Service quotation"
+msgstr "Báo giá dịch vụ"
+
+#
+msgid "Sale quotation"
+msgstr "Báo giá bán"
+
+#
+msgid "Payroll"
+msgstr "Tính lương"
+
+#
+msgid "Copy configuration from product"
+msgstr "Sao chép cấu hình từ sản phẩm"

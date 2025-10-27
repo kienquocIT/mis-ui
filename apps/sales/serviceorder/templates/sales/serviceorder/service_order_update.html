@@ -25,12 +25,7 @@
             </span>
         </button>
     </a>
-    <button class="btn btn-outline-primary" type="submit" form="form-update-service-order">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon"><i class="fa-regular fa-floppy-disk"></i></span>
-        </span>
-    </button>
+    {% include 'extends/systems/page_actions.html' with is_save=True save_frm='form-update-service-order' %}
 {% endblock %}
 
 {% block pageSubAction %}
@@ -44,6 +39,8 @@
           data-url="{% url 'ServiceOrderDetailAPI' data.pk %}"
           data-url-redirect="{% url 'ServiceOrderList' %}"
           data-url-cr="{% url 'ServiceOrderListAPI' %}"
+          data-baseline="true"
+          data-idx="{{ data.pk }}"
     >
         {% csrf_token %}
         {% include 'sales/serviceorder/common/common_data.html' %}
@@ -69,6 +66,7 @@
             data-expense-item-url='{% url 'ExpenseItemListAPI' %}'
             data-uom-url="{% url "UnitOfMeasureListAPI" %}"
             data-tax-url='{% url 'TaxListAPI' %}'
+            data-delivery-log-url='{% url 'DeliveryWorkLogListAPI' %}'
     ></script>
 {% endblock %}
 {% block jsFooter %}
@@ -78,6 +76,7 @@
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static "assets/js/extends/product_attribute/product_attribute.js" %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/service_order_common.js' %}"></script>
+    <script src="{% static 'assets/sales/serviceorder/js/service_page_handler.js' %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/service_order_update.js' %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/tab_shipment.js' %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/tab_expense.js' %}"></script>

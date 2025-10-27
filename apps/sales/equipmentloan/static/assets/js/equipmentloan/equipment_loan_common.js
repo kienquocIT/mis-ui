@@ -114,18 +114,15 @@ class EquipmentLoanPageFunction {
                     }
                 },
                 {
-                    className: 'w-75',
+                    className: 'w-30',
                     render: (data, type, row) => {
-                        return `<div class="input-group">
-                                    <span class="input-group-text" style="width: 100px">
-                                        <a class="icon-collapse" data-bs-toggle="collapse" href=".${row?.['loan_product_data']?.['id']}" role="button" aria-expanded="false" aria-controls=".${row?.['loan_product_data']?.['id']}">
-                                            <i class="bi bi-info-circle"></i>
-                                        </a>
-                                        <span class="badge badge-sm badge-light ml-1 loan-product-code">${row?.['loan_product_data']?.['code'] || ''}</span>
-                                    </span>
-                                    <select ${option === 'detail' ? 'disabled readonly' : ''} class="form-select select2 loan-product"></select>
-                                </div>
-                                <div class="collapse ${row?.['loan_product_data']?.['id']}"><span class="small">${row?.['loan_product_data']?.['description'] || ''}</span></div>`
+                        return `<select ${option === 'detail' ? 'disabled readonly' : ''} class="form-select select2 loan-product"></select>`
+                    }
+                },
+                {
+                    className: 'w-45',
+                    render: (data, type, row) => {
+                        return `<span class="loan-product-des">${row?.['loan_product_data']?.['description'] || ''}</span>`
                     }
                 },
                 {
@@ -151,14 +148,13 @@ class EquipmentLoanPageFunction {
                         return `<button type='button'
                                         ${option === 'detail' ? 'disabled' : ''}
                                         class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs btn-del-line-detail">
-                                    <span class="icon"><i class="fas fa-trash"></i></span>
+                                    <span class="icon"><i class="bi bi-trash"></i></span>
                                 </button>`;
                     }
                 },
             ],
             initComplete: function () {
                 pageElements.$table_line_detail.find('tbody tr').each(function (index, ele) {
-                    $(ele).find('.loan-product-code').text(data_list[index]?.['loan_product_data']?.['code'])
                     UsualLoadPageFunction.LoadProduct({
                         element: $(ele).find('.loan-product'),
                         data: data_list[index]?.['loan_product_data'],
@@ -315,13 +311,13 @@ class EquipmentLoanPageFunction {
             {
                 className: 'w-20',
                 render: (data, type, row) => {
-                    return `<span>${moment(row?.['expire_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                    return `<span>${row?.['expire_date'] ? moment(row?.['expire_date'], 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}</span>`
                 }
             },
             {
                 className: 'w-20',
                 render: (data, type, row) => {
-                    return `<span>${moment(row?.['manufacture_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                    return `<span>${row?.['manufacture_date'] ? moment(row?.['manufacture_date'], 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}</span>`
                 }
             },
             {
@@ -412,25 +408,25 @@ class EquipmentLoanPageFunction {
             {
                 className: 'w-15',
                 render: (data, type, row) => {
-                    return `<span>${moment(row?.['expire_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                    return `<span>${row?.['expire_date'] ? moment(row?.['expire_date'], 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}</span>`
                 }
             },
             {
                 className: 'w-15',
                 render: (data, type, row) => {
-                    return `<span>${moment(row?.['manufacture_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                    return `<span>${row?.['manufacture_date'] ? moment(row?.['manufacture_date'], 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}</span>`
                 }
             },
             {
                 className: 'w-15',
                 render: (data, type, row) => {
-                    return `<span>${moment(row?.['warranty_start'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                    return `<span>${row?.['warranty_start'] ? moment(row?.['warranty_start'], 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}</span>`
                 }
             },
             {
                 className: 'w-15',
                 render: (data, type, row) => {
-                    return `<span>${moment(row?.['warranty_end'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                    return `<span>${row?.['warranty_end'] ? moment(row?.['warranty_end'], 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}</span>`
                 }
             },
         ]
@@ -500,7 +496,7 @@ class EquipmentLoanHandler {
                     'loan_product_none_detail': $(ele).find('.data-none-detail').text() ? JSON.parse($(ele).find('.data-none-detail').text()) : [],
                     'loan_product_lot_detail': $(ele).find('.data-lot-detail').text() ? JSON.parse($(ele).find('.data-lot-detail').text()) : [],
                     'loan_product_sn_detail': $(ele).find('.data-sn-detail').text() ? JSON.parse($(ele).find('.data-sn-detail').text()) : [],
-                    'loan_quantity': $(ele).find('.loan-quantity').val(),
+                    'loan_quantity': $(ele).find('.loan-quantity').val() || 0,
                 })
             }
         })
@@ -593,11 +589,7 @@ class EquipmentLoanEventHandler {
         $(document).on("change", '.loan-product', function () {
             let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
             if (Object.keys(selected).length !== 0) {
-                $(this).closest('tr').find('.loan-product-code').text(selected?.['code'])
-                $(this).closest('tr').find('.icon-collapse').attr('href', `.d1_${selected?.['id']}`)
-                $(this).closest('tr').find('.icon-collapse').attr('aria-controls', `.d1_${selected?.['id']}`)
-                $(this).closest('tr').find('.collapse').addClass(`d1_${selected?.['id']}`)
-                $(this).closest('tr').find('.collapse span').text(selected?.['description'])
+                $(this).closest('tr').find('.loan-product-des').text(selected?.['description'])
                 $(this).closest('tr').find('.btn-pick-detail').prop('disabled', false)
             }
         })
@@ -606,7 +598,7 @@ class EquipmentLoanEventHandler {
             if (Object.keys(selected).length !== 0) {
                 pageVariables.current_loan_row = $(this).closest('tr')
                 pageVariables.current_product = selected
-                let url = `${pageElements.$script_url.attr('data-url-warehouse-list-by-product')}&product_id=${selected?.['id']}`
+                let url = `${pageElements.$script_url.attr('data-url-warehouse-list-by-product')}?product_id=${selected?.['id']}`
                 EquipmentLoanPageFunction.LoadTableWarehouseByProduct(url, selected?.['general_traceability_method'])
 
                 if (Number(selected?.['general_traceability_method']) === 0) {

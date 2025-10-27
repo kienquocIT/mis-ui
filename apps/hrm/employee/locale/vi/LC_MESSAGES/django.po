@@ -253,3 +253,35 @@ msgstr "Đồng ý"
 #
 msgid "User ID"
 msgstr "Mã ID Người dùng"
+
+#
+msgid "Citizen ID Number"
+msgstr "Mã số Căn cước công dân"
+
+#
+msgid "Dependent's Full Name"
+msgstr "Tên người phụ thuộc"
+
+#
+msgid "Contract Information"
+msgstr "Thông tin hợp đồng"
+
+#
+msgid "Salary Information"
+msgstr "Thông tin lương"
+
+#
+msgid "Salary level"
+msgstr "Bậc lương"
+
+#
+msgid "Salary coefficient"
+msgstr "Hệ số lương"
+
+#
+msgid "Salary for insurance"
+msgstr "Lương đóng bảo hiểm"
+
+#
+msgid "Employee salary"
+msgstr "Lương cơ bản"

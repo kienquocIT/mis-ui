@@ -84,7 +84,7 @@ class MenusCompanySystem:
         ]
     )
     WORKING_CALENDAR = MenuCommon(
-        name='Working calendar', code='menu_working_calendar', view_name='WorkingCalendarConfig',
+        name='Holidays', code='menu_holidays', view_name='WorkingCalendarConfig',
         icon='<i class="fas far fa-calendar"></i>',
     )
     WORKFLOW_PROCESS = MenuCommon(
@@ -149,6 +149,10 @@ class MenusCoreConfigurations:
             MenuCommon(
                 name='Bank', code='id_menu_master_data_bank', view_name='BankMasterDataList',
                 icon='<i class="fas fa-solid fa-building-columns"></i>',
+            ),
+            MenuCommon(
+                name='Payroll config', code='menu_payroll_config', view_name='PayrollConfigDetail',
+                icon='<i class="fas fa-receipt"></i>',
             ),
         ]
     )
@@ -366,8 +370,18 @@ class MenusCRM:
         icon='<i class="fas far fa-lightbulb"></i>',
     )
     QUOTATION = MenuCommon(
-        name='Quotation', code='menu_quotation_list', view_name='QuotationList',
-        icon='<i class="fas fa-file-invoice-dollar"></i>',
+        name='Quotation', code='', view_name='#',
+        icon='<i class="fas fa-file-signature"></i>',
+        child=[
+            MenuCommon(
+                name='Sale quotation', code='menu_quotation_list', view_name='QuotationList',
+                icon='<i class="fas fa-file-invoice-dollar"></i>',
+            ),
+            MenuCommon(
+                name='Service quotation', code='menu_service_quotation_list', view_name='ServiceQuotationList',
+                icon='<i class="fas fa-file-invoice-dollar"></i>',
+            )
+        ],
     )
     BIDDING = MenuCommon(
         name='Bidding', code='menu_bidding_list', view_name='BiddingList',
@@ -390,10 +404,6 @@ class MenusCRM:
                 icon='<i class="fas fa-concierge-bell"></i>',
             )
         ],
-    )
-    SERVICE_QUOTATION = MenuCommon(
-        name='Service quotation', code='menu_service_quotation_list', view_name='ServiceQuotationList',
-        icon='<i class="fas fa-file-invoice-dollar"></i>',
     )
     # GROUP_ORDER = MenuCommon(
     #     name='Group order', code='menu_group_order_list', view_name='GroupOrderList',
@@ -566,14 +576,14 @@ class MenusInventory:
         name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
 
+    WAREHOUSE_LIST = MenuCommon(
+        name='Warehouse list', code='menu_warehouse_list', view_name='WareHouseList',
+        icon='<i class="fas fa-warehouse"></i>',
+    )
     INVENTORY = MenuCommon(
         name='Inventory activities', code='menu_inventory_activities', view_name='',
         icon='<i class="fas fa-store"></i>',
         child=[
-            MenuCommon(
-                name='Warehouses', code='menu_warehouse_list', view_name='WareHouseList',
-                icon='<i class="fas fa-warehouse"></i>',
-            ),
             MenuCommon(
                 name='Picking', code='menu_order_picking_list', view_name='OrderPickingList',
                 icon='<i class="fas fa-box"></i>',
@@ -1067,7 +1077,6 @@ class SpaceItem:
                 MenusCRM.OPPORTUNITY,
                 MenusCRM.QUOTATION,
                 MenusCRM.ORDERS,
-                MenusCRM.SERVICE_QUOTATION,
                 MenusCRM.CALENDAR,
                 MenusCRM.CONSULTING,
                 MenusCRM.BIDDING,
@@ -1149,7 +1158,8 @@ class SpaceItem:
             'inventory',
             icon='<i class="fas fas fa-warehouse"></i>',
             menus=[
-                MenusPurchase.HOME,
+                MenusInventory.HOME,
+                MenusInventory.WAREHOUSE_LIST,
                 MenusInventory.INVENTORY,
             ],
         ),

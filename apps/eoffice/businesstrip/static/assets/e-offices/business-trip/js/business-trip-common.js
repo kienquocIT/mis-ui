@@ -29,6 +29,7 @@ class expenseItemTable {
                 ordering: false,
                 paginate: false,
                 info: false,
+                searching: false,
                 autoWidth: true,
                 scrollX: true,
                 columns: [
@@ -36,7 +37,7 @@ class expenseItemTable {
                         data: 'title',
                         width: '16.66%',
                         render: (row, type, data, meta) => {
-                            return `<input type="text" class="form-control" data-zone="expense_items" name="title_${meta.row}" value="${row}">`
+                            return `<input type="text" class="form-control" required data-zone="expense_items" name="title_${meta.row}" value="${row}">`
                         }
                     },
                     {
@@ -121,7 +122,7 @@ class expenseItemTable {
                         }
                     }
                 ],
-                rowCallback: (row) => {
+                rowCallback: (row, data, index) => {
                     // init select expense
                     $('select[name*="expense_item_"]', row).initSelect2()
 
@@ -131,6 +132,8 @@ class expenseItemTable {
                     })
                     // init select tax
                     $('[name*="tax_"]', row).initSelect2();
+
+                    data.order = index
                 },
                 drawCallback: function (){
                     // load price
@@ -164,8 +167,8 @@ class expenseItemTable {
                     $('[name="taxes"]').val(calcTax)
                     $('[name="total_amount"]').val(allSubtotal)
                     $(api.column(6).footer()).html(`<p class="pl-3 font-3"><span class="mask-money" data-init-money="${totalPrice}"></span></p>`);
-                    $('tr:eq(1) th:eq(2)', api.table().footer()).html(`<p class="pl-3 font-3"><span class="mask-money" data-init-money="${calcTax}"></span></p>`);
-                    $('tr:eq(2) th:eq(2)', api.table().footer()).html(`<p class="pl-3 font-3"><span class="mask-money" data-init-money="${allSubtotal}"></span></p>`);
+                    $('tr:eq(1) th.footer-taxes', api.table().footer()).html(`<p class="pl-3 font-3"><span class="mask-money" data-init-money="${calcTax}"></span></p>`);
+                    $('tr:eq(2) th.footer-all_totals', api.table().footer()).html(`<p class="pl-3 font-3"><span class="mask-money" data-init-money="${allSubtotal}"></span></p>`);
                     $.fn.initMaskMoney2()
                 },
             })
@@ -328,14 +331,41 @@ $(document).ready(function () {
         let method = frm.dataMethod.toLowerCase()
 
         formData.expense_items = expenseItemTable.get_data()
-        formData.expense_items.map(function (item, idx) {
-            item.order = idx
+
+        for (let item of formData.expense_items){
             if (!item?.['expense_item'] && item?.['expense_item_data'])
                 item['expense_item'] = item['expense_item_data']['id']
             if (item?.['tax_data']?.['id']) item['tax'] = item['tax_data']['id']
             item['price'] = parseInt(item['price'])
-            return item
-        })
+            // validate data list
+            function validateExpenseItem(item) {
+                const validations = [
+                    {check: () => !item.title, message: 'Expense title is empty'},
+                    {
+                        check: () => !item.expense_item || Object.keys(item.expense_item).length === 0,
+                        message: 'Expense item is empty'
+                    },
+                    {check: () => !item.uom_txt, message: 'Expense UOM is empty'},
+                    {check: () => !item.quantity, message: 'Expense quantity is empty'},
+                    {check: () => !item.price, message: 'Expense price is empty'}
+                ];
+
+                for (const validation of validations) {
+                    if (validation.check()) {
+                        $.fn.notifyB({
+                            description: $.fn.gettext(validation.message)
+                        }, 'failure');
+                        return false; // Stop immediately
+                    }
+                }
+
+                return true;
+            }
+            // Sử dụng
+            if (!validateExpenseItem(item)) return;
+        }
+
+        if (formData.expense_items.length <=0) return false
 
         const OriginalList = $.map($empTripElm.select2('data'), (item)=> {return item.data.id});
         const dateRange = formData.date_f.split(' ');
@@ -367,7 +397,6 @@ $(document).ready(function () {
         formData.pretax_amount = parseInt(formData.pretax_amount)
         formData.taxes = parseInt(formData.taxes)
         formData.total_amount = parseInt(formData.total_amount)
-        formData.employee_inherit_id = $('input[name="employee_inherit_id"]').val()
         if (method === 'post') formData.system_status = 1
 
         // WindowControl.showLoading();

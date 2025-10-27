@@ -79,7 +79,7 @@ class WorkingCalendarConfig(View):
         login_require=True,
         auth_require=True,
         template='eoffice/leave/working_calendar.html',
-        menu_active='menu_working_calendar',
+        menu_active='menu_holidays',
         breadcrumb='WORKING_CALENDAR_CONFIG',
     )
     def get(self, request, *args, **kwargs):

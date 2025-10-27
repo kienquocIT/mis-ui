@@ -477,9 +477,9 @@ class AdvancePaymentPageFunction {
                             }
                         }
                         let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
-                        if (sum_available < 0) {
-                            sum_available = 0;
-                        }
+                        // if (sum_available < 0) {
+                        //     sum_available = 0;
+                        // }
 
                         data_table_planned.push({
                             'type': 'planned',
@@ -692,9 +692,9 @@ class AdvancePaymentPageFunction {
                             }
                         }
                         let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
-                        if (sum_available < 0) {
-                            sum_available = 0;
-                        }
+                        // if (sum_available < 0) {
+                        //     sum_available = 0;
+                        // }
 
                         data_table_planned.push({
                             'type': 'planned',
@@ -1041,9 +1041,9 @@ class AdvancePaymentPageFunction {
                             }
                         }
                         let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
-                        if (sum_available < 0) {
-                            sum_available = 0;
-                        }
+                        // if (sum_available < 0) {
+                        //     sum_available = 0;
+                        // }
                         data_table_planned.push({
                             'type': 'planned',
                             'expense_item': data_expense[i]?.['expense_item'],
@@ -1254,9 +1254,9 @@ class AdvancePaymentPageFunction {
                             }
                         }
                         let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
-                        if (sum_available < 0) {
-                            sum_available = 0;
-                        }
+                        // if (sum_available < 0) {
+                        //     sum_available = 0;
+                        // }
                         data_table_planned.push({
                             'type': 'planned',
                             'expense_item': data_expense[i]?.['expense_item'],
@@ -1414,62 +1414,62 @@ class AdvancePaymentPageFunction {
  */
 class AdvancePaymentHandler {
     static LoadPageActionWithParams(opp_id) {
-        let dataParam = {'id': opp_id}
-        let opportunity_ajax = $.fn.callAjax2({
-            url: pageElements.$script_url.attr('data-url-opp-list'),
-            data: dataParam,
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_list')) {
-                    return data?.['opportunity_list'].length > 0 ? data?.['opportunity_list'][0] : null;
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            }
-        )
-
-        Promise.all([opportunity_ajax]).then(
-            (results) => {
-                let opportunity_data = results[0];
-                if (opportunity_data) {
-                    $('#opportunity_id').trigger('change')
-                    pageElements.$quotation_mapped_select.empty()
-                    pageElements.$sale_order_mapped_select.empty()
-                    if (opportunity_data?.['id']) {
-                        if (opportunity_data?.['is_close']) {
-                            $.fn.notifyB({description: `Opportunity ${opportunity_data?.['code']} has been closed. Can not select.`}, 'failure');
-                            pageElements.$opportunity_id.empty()
-                            pageVariables.ap_for = null
-                        } else {
-                            pageElements.$sale_order_mapped_select.prop('disabled', true)
-                            pageElements.$quotation_mapped_select.prop('disabled', true)
-                            let quo_mapped = opportunity_data?.['quotation'];
-                            let so_mapped = opportunity_data?.['sale_order'];
-                            AdvancePaymentPageFunction.LoadQuotation(quo_mapped)
-                            AdvancePaymentPageFunction.LoadSaleOrder(so_mapped);
-                            if (so_mapped?.['id']) {
-                                AdvancePaymentPageFunction.LoadPlanSaleOrder(opportunity_data?.['id'], so_mapped?.['id'])
-                            }
-                            else if (quo_mapped?.['id']) {
-                                AdvancePaymentPageFunction.LoadPlanQuotation(opportunity_data?.['id'], quo_mapped?.['id'])
-                            }
-                            else {
-                                AdvancePaymentPageFunction.LoadPlanOppOnly(opportunity_data?.['id'])
-                            }
-                            pageVariables.ap_for = 'opportunity'
-                        }
-                    } else {
-                        pageElements.$quotation_mapped_select.prop('disabled', false)
-                        pageElements.$sale_order_mapped_select.prop('disabled', false)
-                        pageVariables.ap_for = null
-                        AdvancePaymentPageFunction.DrawTablePlan()
+        if (opp_id) {
+            let dataParam = {'id': opp_id}
+            let opportunity_ajax = $.fn.callAjax2({
+                url: pageElements.$script_url.attr('data-url-opp-list'),
+                data: dataParam,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_list')) {
+                        return data?.['opportunity_list'].length > 0 ? data?.['opportunity_list'][0] : null;
                     }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
                 }
-            })
+            )
+
+            Promise.all([opportunity_ajax]).then(
+                (results) => {
+                    let opportunity_data = results[0];
+                    if (opportunity_data) {
+                        $('#opportunity_id').trigger('change')
+                        pageElements.$quotation_mapped_select.empty()
+                        pageElements.$sale_order_mapped_select.empty()
+                        if (opportunity_data?.['id']) {
+                            if (opportunity_data?.['is_close']) {
+                                $.fn.notifyB({description: `Opportunity ${opportunity_data?.['code']} has been closed. Can not select.`}, 'failure');
+                                pageElements.$opportunity_id.empty()
+                                pageVariables.ap_for = null
+                            } else {
+                                pageElements.$sale_order_mapped_select.prop('disabled', true)
+                                pageElements.$quotation_mapped_select.prop('disabled', true)
+                                let quo_mapped = opportunity_data?.['quotation'];
+                                let so_mapped = opportunity_data?.['sale_order'];
+                                AdvancePaymentPageFunction.LoadQuotation(quo_mapped)
+                                AdvancePaymentPageFunction.LoadSaleOrder(so_mapped);
+                                if (so_mapped?.['id']) {
+                                    AdvancePaymentPageFunction.LoadPlanSaleOrder(opportunity_data?.['id'], so_mapped?.['id'])
+                                } else if (quo_mapped?.['id']) {
+                                    AdvancePaymentPageFunction.LoadPlanQuotation(opportunity_data?.['id'], quo_mapped?.['id'])
+                                } else {
+                                    AdvancePaymentPageFunction.LoadPlanOppOnly(opportunity_data?.['id'])
+                                }
+                                pageVariables.ap_for = 'opportunity'
+                            }
+                        } else {
+                            pageElements.$quotation_mapped_select.prop('disabled', false)
+                            pageElements.$sale_order_mapped_select.prop('disabled', false)
+                            pageVariables.ap_for = null
+                            AdvancePaymentPageFunction.DrawTablePlan()
+                        }
+                    }
+                })
+        }
     }
     static CombinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));

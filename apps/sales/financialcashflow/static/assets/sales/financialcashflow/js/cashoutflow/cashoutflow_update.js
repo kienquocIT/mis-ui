@@ -6,9 +6,6 @@ $(document).ready(function () {
     UsualLoadPageFunction.LoadCustomerTable({
         element: pageElements.$table_select_customer,
     })
-    UsualLoadPageFunction.LoadEmployeeTable({
-        element: pageElements.$table_select_employee,
-    })
     UsualLoadPageFunction.LoadDate({
         element: pageElements.$posting_date
     })
@@ -18,6 +15,7 @@ $(document).ready(function () {
     COFPageFunction.LoadAdvanceToSupplierTable()
     COFPageFunction.LoadAPInvoiceTable()
     COFPageFunction.LoadPaymentOnAccountTable()
+    COFPageFunction.LoadOrderCostTable()
     WFRTControl.setWFInitialData('cashoutflow')
     COFHandler.LoadDetailCOF('update')
 

@@ -258,7 +258,12 @@ class SetupFormSubmit {
 
 class MaskMoney2 {
     static _beforeParseFloatAndLimit(strData) {
-        let data = strData.replace(/^0+0+$/, "");
+        let strCheck = String(strData || '').trim();
+        // check not number => return "0"
+        if (!/^[-+]?\d*\.?\d+$/.test(strCheck)) {
+            return "0";
+        }
+        let data = strCheck.replace(/^0+0+$/, "");
         if (data.indexOf('.') > -1 && data.length > 18) {
             return data.slice(0, 18);
         } else if (data.indexOf('.') === -1 && data.length > 17) {
@@ -289,12 +294,13 @@ class MaskMoney2 {
 
         if ($currencyAllowEle.length > 0 && $currencyCompanyEle.length > 0 && $currencyExchangeEle.length > 0 && $currencyExchangeEleRateEle.length > 0) {
             DocumentControl.getCompanyCurrencyConfig().then((configCurrencyData) => {
-                let clsMaskMoney2 = new MaskMoney2(configCurrencyData);
                 // Set event on click to allow/ not allow currency exchange
                 $currencyAllowEle.on('click', function () {
                     $currencyExchangeEle.attr('disabled', true);
+                    $currencyExchangeEleRateEle.attr('readonly', true);
                     if ($currencyAllowEle.is(':checked')) {
                         $currencyExchangeEle.removeAttr('disabled');
+                        $currencyExchangeEleRateEle.removeAttr('readonly');
                     }
                     if (!$currencyAllowEle.is(':checked')) {
                         let dataCompany = SelectDDControl.get_data_from_idx($currencyCompanyEle, $currencyCompanyEle.val());
@@ -307,7 +313,10 @@ class MaskMoney2 {
                 $currencyExchangeEle.on('change', function () {
                     let dataExchange = SelectDDControl.get_data_from_idx($currencyExchangeEle, $currencyExchangeEle.val());
                     $currencyExchangeEleRateEle.attr('value', dataExchange?.['rate']);
-                    $currencyExchangeEleRateEle.val(clsMaskMoney2.applyConfigExchange(dataExchange?.['rate'], false));
+                    $.fn.initMaskMoney2();
+                });
+                // Set event on change currency rate then apply maskMoney
+                $currencyExchangeEleRateEle.on('change', function () {
                     $.fn.initMaskMoney2();
                 });
                 // Get currency company then set as default currency
@@ -320,16 +329,23 @@ class MaskMoney2 {
                     FormElementControl.loadInitS2($currencyExchangeEle, [configData?.['master_data_currency']]);
                     if (docData?.['is_currency_exchange'] && docData?.['currency_exchange_data'] && docData?.['currency_exchange_rate']) {
                         if (docData?.['is_currency_exchange'] === true) {
-                            $currencyAllowEle.trigger('click');
+                            $currencyAllowEle[0].checked = true;
+                            $currencyExchangeEle.removeAttr('disabled');
+                            $currencyExchangeEleRateEle.removeAttr('readonly');
                         }
                         FormElementControl.loadInitS2($currencyExchangeEle, [docData?.['currency_exchange_data']]);
+                        $currencyExchangeEleRateEle.attr('value', docData?.['currency_exchange_rate']);
+                        $.fn.initMaskMoney2();
                     }
-                    $currencyExchangeEle.trigger('change');
+                    if (window.location.href.includes('/detail/')) {
+                        $currencyAllowEle.attr('hidden', 'true');
+                        $currencyExchangeEle.attr('readonly', 'true');
+                        $currencyExchangeEleRateEle.attr('readonly', 'true');
+                    }
                 });
-
             });
             if (window.location.href.includes('/detail/')) {
-                $currencyAllowEle.attr('disabled', 'true');
+                $currencyAllowEle.attr('hidden', 'true');
                 $currencyExchangeEle.attr('readonly', 'true');
                 $currencyExchangeEleRateEle.attr('readonly', 'true');
             }
@@ -348,46 +364,30 @@ class MaskMoney2 {
                 let dataCompany = SelectDDControl.get_data_from_idx($currencyCompanyEle, $currencyCompanyEle.val());
                 let dataExchange = SelectDDControl.get_data_from_idx($currencyExchangeEle, $currencyExchangeEle.val());
                 dataSubmit['is_currency_exchange'] = $currencyAllowEle[0].checked;
-                dataSubmit['currency_company_id'] = $currencyCompanyEle.val();
-                dataSubmit['currency_company_data'] = dataCompany;
-                dataSubmit['currency_exchange_id'] = $currencyExchangeEle.val();
-                dataSubmit['currency_exchange_data'] = dataExchange;
-                dataSubmit['currency_exchange_rate'] = dataExchange?.['rate'] ? dataExchange?.['rate'] : 1;
+                if ($currencyAllowEle[0].checked === true) {
+                    dataSubmit['currency_company_id'] = $currencyCompanyEle.val();
+                    dataSubmit['currency_company_data'] = dataCompany;
+                    dataSubmit['currency_exchange_id'] = $currencyExchangeEle.val();
+                    dataSubmit['currency_exchange_data'] = dataExchange;
+                    dataSubmit['currency_exchange_rate'] = $currencyExchangeEleRateEle.valCurrency();
+                }
+                if ($currencyAllowEle[0].checked === false) {
+                    dataSubmit['currency_company_id'] = null;
+                    dataSubmit['currency_company_data'] = {};
+                    dataSubmit['currency_exchange_id'] = null;
+                    dataSubmit['currency_exchange_data'] = {};
+                    dataSubmit['currency_exchange_rate'] = 1;
+                }
             }
         }
         return dataSubmit;
-    }
-
-    static appendTextExchangeMoney($item) {
-        let $next = $item.next('.mask-money-exchange');
-        if ($next.length === 0) {
-            let hidden = '';
-            if ($item.hasClass('hidden') || $item.attr('hidden') !== undefined) {
-                hidden = 'hidden';
-            }
-            if (!$item.hasClass('no-exchange-show')) {
-                $item.after(`<span class="form-text text-muted mask-money-exchange ml-1 ${hidden}"></span>`);
-            }
-        }
-        if ($next.length > 0) {
-            let $currencyAllowEle = $('#is_currency_exchange');
-            if ($currencyAllowEle.length > 0) {
-                if ($currencyAllowEle.is(':checked')) {
-                    $next.removeAttr('hidden');
-                }
-                if (!$currencyAllowEle.is(':checked')) {
-                    $next.attr('hidden', true);
-                }
-            }
-        }
-        return true;
     }
 
     constructor(configData) {
         this.configData = configData;
     }
 
-    applyConfig(other_abbreviation, strAttrValue) {
+    applyConfig($ele, strAttrValue) {
         let strDataParsed = parseFloat(strAttrValue);
         if (strAttrValue !== null && Number.isFinite(strDataParsed)) {
             // strAttrValue = strDataParsed.toString();
@@ -400,25 +400,35 @@ class MaskMoney2 {
             let thousand = this.configData?.['thousands'];
             let precision = parseInt(this.configData?.['precision']);
 
-            if (other_abbreviation) {
-                if (prefix) {
-                    prefix = prefix.replace(prefix.trim(), other_abbreviation)
-                }
-                if (suffix) {
-                    suffix = suffix.replace(suffix.trim(), other_abbreviation)
-                }
-            }
-
-            // Check currency exchange
-            let $currencyExchangeEle = $('#currency_exchange_id');
-            if ($currencyExchangeEle) {
-                let dataSelected = SelectDDControl.get_data_from_idx($currencyExchangeEle, $currencyExchangeEle.val());
-                if (dataSelected?.['abbreviation']) {
+            if ($ele) {
+                let other_abbreviation = $ele.attr('data-other-abbreviation');
+                if (other_abbreviation) {
                     if (prefix) {
-                        prefix = dataSelected?.['abbreviation'];
+                        prefix = prefix.replace(prefix.trim(), other_abbreviation)
                     }
                     if (suffix) {
-                        suffix = dataSelected?.['abbreviation'];
+                        suffix = suffix.replace(suffix.trim(), other_abbreviation)
+                    }
+                }
+            }
+            // Check currency exchange global
+            let dataExchange = MaskMoney2.setupSubmitCurrencyExchange();
+            if (dataExchange?.['is_currency_exchange'] === true) {
+                let nonExchange = false;
+                if ($ele) {
+                    if ($ele[0].closest('.non-exchange')) {
+                        nonExchange = true;
+                    }
+                    if (!$ele[0].closest('.non-exchange')) {
+                        this.runAllowExchange($($ele), $($ele).attr('value'));
+                    }
+                }
+                if (nonExchange === false) {
+                    if (prefix) {
+                        prefix = dataExchange?.['currency_exchange_data']?.['abbreviation'];
+                    }
+                    if (suffix) {
+                        suffix = dataExchange?.['currency_exchange_data']?.['abbreviation'];
                     }
                 }
             }
@@ -454,28 +464,23 @@ class MaskMoney2 {
         // inputOrDisplay choice in ['input', 'display']
         switch (inputOrDisplay) {
             case 'input':
-                $($ele).val(this.applyConfig($($ele).attr('data-other-abbreviation'), $($ele).attr('value')));
-                this.runAllowExchange($($ele), $($ele).attr('value'), inputOrDisplay);
+                $($ele).val(this.applyConfig($($ele), $($ele).attr('value')));
                 break
             case 'display':
-                $($ele).text(this.applyConfig($($ele).attr('data-other-abbreviation'), $($ele).attr('data-init-money')));
-                this.runAllowExchange($($ele), $($ele).attr('data-init-money'), inputOrDisplay);
+                $($ele).text(this.applyConfig($($ele), $($ele).attr('data-init-money')));
                 break
             default:
                 if ($.fn.isDebug() === true) throw Error('strData must be required!')
         }
     }
 
-    applyConfigExchange(strAttrValue, isExchange = true) {
+    applyConfigExchange(strAttrValue) {
         let strDataParsed = parseFloat(strAttrValue);
         let $currencyExchangeEleRateEle = $('#currency_exchange_rate');
         if (strAttrValue !== null && Number.isFinite(strDataParsed) && $currencyExchangeEleRateEle.length > 0) {
-            if (isExchange === true) {
-                let $currencyExchangeEle = $('#currency_exchange_id');
-                if ($currencyExchangeEle.length > 0) {
-                    let dataSelected = SelectDDControl.get_data_from_idx($currencyExchangeEle, $currencyExchangeEle.val());
-                    strDataParsed = strDataParsed * parseFloat(dataSelected?.['rate'] ? dataSelected?.['rate'] : 1);
-                }
+            let dataExchange = MaskMoney2.setupSubmitCurrencyExchange();
+            if (dataExchange?.['is_currency_exchange'] === true) {
+                strDataParsed = strDataParsed * dataExchange?.['currency_exchange_rate'];
             }
             strAttrValue = (strDataParsed >= 0 ? strDataParsed : strDataParsed * (-1)).toString();
 
@@ -514,30 +519,18 @@ class MaskMoney2 {
         }
     }
 
-    applyMaskMoneyExchange($ele, value, inputOrDisplay) {
-        switch (inputOrDisplay) {
-            case 'input':
-                $ele.text(this.applyConfigExchange(value));
-                // $ele.html(`<span class="fs-5 mr-1">~</span>${this.applyConfigExchange(value)}`);
-                break
-            case 'display':
-                $ele.text(this.applyConfigExchange(value));
-                break
-            default:
-                if ($.fn.isDebug() === true) throw Error('strData must be required!')
-        }
+    applyMaskMoneyExchange($ele, value) {
+        $ele.attr("data-bs-toggle", "tooltip");
+        $ele.attr("data-bs-placement", "bottom");
+        $ele.attr('title', this.applyConfigExchange(value));
         return true;
     }
 
-    runAllowExchange($ele, value, inputOrDisplay) {
+    runAllowExchange($ele, value) {
         let $currencyAllowEle = $('#is_currency_exchange');
         if ($currencyAllowEle.length > 0) {
-            MaskMoney2.appendTextExchangeMoney($($ele));
             if ($currencyAllowEle.is(':checked')) {
-                let $next = $ele.next('.mask-money-exchange');
-                if ($next.length > 0) {
-                    this.applyMaskMoneyExchange($next, value, inputOrDisplay);
-                }
+                this.applyMaskMoneyExchange($ele, value);
             }
         }
         return true;
@@ -2424,100 +2417,118 @@ class WFRTControl {
     }
 
     static callWFSubmitForm(_form) {
+        let appID = WFRTControl.getAppID();
+        let appBaseline = WFRTControl.getAppBaseline();
+        let $formEle = _form.formSelected;
         let IDRuntime = WFRTControl.getRuntimeWF();
         let currentEmployee = $x.fn.getEmployeeCurrentID();
         let docData = WFRTControl.getRuntimeDocData();
-        // Check currency
-        let dataCurrency = MaskMoney2.setupSubmitCurrencyExchange();
-        if (Object.keys(dataCurrency).length !== 0) {
-            _form.dataForm['currency_company_id'] = dataCurrency?.['currency_company_id'];
-            _form.dataForm['currency_company_data'] = dataCurrency?.['currency_company_data'];
-            _form.dataForm['currency_exchange_id'] = dataCurrency?.['currency_exchange_id'];
-            _form.dataForm['currency_exchange_data'] = dataCurrency?.['currency_exchange_data'];
-            _form.dataForm['currency_exchange_rate'] = dataCurrency?.['currency_exchange_rate'];
-        }
-        // Check submit CR
-        if (docData?.['system_status'] === 3 && docData?.['employee_inherit']?.['id'] === currentEmployee && docData?.['code'] && _form.dataMethod.toLowerCase() === 'put') {
-            let $eleForm = $(`#${globeFormMappedZone}`);
-            let docRootID = docData?.['document_root_id'];
-            let docChangeOrder = docData?.['document_change_order'] + 1;
-            let code = docData?.['code'];
-            if ($eleForm && $eleForm.length > 0 && docRootID) {
-                _form.dataMethod = 'POST';
-                _form.dataUrl = $eleForm.attr('data-url-cr');
-                _form.dataForm['code'] = code;
-                _form.dataForm['system_status'] = 1;
-                _form.dataForm['is_change'] = true;
-                _form.dataForm['document_root_id'] = docRootID;
-                _form.dataForm['document_change_order'] = docChangeOrder;
+        if ($formEle.length > 0) {
+            // check currency
+            let dataCurrency = MaskMoney2.setupSubmitCurrencyExchange();
+            if (Object.keys(dataCurrency).length !== 0) {
+                _form.dataForm['is_currency_exchange'] = dataCurrency?.['is_currency_exchange'];
+                _form.dataForm['currency_company_id'] = dataCurrency?.['currency_company_id'];
+                _form.dataForm['currency_company_data'] = dataCurrency?.['currency_company_data'];
+                _form.dataForm['currency_exchange_id'] = dataCurrency?.['currency_exchange_id'];
+                _form.dataForm['currency_exchange_data'] = dataCurrency?.['currency_exchange_data'];
+                _form.dataForm['currency_exchange_rate'] = dataCurrency?.['currency_exchange_rate'];
+            }
+            // check submit CR
+            if (docData?.['system_status'] === 3 && docData?.['employee_inherit']?.['id'] === currentEmployee && docData?.['code'] && _form.dataMethod.toLowerCase() === 'put') {
+                let docRootID = docData?.['document_root_id'];
+                let docChangeOrder = docData?.['document_change_order'] + 1;
+                let code = docData?.['code'];
+                if (docRootID) {
+                    _form.dataMethod = 'POST';
+                    _form.dataUrl = $formEle.attr('data-url-cr');
+                    _form.dataForm['code'] = code;
+                    _form.dataForm['system_status'] = 1;
+                    _form.dataForm['is_change'] = true;
+                    _form.dataForm['document_root_id'] = docRootID;
+                    _form.dataForm['document_change_order'] = docChangeOrder;
+                    // check next node
+                    let associationData = WFAssociateControl.checkNextNode(_form.dataForm);
+                    // select cancel/confirm change
+                    Swal.fire({
+                        title: $.fn.transEle.attr('data-msg-are-u-sure'),
+                        text: $.fn.transEle.attr('data-warning-can-not-undo'),
+                        icon: "warning",
+                        allowOutsideClick: false,
+                        showConfirmButton: true,
+                        confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                        showCancelButton: true,
+                        cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            WFRTControl.submitCheckAssociation(_form, associationData, 0);
+                        }
+                    })
+                }
+                return true;
+            }
+            if (!IDRuntime) {  // Start run WF (@decorator_run_workflow in API)
                 // check next node
                 let associationData = WFAssociateControl.checkNextNode(_form.dataForm);
-                // select cancel/confirm change
+                // check baseline app
+                if (appBaseline.includes(appID) && _form.dataMethod.toLowerCase() === 'post') {
+                    _form.dataForm['system_status'] = 0;
+                    WFRTControl.callAjaxWFCreate(_form);
+                    return true;
+                }
+                // select save status before select collaborator
                 Swal.fire({
-                    title: $.fn.transEle.attr('data-msg-are-u-sure'),
-                    text: $.fn.transEle.attr('data-warning-can-not-undo'),
-                    icon: "warning",
+                    title: $.fn.transEle.attr('data-select-save-status'),
+                    html: String(WFRTControl.setupHTMLDraftOrWF()),
                     allowOutsideClick: false,
                     showConfirmButton: true,
                     confirmButtonText: $.fn.transEle.attr('data-confirm'),
                     showCancelButton: true,
                     cancelButtonText: $.fn.transEle.attr('data-cancel'),
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                            WFRTControl.submitCheckAssociation(_form, associationData, 0);
-                    }
-                })
-            }
-            return true;
-        }
-        // Create/Update document
-        if (!IDRuntime) {  // Create document, run WF by @decorator_run_workflow in API
-            // check next node
-            let associationData = WFAssociateControl.checkNextNode(_form.dataForm);
-            // select save status before select collaborator
-            Swal.fire({
-                title: $.fn.transEle.attr('data-select-save-status'),
-                html: String(WFRTControl.setupHTMLDraftOrSave()),
-                allowOutsideClick: false,
-                showConfirmButton: true,
-                confirmButtonText: $.fn.transEle.attr('data-confirm'),
-                showCancelButton: true,
-                cancelButtonText: $.fn.transEle.attr('data-cancel'),
-                didOpen: () => {
-                    // Add event listener for click events on the group
-                    document.querySelectorAll('.group-checkbox-save-status').forEach((checkboxGr) => {
-                        checkboxGr.addEventListener('click', function () {
-                            // Mark the child radio button as checked
-                            let radio = this.querySelector('.checkbox-save-status');
-                            if (radio) {
-                                radio.checked = true; // Automatically unchecks other radios in the group
-                            }
+                    didOpen: () => {
+                        // Add event listener for click events on the group
+                        document.querySelectorAll('.group-checkbox-save-status').forEach((checkboxGr) => {
+                            checkboxGr.addEventListener('click', function () {
+                                // Mark the child radio button as checked
+                                let radio = this.querySelector('.checkbox-save-status');
+                                if (radio) {
+                                    radio.checked = true; // Automatically unchecks other radios in the group
+                                }
+                            });
                         });
-                    });
-                }
-            }).then((result) => {
-                if (result.dismiss === Swal.DismissReason.timer || result.value) {
-                    let eleChecked = document.querySelector('.checkbox-save-status:checked');
-                    if (eleChecked) {
-                        let saveStatus = eleChecked.getAttribute('data-status');
-                        if (saveStatus) {
-                            _form.dataForm['system_status'] = parseInt(saveStatus);
-                            if (_form.dataForm['system_status'] === 0) {  // draft
-                                WFRTControl.callAjaxWFCreate(_form);
-                            }
-                            if (_form.dataForm['system_status'] === 1) {  // WF
-                                WFRTControl.submitCheckAssociation(_form, associationData, 0);
-                            }
-                        }
-                    } else {
-                        $.fn.notifyB({description: $.fn.transEle.attr('data-need-one-option')}, 'failure');
-                        return false;
                     }
-                }
-            });
-        } else { // Update document with zones, already runtime WF
-            _form.dataForm['system_status'] = 1;
-            WFRTControl.callAjaxWFUpdate(_form);
+                }).then((result) => {
+                    if (result.dismiss === Swal.DismissReason.timer || result.value) {
+                        let eleChecked = document.querySelector('.checkbox-save-status:checked');
+                        if (eleChecked) {
+                            let saveStatus = eleChecked.getAttribute('data-status');
+                            if (saveStatus) {
+                                _form.dataForm['system_status'] = parseInt(saveStatus);
+                                if (_form.dataForm['system_status'] === 0) {  // draft
+                                    WFRTControl.callAjaxWFCreate(_form);
+                                }
+                                if (_form.dataForm['system_status'] === 1) {  // WF
+
+                                    // check submit baseline
+                                    if (appBaseline.includes(appID)) {
+                                        _form.dataForm['system_status'] = 0;
+                                        _form.dataForm['run_baseline'] = true;
+                                    }
+
+                                    WFRTControl.submitCheckAssociation(_form, associationData, 0);
+                                }
+                            }
+                        } else {
+                            $.fn.notifyB({description: $.fn.transEle.attr('data-need-one-option')}, 'failure');
+                            return false;
+                        }
+                    }
+                });
+            }
+            if (IDRuntime) { // Already in WF, update zones
+                _form.dataForm['system_status'] = 1;
+                WFRTControl.callAjaxWFUpdate(_form);
+            }
         }
     }
 
@@ -2535,6 +2546,21 @@ class WFRTControl {
                 if (data && (data['status'] === 201 || data['status'] === 200)) {
                     $.fn.notifyB({description: data.message}, 'success');
                     if (_form?.resetForm) $(_form.formElm)[0].reset()
+
+                    // check submit baseline
+                    let $formEle = _form.formSelected;
+                    let docData = WFRTControl.getRuntimeDocData();
+                    let associationData = WFAssociateControl.checkNextNode(_form.dataForm);
+                    if (_form.dataForm?.['run_baseline'] === true && docData?.['id']) {
+                        let docRootID = docData?.['id'];
+                        _form.dataMethod = 'POST';
+                        _form.dataUrl = $formEle.attr('data-url-cr');
+                        _form.dataForm['document_root_id'] = docRootID;
+                        _form.dataForm['system_status'] = 1;
+                        WFRTControl.submitCheckAssociation(_form, associationData, 0);
+                        _form.dataForm['run_baseline'] = false;
+                    }
+
                     setTimeout(() => {
                         window.location.replace(_form.dataUrlRedirect);
                     }, 2000);
@@ -2816,11 +2842,11 @@ class WFRTControl {
         return htmlCustom;
     }
 
-    static setupHTMLDraftOrSave() {
+    static setupHTMLDraftOrWF() {
         let htmlCustom = ``;
         let statusList = [0, 1];
         let statusMapText = {
-            0: $.fn.transEle.attr('data-save-draft'),
+            0: $.fn.transEle.attr('data-save-document'),
             1: $.fn.transEle.attr('data-save-run-wf'),
         };
         for (let status of statusList) {
@@ -3008,7 +3034,6 @@ class WFRTControl {
     static setWFInitialData(app_code, isCR = false) {
         if (app_code) {
             let btn = $('#btnLogShow');
-            // btn.removeClass('hidden');
             let url = btn.attr('data-url-current-wf');
             $.fn.callAjax2({
                 'url': url,
@@ -3033,41 +3058,7 @@ class WFRTControl {
                                     WFRTControl.setAssociateCreate(workflow_current['association']);
                                 }
                             }
-                            if (WFconfig?.['mode'] === 0) {
-                                // let url = btn.attr('data-url-app-emp-config');
-                                // let currentEmployee = $x.fn.getEmployeeCurrentID();
-                                // $.fn.callAjax2({
-                                //     'url': url,
-                                //     'method': 'GET',
-                                //     'data': {
-                                //         'application__model_code': app_code,
-                                //         'employee_created_id': currentEmployee
-                                //     },
-                                // }).then((resp) => {
-                                //     let data = $.fn.switcherResp(resp);
-                                //     if (data) {
-                                //         if (data.hasOwnProperty('app_emp_config_list') && Array.isArray(data.app_emp_config_list)) {
-                                //             if (data?.['app_emp_config_list'].length > 0) {
-                                //                 let zonesData = [];
-                                //                 let zonesHiddenData = [];
-                                //                 for (let appEmpConfig of data?.['app_emp_config_list']) {
-                                //                     for (let zone of appEmpConfig?.['zones_editing_data']) {
-                                //                         for (let property of zone?.['properties_data']) {
-                                //                             zonesData.push(property);
-                                //                         }
-                                //                     }
-                                //                     for (let zone of appEmpConfig?.['zones_hidden_data']) {
-                                //                         for (let property of zone?.['properties_data']) {
-                                //                             zonesHiddenData.push(property);
-                                //                         }
-                                //                     }
-                                //                 }
-                                //                 WFRTControl.activeBtnOpenZone(zonesData, zonesHiddenData, false);
-                                //             }
-                                //         }
-                                //     }
-                                // })
-                            }
+                            WFRTControl.setAppID(WFconfig?.['application_id'] ? WFconfig?.['application_id']: "");
                         }
                     }
                 }
@@ -3509,6 +3500,20 @@ class WFRTControl {
         return [];
     }
 
+    static getAppID() {
+        let itemEle = $('#idxApp');
+        if (itemEle.length > 0) {
+            return itemEle.text();
+        }
+        return "";
+    }
+
+    static getAppBaseline() {
+        return [
+            "36f25733-a6e7-43ea-b710-38e2052f0f6d",
+        ];
+    }
+
     static setRuntimeDoc(docData) {
         if (typeof docData === 'object' && docData !== null) {
             let $RuntimeDoc = $('#idxRuntimeDoc');
@@ -3675,6 +3680,17 @@ class WFRTControl {
                 $pageAction.on('click', '.btn-wf-after-finish', function () {
                     return WFRTControl.callActionWF($(this));
                 });
+            }
+        }
+    }
+
+    static setAppID(appID) {
+        if (appID) {
+            let $appIDEle = $('#idxApp');
+            if ($appIDEle && $appIDEle.length > 0) {
+                $appIDEle.empty().html(appID);
+            } else {
+                $('html').append(`<div class="hidden" id="idxApp">${appID}</div>`);
             }
         }
     }

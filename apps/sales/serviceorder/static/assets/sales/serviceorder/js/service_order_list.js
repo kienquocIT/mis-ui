@@ -1,5 +1,9 @@
 class loadServiceOrderInfo {
+    static transEle = $('#trans-factory');
     static selectedWorkOrders = [];
+
+    static $modalDeliveryInfoEle = $('#deliveryInfoModalCenter');
+    static $btnDelivery = $('#btn-delivery');
 
     static loadServiceOrderList() {
         if (!$.fn.DataTable.isDataTable('#table-service-order')) {
@@ -18,6 +22,7 @@ class loadServiceOrderInfo {
                 ajax: {
                     url: $tb.attr('data-url'),
                     type: 'GET',
+                    data: {'document_root_id__isnull': true},
                     dataSrc: "data.service_order_list"
                 },
                 columns: [
@@ -31,7 +36,23 @@ class loadServiceOrderInfo {
                         className: "ellipsis-cell-lg w-5",
                         render: (data, type, row) => {
                             const link = $tb.attr('data-url-detail').replace('0', row?.['id']);
-                            return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
+                            let target = `.cl-${row?.['id'].replace(/-/g, "")}`;
+                            let clBtn = ``;
+                            if (!row?.['document_root_id']) {
+                                clBtn = `<button
+                                            type="button"
+                                            class="btn btn-icon btn-view-baseline"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="${target}"
+                                            data-bs-placement="top"
+                                            aria-expanded="false"
+                                            data-id="${row?.['id']}"
+                                        >
+                                        <span class="icon"><i class="fas fa-chevron-right"></i></span>
+                                        </button>`;
+                            }
+                            return `<div class="d-flex justify-content-between align-items-center"><a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>
+                                    ${clBtn}</div>`;
                         }
                     },
                     {
@@ -61,6 +82,9 @@ class loadServiceOrderInfo {
                     {
                         className: 'text-center w-10',
                         render: (data, type, row) => {
+                            if (!row?.['document_root_id']) {
+                                return ``;
+                            }
                             return WFRTControl.displayRuntimeStatus(row?.['system_status']);
                         }
                     },
@@ -76,17 +100,42 @@ class loadServiceOrderInfo {
                     {
                         className: 'text-center w-5',
                         render: (data, type, row) => {
-                            return `<a href="javascript:void(0);"  
-                                        class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm open-delivery-modal"
-                                        data-id="${row?.['id']}" data-bs-toggle="modal" data-bs-target="#delivery_work_order_modal">
+                            if (row?.['is_latest_baseline'] === true) {
+                                return `<a href="javascript:void(0);"  
+                                        class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm delivery-info"
+                                        data-id="${row?.['id']}">
                                         <span class="icon"><i class="fas fa-truck"></i></span>
                                       </a>`;
+                            }
+                            return ``;
                         }
                     }
                 ],
+                rowCallback: (row, data) => {
+                    $(row).on('click', '.delivery-info', function () {
+                        loadServiceOrderInfo.checkOpenDeliveryInfo(data);
+                    })
+                },
             });
         }
     }
+
+    static checkOpenDeliveryInfo(data) {
+        // open modal
+        loadServiceOrderInfo.$btnDelivery.attr('data-id', data?.['id']);
+        let targetCodeEle = loadServiceOrderInfo.$modalDeliveryInfoEle[0].querySelector('.target-code');
+        if (targetCodeEle) {
+            targetCodeEle.innerHTML = data?.['code'] ? data?.['code'] : '';
+        }
+        //
+        loadServiceOrderInfo.selectedWorkOrders = [];
+        let service_order_row_id = data?.['id'];
+        $('#delivery_work_order_list').find('.row-checkbox').prop('checked', false);
+        loadServiceOrderInfo.loadDeliveryWorkOrderList(service_order_row_id);
+        loadServiceOrderInfo.loadTotalDeliveryProduct();
+        loadServiceOrderInfo.$modalDeliveryInfoEle.modal('show');
+        return true;
+    };
 
     static loadDeliveryWorkOrderList(service_order_id) {
         const $tb = $('#delivery_work_order_list');
@@ -160,7 +209,7 @@ class loadServiceOrderInfo {
     }
 
     static loadTotalDeliveryProduct() {
-        // get all product list from selected work order
+        // get all product list from selected work
         let data_list = loadServiceOrderInfo.buildDeliveryProductData();
 
         // init DataTable
@@ -222,43 +271,34 @@ class loadServiceOrderInfo {
     }
 
     static combineDeliveryProductData() {
-        let dataResults = {
-            'work_order_info': [],
-            'product_data': {}
-        };
+        let result = [];
         if (loadServiceOrderInfo.selectedWorkOrders.length > 0) {
-            let work_order_info = [];
-            let product_data = {};
             loadServiceOrderInfo.selectedWorkOrders.forEach(workOrder => {
-                // store work order info
+                // store work info
                 let work_order_data = {
                     'id': workOrder?.id || '',
-                    'title': workOrder?.title || ''
+                    'title': workOrder?.title || '',
+                    'order': workOrder?.order || 1,
                 };
-                work_order_info.push(work_order_data);
-
                 // store product list
                 let allProducts = workOrder?.product_list || [];
                 allProducts.forEach(product => {
-                    let productId = product?.id || '';
-                    if (productId in product_data) {
-                        product_data[productId]['delivered_quantity'] += product?.delivered_quantity || 0;
-                    } else {
-                        product_data[productId] = {
-                            'title': product?.title || '',
-                            'code': product?.code || '',
-                            'description': product?.description || '',
-                            'tax': product?.tax || {},
-                            'uom': product?.uom || {},
-                            'delivered_quantity': product?.delivered_quantity || 0
+                    let quantity = product?.['delivered_quantity'] ? product?.['delivered_quantity'] : 0;
+                    if (quantity > 0) {
+                        let productData = {
+                            'product_data': product?.['product_data'] ? product?.['product_data'] : {},
+                            'uom_data': product?.['uom'] || {},
+                            'tax_data': product?.['tax'] || {},
+                            'delivery_quantity': quantity,
+                            'work_data': work_order_data,
+                            'contribution_data': product?.['contribution_data'] ? product?.['contribution_data'] : {},
                         }
+                        result.push(productData);
                     }
                 });
             });
-            dataResults['work_order_info'] = work_order_info;
-            dataResults['product_data'] = product_data;
         }
-        return dataResults;
+        return result;
     }
 }
 
@@ -266,37 +306,129 @@ $('document').ready(function () {
     loadServiceOrderInfo.loadServiceOrderList();
 
     // event when click delivery service button
-    $(document).on("click", '.open-delivery-modal', function () {
-        loadServiceOrderInfo.selectedWorkOrders = [];
-        let service_order_row_id = $(this).attr('data-id');
-        $('#delivery_work_order_list').find('.row-checkbox').prop('checked', false);
-        $('#delivery_work_order_modal').find('#btn_apply_delivery').attr('data-id', service_order_row_id);
-        loadServiceOrderInfo.loadDeliveryWorkOrderList(service_order_row_id);
-        loadServiceOrderInfo.loadTotalDeliveryProduct();
-    });
+    // $(document).on("click", '.open-delivery-modal', function () {
+    //     loadServiceOrderInfo.selectedWorkOrders = [];
+    //     let service_order_row_id = $(this).attr('data-id');
+    //     $('#delivery_work_order_list').find('.row-checkbox').prop('checked', false);
+    //     $('#delivery_work_order_modal').find('#btn_apply_delivery').attr('data-id', service_order_row_id);
+    //     loadServiceOrderInfo.loadDeliveryWorkOrderList(service_order_row_id);
+    //     loadServiceOrderInfo.loadTotalDeliveryProduct();
+    // });
 
     // event when save delivery service button
-    $(document).on("click", "#btn_apply_delivery", function (){
-        let data_product = loadServiceOrderInfo.combineDeliveryProductData();
-        data_product['service_order_id'] = $(this).attr('data-id');
-
+    loadServiceOrderInfo.$btnDelivery.on("click", function (){
+        // let data_product = loadServiceOrderInfo.combineDeliveryProductData();
+        // data_product['service_order_id'] = $(this).attr('data-id');
+        //
+        // WindowControl.showLoading();
+        // const url = $('#url-factory').attr('data-url-create-delivery-service');
+        // $.fn.callAjax2({
+        //     url: url,
+        //     method: 'POST',
+        //     data: data_product,
+        // }).then(
+        //     (resp) => {
+        //         let data = $.fn.switcherResp(resp);
+        //         if (data?.['status'] === 200) {
+        //             WindowControl.hideLoading();
+        //             $.fn.notifyB({description: data.message}, 'success');
+        //         }
+        //     },
+        //     (errs) => {
+        //         WindowControl.hideLoading();
+        //         $.fn.notifyB({description: errs.data.errors}, 'failure');
+        //     }
+        // )
+        let urlsEle = $('#url-factory');
+        let dataDelivery = loadServiceOrderInfo.combineDeliveryProductData();
+        let count = 0;
+        for (let dataDeli of dataDelivery) {
+            count += dataDeli?.['delivery_quantity'] ? dataDeli?.['delivery_quantity'] : 0;
+        }
+        if (count === 0) {
+            $.fn.notifyB({description: loadServiceOrderInfo.transEle.attr('data-required-delivery-quantity')}, 'failure');
+            return false;
+        }
         WindowControl.showLoading();
-        const url = $('#url-factory').attr('data-url-create-delivery-service');
+        const url = urlsEle.attr('data-create-delivery').replace('1', $(this).attr('data-id'));
         $.fn.callAjax2({
             url: url,
             method: 'POST',
-            data: data_product,
+            data: {'work_products': dataDelivery},
+            urlRedirect: null,
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data?.['status'] === 200) {
-                    WindowControl.hideLoading();
-                    $.fn.notifyB({description: data.message}, 'success');
+                    const config = data?.config
+                    let url_redirect = urlsEle.attr('data-delivery')
+                    if (config?.is_picking && !data?.['is_not_picking'])
+                        url_redirect = urlsEle.attr('data-picking')
+                    setTimeout(() => {
+                        window.location.href = url_redirect
+                    }, 1000);
                 }
             },
             (errs) => {
                 WindowControl.hideLoading();
                 $.fn.notifyB({description: errs.data.errors}, 'failure');
+            }
+        )
+    });
+
+    // baseline events
+    $('#table-service-order').on('click', '.btn-view-baseline', function () {
+        let targetID = $(this).attr('data-id');
+        let targetRow = this.closest('tr');
+        let cls = `cl-${targetID.replace(/-/g, "")}`;
+        let count = $('#table-service-order')[0].querySelectorAll(`.${cls}`).length;
+        if (count > 0) {
+            $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
+            if ($(this).find('i').hasClass('fa-chevron-right')) {
+                // remove show
+                $('#table-service-order')[0].querySelectorAll(`.${cls}`).forEach(el => {
+                    el.classList.remove('show');
+                });
+            }
+            return true;
+        }
+        WindowControl.showLoading();
+        $.fn.callAjax2({
+                'url': $('#table-service-order').attr('data-url'),
+                'method': 'GET',
+                'data': {'document_root_id': targetID},
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('service_order_list') && Array.isArray(data.service_order_list)) {
+                        $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
+                        // append new row
+                        const filtered = data.service_order_list.filter(item => item.system_status === 3);
+                        const latest = filtered.length
+                            ? filtered.reduce((max, item) =>
+                                item.document_change_order > max.document_change_order ? item : max
+                            )
+                            : null;
+                        let renderData = data?.['service_order_list'].reverse();
+                        for (let dataSO of renderData) {
+                            let clsBg = 'bg-light';
+                            if (dataSO?.['id'] === latest?.['id']) {
+                                clsBg = 'bg-green-light-5';
+                                dataSO['is_latest_baseline'] = true;
+                            }
+                            let newRow = $('#table-service-order').DataTable().row.add(dataSO).node();
+                            $(newRow).addClass(`${cls} collapse show ${clsBg}`);
+                            $(newRow).detach().insertAfter(targetRow);
+                            $(newRow).on('click', '.delivery-info', function () {
+                                loadServiceOrderInfo.checkOpenDeliveryInfo(dataSO);
+                            })
+                        }
+                        WindowControl.hideLoading();
+                    }
+                }
             }
         )
     });

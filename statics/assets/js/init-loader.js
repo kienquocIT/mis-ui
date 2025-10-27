@@ -211,7 +211,14 @@ $.fn.extend({
             DocumentControl.getCompanyCurrencyConfig().then((configData) => {
                 let clsMaskMoney2 = new MaskMoney2(configData);
                 if ($eleSelected && selectType) {
-                    clsMaskMoney2.applyMaskMoney($($eleSelected), selectType)
+                    if ($eleSelected.hasClass('mask-money')) {
+                        if ($eleSelected.is('input')) {
+                            clsMaskMoney2.applyMaskMoney($($eleSelected), 'input');
+                        }
+                        if ($eleSelected.is('span')) {
+                            clsMaskMoney2.applyMaskMoney($($eleSelected), 'display');
+                        }
+                    }
                 } else {
                     inputElement.map((idx, item) => {
                         clsMaskMoney2.applyMaskMoney($(item), 'input');

@@ -496,12 +496,13 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_PICKING_DETAIL_PRODUCTS = StringUrl('delivery/picking/{pk}/products')
     DELIVERY_SALEORDER_CALL = StringUrl('delivery/sale-order/{pk}')
     DELIVERY_LEASEORDER_CALL = StringUrl('delivery/lease-order/{pk}')
+    DELIVERY_SERVICEORDER_CALL = StringUrl('delivery/service-order/{pk}')
     DELIVERY_LIST = StringUrl('delivery')
     DELIVERY_SUB_LIST = StringUrl('delivery/sub/{pk}')
     DELIVERY_SUB_PRINT_LIST = StringUrl('delivery/sub-print/{pk}')
     DELIVERY_FOR_RECOVERY_LIST = StringUrl('delivery/for-recovery')
     DELIVERY_PRODUCT_LEASE_LIST = StringUrl('delivery/product-lease')
-    DELIVERY_SERVICEORDER_CALL = StringUrl('delivery/create-delivery-service-order')
+    DELIVERY_WORK_LOG_LIST = StringUrl('delivery/work-log')
 
     # Purchase
     PURCHASE_ORDER_LIST = StringUrl('purchasing/purchase-order/list')
@@ -614,6 +615,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GIS_PRODUCTION_ORDER_DETAIL = StringUrl('inventory/production-order-for-gis/{pk}')
     GIS_WORK_ORDER_LIST = StringUrl('inventory/work-order-for-gis/list')
     GIS_WORK_ORDER_DETAIL = StringUrl('inventory/work-order-for-gis/{pk}')
+    GIS_PM_LIST = StringUrl('inventory/pm-for-gis/list')
+    GIS_PM_DETAIL = StringUrl('inventory/pm-for-gis/{pk}')
     GIS_NONE_LIST = StringUrl('inventory/prd-wh-list-for-gis/list')
     GIS_LOT_LIST = StringUrl('inventory/lot-list-for-gis/list')
     GIS_SERIAL_LIST = StringUrl('inventory/serial-list-for-gis/list')
@@ -629,7 +632,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     REPORT_INVENTORY_COST_LIST = StringUrl('report/inventory-cost-report/list')
     REPORT_INVENTORY_STOCK_LIST = StringUrl('report/inventory-stock-report/list')
     BALANCE_INIT_LIST = StringUrl('report/balance-init/list')
-    BALANCE_INIT_IMPORT_DB = StringUrl('report/balance-init-import-db')
     WAREHOUSE_AVAILABLE_PRODUCT_LIST = StringUrl('report/warehouse-available-product-list')
     WAREHOUSE_AVAILABLE_PRODUCT_DETAIL = StringUrl('report/warehouse-available-product-detail')
     REPORT_GENERAL_LIST = StringUrl('report/general/list')
@@ -854,9 +856,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Cash outflow
     FINANCIAL_CASHOUTFLOW_LIST = StringUrl('financial-cashflow/cashoutflows')
     FINANCIAL_CASHOUTFLOW_DETAIL = StringUrl('financial-cashflow/cashoutflow/{pk}')
-    ADVANCE_FOR_SUPPLIER_LIST_FOR_CASHOUTFLOW = StringUrl(
-        'financial-cashflow/advance-for-supplier-for-cashoutflow/list')
-    AP_INVOICE_LIST_FOR_CASHOUTFLOW = StringUrl('financial-cashflow/ap-invoice-for-cashoutflow/list')
+    PO_PAYMENT_STAGE_LIST_FOR_COF = StringUrl('financial-cashflow/po-payment-stage-list-for-cof')
+    AP_INVOICE_PO_PAYMENT_STAGE_LIST_FOR_COF = StringUrl('financial-cashflow/ap-invoice-po-payment-stage-list-for-cof')
+    SO_EXPENSE_LIST_FOR_COF = StringUrl('financial-cashflow/so-expense-list-for-cof')
+    SO_LIST_FOR_COF = StringUrl('financial-cashflow/so-list-for-cof')
+    LO_EXPENSE_LIST_FOR_COF = StringUrl('financial-cashflow/lo-expense-list-for-cof')
+    LO_LIST_FOR_COF = StringUrl('financial-cashflow/lo-list-for-cof')
 
     # Recon
     FINANCIAL_RECON_LIST = StringUrl('financial-reconciliation/list')
@@ -1031,3 +1036,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SERVICE_QUOTATION_LIST = StringUrl('servicequotation/list')
     SERVICE_QUOTATION_DETAIL = StringUrl('servicequotation/detail/{pk}')
     SERVICE_QUOTATION_DETAIL_DASHBOARD = StringUrl('servicequotation/detail-dashboard/{pk}')
+
+    # HRM - Payroll
+    PAYROLL_CONFIG = StringUrl('hrm/payroll/payrollconfig/config')

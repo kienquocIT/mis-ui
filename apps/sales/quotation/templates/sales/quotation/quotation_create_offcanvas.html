@@ -1,0 +1,291 @@
+{% load i18n %}
+
+<div
+        class="modal fade" id="quotationModalCenter" tabindex="-1"
+        role="dialog" aria-labelledby="quotationModalCenter"
+        aria-hidden="true" data-zone="title"
+>
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><b>{% trans 'Select Quotation' %}</b></h5>
+                <button
+                        type="button"
+                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
+                        data-bs-dismiss="modal"
+                ><span class="icon"><i class="far fa-window-close"></i></span></button>
+            </div>
+            <div class="modal-body">
+                <table
+                        id="datable-copy-quotation"
+                        class="table nowrap w-100 mb-5"
+                >
+                    <thead>
+                    <tr class="bg-light">
+                        <th class="w-30">{% trans 'Title' %}</th>
+                        <th class="w-20">{% trans 'Code' %}</th>
+                        <th class="w-25">{% trans 'Opportunity' %}</th>
+                        <th class="w-25">{% trans 'Customer' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <div class="form-check form-check-lg" id="copy-quotation-option" hidden>
+                    <input type="checkbox" class="form-check-input check-option" id="customCheck1" checked>
+                    <label
+                            class="form-check-label" for="customCheck1"
+                    >{% trans 'Copy all from quotation' %}</label>
+                </div>
+                <table
+                        id="datable-copy-quotation-product"
+                        class="table nowrap w-100 mb-5"
+                        hidden
+                >
+                    <thead>
+                    <tr class="bg-light">
+                        <th>#</th>
+                        <th>{% trans 'Product' %}</th>
+                        <th>{% trans 'Quantity' %}</th>
+                        <th>{% trans 'Input' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button
+                        type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                >{% trans 'Close' %}</button>
+                <button
+                        type="button" class="btn btn-primary" id="btn-select-quotation-copy"
+                >{% trans 'Select' %}</button>
+                <button
+                        type="button" class="btn btn-primary" id="btn-quotation-copy-confirm"
+                        data-copy-type="copy-from" data-bs-dismiss="modal" hidden
+                >{% trans 'Copy' %}</button>
+                <input type="text" id="data-copy-quotation-detail" hidden>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div
+        class="modal fade" id="addQuickProduct" tabindex="-1" role="dialog"
+        aria-labelledby="addQuickProduct" aria-hidden="true" data-zone="quotation_products_data"
+>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">{% trans 'New product' %}</h5>
+                <button
+                        type="button"
+                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
+                        data-bs-dismiss="modal"
+                ><span class="icon"><i class="far fa-window-close"></i></span></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label required" for="add-product-title">{% trans 'Title' %}</label>
+                    <input
+                            type="text" class="form-control"
+                            id="add-product-title"
+                            required
+                    >
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-8 col-lg-8">
+                        <div class="form-group">
+                            <label
+                                    class="form-label required" for="add-product-code"
+                            >{% trans 'Code' %}</label>
+                            <input
+                                    type="text" class="form-control"
+                                    id="add-product-code"
+                                    required
+                            >
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <div class="mt-4" id="quick-product-choice">
+                            <div class="form-check form-check-lg form-check-inline d-flex align-items-center">
+                                <input
+                                        class="form-check-input" type="checkbox" id="inlineCheckbox2"
+                                        value="2"
+                                >
+                                <label
+                                        class="form-check-label" for="inlineCheckbox2"
+                                >{% trans 'For Purchase' %}</label>
+                            </div>
+                            <div class="form-check form-check-lg form-check-inline d-flex align-items-center">
+                                <input
+                                        class="form-check-input" type="checkbox" id="inlineCheckbox1"
+                                        value="1"
+                                >
+                                <label
+                                        class="form-check-label" for="inlineCheckbox1"
+                                >{% trans 'For Inventory' %}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="add-product-remark">{% trans 'Description' %}</label>
+                    <textarea class="form-control" id="add-product-remark" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label
+                            class="form-label" for="add-product-part-number"
+                    >{% trans 'Part number' %}</label>
+                    <input
+                            type="text" class="form-control"
+                            id="add-product-part-number"
+                            required
+                    >
+                </div>
+                <div class="form-group">
+                    <label class="form-label required" for="add-product-type">{% trans 'Type' %}</label>
+                    <select
+                            class="form-select"
+                            id="add-product-type"
+                            data-url="{% url "ProductTypeListAPI" %}"
+                            data-method="GET"
+                            data-keyResp="product_type_list"
+                            multiple
+                    ></select>
+                </div>
+                <div class="form-group">
+                    <label
+                            class="form-label required" for="add-product-category"
+                    >{% trans 'Category' %}</label>
+                    <select
+                            class="form-select"
+                            id="add-product-category"
+                            data-url="{% url "ProductCategoryListAPI" %}"
+                            data-method="GET"
+                            data-keyResp="product_category_list"
+                    ></select>
+                </div>
+                <div class="form-group">
+                    <label
+                            class="form-label required" for="add-product-uom-group"
+                    >{% trans 'UOM group' %}</label>
+                    <select
+                            class="form-select"
+                            id="add-product-uom-group"
+                            data-url="{% url "UnitOfMeasureGroupListAPI" %}"
+                            data-method="GET"
+                            data-keyResp="unit_of_measure_group"
+                    ></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required" for="add-product-uom">{% trans 'UOM' %}</label>
+                    <select
+                            class="form-select"
+                            id="add-product-uom"
+                            data-url="{% url "UnitOfMeasureListAPI" %}"
+                            data-method="GET"
+                            data-keyResp="unit_of_measure"
+                    ></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required" for="add-product-tax">{% trans 'Tax' %}</label>
+                    <select
+                            class="form-select"
+                            id="add-product-tax"
+                            data-url="{% url "TaxListAPI" %}"
+                            data-method="GET"
+                            data-keyResp="tax_list"
+                    ></select>
+                </div>
+                <div class="form-group">
+                    <label
+                            class="form-label" for="add-product-method"
+                    >{% trans 'Traceability method' %}</label>
+                    <select
+                            class="form-select"
+                            id="add-product-method"
+                    ></select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="quotation_products_data">{% trans 'Close' %}</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="btn-save-quick-product" data-zone="quotation_products_data">{% trans 'Save' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-end w-90" tabindex="-1" id="selectProductCanvas" aria-labelledby="selectProductCanvas">
+    <div class="modal-header">
+        <h5 class="modal-title"><b>{% trans 'Select product' %}</b></h5>
+        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+    </div>
+    <div class="offcanvas-body">
+        <table
+                id="table-select-product"
+                class="table nowrap w-100 mb-5"
+        >
+            <thead>
+            <tr class="bg-light">
+                <th>{% trans 'Product name' %}</th>
+                <th>{% trans 'Product code' %}</th>
+                <th>{% trans 'Description' %}</th>
+                <th>{% trans 'Category' %}</th>
+                <th>{% trans 'UOM' %}</th>
+                <th>{% trans 'Duration UoM' %}</th>
+                <th>{% trans 'Status' %}</th>
+                <th>{% trans 'Note' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas" data-zone="quotation_products_data">{% trans 'Close' %}</button>
+        <button type="button" class="btn btn-primary" id="btn-save-select-product" data-bs-dismiss="offcanvas" data-zone="quotation_products_data">{% trans 'Save' %}</button>
+    </div>
+</div>
+
+<div
+        class="modal fade" id="selectPriceModal" tabindex="-1"
+        role="dialog" aria-labelledby="selectPriceModal"
+>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><b>{% trans 'Select product price' %}</b></h5>
+                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="quotation_products_data">{% trans 'Close' %}</button>
+                <button type="button" class="btn btn-primary" id="btn-save-select-price" data-bs-dismiss="modal" data-zone="quotation_products_data">{% trans 'Save' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div
+        class="modal fade" id="selectCostModal" tabindex="-1"
+        role="dialog" aria-labelledby="selectCostModal"
+>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><b>{% trans 'Select product cost' %}</b></h5>
+                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+            </div>
+            <div class="modal-body non-exchange">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="quotation_costs_data">{% trans 'Close' %}</button>
+                <button type="button" class="btn btn-primary" id="btn-save-select-cost" data-bs-dismiss="modal" data-zone="quotation_costs_data">{% trans 'Save' %}</button>
+            </div>
+        </div>
+    </div>
+</div>

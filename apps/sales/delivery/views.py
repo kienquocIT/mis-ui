@@ -11,7 +11,7 @@ __all__ = [
     'OrderPickingDetailAPI', 'OrderDeliveryList', 'OrderDeliveryListAPI', 'OrderDeliveryDetail',
     'OrderDeliveryDetailAPI', 'OrderDeliveryEdit', 'OrderPickingEdit',
     'OrderDeliveryCreate', 'DeliveryForRecoveryListAPI', 'DeliveryProductLeaseListAPI',
-    'OrderDeliveryDetailPrintAPI',
+    'OrderDeliveryDetailPrintAPI', 'DeliveryWorkLogListAPI',
 ]
 
 from apps.shared.constant import DELIVERY_STATE, SYSTEM_STATUS
@@ -304,3 +304,15 @@ class DeliveryProductLeaseListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.DELIVERY_PRODUCT_LEASE_LIST).get(data)
         return resp.auto_return(key_success='delivery_product_lease')
+
+
+class DeliveryWorkLogListAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.DELIVERY_WORK_LOG_LIST).get(data)
+        return resp.auto_return(key_success='delivery_work_log')

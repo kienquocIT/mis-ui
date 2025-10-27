@@ -24,57 +24,6 @@ class BalanceInitList(View):
                 return {
                     'data': {
                         'period_setup_sw_start_using_time': item['id'],
-                        'import_db_form_cfg': {
-                            'list_import_db': [
-                                {
-                                    "id": "table-balance-product-import-db",
-                                    "map_with": "table-balance-product",
-                                    "name": _("Balance init datatable"),
-                                    "option": [0],
-                                    "col_type": [
-                                        'input-text',
-                                        'input-text',
-                                        'input-text',
-                                        'input-money',
-                                        'list',
-                                        'list',
-                                    ],
-                                    "data_format": {
-                                        "key": "balance_init_data",
-                                        "value_list": [
-                                            {"col_key": "product_code", "col_index": 0},
-                                            {"col_key": "warehouse_code", "col_index": 1},
-                                            {"col_key": "quantity", "col_index": 2},
-                                            {"col_key": "value", "col_index": 3},
-                                            {
-                                                "col_key": "data_lot",
-                                                "col_index": 4,
-                                                "data_default": [],
-                                                "data_fixed_key": [
-                                                    "lot_number",
-                                                    "quantity_import",
-                                                    "expire_date",
-                                                    "manufacture_date"
-                                                ]
-                                            },
-                                            {
-                                                "col_key": "data_sn",
-                                                "col_index": 5,
-                                                "data_default": [],
-                                                "data_fixed_key": [
-                                                    "vendor_serial_number",
-                                                    "serial_number",
-                                                    "expire_date",
-                                                    "manufacture_date",
-                                                    "warranty_start",
-                                                    "warranty_end"
-                                                ]
-                                            },
-                                        ]
-                                    }
-                                }
-                            ]
-                        }
                     },
                 }, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
@@ -98,21 +47,6 @@ class BalanceInitListAPI(APIView):
     )
     def post(self, request, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.BALANCE_INIT_LIST).post(request.data)
-        if resp.state:
-            resp.result['message'] = SaleMsg.BALANCE_INIT_CREATE
-            return resp.result, status.HTTP_201_CREATED
-        return resp.auto_return()
-
-
-class BalanceInitializationListImportDBAPI(APIView):
-    permission_classes = [IsAuthenticated] # noqa
-
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def post(self, request, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.BALANCE_INIT_IMPORT_DB).post(request.data)
         if resp.state:
             resp.result['message'] = SaleMsg.BALANCE_INIT_CREATE
             return resp.result, status.HTTP_201_CREATED

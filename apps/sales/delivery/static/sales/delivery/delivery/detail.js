@@ -113,6 +113,9 @@ $(async function () {
                     };
                     keyResp = 'regis_borrow_list';
                 }
+                if (targetItemData?.['specific_data']?.['product_warehouse_serial_id']) {
+                    dataParam['product_warehouse_serial_product_warehouse__id'] = targetItemData?.['specific_data']?.['product_warehouse_serial_id'];
+                }
                 $.fn.callAjax2({
                     'url': url,
                     'method': 'get',
@@ -262,7 +265,7 @@ $(async function () {
                     },
                     {
                         targets: 1,
-                        class: 'w-30',
+                        class: 'w-15',
                         data: 'product_data',
                         render: (row, type, data) => {
                             const dataCont = DataTableAction.item_view(row, $url.attr('data-prod-detail'))
@@ -278,30 +281,30 @@ $(async function () {
                                                    aria-expanded="false"></i>
                                                 <div class="dropdown-menu w-210p mt-2">${dataCont}</div>
                                             </div>
-                                            <p>${row.title}</p>${is_gift}
+                                            <textarea class="form-control form-check-label" rows="3" readonly>${row?.['title'] ? row?.['title'] : ''}</textarea>
+                                            ${is_gift}
                                         </div>`;
                         }
                     },
                     {
                         targets: 2,
-                        class: 'w-10 text-center',
+                        class: 'w-15',
                         render: (row, type, data) => {
-                            return `<p>${data?.['uom_data']?.['title'] ? data?.['uom_data']?.['title'] : ''}</p>`;
+                            return `<textarea class="form-control form-check-label" rows="3" readonly>${data?.['work_data']?.['title'] ? data?.['work_data']?.['title'] : ''}</textarea>`;
                         }
                     },
                     {
                         targets: 3,
                         class: 'w-10 text-center',
                         render: (row, type, data) => {
-                            return `<p>${data?.['delivery_quantity']}</p>`;
+                            return `<p>${data?.['uom_data']?.['title'] ? data?.['uom_data']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 4,
                         class: 'w-10 text-center',
-                        visible: delivery_config?.['is_partial_ship'],
                         render: (row, type, data) => {
-                            return `<p>${data?.['delivered_quantity_before']}</p>`;
+                            return `<p>${data?.['delivery_quantity']}</p>`;
                         }
                     },
                     {
@@ -309,11 +312,19 @@ $(async function () {
                         class: 'w-10 text-center',
                         visible: delivery_config?.['is_partial_ship'],
                         render: (row, type, data) => {
-                            return `<p>${data?.['remaining_quantity']}</p>`;
+                            return `<p>${data?.['delivered_quantity_before']}</p>`;
                         }
                     },
                     {
                         targets: 6,
+                        class: 'w-10 text-center',
+                        visible: delivery_config?.['is_partial_ship'],
+                        render: (row, type, data) => {
+                            return `<p>${data?.['remaining_quantity']}</p>`;
+                        }
+                    },
+                    {
+                        targets: 7,
                         class: 'w-10 text-center',
                         visible: delivery_config?.['is_picking'],
                         data: 'ready_quantity',
@@ -333,7 +344,7 @@ $(async function () {
                         }
                     },
                     {
-                        targets: 7,
+                        targets: 8,
                         class: 'w-15 text-center',
                         render: (row, type, data, meta) => {
                             let disabled = '';
@@ -679,9 +690,6 @@ $(async function () {
                 }
             }
 
-            if ($.fn.dataTable.isDataTable($tableLot)) {
-                $tableLot.DataTable().destroy();
-            }
             prodTable.dataTableTableLot(url, dataParam, keyResp, isRegis, dataCheck);
             return true;
         };
@@ -784,10 +792,17 @@ $(async function () {
                     isRegis = false;
                 }
             }
-
-            if ($.fn.dataTable.isDataTable($tableSerial)) {
-                $tableSerial.DataTable().destroy();
+            let checkedEle = $tableProductNew[0].querySelector('.table-row-checkbox:checked');
+            if (checkedEle) {
+                let row = checkedEle.closest('tr');
+                let rowIndex = $tableProductNew.DataTable().row(row).index();
+                let $row = $tableProductNew.DataTable().row(rowIndex);
+                let dataRow = $row.data();
+                if (dataRow?.['product_data']?.['specific_data']?.['product_warehouse_serial_id']) {
+                    dataParam['id'] = dataRow?.['product_data']?.['specific_data']?.['product_warehouse_serial_id'];
+                }
             }
+
             prodTable.dataTableTableSerial(url, dataParam, keyResp, isRegis, dataCheck);
             return true;
         };
@@ -1094,7 +1109,10 @@ $(async function () {
         };
 
         dataTableTableLot(url, dataParam, keyResp, isRegis, dataCheck) {
-            $tableLot.not('.dataTable').DataTableDefault({
+            if ($.fn.dataTable.isDataTable($tableLot)) {
+                $tableLot.DataTable().destroy();
+            }
+            $tableLot.DataTableDefault({
                 useDataServer: true,
                 ajax: {
                     url: url,
@@ -1183,7 +1201,10 @@ $(async function () {
             if (checkAll) {
                 checkAll.checked = false;
             }
-            $tableSerial.not('.dataTable').DataTableDefault({
+            if ($.fn.dataTable.isDataTable($tableSerial)) {
+                $tableSerial.DataTable().destroy();
+            }
+            $tableSerial.DataTableDefault({
                 useDataServer: true,
                 ajax: {
                     url: url,
@@ -1623,6 +1644,7 @@ $(async function () {
                 const res = $.fn.switcherResp(req);
                 if ($('#delivery_form').attr('data-method') === 'GET') {
                     new PrintTinymceControl().render('1373e903-909c-4b77-9957-8bcf97e8d6d3', res, false);
+                    PrintTinymceControl.open_modal();
                 }
             })
     }
@@ -1653,7 +1675,17 @@ $(async function () {
                         }
                         $eleSO.val(res?.['lease_order_data']?.['code']);
                         $eleSO.attr('data-lo', JSON.stringify(res?.['lease_order_data']));
-                        $('#scroll-table-lease').removeAttr('hidden');
+                        // $('#scroll-table-lease').removeAttr('hidden');
+                    }
+                    if (res?.['service_order_data']?.['code']) {
+                        for (let label of formGroup.querySelectorAll('.deli-for')) {
+                            label.setAttribute('hidden', 'true');
+                            if (label.classList.contains('service-order')) {
+                                label.removeAttribute('hidden');
+                            }
+                        }
+                        $eleSO.val(res?.['service_order_data']?.['code']);
+                        $eleSO.attr('data-service', JSON.stringify(res?.['service_order_data']));
                     }
                 }
 

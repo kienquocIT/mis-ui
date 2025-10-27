@@ -52,8 +52,7 @@
                     <div class="row">
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
-                                <label class="form-label"
-                                       for="select-box-employee">{% trans 'Empl ID' %}</label>
+                                <label class="form-label" for="select-box-employee">{% trans 'Empl ID' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input type="text" id="new_employee" class="form-control" name="employee_create"
                                     placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
@@ -78,8 +77,7 @@
                                                 data-method="GET"
                                                 data-params="{'is_mapped': false}"
                                                 data-keyResp="emp_not_map"
-                                                name="employee"
-                                        >
+                                                name="employee">
                                         </select>
                                     </div>
                                 </div>
@@ -88,66 +86,51 @@
                         <div class="col-12 col-md-12 col-lg-4"></div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
-                                <label class="form-label"
-                                       for="select-box-user">{% trans 'User ID' %}</label>
+                                <label class="form-label" for="select-box-user">{% trans 'User ID' %}</label>
                                 <div class="input-affix-wrapper">
                                     <div class="dropdown input-prefix">
-                                        <i class="fas fa-info-circle text-blue"
-                                           data-bs-toggle="dropdown"
-                                           data-dropdown-animation
-                                           aria-haspopup="true"
-                                           aria-expanded="false"
-                                           disabled></i>
+                                        <i class="fas fa-info-circle text-blue" data-bs-toggle="dropdown" data-dropdown-animation
+                                           aria-haspopup="true" aria-expanded="false" disabled></i>
                                         <div class="dropdown-menu w-210p mt-2"></div>
                                     </div>
                                     <select class="form-select" id="select-box-user"
                                             data-url="{% url 'CompanyUserNotMapEmployeeListAPI' %}"
-                                            data-method="GET"
-                                            data-keyResp="company_user_list"
-                                            name="user"
-                                    >
+                                            data-method="GET"  data-keyResp="company_user_list" name="user">
                                     </select>
                                 </div>
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
-                                <label class="form-label required"
-                                       for="employee-first_name">{% trans 'First Name' %}</label>
+                                <label class="form-label required" for="employee-first_name">{% trans 'First Name' %}</label>
                                 <input type="text" class="form-control" placeholder="Nguyen" name="first_name"
                                        id="employee-first_name" required>
                             </div>
                         </div>
                         <div class="col-12 col-md-9 col-lg-4">
                             <div class="form-group">
-                                <label class="form-label"
-                                       for="employee-middle_name">{% trans 'Middle Name' %}</label>
-                                <input type="text" placeholder="Van" class="form-control" name="middle_name"
-                                       id="employee-middle_name">
+                                <label class="form-label" for="employee-middle_name">{% trans 'Middle Name' %}</label>
+                                <input type="text" placeholder="Van" class="form-control" name="middle_name" id="employee-middle_name">
                             </div>
                         </div>
                         <div class="col-12 col-md-3 col-lg-4">
                             <div class="form-group">
-                                <label class="form-label required"
-                                       for="employee-last_name">{% trans 'Last Name' %}</label>
-                                <input type="text" class="form-control" placeholder="A" name="last_name"
-                                       id="employee-last_name" required>
+                                <label class="form-label required" for="employee-last_name">{% trans 'Last Name' %}</label>
+                                <input type="text" class="form-control" placeholder="A" name="last_name" id="employee-last_name" required>
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
-                                <label class="form-label required"
-                                       for="date_joined">{% trans 'Date Joined' %}</label>
+                                <label class="form-label required" for="date_joined">{% trans 'Date Joined' %}</label>
                                 <div class="input-affix-wrapper">
-                                    <input class="form-control pl-2" type="text" id="date_joined" name="date_joined"
-                                           required/>
+                                    <input class="form-control pl-2" type="text" id="date_joined" name="date_joined" required>
                                     <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                                 </div>
                             </div>
                         </div>
                         <div class="col-xs-12 col-lg-4">
                             <label class="form-label required" for="employee-code">{% trans 'Code' %}</label>
-                            <input class="form-control pl-2" type="text" id="employee-code" name="code" required/>
+                            <input class="form-control pl-2" type="text" id="employee-code" name="code" required>
                         </div>
                         <div class="col-12">
                             <fieldset>
@@ -156,10 +139,8 @@
                         </div>
                         <div class="col-12 col-md-3 col-lg-4">
                             <div class="form-group">
-                                <label class="form-label"
-                                       for="employee-citizen_id">{% trans 'Citizen ID' %}</label>
-                                <input type="text" class="form-control" placeholder="000000000000" name="citizen_id"
-                                       id="employee-citizen_id">
+                                <label class="form-label" for="employee-citizen_id">{% trans 'Citizen ID' %}</label>
+                                <input type="text" class="form-control" placeholder="000000000000" name="citizen_id" id="employee-citizen_id">
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
@@ -190,24 +171,21 @@
                             <div class="form-group">
                                 <label class="form-label" for="employee-pob">{% trans 'Place of birth' %}</label>
                                 <select class="form-select" name="place_of_birth" id="employee-pob"
-                                        data-url="{% url 'CityListAPI' %}" data-method="GET"
-                                        data-keyResp="cities"></select>
+                                        data-url="{% url 'CityListAPI' %}" data-method="GET" data-keyResp="cities"></select>
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label" for="employee-nationality">{% trans 'Nationality' %}</label>
                                 <select class="form-select" name="nationality" id="employee-nationality"
-                                        data-url="{% url 'CountryListAPI' %}" data-method="GET"
-                                        data-keyResp="countries"></select>
+                                        data-url="{% url 'CountryListAPI' %}" data-method="GET" data-keyResp="countries"></select>
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label" for="employee-poo">{% trans 'Place of origin' %}</label>
                                 <select class="form-select" name="place_of_origin" id="employee-poo"
-                                        data-url="{% url 'CityListAPI' %}" data-method="GET"
-                                        data-keyResp="cities"></select>
+                                        data-url="{% url 'CityListAPI' %}" data-method="GET" data-keyResp="cities"></select>
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
@@ -250,22 +228,19 @@
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label" for="employee-ban">{% trans 'Bank account No' %}</label>
-                                <input class="form-control" id="employee-ban" type="text" name="bank_acc_no"
-                                placeholder="0000 0000 0000 0000"/>
+                                <input class="form-control" id="employee-ban" type="text" name="bank_acc_no" placeholder="0000 0000 0000 0000">
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label" for="employee-acc_name">{% trans 'Account name' %}</label>
-                                <input class="form-control" id="employee-acc_name" type="text" name="acc_name"
-                                placeholder="Nguyen Van A"/>
+                                <input class="form-control" id="employee-acc_name" type="text" name="acc_name" placeholder="Nguyen Van A">
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label" for="employee-bank_name">{% trans 'Bank name' %}</label>
-                                <select class="form-control" id="employee-bank_name" type="text"
-                                        name="bank_name" data-onload="{{ data.bank }}">
+                                <select class="form-control" id="employee-bank_name" type="text" name="bank_name" data-onload="{{ data.bank }}">
                                     <option value="" selected disabled>...</option>
                                 </select>
                             </div>
@@ -273,8 +248,7 @@
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label" for="employee-tax_code">{% trans 'Tax code' %}</label>
-                                <input class="form-control" id="employee-tax_code" type="text" name="tax_code"
-                                placeholder="0000000000"/>
+                                <input class="form-control" id="employee-tax_code" type="text" name="tax_code" placeholder="0000000000">
                             </div>
                         </div>
                         <div class="col-12">
@@ -298,17 +272,39 @@
                         </div>
                         <div class="col-12">
                             <div class="form-group">
-                                <label class="form-label"
-                                       for="employee-permanent_address">{% trans 'Permanent address' %}</label>
+                                <label class="form-label" for="employee-permanent_address">{% trans 'Permanent address' %}</label>
                                 <input type="text" class="form-control" name="permanent_address" id="employee-permanent_address">
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="form-group">
-                                <label class="form-label"
-                                       for="employee-current_resident">{% trans 'Current resident' %}</label>
+                                <label class="form-label" for="employee-current_resident">{% trans 'Current resident' %}</label>
                                 <input type="text" class="form-control" name="current_resident" id="employee-current_resident">
                             </div>
+                        </div>
+                        <div class="col-12">
+                            <fieldset>
+                                <legend><span>{% trans 'Dependent' %}</span></legend>
+                            </fieldset>
+                        </div>
+                        <div class="col-12">
+                            <table class="table nowrap w-100" id="table_dependent">
+                                <thead class="bg-secondary-light-5">
+                                    <tr>
+                                        <th style="min-width: 30px">{% trans 'STT' %}</th>
+                                        <th style="min-width: 200px">{% trans 'Citizen ID Number' %}</th>
+                                        <th style="min-width: 250px">{% trans "Dependent's Full Name" %}</th>
+                                        <th style="min-width: 250px">{% trans "Permanent Address" %}</th>
+                                        <th style="min-width: 30px"></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="col-12 col-lg-7 mt-3">
+                            <button class="btn btn-primary mt-4" type="button" id="add_dependent" aria-expanded="false">
+                                <i class="fas fa-plus-circle me-2"></i>{% trans 'Add' %}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -331,16 +327,14 @@
     <input type="text" id="url-factory"
            data-hrm-detail="{% url 'HRMEmployeeDetail' pk %}"
            data-employee="{% url 'EmployeeListAllAPI' %}"
-           data-contract-sign="{% url 'HRMRuntimeSignatureAPI' %}"
-    >
+           data-contract-sign="{% url 'HRMRuntimeSignatureAPI' %}">
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
     {% if base.language == 'vi' %}
         <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
     {% endif %}
-
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/hrm/js/common.js' %}"></script>
-
     <script src="{% static 'assets/hrm/js/detail.js' %}"></script>
 {% endblock %}

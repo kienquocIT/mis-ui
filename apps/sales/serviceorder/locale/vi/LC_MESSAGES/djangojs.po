@@ -22,12 +22,8 @@ msgid "Service value"
 msgstr "Giá trị dịch vụ"
 
 #
-msgid "Service weight"
-msgstr "Trọng số"
-
-#
-msgid "Work order list"
-msgstr "Danh sách yêu cầu công việc"
+msgid "Work list"
+msgstr "Danh sách công việc"
 
 #
 msgid "contribution"
@@ -58,8 +54,8 @@ msgid "Delete service detail?"
 msgstr "Xóa chi tiết dịch vụ?"
 
 #
-msgid "Delete Work Order?"
-msgstr "Xóa yêu cầu dịch vụ"
+msgid "Delete Work?"
+msgstr "Xóa công việc"
 
 #
 msgid "Installment"
@@ -118,8 +114,8 @@ msgid "Total Balance"
 msgstr "Tổng còn lại"
 
 #
-msgid "No of Service Delivered"
-msgstr "Dịch vụ không giao hàng"
+msgid "No. of Service Delivered"
+msgstr "Số lượng dịch vụ đã thực hiện"
 
 #
 msgid "Package"
@@ -127,7 +123,7 @@ msgstr "Kiện"
 
 #
 msgid "Unit Cost"
-msgstr "Chi phí dịch vụ"
+msgstr "Giá vốn"
 
 #
 msgid "Total Cost"

@@ -1,9 +1,11 @@
 from django.urls import path
 
-from .views import PayrollTemplateList, PayrollTemplateListAPI, PayrollTemplateDetail, PayrollTemplAttrList, \
+from .views import PayrollConfigDetail, PayrollConfigDetailAPI, PayrollTemplateList, PayrollTemplateListAPI, PayrollTemplateDetail, PayrollTemplAttrList, \
     PayrollTemplateCreate, PayrollTemplAttrListAPI, PayrollTemplateUpdate, PayrollTemplateDetailAPI
 
 urlpatterns = [
+    path('payrollconfig/config', PayrollConfigDetail.as_view(), name='PayrollConfigDetail'),
+    path('payrollconfig/config/api', PayrollConfigDetailAPI.as_view(), name='PayrollConfigDetailAPI'),
     # HRM payroll template
     path('template/list', PayrollTemplateList.as_view(), name='PayrollTemplateList'),
     path('template/list/api', PayrollTemplateListAPI.as_view(), name='PayrollTemplateListAPI'),

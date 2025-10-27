@@ -14,7 +14,6 @@ $(function () {
                 if (data) {
                     $x.fn.renderCodeBreadcrumb(data);
                     $.fn.compareStatusShowPageAction(data);
-                    MaskMoney2.initCurrencyExchange(data);
                     // store && load data detail
                     QuotationLoadDataHandle.$eleStoreDetail.val(JSON.stringify(data));
                     QuotationLoadDataHandle.loadDetailQuotation(data);
@@ -73,6 +72,7 @@ $(function () {
                                 appID = 'a870e392-9ad2-4fe2-9baa-298a38691cf2';
                             }
                             new PrintTinymceControl().render(appID, data, false);
+                            PrintTinymceControl.open_modal();
                         }
                     }
                 }

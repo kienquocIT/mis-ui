@@ -238,7 +238,13 @@ class AppsCodeToList:
                 'title': _('Overtime request'),
                 'is_active': True,
             }
-        }
+        },
+        'payrolltemplate': {
+            'payrolltemplate': {
+                'title': _('Payroll template'),
+                'is_active': True,
+            }
+        },
     }
 
     @classmethod

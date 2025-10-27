@@ -1,0 +1,54 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-05 00:08+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+#
+msgid "Payroll"
+msgstr "Bảng lương"
+#
+msgid "Payroll template"
+msgstr "Biểu mẫu bảng lương"
+#
+msgid "Operation accepted"
+msgstr "Phép tính được chấp thuận"
+#
+msgid "Formula property"
+msgstr "Thuộc tính"
+#
+msgid "Code"
+msgstr "Mã"
+#
+msgid "Template name"
+msgstr "Tên biểu mẫu"
+#
+msgid "Column title"
+msgstr "Cột tiêu đề"
+#
+msgid "Value code"
+msgstr "Mã giá trị"
+#
+msgid "Data type"
+msgstr "Loại giá trị"
+#
+msgid "Template attribute"
+msgstr "Biểu mẫu thuộc tính"
+#
+msgid "Select attribute"
+msgstr "Chọn thuộc tính"
+#
+msgid "Select data source"
+msgstr "Chọn dữ liệu nguồn"

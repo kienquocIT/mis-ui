@@ -82,7 +82,7 @@
                         data-url="{% url 'EmployeeListAPI' %}"
                         data-keyResp="employee_list"
                         data-keyText="full_name" data-keyId="id"
-                        data-params="{'list_from_app':'{{data.list_from_app|escape}}', 'list_from_leave':'1'}">
+                        data-params="{'list_from_app':'{{data.list_from_app|escape}}', 'list_from_leave':'1', 'employee_inherit__is_active': 'true'}">
                 </select>
             </div>
             <div class="col-md-4 col-xs-12">

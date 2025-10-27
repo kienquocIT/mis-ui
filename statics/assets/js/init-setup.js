@@ -383,31 +383,6 @@ class MaskMoney2 {
         return dataSubmit;
     }
 
-    static appendTextExchangeMoney($item) {
-        let $next = $item.next('.mask-money-exchange');
-        if ($next.length === 0) {
-            let hidden = '';
-            if ($item.hasClass('hidden') || $item.attr('hidden') !== undefined) {
-                hidden = 'hidden';
-            }
-            if (!$item.hasClass('no-exchange-show')) {
-                $item.after(`<span class="form-text text-muted mask-money-exchange ml-1 ${hidden}"></span>`);
-            }
-        }
-        if ($next.length > 0) {
-            let $currencyAllowEle = $('#is_currency_exchange');
-            if ($currencyAllowEle.length > 0) {
-                if ($currencyAllowEle.is(':checked')) {
-                    $next.removeAttr('hidden');
-                }
-                if (!$currencyAllowEle.is(':checked')) {
-                    $next.attr('hidden', true);
-                }
-            }
-        }
-        return true;
-    }
-
     constructor(configData) {
         this.configData = configData;
     }
@@ -554,7 +529,6 @@ class MaskMoney2 {
     runAllowExchange($ele, value) {
         let $currencyAllowEle = $('#is_currency_exchange');
         if ($currencyAllowEle.length > 0) {
-            // MaskMoney2.appendTextExchangeMoney($($ele));
             if ($currencyAllowEle.is(':checked')) {
                 this.applyMaskMoneyExchange($ele, value);
             }

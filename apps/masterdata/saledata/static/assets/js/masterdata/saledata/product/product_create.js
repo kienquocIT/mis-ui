@@ -19,6 +19,7 @@ $(document).ready(async function () {
     ProductPageFunction.LoadWareHouseListDetail()
     ProductPageFunction.LoadWareHouseOverViewDetail()
     ProductPageFunction.LoadSpecificSerialNumberList()
+    ProductPageFunction.LoadCopyProductFrom()
     ProductPageFunction.LoadPurchaseUom()
     ProductPageFunction.LoadPurchaseTax()
     ProductPageFunction.LoadComponentTable()

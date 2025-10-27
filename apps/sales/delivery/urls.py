@@ -5,6 +5,7 @@ from .views import (
     OrderPickingList, OrderPickingListAPI, OrderPickingDetail, OrderPickingDetailAPI, OrderDeliveryList,
     OrderDeliveryListAPI, OrderDeliveryDetail, OrderDeliveryDetailAPI, OrderDeliveryEdit, OrderPickingEdit,
     OrderDeliveryCreate, DeliveryForRecoveryListAPI, DeliveryProductLeaseListAPI, OrderDeliveryDetailPrintAPI,
+    DeliveryWorkLogListAPI,
 )
 
 urlpatterns = [
@@ -27,4 +28,5 @@ urlpatterns = [
 
     path('for-recovery/list/api', DeliveryForRecoveryListAPI.as_view(), name='DeliveryForRecoveryListAPI'),
     path('product-lease/list/api', DeliveryProductLeaseListAPI.as_view(), name='DeliveryProductLeaseListAPI'),
+    path('work-log/list/api', DeliveryWorkLogListAPI.as_view(), name='DeliveryWorkLogListAPI'),
 ]

@@ -265,7 +265,7 @@
 
 <!-- Product Contribution Modal -->
 <div class="modal fade" id="modal-product-contribution" tabindex="-1" role="dialog" aria-labelledby="modal-product-contribution" data-bs-backdrop="static">
-    <div class="modal-dialog modal-lg" role="document" style="min-width: 85%">
+    <div class="modal-dialog modal-xl" role="document" style="min-width: 85%">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{% trans "Contribution of Product/Service" %}</h5>
@@ -274,6 +274,7 @@
                 </button>
             </div>
             <div class="modal-body" style="max-height: 70vh; overflow: auto">
+                <b class="text-primary"><i class="fa-solid fa-thumbtack"></i> {% trans "Work" %}: </b><span class="work-order-description"></span>
                 <div class="nicescroll-bar">
                     <table class="table nowrap w-100" id="modal-table-product-contribution">
                         <thead class="bg-secondary-light-5">
@@ -413,9 +414,9 @@
 </div>
 
 <!--Delivery Work Modal-->
-<div class="modal fade" id="delivery_work_order_modal" tabindex="-1"
-     role="dialog" aria-labelledby="delivery_work_order_modal" aria-hidden="true">
-    <div class="modal-dialog modal-lg" style="min-width: 80%" role="document">
+<div class="modal fade" id="deliveryInfoModalCenter" tabindex="-1"
+     role="dialog" aria-labelledby="deliveryInfoModalCenter" aria-hidden="true">
+    <div class="modal-dialog modal-xl" style="min-width: 80%" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{% trans "Select Work with Delivery" %}</h5>
@@ -424,6 +425,7 @@
                 </button>
             </div>
             <div class="modal-body" style="overflow: auto; max-height: 80vh">
+                <b class="target-code text-primary"></b>
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6 border-right">
                         <div class="row">
@@ -461,9 +463,28 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                <button type="button" id="btn_apply_delivery" class="btn btn-primary"
+                <button type="button" id="btn-delivery" class="btn btn-primary"
                         data-bs-dismiss="modal">{% trans 'Save' %}
                 </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div
+        class="modal fade" id="deliveryLogModal" tabindex="-1"
+        role="dialog" aria-labelledby="deliveryLogModal"
+>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><b>{% trans 'Delivery logs' %}</b></h5>
+                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
             </div>
         </div>
     </div>

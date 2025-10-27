@@ -132,6 +132,7 @@ class ServiceOrderPageHandler {
         ServiceOrder.handleSaveModalPackage();
         ServiceOrder.handleTogglePackageChildren();
         ServiceOrder.handleSelectContainer();
+        ServiceOrder.handleClickOpenDeliveryLogs();
     }
 
     // Hàm chung cho các event lên quan tới bảng payment

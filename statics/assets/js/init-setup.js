@@ -294,12 +294,13 @@ class MaskMoney2 {
 
         if ($currencyAllowEle.length > 0 && $currencyCompanyEle.length > 0 && $currencyExchangeEle.length > 0 && $currencyExchangeEleRateEle.length > 0) {
             DocumentControl.getCompanyCurrencyConfig().then((configCurrencyData) => {
-                let clsMaskMoney2 = new MaskMoney2(configCurrencyData);
                 // Set event on click to allow/ not allow currency exchange
                 $currencyAllowEle.on('click', function () {
                     $currencyExchangeEle.attr('disabled', true);
+                    $currencyExchangeEleRateEle.attr('readonly', true);
                     if ($currencyAllowEle.is(':checked')) {
                         $currencyExchangeEle.removeAttr('disabled');
+                        $currencyExchangeEleRateEle.removeAttr('readonly');
                     }
                     if (!$currencyAllowEle.is(':checked')) {
                         let dataCompany = SelectDDControl.get_data_from_idx($currencyCompanyEle, $currencyCompanyEle.val());
@@ -312,7 +313,10 @@ class MaskMoney2 {
                 $currencyExchangeEle.on('change', function () {
                     let dataExchange = SelectDDControl.get_data_from_idx($currencyExchangeEle, $currencyExchangeEle.val());
                     $currencyExchangeEleRateEle.attr('value', dataExchange?.['rate']);
-                    $currencyExchangeEleRateEle.val(clsMaskMoney2.applyConfigExchange(dataExchange?.['rate'], false));
+                    $.fn.initMaskMoney2();
+                });
+                // Set event on change currency rate then apply maskMoney
+                $currencyExchangeEleRateEle.on('change', function () {
                     $.fn.initMaskMoney2();
                 });
                 // Get currency company then set as default currency
@@ -325,13 +329,20 @@ class MaskMoney2 {
                     FormElementControl.loadInitS2($currencyExchangeEle, [configData?.['master_data_currency']]);
                     if (docData?.['is_currency_exchange'] && docData?.['currency_exchange_data'] && docData?.['currency_exchange_rate']) {
                         if (docData?.['is_currency_exchange'] === true) {
-                            $currencyAllowEle.trigger('click');
+                            $currencyAllowEle[0].checked = true;
+                            $currencyExchangeEle.removeAttr('disabled');
+                            $currencyExchangeEleRateEle.removeAttr('readonly');
                         }
                         FormElementControl.loadInitS2($currencyExchangeEle, [docData?.['currency_exchange_data']]);
+                        $currencyExchangeEleRateEle.attr('value', docData?.['currency_exchange_rate']);
+                        $.fn.initMaskMoney2();
                     }
-                    $currencyExchangeEle.trigger('change');
+                    if (window.location.href.includes('/detail/')) {
+                        $currencyAllowEle.attr('hidden', 'true');
+                        $currencyExchangeEle.attr('readonly', 'true');
+                        $currencyExchangeEleRateEle.attr('readonly', 'true');
+                    }
                 });
-
             });
             if (window.location.href.includes('/detail/')) {
                 $currencyAllowEle.attr('hidden', 'true');
@@ -358,7 +369,7 @@ class MaskMoney2 {
                     dataSubmit['currency_company_data'] = dataCompany;
                     dataSubmit['currency_exchange_id'] = $currencyExchangeEle.val();
                     dataSubmit['currency_exchange_data'] = dataExchange;
-                    dataSubmit['currency_exchange_rate'] = dataExchange?.['rate'] ? dataExchange?.['rate'] : 1;
+                    dataSubmit['currency_exchange_rate'] = $currencyExchangeEleRateEle.valCurrency();
                 }
                 if ($currencyAllowEle[0].checked === false) {
                     dataSubmit['currency_company_id'] = null;
@@ -488,16 +499,13 @@ class MaskMoney2 {
         }
     }
 
-    applyConfigExchange(strAttrValue, isExchange = true) {
+    applyConfigExchange(strAttrValue) {
         let strDataParsed = parseFloat(strAttrValue);
         let $currencyExchangeEleRateEle = $('#currency_exchange_rate');
         if (strAttrValue !== null && Number.isFinite(strDataParsed) && $currencyExchangeEleRateEle.length > 0) {
-            if (isExchange === true) {
-                let $currencyExchangeEle = $('#currency_exchange_id');
-                if ($currencyExchangeEle.length > 0) {
-                    let dataSelected = SelectDDControl.get_data_from_idx($currencyExchangeEle, $currencyExchangeEle.val());
-                    strDataParsed = strDataParsed * parseFloat(dataSelected?.['rate'] ? dataSelected?.['rate'] : 1);
-                }
+            let dataExchange = MaskMoney2.setupSubmitCurrencyExchange();
+            if (dataExchange?.['is_currency_exchange'] === true) {
+                strDataParsed = strDataParsed * dataExchange?.['currency_exchange_rate'];
             }
             strAttrValue = (strDataParsed >= 0 ? strDataParsed : strDataParsed * (-1)).toString();
 

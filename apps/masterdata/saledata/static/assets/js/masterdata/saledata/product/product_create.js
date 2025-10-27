@@ -7,6 +7,7 @@ $(document).ready(async function () {
     await ProductPageFunction.LoadPageDataFirst()
     ProductEventHandler.InitPageEven()
     ProductPageFunction.LoadGeneralProductType()
+    ProductPageFunction.LoadRepresentativeForPMProduct()
     ProductPageFunction.LoadGeneralProductCategory()
     ProductPageFunction.LoadGeneralUoMGroup()
     ProductPageFunction.LoadGeneralManufacturer()

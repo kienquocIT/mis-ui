@@ -26,10 +26,10 @@ class COFPageElements {
         this.$payment_to_customer = $('#payment_to_customer')
         // employee
         this.$employee_space = $('.employee-space')
-        this.$employee_name = $('#employee-name')
-        this.$employee_select_modal = $('#employee-select-modal')
-        this.$table_select_employee = $('#table-select-employee')
-        this.$accept_select_employee_btn = $('#accept-select-employee-btn')
+        this.$opportunity_id = $('#opportunity_id')
+        this.$so_mapped = $('#so_mapped')
+        this.$lo_mapped = $('#lo_mapped')
+        this.$svo_mapped = $('#svo_mapped')
         this.$order_cost_table = $('#order-cost-table')
         // payment on account
         this.$account_space = $('.account-space')
@@ -332,7 +332,7 @@ class COFPageVariables {
                                 <input type="checkbox"
                                        ${pageVariables.is_detail_page ? 'disabled': ''}
                                        class="form-check-input select_row_order_cost"
-                                       data-sale-order-id="${row?.['id']}"
+                                       data-sale-order-id="${row?.['expense_item_data']?.['id']}"
                                 >
                                 <label class="form-check-label"></label>
                             </div>`
@@ -341,25 +341,25 @@ class COFPageVariables {
             {
                 className: 'w-30',
                 render: (data, type, row) => {
-                    return `<span class="text-muted">${row?.['expense_item']?.['title'] || ''}</span>`
+                    return `<span class="text-muted">${row?.['expense_item_data']?.['title'] || ''}</span>`
                 }
             },
             {
                 className: 'text-right w-20',
                 render: (data, type, row) => {
-                    return `<span class="mask-money" data-init-money="${row?.['recon_total'] || 0}"></span>`;
+                    return `<span class="mask-money" data-init-money="${row?.['total_value'] || 0}"></span>`;
                 }
             },
             {
                 className: 'text-right w-20',
                 render: (data, type, row) => {
-                    return `<span class="mask-money recon_balance_value" data-init-money="${row?.['recon_balance'] || 0}"></span>`;
+                    return `<span class="mask-money total_balance" data-init-money="${row?.['total_balance'] || 0}"></span>`;
                 }
             },
             {
                 className: 'text-right w-20',
                 render: (data, type, row) => {
-                    return `<span class="mask-money recon_balance_value" data-init-money="${row?.['this_time'] || 0}"></span>`;
+                    return `<input class="form-control mask-money this_time text-right" value="${row?.['this_time'] || 0}">`;
                 }
             },
         ]
@@ -521,64 +521,126 @@ class COFPageFunction {
         });
     }
     // cof for employee
-    static LoadOrderCostTable(data_params={}, data_list=[], approved=false) {
-        if (approved) {
-            let stage_id = []
-            for (let i = 0; i < data_list.length; i++) {
-                stage_id.push(data_list[i]?.['purchase_order_stage_data']?.['id'])
-            }
-            data_params['id__in'] = stage_id.join(',')
-        }
-        pageElements.$order_cost_table.DataTable().clear().destroy()
-        let frm = new SetupFormSubmit(pageElements.$order_cost_table);
-        if (Object.keys(data_params).length > 0) {
-            pageElements.$order_cost_table.DataTableDefault({
-                dom: 't',
-                reloadCurrency: true,
-                useDataServer: true,
-                rowIdx: true,
-                scrollX: true,
-                scrollY: '30vh',
-                scrollCollapse: true,
-                paging: false,
-                ajax: {
-                    url: frm.dataUrl,
-                    type: frm.dataMethod,
-                    data: data_params,
-                    dataSrc: function (resp) {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            return resp.data['po_payment_stage_list'] ? resp.data['po_payment_stage_list'] : [];
-                        }
-                        return [];
-                    },
-                },
-                columns: pageVariables.order_cost_table_cfg,
-                initComplete: function () {
-                    for (let i=0; i < data_list.length; i++) {
-                        let row_checkbox = pageElements.$advance_for_supplier_table.find(`tbody .select_row_advance_for_supplier[data-advance-for-supplier-id="${data_list[i]?.['purchase_order_stage_data']?.['id']}"]`)
-                        row_checkbox.prop('checked', true)
-                        if (approved) {
-                            row_checkbox.closest('tr').find('.recon_balance_value_advance').attr('data-init-money', data_list[i]?.['sum_balance_value'])
-                        }
-                        row_checkbox.closest('tr').find('.cash_out_value_advance').attr('value', data_list[i]?.['sum_payment_value'])
-                    }
+    static LoadSaleOrder(data) {
+        pageElements.$so_mapped.initSelect2({
+            allowClear: true,
+            ajax: {
+                url: pageElements.$so_mapped.attr('data-url'),
+                data: {'system_status': 3},
+                method: 'GET',
+            },
+            templateResult: function (state) {
+                return $(`<span class="badge badge-light mr-1">${state.data?.['code']}</span><span>${state.data?.['title']}</span>`);
+            },
+            data: (data ? data : null),
+            keyResp: 'sale_order_list',
+            keyId: 'id',
+            keyText: 'code',
+        }).on('change', function () {})
+    }
+    static LoadLeaseOrder(data) {
+        pageElements.$lo_mapped.initSelect2({
+            allowClear: true,
+            ajax: {
+                url: pageElements.$lo_mapped.attr('data-url'),
+                data: {'system_status': 3},
+                method: 'GET',
+            },
+            templateResult: function (state) {
+                return $(`<span class="badge badge-light mr-1">${state.data?.['code']}</span><span>${state.data?.['title']}</span>`);
+            },
+            data: (data ? data : null),
+            keyResp: 'lease_order_list',
+            keyId: 'id',
+            keyText: 'code',
+        }).on('change', function () {})
+    }
+    static LoadServiceOrder(data) {
+        pageElements.$svo_mapped.initSelect2({
+            allowClear: true,
+            ajax: {
+                url: pageElements.$svo_mapped.attr('data-url'),
+                data: {'system_status': 3},
+                method: 'GET',
+            },
+            templateResult: function (state) {
+                return $(`<span class="badge badge-light mr-1">${state.data?.['code']}</span><span>${state.data?.['title']}</span>`);
+            },
+            data: (data ? data : null),
+            keyResp: 'service_order_list',
+            keyId: 'id',
+            keyText: 'code',
+        }).on('change', function () {})
+    }
+    static LoadOrderCostTable(data_params={}, data_list=[]) {
+        let so_expense_list_ajax = $.fn.callAjax2({
+                url: pageElements.$order_cost_table.attr('data-so-expense-list-url'),
+                data: {'sale_order_id': data_params?.['sale_order_id']},
+                method: 'GET'
+            }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('so_expense_list')) {
+                    return data?.['so_expense_list'] || [];
                 }
-            });
-        }
-        else {
-            pageElements.$order_cost_table.DataTableDefault({
-                dom: 't',
-                reloadCurrency: true,
-                rowIdx: true,
-                scrollX: true,
-                scrollY: '30vh',
-                scrollCollapse: true,
-                paging: false,
-                data: [],
-                columns: pageVariables.order_cost_table_cfg,
-            });
-        }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        let lo_expense_list_ajax = $.fn.callAjax2({
+                url: pageElements.$order_cost_table.attr('data-lo-expense-list-url'),
+                data: {'lease_order_id': data_params?.['lease_order_id']},
+                method: 'GET'
+            }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('lo_expense_list')) {
+                    return data?.['lo_expense_list'] || [];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([so_expense_list_ajax, lo_expense_list_ajax]).then(
+            (results) => {
+                let so_expense_list = results[0];
+                let lo_expense_list = results[1];
+
+                pageElements.$order_cost_table.DataTable().clear().destroy()
+                if (Object.keys(data_params).length > 0) {
+                    pageElements.$order_cost_table.DataTableDefault({
+                        dom: 't',
+                        reloadCurrency: true,
+                        rowIdx: true,
+                        scrollX: true,
+                        scrollY: '30vh',
+                        scrollCollapse: true,
+                        paging: false,
+                        data: so_expense_list.concat(lo_expense_list),
+                        columns: pageVariables.order_cost_table_cfg,
+                        initComplete: function () {}
+                    });
+                }
+                else {
+                    pageElements.$order_cost_table.DataTableDefault({
+                        dom: 't',
+                        reloadCurrency: true,
+                        rowIdx: true,
+                        scrollX: true,
+                        scrollY: '30vh',
+                        scrollCollapse: true,
+                        paging: false,
+                        data: [],
+                        columns: pageVariables.order_cost_table_cfg,
+                    });
+                }
+            })
     }
     // modal
     static LoadPaymentStageTable(data_list=[], valid_detail_payment=[]) {
@@ -744,8 +806,7 @@ class COFHandler {
             frm.dataForm['payment_to_customer_value'] = pageElements.$payment_to_customer.attr('value')
         }
         else if (pageElements.$cof_type.val() === '2') {
-            frm.dataForm['employee_id'] = pageElements.$employee_name.attr('data-id') || null
-            frm.dataForm['advance_for_employee_value'] = 999
+
         }
         else if (pageElements.$cof_type.val() === '3') {
         }
@@ -820,9 +881,6 @@ class COFHandler {
                         pageElements.$payment_to_customer.attr('value', data?.['payment_to_customer_value'] ? data?.['payment_to_customer_value'] : 0)
                     }
                     else if (pageElements.$cof_type.val() === '2') {
-                        let employee_data = data?.['employee_data'] || {}
-                        pageElements.$employee_name.val(`${employee_data?.['full_name']} - ${employee_data?.['group']?.['title'] || ''}`)
-                        pageElements.$employee_name.attr('data-id', employee_data?.['id'] || '')
                         COFPageFunction.LoadAccountBankAccount()
                     }
                     else if (pageElements.$cof_type.val() === '3') {
@@ -924,22 +982,6 @@ class COFEventHandler {
             }
 
             COFPageFunction.LoadAccountBankAccount(selected?.['bank_accounts_mapped'] || [])
-        })
-        pageElements.$accept_select_employee_btn.on('click', function () {
-            let selected = null
-            $('input[name="employee-selected-radio"]').each(function () {
-                if ($(this).prop('checked')) {
-                    selected = $(this).attr('data-employee') ? JSON.parse($(this).attr('data-employee')) : null
-                    pageElements.$employee_name.attr('data-id', selected?.['id'] || '')
-                    pageElements.$employee_name.val(`${(selected?.['full_name'] || '')} - ${((selected?.['group'] || {})?.['title'] || '')}`)
-                    pageElements.$employee_select_modal.modal('hide')
-                }
-            })
-            if (!selected) {
-                $.fn.notifyB({description: 'Nothing selected'}, 'warning');
-            }
-
-            COFPageFunction.LoadAccountBankAccount()
         })
         // thay đổi giá trị tạm ứng không theo hđ
         pageElements.$advance_for_supplier_value.on('change', function () {
@@ -1060,6 +1102,21 @@ class COFEventHandler {
         pageElements.$btn_add_row_account.on('click', function () {
             UsualLoadPageFunction.AddTableRow(pageElements.$payment_on_account_table)
             let row_added = pageElements.$payment_on_account_table.find('tbody tr:last-child')
+        })
+
+        pageElements.$opportunity_id.on('change', function () {
+            let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
+            if (selected) {
+                console.log(selected)
+                COFPageFunction.LoadSaleOrder(selected?.['sale_order'] || {})
+                COFPageFunction.LoadLeaseOrder(selected?.['lease_order'] || {})
+                pageElements.$so_mapped.prop('disabled', true)
+                pageElements.$lo_mapped.prop('disabled', true)
+                COFPageFunction.LoadOrderCostTable({
+                    'sale_order_id': selected?.['sale_order']?.['id'],
+                    'lease_order_id': selected?.['lease_order']?.['id']
+                })
+            }
         })
     }
 }

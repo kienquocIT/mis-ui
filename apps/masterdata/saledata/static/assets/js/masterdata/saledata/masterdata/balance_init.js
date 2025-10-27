@@ -24,9 +24,8 @@ $(document).ready(function () {
             rowIdx: true,
             useDataServer: true,
             reloadCurrency: true,
-            paging: false,
             scrollCollapse: true,
-            scrollY: '60vh',
+            scrollY: '65vh',
             scrollX: true,
             ajax: {
                 url: frm.dataUrl,
@@ -35,7 +34,7 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('balance_init_list')) {
                         // console.log(resp.data['balance_init_list'])
-                        return resp.data['balance_init_list'] ? resp.data['balance_init_list'] : []
+                        return resp.data['balance_init_list'] || []
                     }
                     throw Error('Call data raise errors.')
                 },
@@ -48,44 +47,78 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'w-35',
+                    className: 'w-25',
                     render: (data, type, row) => {
-                        return `<span data-item-id="${row?.['product']?.['id']}" class="badge badge-sm badge-primary balance-product">
-                                    ${row?.['product']?.['code']}
-                                </span><br>
-                                <span class="text-primary">${row?.['product']?.['title']}</span>
-                                <script class="script-lot">${JSON.stringify(row?.['data_lot'])}</script>
-                                <script class="script-sn">${JSON.stringify(row?.['data_sn'])}</script>
+                        let dot = [
+                            '<span class="badge bg-blue badge-indicator"></span>',
+                            '<span class="badge bg-success badge-indicator"></span>',
+                            '<span class="badge bg-danger badge-indicator"></span>'
+                        ][parseInt(row?.['product']?.['valuation_method'])]
+                        return `
+                            ${dot}
+                            <span data-item-id="${row?.['product']?.['id']}" class="badge badge-sm badge-soft-primary balance-product">
+                                ${row?.['product']?.['code']}
+                            </span><br>
+                            <span class="text-primary fw-bold">${row?.['product']?.['title']}</span>
+                            <script class="script-lot">${JSON.stringify(row?.['data_lot'] || '[]')}</script>
+                            <script class="script-sn">${JSON.stringify(row?.['data_sn'] || '[]')}</script>
                         `;
                     }
                 },
                 {
-                    className: 'w-20',
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        return `<span class="text-primary">${[
+                            $.fn.gettext('None'), $.fn.gettext('Batch/Lot'), $.fn.gettext('Serial number')
+                        ][row?.['product']?.['general_traceability_method']]}</span>`;
+                    }
+                },
+                {
+                    className: 'w-15',
                     render: (data, type, row) => {
                         return `<span data-wh-id="${row?.['warehouse']?.['id']}"
-                                      class="badge badge-sm badge-blue balance-wh">${row?.['warehouse']?.['code']}</span><br>
-                                <span class="text-blue">${row?.['warehouse']?.['title']}</span>`;
+                                      class="badge badge-sm badge-soft-primary balance-wh mr-1">${row?.['warehouse']?.['code']}</span>
+                                <span class="text-primary">${row?.['warehouse']?.['title']}</span>`;
                     }
                 },
                 {
-                    className: 'w-15',
+                    className: 'w-15 text-right',
                     render: (data, type, row) => {
-                        return `<span class="balance-quantity mr-1">${row?.['quantity']}</span><span class="text-muted uom-title">${row?.['uom']?.['title']}</span>`;
+                        return `<span class="balance-quantity text-primary mr-1">${row?.['quantity']}</span><span class="text-primary uom-title">${row?.['uom']?.['title']}</span>`;
                     }
                 },
                 {
-                    className: 'w-15',
+                    className: 'w-15 text-right',
                     render: (data, type, row) => {
-                        return `<span class="balance-value mask-money" data-init-money="${row?.['value']}"></span>`;
+                        return row?.['product']?.['valuation_method'] !== 2 ? `<span class="balance-value text-primary mask-money" data-init-money="${row?.['value']}"></span>` : '--';
                     }
                 },
                 {
-                    className: 'w-5 text-right',
+                    className: 'w-10 text-right',
                     render: (data, type, row) => {
-                        return `<a href="#" class="text-danger clear-balance-init"><i class="ri-delete-bin-6-line fs-5"></i></a>`;
+                        let btn_detail = row?.['product']?.['general_traceability_method'] !== 0 ? `<a href="#" class="text-primary view-detail mr-3" data-bs-toggle="modal" data-bs-target="#modal-view-detail"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>` : ''
+                        return `${btn_detail}<a href="#" class="text-danger clear-balance-init"><i class="far fa-trash-alt"></i></a>`;
                     }
                 },
             ],
+            initComplete: function () {
+                let wrapper$ = dtb_balance_init_item_Ele.closest('.dataTables_wrapper');
+                const headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+                const textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+                headerToolbar$.prepend(textFilter$);
+                if (textFilter$.length > 0) {
+                    textFilter$.css('display', 'flex');
+                    textFilter$.append(
+                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="text-muted">${trans_script.attr('data-trans-vm')}</span>`)
+                    ).append(
+                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="badge bg-blue badge-indicator"></span><span class="text-muted">${trans_script.attr('data-trans-fifo')}</span>`)
+                    ).append(
+                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="badge bg-success badge-indicator"></span><span class="text-muted">${trans_script.attr('data-trans-we')}</span>`)
+                    ).append(
+                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="badge bg-danger badge-indicator"></span><span class="text-muted">${trans_script.attr('data-trans-si')}</span>`)
+                    )
+                }
+            }
         },);
     }
     LoadBalanceInitTable()
@@ -93,6 +126,7 @@ $(document).ready(function () {
     function LoadLotTable(data_list=[]) {
         dtb_load_lot.DataTable().clear().destroy()
         dtb_load_lot.DataTableDefault({
+            styleDom: 'hide-foot',
             rowIdx: true,
             useDataServer: false,
             reloadCurrency: true,
@@ -139,6 +173,21 @@ $(document).ready(function () {
                     }
                 },
             ],
+            initComplete: function () {
+                if (data_list.length > 0) {
+                    let sum_quantity = 0
+                    dtb_load_lot.find('tbody tr').each(function (index, ele) {
+                        let item = data_list[index]
+                        sum_quantity += Number(item?.['lot_quantity'] || 0)
+                        $(ele).find('.lot-number-input').val(item?.['lot_number']);
+                        $(ele).find('.lot-number-quantity-input').val(item?.['lot_quantity']);
+                        $(ele).find('.lot-expire-date-input').val(item?.['expire_date']);
+                        $(ele).find('.lot-manufacture-date-input').val(item?.['manufacture_date']);
+                        UsualLoadPageFunction.LoadDate({element: $(ele).find('.date-time-input')})
+                    })
+                    prd_quantity_Ele.val(sum_quantity)
+                }
+            }
         });
     }
     LoadLotTable()
@@ -146,6 +195,7 @@ $(document).ready(function () {
     function LoadSNTable(data_list=[]) {
         dtb_load_sn.DataTable().clear().destroy()
         dtb_load_sn.DataTableDefault({
+            styleDom: 'hide-foot',
             rowIdx: true,
             useDataServer: false,
             reloadCurrency: true,
@@ -162,13 +212,13 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'w-25',
+                    className: 'w-15',
                     render: (data, type, row) => {
                         return `<input class="form-control vendor-sn-input">`;
                     }
                 },
                 {
-                    className: 'w-25',
+                    className: 'w-15',
                     render: (data, type, row) => {
                         return `<input class="form-control sn-input">`;
                     }
@@ -198,12 +248,39 @@ $(document).ready(function () {
                     }
                 },
                 {
+                    className: 'w-20',
+                    render: (data, type, row) => {
+                        let selected = SelectDDControl.get_data_from_idx(prd_Ele, prd_Ele.val())
+                        let is_disabled = selected?.['valuation_method'] === 2 ? '' : 'disabled'
+                        return `<input ${is_disabled} class="form-control mask-money specific-value" value="0">`;
+                    }
+                },
+                {
                     className: 'w-5 text-right',
                     render: (data, type, row) => {
                         return `<a href="#" class="text-secondary delete-row-sn"><i class="far fa-trash-alt"></i></a>`;
                     }
                 },
-            ]
+            ],
+            initComplete: function () {
+                if (data_list.length > 0) {
+                    let selected = SelectDDControl.get_data_from_idx(prd_Ele, prd_Ele.val())
+                    let is_disabled_specific_value = selected?.['valuation_method'] !== 2
+                    dtb_load_sn.find('tbody tr').each(function (index, ele) {
+                        let item = data_list[index]
+                        $(ele).find('.vendor-sn-input').val(item?.['vendor_sn']);
+                        $(ele).find('.sn-input').val(item?.['serial_number']);
+                        $(ele).find('.sn-expire-date-input').val(item?.['expire_date']);
+                        $(ele).find('.sn-manufacture-date-input').val(item?.['manufacture_date']);
+                        $(ele).find('.sn-warranty-start-input').val(item?.['warranty_start']);
+                        $(ele).find('.sn-warranty-end-input').val(item?.['warranty_end']);
+                        $(ele).find('.specific-value').prop('disabled', is_disabled_specific_value ).attr('value', is_disabled_specific_value ? 0 : item?.['specific_value']);
+                        UsualLoadPageFunction.LoadDate({element: $(ele).find('.date-time-input')})
+                    })
+                    prd_quantity_Ele.val(data_list.length)
+                    $.fn.initMaskMoney2()
+                }
+            }
         });
     }
     LoadSNTable()
@@ -216,7 +293,7 @@ $(document).ready(function () {
                 method: 'GET',
             },
             templateResult: function(data) {
-                return $(`<span class="badge badge-soft-blue badge-sm mr-1">${data.data?.['code']}</span><span>${data.data?.['title']}</span>`);
+                return $(`<span class="badge badge-light badge-sm">${data.data?.['code']}</span><br><span>${data.data?.['title']}</span>`);
             },
             data: (data ? data : null),
             keyResp: 'warehouse_list',
@@ -242,7 +319,7 @@ $(document).ready(function () {
                 return res
             },
             templateResult: function(data) {
-                return $(`<span class="badge badge-soft-primary badge-sm mr-1">${data.data?.['code']}</span><span>${data.data?.['title']}</span>`);
+                return $(`<span class="badge badge-light badge-sm">${data.data?.['code']}</span><br><span>${data.data?.['title']}</span>`);
             },
             data: (data ? data : null),
             keyResp: 'product_list',
@@ -251,12 +328,19 @@ $(document).ready(function () {
         }).on('change', function () {
             if (prd_Ele.val()) {
                 let selected = SelectDDControl.get_data_from_idx(prd_Ele, prd_Ele.val())
+                if (selected?.['valuation_method'] === 2) {
+                    prd_value_Ele.val(0).prop('disabled', true)
+                }
+                else {
+                    prd_value_Ele.prop('disabled', false)
+                }
                 dtb_load_sn_space.prop('hidden', selected?.['general_traceability_method'] !== 2)
                 dtb_load_lot_space.prop('hidden', selected?.['general_traceability_method'] !== 1)
                 prd_quantity_Ele.val('0').prop('disabled', selected?.['general_traceability_method'] !== 0)
                 prd_uom_Ele.text(selected?.['inventory_uom']?.['title'])
                 LoadLotTable()
                 LoadSNTable()
+                $('#excelFileInput').val('')
             }
         })
     }
@@ -313,7 +397,7 @@ $(document).ready(function () {
                 }
             }
         })
-    });
+    })
 
     function CombinesDataDelete(frmEle, prd_id, wh_id) {
         let frm = new SetupFormSubmit($(frmEle));
@@ -346,7 +430,7 @@ $(document).ready(function () {
             sum_quantity += Number($(ele).find('.lot-number-quantity-input').val() || 0)
         })
         prd_quantity_Ele.val(sum_quantity)
-    });
+    })
 
     $('#add-row-sn').on("click", function () {
         let current_quantity = Number(prd_quantity_Ele.val() || 0)
@@ -363,7 +447,7 @@ $(document).ready(function () {
             $(this).closest('table'),
             parseInt($(this).closest('tr').find('td:first-child').text())
         )
-    });
+    })
 
     $(document).on("change", '.lot-number-quantity-input', function () {
         let sum_quantity = 0
@@ -371,43 +455,47 @@ $(document).ready(function () {
             sum_quantity += Number($(ele).find('.lot-number-quantity-input').val() || 0)
         })
         prd_quantity_Ele.val(sum_quantity)
-    });
+    })
 
-    $(document).on("click", 'tbody tr', function () {
-        let data_lot = $(this).find('.script-lot').text() ? JSON.parse($(this).find('.script-lot').text()) : []
-        let data_sn = $(this).find('.script-sn').text() ? JSON.parse($(this).find('.script-sn').text()) : []
+    $(document).on("click", '.view-detail', function () {
+        let data_lot = $(this).closest('tr').find('.script-lot').text() ? JSON.parse($(this).closest('tr').find('.script-lot').text()) : []
+        let data_sn = $(this).closest('tr').find('.script-sn').text() ? JSON.parse($(this).closest('tr').find('.script-sn').text()) : []
         let data_lot_html = ''
         let data_sn_html = ''
         if (data_lot.length > 0) {
+            $('#modal-view-detail').modal('show')
             for (let i = 0; i < data_lot.length; i++) {
                 data_lot_html += `<tr>
-                        <td>${data_lot[i]?.['lot_number']}</td>
-                        <td>${data_lot[i]?.['quantity_import']}</td>
-                        <td>${$(this).find('.uom-title').text()}</td>
-                        <td>${data_lot[i]?.['expire_date'] ? moment(data_lot[i]?.['expire_date']).format('DD/MM/YYYY') : '--'}</td>
-                        <td>${data_lot[i]?.['manufacture_date'] ? moment(data_lot[i]?.['manufacture_date']).format('DD/MM/YYYY') : '--'}</td>
-                    </tr>`
-                }
-                $('#table-detail-space-sn').prop('hidden', true)
-                $('#detail-space-sn').html(data_sn_html)
-                $('#table-detail-space-lot').prop('hidden', false)
-                $('#detail-space-lot').html(data_lot_html)
+                    <td>${data_lot[i]?.['lot_number'] || ''}</td>
+                    <td>${data_lot[i]?.['quantity_import']}</td>
+                    <td>${$(this).closest('tr').closest('tr').find('.uom-title').text()}</td>
+                    <td>${data_lot[i]?.['expire_date'] ? moment(data_lot[i]?.['expire_date']).format('DD/MM/YYYY') : ''}</td>
+                    <td>${data_lot[i]?.['manufacture_date'] ? moment(data_lot[i]?.['manufacture_date']).format('DD/MM/YYYY') : ''}</td>
+                </tr>`
+            }
+            $('#table-detail-space-sn').prop('hidden', true)
+            $('#detail-space-sn').html(data_sn_html)
+            $('#table-detail-space-lot').prop('hidden', false)
+            $('#detail-space-lot').html(data_lot_html)
         }
         else if (data_sn.length > 0) {
+            $('#modal-view-detail').modal('show')
             for (let i = 0; i < data_sn.length; i++) {
                 data_sn_html += `<tr>
-                        <td>${data_sn[i]?.['vendor_serial_number']}</td>
-                        <td>${data_sn[i]?.['serial_number']}</td>
-                        <td>${data_sn[i]?.['expire_date'] ? moment(data_sn[i]?.['expire_date']).format('DD/MM/YYYY') : '--'}</td>
-                        <td>${data_sn[i]?.['manufacture_date'] ? moment(data_sn[i]?.['manufacture_date']).format('DD/MM/YYYY') : '--'}</td>
-                        <td>${data_sn[i]?.['warranty_start'] ? moment(data_sn[i]?.['warranty_start']).format('DD/MM/YYYY') : '--'}</td>
-                        <td>${data_sn[i]?.['warranty_end'] ? moment(data_sn[i]?.['warranty_end']).format('DD/MM/YYYY') : '--'}</td>
-                    </tr>`
-                }
-                $('#table-detail-space-lot').prop('hidden', true)
-                $('#detail-space-lot').html(data_sn_html)
-                $('#table-detail-space-sn').prop('hidden', false)
-                $('#detail-space-sn').html(data_sn_html)
+                    <td>${data_sn[i]?.['vendor_serial_number'] || ''}</td>
+                    <td>${data_sn[i]?.['serial_number']}</td>
+                    <td>${data_sn[i]?.['expire_date'] ? moment(data_sn[i]?.['expire_date']).format('DD/MM/YYYY') : ''}</td>
+                    <td>${data_sn[i]?.['manufacture_date'] ? moment(data_sn[i]?.['manufacture_date']).format('DD/MM/YYYY') : ''}</td>
+                    <td>${data_sn[i]?.['warranty_start'] ? moment(data_sn[i]?.['warranty_start']).format('DD/MM/YYYY') : ''}</td>
+                    <td>${data_sn[i]?.['warranty_end'] ? moment(data_sn[i]?.['warranty_end']).format('DD/MM/YYYY') : ''}</td>
+                    <td>${data_sn[i]?.['specific_value'] ? `<span class="mask-money" data-init-money="${data_sn[i]?.['specific_value']}"></span>` : '--'}</td>
+                </tr>`
+            }
+            $('#table-detail-space-lot').prop('hidden', true)
+            $('#detail-space-lot').html(data_sn_html)
+            $('#table-detail-space-sn').prop('hidden', false)
+            $('#detail-space-sn').html(data_sn_html)
+            $.fn.initMaskMoney2()
         }
         else {
             $('#table-detail-space-lot').prop('hidden', true)
@@ -415,7 +503,7 @@ $(document).ready(function () {
             $('#table-detail-space-sn').prop('hidden', true)
             $('#detail-space-sn').html(data_sn_html)
         }
-    });
+    })
 
     function CombinesData(frmEle) {
         let wh_selected = SelectDDControl.get_data_from_idx(selectWH_Ele, selectWH_Ele.val())
@@ -443,6 +531,7 @@ $(document).ready(function () {
                     'manufacture_date': $(ele).find('.sn-manufacture-date-input').val() ? moment($(ele).find('.sn-manufacture-date-input').val(), 'DD/MM/YYYY').format('YYYY-MM-DD') : null,
                     'warranty_start': $(ele).find('.sn-warranty-start-input').val() ? moment($(ele).find('.sn-warranty-start-input').val(), 'DD/MM/YYYY').format('YYYY-MM-DD') : null,
                     'warranty_end': $(ele).find('.sn-warranty-end-input').val() ? moment($(ele).find('.sn-warranty-end-input').val(), 'DD/MM/YYYY').format('YYYY-MM-DD') : null,
+                    'specific_value': Number($(ele).find('.specific-value').attr('value')) || 0,
                 })
             })
         }
@@ -495,6 +584,40 @@ $(document).ready(function () {
                         $.fn.notifyB({description: errs.data.errors}, 'failure');
                     }
                 )
+        }
+    })
+
+    // excel
+    $('.excelFileInput').on('change', async function (even_object) {
+        let prd_selected = SelectDDControl.get_data_from_idx(prd_Ele, prd_Ele.val())
+        if (prd_selected?.['general_traceability_method'] === 1) {
+            const data_list = await UsualLoadPageFunction.Read_file_excel(
+                even_object,
+                [
+                    {key: 'lot_number'},
+                    {key: 'lot_quantity'},
+                    {key: 'expire_date'},
+                    {key: 'manufacture_date'}
+                ]
+            );
+
+            LoadLotTable(data_list)
+        }
+        if (prd_selected?.['general_traceability_method'] === 2) {
+            const data_list = await UsualLoadPageFunction.Read_file_excel(
+                even_object,
+                [
+                    {key: 'vendor_sn'},
+                    {key: 'serial_number'},
+                    {key: 'expire_date'},
+                    {key: 'manufacture_date'},
+                    {key: 'warranty_start'},
+                    {key: 'warranty_end'},
+                    {key: 'specific_value', default: 0}
+                ]
+            );
+
+            LoadSNTable(data_list)
         }
     })
 });

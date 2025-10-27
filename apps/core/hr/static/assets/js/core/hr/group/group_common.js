@@ -5,6 +5,9 @@ class GroupLoadDataHandle {
     static box1stManager = $('#select-box-first-manager');
     static box2ndManager = $('#select-box-second-manager');
     static $eleGrEmp = $('#data-group_employee');
+    static $tblEmp = $('#datable_employee_list');
+    static $tblEmpShow = $('#datable_employee_show_list');
+
     static $trans = $('#app-trans-factory');
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
@@ -51,7 +54,6 @@ class GroupLoadDataHandle {
         GroupLoadDataHandle.loadInitS2(GroupLoadDataHandle.boxGroupParent);
         GroupLoadDataHandle.loadInitS2(GroupLoadDataHandle.box1stManager, [], {}, null, true, {'res1': 'code', 'res2': 'full_name'});
         GroupLoadDataHandle.loadInitS2(GroupLoadDataHandle.box2ndManager, [], {}, null, true, {'res1': 'code', 'res2': 'full_name'});
-        dataTableEmployee();
         dataTableEmployeeShow();
     };
 
@@ -71,53 +73,82 @@ class GroupLoadDataHandle {
         GroupLoadDataHandle.loadInitS2(GroupLoadDataHandle.box1stManager, [data?.['first_manager']]);
         GroupLoadDataHandle.loadInitS2(GroupLoadDataHandle.box2ndManager, [data?.['second_manager']]);
 
-        $('#datable_employee_show_list').DataTable().rows.add(data?.['group_employee']).draw();
+        GroupLoadDataHandle.$tblEmpShow.DataTable().rows.add(data?.['group_employee']).draw();
         let emp_id_list = [];
         for (let emp of data?.['group_employee']) {
-            emp_id_list.push(emp.id);
+            emp_id_list.push(emp?.['id']);
         }
         GroupLoadDataHandle.$eleGrEmp.val(JSON.stringify(emp_id_list));
-        $('#datable_employee_list').DataTable().draw();
     };
 
-    static loadDetailEmpChecked() {
-        let $table = $('#datable_employee_list');
-        if (GroupLoadDataHandle.$eleGrEmp.val()) {
-            let employee_id_checked_list = JSON.parse(GroupLoadDataHandle.$eleGrEmp.val());
-            $table.DataTable().rows().every(function () {
-                let row = this.node();
-                if (row.querySelector('.table-row-checkbox')) {
-                    if (employee_id_checked_list.includes(row.querySelector('.table-row-checkbox').id)) {
-                        row.querySelector('.table-row-checkbox').checked = true;
+    static loadStoreSEmployee() {
+        let dataSelected = [];
+        GroupLoadDataHandle.$tblEmpShow.DataTable().rows().every(function () {
+            let row = this.node();
+            let rowIndex = GroupLoadDataHandle.$tblEmpShow.DataTable().row(row).index();
+            let $row = GroupLoadDataHandle.$tblEmpShow.DataTable().row(rowIndex);
+            let dataRow = $row.data();
+            dataSelected.push(dataRow?.['id']);
+        });
+        GroupLoadDataHandle.$eleGrEmp.val(JSON.stringify(dataSelected));
+        return true;
+    };
+
+    static loadStoreCheckEmployee(ele) {
+        let row = ele.closest('tr');
+        let rowIndex = GroupLoadDataHandle.$tblEmp.DataTable().row(row).index();
+        let $row = GroupLoadDataHandle.$tblEmp.DataTable().row(rowIndex);
+        let dataRow = $row.data();
+
+        if (dataRow) {
+            if (GroupLoadDataHandle.$eleGrEmp.val()) {
+                let storeID = JSON.parse(GroupLoadDataHandle.$eleGrEmp.val());
+                if (ele.checked === true) {
+                    if (!storeID.includes(dataRow?.['id'])) {
+                        storeID.push(dataRow?.['id']);
                     }
                 }
-            });
+                if (ele.checked === false) {
+                    storeID = storeID.filter(v => v !== dataRow?.['id']);
+                }
+                GroupLoadDataHandle.$eleGrEmp.val(JSON.stringify(storeID));
+            } else {
+                let dataStore = [];
+                if (ele.checked === true) {
+                    dataStore.push(dataRow?.['id']);
+                }
+                GroupLoadDataHandle.$eleGrEmp.val(JSON.stringify(dataStore));
+            }
         }
         return true;
     };
 
 // load data employee show
     static loadDataEmployeeShow() {
-        let tableShow = $('#datable_employee_show_list');
-        let data_emp_show = [];
-        let checked_id_list = [];
-        let table = document.getElementById('datable_employee_list');
-        $(table).DataTable().rows().every(function () {
-            let row = this.node();
-            let eleCheck = row.querySelector('.table-row-checkbox');
-            if (eleCheck.checked === true) {
-                checked_id_list.push(eleCheck.id);
-                data_emp_show.push({
-                    'id': eleCheck.id,
-                    'full_name': eleCheck.getAttribute('data-title'),
-                    'role': JSON.parse(eleCheck.getAttribute('data-role')),
-                });
-            }
-        });
-        GroupLoadDataHandle.$eleGrEmp.val(JSON.stringify(checked_id_list));
-        tableShow.DataTable().clear().draw();
-        tableShow.DataTable().rows.add(data_emp_show).draw();
-    }
+        GroupLoadDataHandle.$tblEmpShow.DataTable().clear().draw();
+        if (GroupLoadDataHandle.$eleGrEmp.val()) {
+            let frm = new SetupFormSubmit(GroupLoadDataHandle.$tblEmp);
+            WindowControl.showLoading();
+            $.fn.callAjax2({
+                    'url': frm.dataUrl,
+                    'method': 'GET',
+                    'data': {'id__in': JSON.parse(GroupLoadDataHandle.$eleGrEmp.val()).join(',')},
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
+                            GroupLoadDataHandle.$tblEmpShow.DataTable().rows.add(data?.['employee_list']).draw();
+                            WindowControl.hideLoading();
+                        }
+                    }
+                }
+            )
+        }
+        return true;
+    };
 
 }
 
@@ -132,24 +163,36 @@ class GroupCommonHandle {
 
 // FUNCTIONS COMMON
 // load data employee after delete row
-function deleteEmployeeShow(delID) {
-    let $table = $('#datable_employee_list');
-    $table.DataTable().rows().every(function () {
-        let row = this.node();
-        if (row.querySelector('.table-row-checkbox')) {
-            if (row.querySelector('.table-row-checkbox').id === delID) {
-                row.querySelector('.table-row-checkbox').checked = false;
+function deleteEmployeeShow(currentRow, table) {
+    let rowIndex = table.DataTable().row(currentRow).index();
+    let row = table.DataTable().row(rowIndex);
+    row.remove().draw();
+}
+
+function reOrderSTTEmployeeShow(table) {
+    let order = 1;
+    let itemCount = table[0].querySelectorAll('.table-row-order').length;
+    if (itemCount === 0) {
+        table.DataTable().clear().draw();
+    } else {
+        for (let eleOrder of table[0].querySelectorAll('.table-row-order')) {
+            eleOrder.innerHTML = order;
+            order++
+            if (order > itemCount) {
+                break;
             }
         }
-    });
-    GroupLoadDataHandle.loadDataEmployeeShow();
+    }
 }
 
 // DATATABLE employee
 function dataTableEmployee() {
-    let $table = $('#datable_employee_list');
-    let frm = new SetupFormSubmit($table);
-    $table.DataTableDefault({
+    let frm = new SetupFormSubmit(GroupLoadDataHandle.$tblEmp);
+    if ($.fn.dataTable.isDataTable(GroupLoadDataHandle.$tblEmp)) {
+        GroupLoadDataHandle.$tblEmp.DataTable().destroy();
+    }
+    GroupLoadDataHandle.$tblEmp.DataTableDefault({
+        useDataServer: true,
         ajax: {
             url: frm.dataUrl,
             type: frm.dataMethod,
@@ -242,16 +285,12 @@ function dataTableEmployee() {
                 }
             },
         ],
-        drawCallback: function () {
-            GroupLoadDataHandle.loadDetailEmpChecked();
-        },
     });
 }
 
 // DATATABLE employee show
 function dataTableEmployeeShow(data) {
-    let $table = $('#datable_employee_show_list');
-    $table.DataTableDefault({
+    GroupLoadDataHandle.$tblEmpShow.DataTableDefault({
         data: data ? data : [],
         paging: false,
         searching: false,
@@ -302,8 +341,7 @@ function dataTableEmployeeShow(data) {
 }
 
 function dtbGroupHDCustom() {
-    let $table = $('#datable_employee_show_list');
-    let wrapper$ = $table.closest('.dataTables_wrapper');
+    let wrapper$ = GroupLoadDataHandle.$tblEmpShow.closest('.dataTables_wrapper');
     let $theadEle = wrapper$.find('thead');
     if ($theadEle.length > 0) {
         for (let thEle of $theadEle[0].querySelectorAll('th')) {
@@ -326,6 +364,11 @@ function dtbGroupHDCustom() {
             textFilter$.append(
                 $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
             );
+            // Select the appended button from the DOM and attach the event listener
+            $('#btn-add-emp-group').on('click', function () {
+                GroupLoadDataHandle.loadStoreSEmployee();
+                dataTableEmployee();
+            });
         }
     }
 }

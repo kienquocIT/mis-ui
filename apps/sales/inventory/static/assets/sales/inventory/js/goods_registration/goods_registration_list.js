@@ -4,9 +4,15 @@ $(document).ready(function () {
             let dtb = $('#goods_registration_list');
             let frm = new SetupFormSubmit(dtb);
             dtb.DataTableDefault({
-                useDataServer: true,
                 rowIdx: true,
                 reloadCurrency: true,
+                scrollX: true,
+                scrollY: '64vh',
+                scrollCollapse: true,
+                fixedColumns: {
+                    leftColumns: 2,
+                    rightColumns: window.innerWidth <= 768 ? 0 : 1
+                },
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -33,27 +39,25 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'code',
                         className: 'ellipsis-cell-xs w-15',
                         render: (data, type, row) => {
-                            if (row.id) {
-                                const link = dtb.attr('data-url-detail').replace('0', row.id);
+                            if (row?.['id']) {
+                                const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                                 return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                             }
                             return `--`
                         }
                     },
                     {
-                        data: 'title',
-                        className: 'w-30',
+                        className: 'w-25',
                         render: (data, type, row) => {
-                            if (row.id) {
-                                const link = dtb.attr('data-url-detail').replace('0', row.id);
-                                return `<a href="${link}" class="text-primary"><b>${row.title}</b></a>`;
+                            if (row?.['id']) {
+                                const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
+                                return `<a href="${link}" class="text-primary">${row?.['title']}</a>`;
                             }
                             else {
                                 return `
-                                    <a href="#" class="text-primary"><b>${row.title}</b></a>&nbsp;
+                                    <a href="#" class="text-primary fw-bold">${row?.['title']}</a>&nbsp;
                                     <i class="fas fa-info-circle icon-info tit_visible_tb-head text-primary"
                                        data-bs-toggle="tooltip"
                                        data-bs-placement="right"
@@ -64,7 +68,6 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'sale_order',
                         className: 'w-20',
                         render: (data, type, row) => {
                             if (row?.['sale_order']) {
@@ -74,7 +77,6 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'sale_person',
                         className: 'w-15',
                         render: (data, type, row) => {
                             if (row?.['sale_order']) {
@@ -84,13 +86,15 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'date_created',
-                        className: 'w-15',
+                        className: 'ellipsis-cell-sm w-10',
                         render: (data, type, row) => {
-                            if (row.date_created) {
-                                return `${moment(row.date_created.split(' ')[0]).format('DD/MM/YYYY')}`
-                            }
-                            return `--`
+                            return row?.['employee_created'] ? WFRTControl.displayEmployeeWithGroup(row?.['employee_created']) : '--';
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-sm w-10',
+                        render: (data, type, row) => {
+                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                 ],

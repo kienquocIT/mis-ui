@@ -28,21 +28,6 @@
             <div class="tab-pane fade show active" id="tab_block_line_detail">
                 <div class="row">
                     <div class="col-12">
-                        <button id="btn-add-row-line-detail" class="btn btn-primary btn-sm mb-3" type="button"
-                                data-bs-toggle="offcanvas"
-                                data-bs-target="#select-items-modal"
-                                aria-controls="offcanvasExample">
-                            <span>
-                                <span>{% trans 'Select products' %}</span>
-                                <span class="icon">
-                                    <i class="bi bi-check-circle-fill"></i>
-                                </span>
-                            </span>
-                        </button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12" style="overflow: auto; max-height: 50vh">
                         <table data-url="{% url "WareHouseListAPI" %}"
                                data-warehouse-product-list="{% url 'WarehouseGetProductsListAPI' %}"
                                data-uom-list="{% url 'UnitOfMeasureListAPI' %}"
@@ -57,7 +42,7 @@
                                     <th>{% trans 'Booked quantity' %}</th>
                                     <th hidden class="hidden-col required">{% trans 'Counted quantity' %}</th>
                                     <th hidden class="hidden-col">{% trans 'Difference' %}</th>
-                                    <th hidden class="hidden-col text-center">{% trans 'Issued' %} / {% trans 'Receipted' %}</th>
+                                    <th hidden class="hidden-col">{% trans 'Issued' %} / {% trans 'Receipted' %}</th>
                                     <th hidden class="text-center">{% trans 'Select for actions' %}</th>
                                     <th hidden class="hidden-col text-center">{% trans 'Action type' %}</th>
                                     <th hidden class="hidden-col text-center">{% trans 'Action status' %}</th>
@@ -65,6 +50,17 @@
                             </thead>
                             <tbody></tbody>
                         </table>
+                        <button id="btn-add-row-line-detail" class="btn btn-primary btn-sm mmt-2" type="button"
+                                data-bs-toggle="offcanvas"
+                                data-bs-target="#select-items-modal"
+                                aria-controls="offcanvasExample">
+                            <span>
+                                <span>{% trans 'Select products' %}</span>
+                                <span class="icon">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                </span>
+                            </span>
+                        </button>
                     </div>
                 </div>
             </div>

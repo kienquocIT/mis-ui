@@ -22,6 +22,7 @@ class ProductPageElements {
         this.$height = $('#height')
         this.$volume = $('#volume')
         this.$weight = $('#weight')
+        this.$representative_product = $('#representative-product')
         // sale tab
         this.$check_tab_sale = $('#check-tab-sale')
         this.$sale_uom = $('#sale-uom')
@@ -243,6 +244,23 @@ class ProductPageFunction {
             }
         }
     }
+    static LoadRepresentativeForPMProduct(data) {
+        pageElements.$representative_product.initSelect2({
+            allowClear: true,
+            data: data,
+            ajax: {
+                data: {},
+                url: pageElements.$representative_product.attr('data-url'),
+                method: 'GET',
+            },
+            templateResult: function(data) {
+                return $(`<span class="badge badge-light badge-sm">${data.data?.['code']}</span><br><span>${data.data?.['title']}</span>`);
+            },
+            keyResp: 'product_list',
+            keyId: 'id',
+            keyText: 'title',
+        })
+    }
     // sale tab
     static LoadSaleUom(data) {
         pageElements.$sale_uom.empty()
@@ -326,12 +344,10 @@ class ProductPageFunction {
                             let disabled = '';
                             let disabled_input = 'disabled';
                             let is_default = false;
-                            let required = '';
                             if (item.is_default) {
                                 general_price_list_id = item.id
                                 disabled_input = ''
                                 is_default = true;
-                                required = 'required';
                             }
                             if (item.is_default || (item?.['price_list_mapped'] === general_price_list_id && item?.['auto_update'] === true)) {
                                 checked = 'checked';
@@ -350,7 +366,6 @@ class ProductPageFunction {
                                 'disabled': disabled,
                                 'is_default': is_default,
                                 'disabled_input': disabled_input,
-                                'required': required,
                                 'id': item?.['id'],
                                 'title': item?.['title'],
                                 'price_value': price_value,
@@ -379,7 +394,7 @@ class ProductPageFunction {
                 }, {
                     className: 'w-30',
                     render: (data, type, row) => {
-                        return `<label class="${row.required} form-label text-primary fw-bold">${row.title}</label>`
+                        return `<label class="form-label text-primary">${row.title}</label>`
                     }
                 }, {
                     className: 'w-15',
@@ -451,19 +466,19 @@ class ProductPageFunction {
                 {
                     className: 'w-20',
                     render: (data, type, row) => {
-                        return `<span class="text-danger">${row?.['vendor_serial_number']}</span>`
+                        return `<span>${row?.['vendor_serial_number'] || ''}</span>`
                     }
                 },
                 {
                     className: 'w-20',
                     render: (data, type, row) => {
-                        return `<span class="text-danger">${row?.['serial_number']}</span>`
+                        return `<span>${row?.['serial_number']}</span>`
                     }
                 },
                 {
                     className: 'w-20',
                     render: (data, type, row) => {
-                        return `<span class="mask-money text-danger" data-init-money="${row?.['specific_value'] || 0}"></span>`;
+                        return `<span class="mask-money" data-init-money="${row?.['specific_value'] || 0}"></span>`;
                     }
                 },
                 {
@@ -475,7 +490,7 @@ class ProductPageFunction {
                 {
                     className: 'w-15 text-center',
                     render: (data, type, row) => {
-                        return row?.['from_pm'] ? `<span class="text-muted">${row?.['product_modification_code'] || ''}</span>` : '';
+                        return row?.['from_pm'] ? `<span class="text-muted">${row?.['product_modification_code'] || ''}</span>` : `${$.fn.gettext('Receipt')}`;
                     }
                 },
             ]
@@ -1313,6 +1328,7 @@ class ProductHandler {
         data['general_manufacturer'] = pageElements.$general_manufacturer.val() || null;
         data['general_traceability_method'] = $('#general-traceability-method').val();
         data['standard_price'] = pageElements.$general_standard_price.attr('value')
+        data['representative_product'] = pageElements.$representative_product.val() || null
 
         let component_create_valid = true;
         let component_list_data = []
@@ -1602,6 +1618,7 @@ class ProductHandler {
                             pageElements.$volume.val(general_information['product_size']['volume']['value']);
                             pageElements.$weight.val(general_information['product_size']['weight']['value']);
                         }
+                        ProductPageFunction.LoadRepresentativeForPMProduct(general_information?.['representative_product'])
                     }
 
                     if (Object.keys(product_detail?.['sale_information']).length !== 0) {

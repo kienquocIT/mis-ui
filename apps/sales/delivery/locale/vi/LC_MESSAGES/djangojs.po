@@ -19,4 +19,4 @@ msgstr ""
 
 #
 msgid "Click on the row in the table to select the Sale Order."
-msgstr "Nhấp vào hàng trong bảng để chọn Đơn bán hàng."
+msgstr "Nhấp vào hàng trong bảng để chọn Đơn hàng bán."

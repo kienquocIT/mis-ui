@@ -25,10 +25,13 @@ from apps.sales.inventory.views import (
     ProductionOrderDetailAPIForGIS, InventoryAdjustmentListAPIForGIS, InventoryAdjustmentDetailAPIForGIS,
     ProductWarehouseSerialListAPIForGIS, ProductWarehouseLotListAPIForGIS, ProductWarehouseListAPIForGIS,
     WorkOrderListAPIForGIS, WorkOrderDetailAPIForGIS, GoodsIssueProductListAPI,
-    GoodsDetailListImportDBAPI, GoodsDetailSerialDataAPI, InventoryAdjustmentDDListAPI
+    GoodsDetailListImportDBAPI, GoodsDetailSerialDataAPI, InventoryAdjustmentDDListAPI,
+    ProductModificationListAPIForGIS, ProductModificationDetailAPIForGIS
 )
-from apps.sales.inventory.views.goods_recovery import GoodsRecoveryCreate, GoodsRecoveryList, GoodsRecoveryListAPI, \
+from apps.sales.inventory.views.goods_recovery import (
+    GoodsRecoveryCreate, GoodsRecoveryList, GoodsRecoveryListAPI,
     GoodsRecoveryDetail, GoodsRecoveryDetailAPI, GoodsRecoveryUpdate, GoodsRecoveryLeaseGenerateListAPI
+)
 
 urlpatterns = [
     # good receipt
@@ -121,6 +124,16 @@ urlpatterns += [
         'work-order-for-gis/detail/api/<str:pk>',
         WorkOrderDetailAPIForGIS.as_view(),
         name='WorkOrderDetailAPIForGIS'
+    ),
+    path(
+        'pm-for-gis/list/api',
+        ProductModificationListAPIForGIS.as_view(),
+        name='ProductModificationListAPIForGIS'
+    ),
+    path(
+        'pm-for-gis/detail/api/<str:pk>',
+        ProductModificationDetailAPIForGIS.as_view(),
+        name='ProductModificationDetailAPIForGIS'
     ),
     path(
         'prd-wh-list-for-gis/list/api',

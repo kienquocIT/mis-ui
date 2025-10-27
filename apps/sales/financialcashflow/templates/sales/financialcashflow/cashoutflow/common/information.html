@@ -42,17 +42,6 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-8 col-lg-8 employee-space" hidden>
-                <div class="form-group">
-                    <label class="form-label required" for="employee-name">{% trans "Employee" %}</label>
-                    <div style="display: flex;">
-                        <input disabled readonly type="text" placeholder="{% trans 'Click the button behind the box to select' %}" class="form-control" id="employee-name">
-                        <button type="button" class="btn btn-xs btn-soft-primary btn-animated ml-1" id="employee-select-btn" data-bs-toggle="modal" data-bs-target="#employee-select-modal">
-                            <span><span class="icon"><span class="feather-icon"><i class="bi bi-check2-circle"></i></span></span><span>{% trans 'Select employee' %}</span></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
     <div class="col-12 col-md-3 col-lg-3">
@@ -82,14 +71,14 @@
         </div>
     </div>
 </div>
-<div class="row mt-5 supplier-space">
+<div class="row supplier-space">
     <div class="col-12">
         <div class="form-group">
             <label for="advance_for_supplier_value" class="form-check-label fw-bold h5">{% trans "Advance payment to supplier (not according to Purchase order)" %}</label>
             <input class="form-control mask-money" value="0" id="advance_for_supplier_value">
         </div>
     </div>
-    <div class="col-12 mt-5">
+    <div class="col-12">
         <label class="form-check-label fw-bold h5">{% trans 'Advance payment to supplier (according to Purchase order)' %}</label>
         <span class="small text-muted" style="float: right;">({% trans 'Order by Due date' %})</span>
         <table id="advance-to-supplier-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'POPaymentStageListForCOFAPI' %}">
@@ -108,7 +97,7 @@
             <tbody></tbody>
         </table>
     </div>
-    <div class="col-12 mt-5">
+    <div class="col-12">
         <label class="form-check-label fw-bold h5">{% trans 'Payment to supplier (according to AP invoice)' %}</label>
         <table id="ap-invoice-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'APInvoicePOPaymentStageListForCOFAPI' %}">
             <thead>
@@ -127,7 +116,7 @@
         </table>
     </div>
 </div>
-<div class="row mt-5 customer-space" hidden>
+<div class="row customer-space" hidden>
     <div class="col-12">
         <div class="form-group">
             <label for="payment_to_customer" class="form-label fw-bold h5">
@@ -137,15 +126,7 @@
         </div>
     </div>
 </div>
-<div class="row mt-5 employee-space" hidden>
-{#    <div class="col-12">#}
-{#        <div class="form-group">#}
-{#            <label for="advance_for_employee_value" class="form-label fw-bold h5">#}
-{#                {% trans "Advance payment to employee" %}#}
-{#            </label>#}
-{#            <input class="form-control mask-money" value="0" id="advance_for_employee_value">#}
-{#        </div>#}
-{#    </div>#}
+<div class="row employee-space" hidden>
     <div class="col-12 col-md-3 col-lg-3">
         <div class="form-group">
             <label for="employee-budget" class="form-label">{% trans "Select budget" %}</label>
@@ -160,13 +141,40 @@
             </div>
         </div>
     </div>
-    <div class="col-12 mt-5">
-        <table id="order-cost-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'POPaymentStageListForCOFAPI' %}">
+    <div class="col-12">
+        <div id="bastion-space">
+            {% trans 'Select Sale Person (Beneficiary)' as inherit_title %}
+            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True opp_title=opp_title has_opp=True has_process=False has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+        </div>
+    </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label class="form-label" for="so_mapped">{% trans "Sale order" %}</label>
+            <select id="so_mapped" class="form-select" data-url="{% url 'SaleOrderListForCOFAPI' %}"></select>
+        </div>
+    </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label class="form-label" for="lo_mapped">{% trans "Lease order" %}</label>
+            <select id="lo_mapped" class="form-select" data-url="{% url 'LeaseOrderListForCOFAPI' %}"></select>
+        </div>
+    </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label class="form-label" for="svo_mapped">{% trans "Service order" %}</label>
+            <select id="svo_mapped" class="form-select" data-url="{% url 'ServiceOrderListAPI' %}"></select>
+        </div>
+    </div>
+    <div class="col-12">
+        <table id="order-cost-table" class="table nowrap w-100" data-method="GET"
+               data-so-expense-list-url="{% url 'SaleOrderExpenseListForCOFAPI' %}"
+               data-lo-expense-list-url="{% url 'LeaseOrderExpenseListForCOFAPI' %}"
+        >
             <thead class="bg-secondary-light-5">
                 <tr>
                     <th style="min-width: 30px"></th>
                     <th style="min-width: 30px"></th>
-                    <th style="min-width: 250px">{% trans 'Expense' %}</th>
+                    <th style="min-width: 250px">{% trans 'Expense name' %}</th>
                     <th style="min-width: 200px">{% trans 'Total budget' %}</th>
                     <th style="min-width: 200px">{% trans 'Balance value' %}</th>
                     <th style="min-width: 200px">{% trans 'This time' %}</th>
@@ -176,7 +184,7 @@
         </table>
     </div>
 </div>
-<div class="row mt-5 account-space" hidden>
+<div class="row account-space" hidden>
     <div class="col-12">
         <table class="table nowrap w-100" id="payment-on-account-table">
             <thead>
@@ -205,7 +213,7 @@
         </button>
     </div>
 </div>
-<div class="row mt-5">
+<div class="row">
     <div class="col-12 col-md-3 col-lg-3">
         <div class="form-group">
             <label for="total_payment" class="form-label text-muted fw-bold">{% trans "Total payment" %}</label>
@@ -220,7 +228,7 @@
         </div>
     </div>
 </div>
-<div class="row mt-5 mb-10">
+<div class="row mb-10">
     <div class="col-12">
         <div class="form-group">
             <label class="form-label" for="description">{% trans "Note" %}</label>

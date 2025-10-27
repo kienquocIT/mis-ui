@@ -1,11 +1,13 @@
 class ServiceOrderPageHandler {
     // Hàm load sẵn data cần thiết cho các page
     static async initializeCommonData() {
+        WindowControl.showLoading()
         await Promise.all([
             ServiceOrder.loadCurrencyRateData(),
             ServiceOrder.loadTaxData(),
             ServiceOrder.loadUoMData()
         ]);
+        WindowControl.hideLoading()
     }
 
     // Hàm set up form data
@@ -97,7 +99,7 @@ class ServiceOrderPageHandler {
         ServiceOrder.handleChangeServicePercentage();
     }
 
-    // Hàm chung cho các event lên quan tới bảng work order
+    // Hàm chung cho các event lên quan tới bảng work
     static handleWorkOrderEvents() {
         ServiceOrder.handleChangeWorkOrderDetail();
         ServiceOrder.handleClickOpenWorkOrderCost();
@@ -109,7 +111,7 @@ class ServiceOrderPageHandler {
         ServiceOrder.handleDeleteWorkOrderRow();
     }
 
-    // Hàm chung cho các event lên quan tới bảng work order cost
+    // Hàm chung cho các event lên quan tới bảng work cost
     static handleModalWorkOrderCostEvents() {
         ServiceOrder.handleAddWorkOrderCostRow();
         ServiceOrder.handleChangeWorkOrderCostQuantityAndUnitCost();
@@ -119,7 +121,7 @@ class ServiceOrderPageHandler {
         ServiceOrder.handleSelectWorkOrderCostExpense();
     }
 
-    // Hàm chung cho các event lên quan tới bảng work order contribution
+    // Hàm chung cho các event lên quan tới bảng work contribution
     static handleModalWorkOrderContributionEvents() {
         ServiceOrder.handleSaveProductContribution();
         ServiceOrder.handleUncheckContribution();
@@ -361,7 +363,7 @@ class ServiceOrderPageHandler {
         ServiceOrder.loadServiceDetailRelatedData(data.service_detail_data);
         ServiceOrder.loadServiceDetailSummaryValue();
 
-        // Work Order
+        // Work
         const workOrderData = data.work_order_data.map(wo => ({
             ...wo,
             start_date: ServiceOrderPageHandler.formatDate(wo.start_date, "YYYY-MM-DD", "DD/MM/YYYY"),

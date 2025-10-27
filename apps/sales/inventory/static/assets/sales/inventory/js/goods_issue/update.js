@@ -1,11 +1,12 @@
 $(document).ready(function () {
-    GISHandle.LoadPage();
-    GISHandle.LoadGoodsIssueDetail('update');
+    GISEventHandler.InitPageEven()
+    GISPageFunction.DrawTableIAItems()
+    GISHandler.LoadDetailGIS('update')
     WFRTControl.setWFInitialData('goodsissue')
 
     $('#frmDetail').submit(function (event) {
         event.preventDefault();
-        let form = GISHandle.CombinesDataGoodsIssue($(this));
+        let form = GISHandler.CombinesData($(this));
         if (form) {
             WFRTControl.callWFSubmitForm(form);
         }

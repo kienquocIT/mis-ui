@@ -154,7 +154,7 @@ $(document).ready(function () {
                                                             <div class="separator"></div>
                                                         </div>
                                                         <div class="col-12">
-                                                            <h6 class="fw-bold text-muted">${$.fn.gettext('Work order list')}:</h6>
+                                                            <h6 class="fw-bold text-muted">${$.fn.gettext('Work list')}:</h6>
                                                             <ul class="advance-list wo-list mt-3">
                                                                 ${wo_contribute_html}
                                                             </ul>
@@ -176,7 +176,7 @@ $(document).ready(function () {
         $('#task-completed').text(completed_task)
         $('#task-progressing').text(progressing_task)
 
-        // Load summary info total work order
+        // Load summary info total work
         $('#total-work-orders').text(waiting_wo + completed_wo + progressing_wo)
         $('#wo-waiting').text(waiting_wo)
         $('#wo-completed').text(completed_wo)

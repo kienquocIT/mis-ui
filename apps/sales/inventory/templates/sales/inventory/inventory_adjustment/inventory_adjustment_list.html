@@ -32,18 +32,15 @@
                    data-trans-opening="{% trans 'Not finished' %}"
             >
                 <thead>
-                <th></th>
-                <th>{% trans "Code" %}
-                    <i class="fas fa-info-circle icon-info"
-                       data-bs-toggle="tooltip"
-                       data-bs-placement="bottom"
-                       title="{% trans 'Press row here to open detail page.' %}">
-                    </i>
-                </th>
-                <th>{% trans "Title" %}</th>
-                <th>{% trans "Warehouse" %}</th>
-                <th>{% trans "Date" %}</th>
-                <th>{% trans "Status" %}</th>
+                    <tr>
+                        <th style="min-width: 50px"></th>
+                        <th style="min-width: 100px">{% trans "Code" %}</th>
+                        <th style="min-width: 300px">{% trans "Title" %}</th>
+                        <th style="min-width: 200px">{% trans "Warehouse" %}</th>
+                        <th style="min-width: 150px">{% trans "Employee created" %}</th>
+                        <th style="min-width: 150px">{% trans "Date created" %}</th>
+                        <th style="min-width: 150px">{% trans "State" %}</th>
+                    </tr>
                 </thead>
             </table>
         </div>

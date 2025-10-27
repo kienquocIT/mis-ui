@@ -556,3 +556,19 @@ msgstr "Serial đích danh"
 #
 msgid "Not available"
 msgstr "Không khả dụng"
+
+#
+msgid "Receipt"
+msgstr "Nhập hàng"
+
+#
+msgid "Dropship warehouse"
+msgstr "Kho dropship"
+
+#
+msgid "Virtual warehouse"
+msgstr "Kho ảo"
+
+#
+msgid "Use for Equipment Loan"
+msgstr "Dùng cho Mượn hàng"

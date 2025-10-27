@@ -172,7 +172,8 @@
                             <div class="form-group">
                                 <label class="form-label" for="employee-pob">{% trans 'Place of birth' %}</label>
                                 <select class="form-select" name="place_of_birth" id="employee-pob"
-                                        data-url="{% url 'CityListAPI' %}" data-method="GET" data-keyResp="cities">
+                                        data-url="{% url 'NProvinceListAPI' %}?country_id=bbf52b7b-77ed-4e8c-af0a-86ca00771d83"
+                                        data-method="GET" data-keyResp="nprovinces">
                                 </select>
                             </div>
                         </div>
@@ -188,7 +189,8 @@
                             <div class="form-group">
                                 <label class="form-label" for="employee-poo">{% trans 'Place of origin' %}</label>
                                 <select class="form-select" name="place_of_origin" id="employee-poo"
-                                        data-url="{% url 'CityListAPI' %}" data-method="GET" data-keyResp="cities">
+                                        data-url="{% url 'NProvinceListAPI' %}?country_id=bbf52b7b-77ed-4e8c-af0a-86ca00771d83"
+                                        data-method="GET" data-keyResp="nprovinces">
                                 </select>
                             </div>
                         </div>

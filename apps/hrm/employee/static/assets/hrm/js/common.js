@@ -97,8 +97,9 @@ class EmployeeHRMInit {
         elm.initSelect2({
             allowClear: true,
             keyId: 'id',
-            keyText: 'title',
-            data: (value ? {'cities': value} : null)
+            keyText: 'fullname',
+            keyResp: 'nprovinces',
+            data: (value ? {'nprovinces': value} : null)
         })
     }
 

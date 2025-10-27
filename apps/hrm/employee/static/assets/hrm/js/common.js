@@ -160,17 +160,17 @@ class EmployeeHRMInit {
                 $('#employee_doi')[0]._flatpickr.setDate(new Date(data?.['date_of_issue'] || ''));
                 $('#place_of_issue').val(data?.['place_of_issue'] || '');
                 $('#employee-dob')[0]._flatpickr.setDate(new Date(employee?.dob || ''));
-                if (Object.keys(data['place_of_birth']).length > 0)
-                    $('#employee-pob').attr('data-onload', JSON.stringify(data?.['place_of_birth'])).append(
-                        `<option value="${data?.['place_of_birth'].id}" selected>${data?.['place_of_birth'].title}</option>`
+                if (Object.keys(data['place_birth']).length > 0)
+                    $('#employee-pob').attr('data-onload', JSON.stringify(data?.['place_birth'])).append(
+                        `<option value="${data?.['place_birth'].id}" selected>${data?.['place_birth'].title}</option>`
                     ).trigger('change');
                 if (Object.keys(data['nationality']).length > 0)
                     $('#employee-nationality').attr('data-onload', JSON.stringify(data['nationality'])).append(
                         `<option value="${data['nationality'].id}" selected>${data['nationality'].title}</option>`
                     ).trigger('change');
-                if (Object.keys(data['place_of_origin']).length > 0)
-                    $('#employee-poo').attr('data-onload', JSON.stringify(data['place_of_origin'])).append(
-                        `<option value="${data['place_of_origin'].id}" selected>${data['place_of_origin'].title}</option>`
+                if (Object.keys(data['place_origin']).length > 0)
+                    $('#employee-poo').attr('data-onload', JSON.stringify(data['place_origin'])).append(
+                        `<option value="${data['place_origin'].id}" selected>${data['place_origin'].title}</option>`
                     ).trigger('change');
                 $('#employee-ethnicity').val(data?.['ethnicity'] || '');
                 $('#employee-religion').val(data?.['religion'] || '');

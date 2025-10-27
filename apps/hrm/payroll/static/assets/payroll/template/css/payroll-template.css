@@ -1,0 +1,29 @@
+
+.dropdown-in-table .menus-attr > ul{
+    position: absolute;
+    left: 100%;
+    top:0;
+    display: none;
+    width: auto;
+    padding-left: 0;
+    box-shadow: 0px 6px 16px rgba(47, 52, 58, 0.1);
+    border-radius: 0.5rem;
+    max-height: 250px;
+    overflow-y: auto;
+    background: #fff;
+}
+.dropdown-in-table .menus-attr:hover > ul{
+    display: block;
+}
+.dropdown-in-table .menus-attr > ul > li{
+    display: block;
+    white-space: nowrap;
+    padding: 5px 10px;
+}
+.menus-attr ul li a {
+    width: 100%;
+    display: block;
+}
+.menus-attr ul li a span {
+    float: right;
+}

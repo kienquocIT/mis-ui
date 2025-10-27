@@ -1073,7 +1073,7 @@ class ProjectWorkExpenseHandle {
                 },
                 {
                     data: 'uom',
-                    title: $.fn.gettext('UoM'),
+                    title: $.fn.gettext('UOM'),
                     width: '9.4%',
                     render: (row, index, data) => {
                         let htmlOpt = ''

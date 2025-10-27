@@ -129,6 +129,28 @@ class InventoryAdjustmentDetailAPIForGIS(APIView):
         return resp.auto_return(key_success='inventory_adjustment_detail')
 
 
+class ProductModificationListAPIForGIS(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.GIS_PM_LIST).get(data)
+        return resp.auto_return(key_success='product_modification_list')
+
+
+class ProductModificationDetailAPIForGIS(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.GIS_PM_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='product_modification_detail')
+
+
 class ProductionOrderListAPIForGIS(APIView):
     @mask_view(
         auth_require=True,

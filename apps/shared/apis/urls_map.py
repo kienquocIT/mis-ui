@@ -496,12 +496,13 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_PICKING_DETAIL_PRODUCTS = StringUrl('delivery/picking/{pk}/products')
     DELIVERY_SALEORDER_CALL = StringUrl('delivery/sale-order/{pk}')
     DELIVERY_LEASEORDER_CALL = StringUrl('delivery/lease-order/{pk}')
+    DELIVERY_SERVICEORDER_CALL = StringUrl('delivery/service-order/{pk}')
     DELIVERY_LIST = StringUrl('delivery')
     DELIVERY_SUB_LIST = StringUrl('delivery/sub/{pk}')
     DELIVERY_SUB_PRINT_LIST = StringUrl('delivery/sub-print/{pk}')
     DELIVERY_FOR_RECOVERY_LIST = StringUrl('delivery/for-recovery')
     DELIVERY_PRODUCT_LEASE_LIST = StringUrl('delivery/product-lease')
-    DELIVERY_SERVICEORDER_CALL = StringUrl('delivery/create-delivery-service-order')
+    DELIVERY_WORK_LOG_LIST = StringUrl('delivery/work-log')
 
     # Purchase
     PURCHASE_ORDER_LIST = StringUrl('purchasing/purchase-order/list')
@@ -614,6 +615,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GIS_PRODUCTION_ORDER_DETAIL = StringUrl('inventory/production-order-for-gis/{pk}')
     GIS_WORK_ORDER_LIST = StringUrl('inventory/work-order-for-gis/list')
     GIS_WORK_ORDER_DETAIL = StringUrl('inventory/work-order-for-gis/{pk}')
+    GIS_PM_LIST = StringUrl('inventory/pm-for-gis/list')
+    GIS_PM_DETAIL = StringUrl('inventory/pm-for-gis/{pk}')
     GIS_NONE_LIST = StringUrl('inventory/prd-wh-list-for-gis/list')
     GIS_LOT_LIST = StringUrl('inventory/lot-list-for-gis/list')
     GIS_SERIAL_LIST = StringUrl('inventory/serial-list-for-gis/list')

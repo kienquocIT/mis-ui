@@ -317,13 +317,17 @@ class IAHandle {
                             tableLineDetailTbody.append(`
                                 <tr class="${class_ctn}">
                                     <td>${i + 1}</td>
-                                    <td data-item-id="${data_row?.['id']}" data-product-warehouse-id="${data_row?.['product_warehouse_mapped_id']}" data-id="${data_row?.['product_mapped']?.['id']}" class="text-muted product_id_td"><span class="badge badge-soft-primary">${data_row?.['product_mapped']?.['code']}</span> ${data_row?.['product_mapped']?.['title']}</td>
-                                    <td data-id="${data_row?.['warehouse_mapped']?.['id']}" class="warehouse_id_td"><span class="badge badge-soft-blue">${data_row?.['warehouse_mapped']?.['code']}</span> ${data_row?.['warehouse_mapped']?.['title']}</td>
+                                    <td data-item-id="${data_row?.['id']}" data-product-warehouse-id="${data_row?.['product_warehouse_mapped_id']}" data-id="${data_row?.['product_mapped']?.['id']}" class="text-muted product_id_td">
+                                        <span class="badge badge-sm badge-light">${data_row?.['product_mapped']?.['code']}</span><br><span>${data_row?.['product_mapped']?.['title']}</span>
+                                    </td>
+                                    <td data-id="${data_row?.['warehouse_mapped']?.['id']}" class="warehouse_id_td">
+                                        <span class="badge badge-sm badge-light mr-1">${data_row?.['warehouse_mapped']?.['code']}</span><span>${data_row?.['warehouse_mapped']?.['title']}</span>
+                                    </td>
                                     <td data-id="${data_row?.['uom_mapped']?.['id']}" class="uom_id_td">${data_row?.['uom_mapped']?.['title']}</td>
                                     <td class="quantity-td">${data_row?.['book_quantity']}</td>
                                     <td ${data?.['state'] === 0 ? 'hidden' : ''}><input step="0.01" ${disabled_select} class="form-control count-input" type="number" placeholder="Number" value="${data_row?.['count']}"></td>
                                     <td ${data?.['state'] === 0 ? 'hidden' : ''} class="difference_td">${difference}</td>
-                                    <td ${data?.['state'] === 0 ? 'hidden' : ''} class="text-center issued_receipted_td">${data_row?.['issued_receipted_quantity']}</td>
+                                    <td ${data?.['state'] === 0 ? 'hidden' : ''} class="issued_receipted_td">${data_row?.['issued_receipted_quantity']}</td>
                                     <td hidden class="text-center">
                                         <div class="form-check">
                                             <input ${disabled_select} type="checkbox" class="form-check-input selected_for_actions" ${checked}>

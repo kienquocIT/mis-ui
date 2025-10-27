@@ -265,7 +265,7 @@ $(async function () {
                     },
                     {
                         targets: 1,
-                        class: 'w-30',
+                        class: 'w-15',
                         data: 'product_data',
                         render: (row, type, data) => {
                             const dataCont = DataTableAction.item_view(row, $url.attr('data-prod-detail'))
@@ -281,30 +281,30 @@ $(async function () {
                                                    aria-expanded="false"></i>
                                                 <div class="dropdown-menu w-210p mt-2">${dataCont}</div>
                                             </div>
-                                            <p>${row.title}</p>${is_gift}
+                                            <textarea class="form-control form-check-label" rows="3" readonly>${row?.['title'] ? row?.['title'] : ''}</textarea>
+                                            ${is_gift}
                                         </div>`;
                         }
                     },
                     {
                         targets: 2,
-                        class: 'w-10 text-center',
+                        class: 'w-15',
                         render: (row, type, data) => {
-                            return `<p>${data?.['uom_data']?.['title'] ? data?.['uom_data']?.['title'] : ''}</p>`;
+                            return `<textarea class="form-control form-check-label" rows="3" readonly>${data?.['work_data']?.['title'] ? data?.['work_data']?.['title'] : ''}</textarea>`;
                         }
                     },
                     {
                         targets: 3,
                         class: 'w-10 text-center',
                         render: (row, type, data) => {
-                            return `<p>${data?.['delivery_quantity']}</p>`;
+                            return `<p>${data?.['uom_data']?.['title'] ? data?.['uom_data']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 4,
                         class: 'w-10 text-center',
-                        visible: delivery_config?.['is_partial_ship'],
                         render: (row, type, data) => {
-                            return `<p>${data?.['delivered_quantity_before']}</p>`;
+                            return `<p>${data?.['delivery_quantity']}</p>`;
                         }
                     },
                     {
@@ -312,11 +312,19 @@ $(async function () {
                         class: 'w-10 text-center',
                         visible: delivery_config?.['is_partial_ship'],
                         render: (row, type, data) => {
-                            return `<p>${data?.['remaining_quantity']}</p>`;
+                            return `<p>${data?.['delivered_quantity_before']}</p>`;
                         }
                     },
                     {
                         targets: 6,
+                        class: 'w-10 text-center',
+                        visible: delivery_config?.['is_partial_ship'],
+                        render: (row, type, data) => {
+                            return `<p>${data?.['remaining_quantity']}</p>`;
+                        }
+                    },
+                    {
+                        targets: 7,
                         class: 'w-10 text-center',
                         visible: delivery_config?.['is_picking'],
                         data: 'ready_quantity',
@@ -336,7 +344,7 @@ $(async function () {
                         }
                     },
                     {
-                        targets: 7,
+                        targets: 8,
                         class: 'w-15 text-center',
                         render: (row, type, data, meta) => {
                             let disabled = '';
@@ -1667,7 +1675,17 @@ $(async function () {
                         }
                         $eleSO.val(res?.['lease_order_data']?.['code']);
                         $eleSO.attr('data-lo', JSON.stringify(res?.['lease_order_data']));
-                        $('#scroll-table-lease').removeAttr('hidden');
+                        // $('#scroll-table-lease').removeAttr('hidden');
+                    }
+                    if (res?.['service_order_data']?.['code']) {
+                        for (let label of formGroup.querySelectorAll('.deli-for')) {
+                            label.setAttribute('hidden', 'true');
+                            if (label.classList.contains('service-order')) {
+                                label.removeAttribute('hidden');
+                            }
+                        }
+                        $eleSO.val(res?.['service_order_data']?.['code']);
+                        $eleSO.attr('data-service', JSON.stringify(res?.['service_order_data']));
                     }
                 }
 

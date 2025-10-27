@@ -75,10 +75,10 @@
 </div>
 
 <div class="modal fade" id="select-ia-modal" tabindex="-1" role="dialog" aria-labelledby="select-ia-modal">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-lg" style="min-width: 70%" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{% trans 'Select' %} {% trans 'Inventory adjustment' %}</h5>
+                <h5 class="modal-title">{% trans 'Select Inventory adjustment' %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -86,11 +86,13 @@
             <div class="modal-body">
                 <table class="table nowrap w-100" id="select-ia-table" data-ia-url="{% url 'InventoryAdjustmentListAPIForGIS' %}">
                     <thead>
-                        <tr>
-                            <th style="min-width: 30px"></th>
-                            <th style="min-width: 30px"></th>
-                            <th style="min-width: 250px">{% trans 'Title' %}</th>
-                        </tr>
+                    <tr>
+                        <th style="min-width: 30px"></th>
+                        <th style="min-width: 30px"></th>
+                        <th style="min-width: 250px">{% trans 'Title' %}</th>
+                        <th style="min-width: 150px">{% trans 'Employee created' %}</th>
+                        <th style="min-width: 150px">{% trans 'Created date' %}</th>
+                    </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
@@ -103,10 +105,10 @@
 </div>
 
 <div class="modal fade" id="select-powo-modal" tabindex="-1" role="dialog" aria-labelledby="select-powo-modal">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-lg" style="min-width: 70%" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{% trans 'Select' %} {% trans 'Production order' %}/{% trans 'Work order' %}</h5>
+                <h5 class="modal-title">{% trans 'Select Production order/Work order' %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -122,6 +124,8 @@
                             <th style="min-width: 30px"></th>
                             <th style="min-width: 150px">{% trans 'Application' %}</th>
                             <th style="min-width: 250px">{% trans 'Title' %}</th>
+                            <th style="min-width: 150px">{% trans 'Employee created' %}</th>
+                            <th style="min-width: 150px">{% trans 'Created date' %}</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -129,6 +133,36 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" id="btn-accept-select-powo">{% trans 'Select' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="select-pm-modal" tabindex="-1" role="dialog" aria-labelledby="select-pm-modal">
+    <div class="modal-dialog modal-lg" style="min-width: 70%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Select Product modification' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table nowrap w-100" id="select-pm-table" data-pm-url="{% url 'ProductModificationListAPIForGIS' %}">
+                    <thead>
+                    <tr>
+                        <th style="min-width: 30px"></th>
+                        <th style="min-width: 30px"></th>
+                        <th style="min-width: 250px">{% trans 'Title' %}</th>
+                        <th style="min-width: 150px">{% trans 'Employee created' %}</th>
+                        <th style="min-width: 150px">{% trans 'Created date' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btn-accept-select-pm">{% trans 'Select' %}</button>
             </div>
         </div>
     </div>

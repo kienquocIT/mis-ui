@@ -17,9 +17,7 @@ urlpatterns = [
     path('update/<str:pk>', HRMEmployeeUpdate.as_view(), name='HRMEmployeeUpdate'),
     path('update-api/<str:pk>', HRMEmployeeUpdateAPI.as_view(), name='HRMEmployeeUpdateAPI'),
     # list contract has mapped employee info
-    path(
-        'contract/list-api', HRMEmployeeContractList.as_view(), name='HRMEmployeeContractList'
-    ),
+    path('contract/list-api', HRMEmployeeContractList.as_view(), name='HRMEmployeeContractList'),
     path(
         'contract/detail-api/<str:pk>', HRMEmployeeContractDetailAPI.as_view(),
         name='HRMEmployeeContractDetailAPI'

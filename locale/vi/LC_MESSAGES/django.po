@@ -3169,7 +3169,7 @@ msgstr "Báo giá"
 
 #
 msgid "Sale Order"
-msgstr "Đơn bán hàng"
+msgstr "Đơn hàng bán"
 
 #
 msgid "Master data config"
@@ -3333,7 +3333,7 @@ msgstr "Không có thông tin ngân hàng"
 
 #
 msgid "Sale Order/Quotation is not selected!"
-msgstr "Đơn bán hàng/Báo giá chưa được chọn"
+msgstr "Đơn hàng bán/Báo giá chưa được chọn"
 
 #
 msgid "Quotation config update successfully"
@@ -5402,7 +5402,7 @@ msgstr "Vui lòng chọn đơn bán hàng"
 
 #
 msgid "Select Sale order"
-msgstr "Chọn Đơn bán hàng"
+msgstr "Chọn Đơn hàng bán"
 
 #
 msgid "Load last storage local"
@@ -6458,7 +6458,7 @@ msgstr "Số ngày công tác không chính xác"
 
 #
 msgid "Sale order"
-msgstr "Đơn bán hàng"
+msgstr "Đơn hàng bán"
 
 #
 msgid "Copy successfully"
@@ -7185,8 +7185,16 @@ msgid "Goods issue type"
 msgstr "Loại xuất hàng"
 
 #
-msgid "Select inventory adjustment"
-msgstr "Chọn phiếu kiểm kê kho"
+msgid "Select Inventory adjustment"
+msgstr "Chọn Phiếu kiểm kê kho"
+
+#
+msgid "Select Production order/Work order"
+msgstr "Chọn Lệnh sản xuất/Yêu cầu sản xuất"
+
+#
+msgid "Select Product modification"
+msgstr "Chọn Phiếu Ráp-Rã thiết bị"
 
 #
 msgid "Input data later"
@@ -8542,7 +8550,7 @@ msgstr "Đơn hàng hiện tại"
 
 #
 msgid "Other order"
-msgstr "Đơn bán hàng khác"
+msgstr "Đơn hàng bán khác"
 
 #
 msgid "Labor summary"
@@ -8821,10 +8829,6 @@ msgid "Receipted"
 msgstr "Đã nhập"
 
 #
-msgid "For Serial and Lot products, click on the Detail button in the last column to view/select detail."
-msgstr "Đối với sản phẩm Serial và LOT, click vào nút Chi tiết ở cột cuối để xem/chọn chi tiết."
-
-#
 msgid "Logs"
 msgstr "Nhật ký"
 
@@ -8987,10 +8991,6 @@ msgstr "Trạng thái đóng/ mở"
 #
 msgid "Open"
 msgstr "Mở"
-
-#
-msgid "Issue this time"
-msgstr "Xuất lần này"
 
 #
 msgid "WH Code"
@@ -10025,7 +10025,7 @@ msgstr "Giá trị còn lại"
 
 #
 msgid "Customers pay in advance (not according to Sale order)"
-msgstr "Khách hàng tạm ứng trước (không theo Đơn bán hàng)"
+msgstr "Khách hàng tạm ứng trước (không theo Đơn hàng bán)"
 
 #
 msgid "Payment method"
@@ -10053,7 +10053,7 @@ msgstr "Chủ tài khoản"
 
 #
 msgid "Customers pay in advance (according to Sale order)"
-msgstr "Khách hàng tạm ứng trước (theo Đơn bán hàng)"
+msgstr "Khách hàng tạm ứng trước (theo Đơn hàng bán)"
 
 #
 msgid "Add Company Bank Account"
@@ -10353,7 +10353,7 @@ msgstr "Biểu đồ Hoạt động bán hàng"
 
 #
 msgid "Purchase request for Sale order"
-msgstr "Yêu cầu mua hàng cho Đơn bán hàng"
+msgstr "Yêu cầu mua hàng cho Đơn hàng bán"
 
 #
 msgid "Purchase request for Distribution plan"
@@ -10365,11 +10365,11 @@ msgstr "Chọn Kế hoạch nhập hàng"
 
 #
 msgid "Only create Purchase request your own Sale order"
-msgstr "Chỉ được làm Yêu cầu mua hàng cho Đơn bán hàng của bản thân"
+msgstr "Chỉ được làm Yêu cầu mua hàng cho Đơn hàng bán của bản thân"
 
 #
 msgid "Configured to create Purchase request for all Sale order"
-msgstr "Được cấu hình để làm Yêu cầu mua hàng cho mọi Đơn bán hàng"
+msgstr "Được cấu hình để làm Yêu cầu mua hàng cho mọi Đơn hàng bán"
 
 #
 msgid "Assets"
@@ -12236,11 +12236,7 @@ msgid "Profit plan"
 msgstr "Kế hoạch LN"
 
 #
-msgid "UoM"
-msgstr "ĐV"
-
-#
-msgid "Duration UoM"
+msgid "Duration UOM"
 msgstr "ĐV thời gian"
 
 #
@@ -12312,17 +12308,25 @@ msgid "Specific value"
 msgstr "Giá đích danh"
 
 #
-msgid "Warehouse for product modification"
-msgstr "Kho cho Ráp-Rã"
-
-#
-msgid "If this product’s valuation method is not Specific Identification, its cost will be mixed in this warehouse. A quantity of 1 is recommended when performing a Product Modification."
-msgstr "Nếu phương pháp định giá của sản phẩm này không phải là Thực tế đích danh, giá trị của nó sẽ bị lẫn lộn trong kho này. Khuyến nghị nên đảm bảo số lượng = 1 khi muốn thực hiện Ráp-Rã."
-
-#
 msgid "Specific serial number"
 msgstr "Serial đích danh"
 
 #
 msgid "or import here"
 msgstr "hoặc nhập tại đây"
+
+#
+msgid "Service quotation"
+msgstr "Báo giá dịch vụ"
+
+#
+msgid "Sale quotation"
+msgstr "Báo giá bán"
+
+#
+msgid "Payroll"
+msgstr "Tính lương"
+
+#
+msgid "Copy configuration from product"
+msgstr "Sao chép cấu hình từ sản phẩm"

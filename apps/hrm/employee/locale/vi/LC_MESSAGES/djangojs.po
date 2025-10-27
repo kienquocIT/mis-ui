@@ -40,3 +40,15 @@ msgstr "Từ chối"
 #
 msgid "Upcoming"
 msgstr "Sắp tới"
+
+#
+msgid "Expired date must be larger than effected date"
+msgstr "Ngày hết hạn phải lớn hơn ngày bắt đầu hiệu lực"
+
+#
+msgid "Employee salary is compulsory for Labor contract"
+msgstr "Hợp đồng lao động bắt buộc phải có Lương cơ bản"
+
+#
+msgid "Salary for insurance is compulsory for Labor contract"
+msgstr "Hợp đồng lao động bắt buộc phải có Lương đóng bảo hiểm"

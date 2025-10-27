@@ -128,7 +128,7 @@ class TabExpenseFunction {
                         data: data[index]?.tax_data || {},
                         data_url: tabExpenseElements.$urlEle.attr('data-tax-url')
                     })
-                    $(ele).find('.row-subtotal').attr('value', data[index]?.subtotal_price || 0)
+                    $(ele).find('.row-subtotal').attr('value', data[index]?.expense_subtotal_price || 0)
                 })
             }
         })
@@ -139,12 +139,18 @@ class TabExpenseFunction {
         tabExpenseElements.$tblExpense.find('tbody tr').each(function () {
             let $tr = $(this);
             if ($tr.find(".row-expense-title").length !== 0) {
+                let expenseData = {}
+                if ($tr.find(".row-expense-item").val()) {
+                    expenseData = SelectDDControl.get_data_from_idx($tr.find(".row-expense-item"), $tr.find(".row-expense-item").val());
+                }
                 let item = {
                     title: $tr.find(".row-expense-title").val(),
                     expense_item: $tr.find(".row-expense-item").val() || null,
+                    expense_item_data: expenseData,
                     uom: $tr.find(".row-uom").val() || null,
                     quantity: parseFloat($tr.find(".row-quantity").val() || 0),
                     expense_price: parseFloat($tr.find(".row-expense-price").attr('value') || 0),
+                    expense_subtotal_price: parseFloat($tr.find(".row-expense-price").attr('value') || 0) * parseFloat($tr.find(".row-quantity").val() || 0),
                     tax: $tr.find(".row-tax").val() || null,
                 };
                 serviceOrderExpenseData.push(item);

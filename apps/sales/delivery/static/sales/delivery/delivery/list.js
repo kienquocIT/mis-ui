@@ -46,12 +46,22 @@ $(document).ready(function () {
                     render: (data, type, row) => {
                         let target = row?.['sale_order_data'];
                         let url = tbl.attr('data-url-sale-order-detail');
+                        let app = transEle.attr('data-app-1');
+                        let badge = "success";
                         if (row?.['lease_order_data']?.['id']) {
                             target = row?.['lease_order_data'];
                             url = tbl.attr('data-url-lease-order-detail');
+                            app = transEle.attr('data-app-2');
+                            badge = "warning";
+                        }
+                        if (row?.['service_order_data']?.['id']) {
+                            target = row?.['service_order_data'];
+                            url = tbl.attr('data-url-service-order-detail');
+                            app = transEle.attr('data-app-3');
+                            badge = "pink";
                         }
                         if (target && target.hasOwnProperty('id') && target.hasOwnProperty('code')) {
-                            return `<a href="{0}" class="link-primary underline_hover"><span class="mr-2">{1}</span><span class="badge badge-light badge-outline">{2}</span></a>`.format_by_idx(
+                            return `<a href="{0}" class="link-primary underline_hover"><span class="badge badge-soft-${badge} mr-1">${app}</span><span class="mr-1">{1}</span><span class="badge badge-light badge-outline">{2}</span></a>`.format_by_idx(
                                 SetupFormSubmit.getUrlDetailWithID(
                                     url,
                                     target['id']

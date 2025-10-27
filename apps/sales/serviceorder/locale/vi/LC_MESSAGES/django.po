@@ -220,3 +220,7 @@ msgstr "Số lượng dịch vụ đã thực hiện"
 #
 msgid "Work"
 msgstr "Công việc"
+
+#
+msgid "Weight contribution"
+msgstr "Trọng số đóng góp"

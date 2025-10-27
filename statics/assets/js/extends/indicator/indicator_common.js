@@ -559,6 +559,21 @@ class IndicatorControl {
 
 }
 
+// math functions
+function max(data_list) {
+    return Math.max(...data_list);
+}
+
+function min(data_list) {
+    return Math.min(...data_list);
+}
+
+function sum() {
+    return Array.prototype.reduce.call(arguments, function (acc, val) {
+        return acc + val;
+    }, 0);
+}
+
 $(document).ready(function () {
 
     IndicatorControl.initPage();

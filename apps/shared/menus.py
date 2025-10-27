@@ -931,7 +931,7 @@ class MenusHRM:
             ),
             MenuCommon(
                 name='Template attribute', code='menu_template_attribute_list',
-                view_name='PayrollTemplateAttributeList', icon='<i class="fa-solid fa-gears"></i>',
+                view_name='PayrollTemplAttrList', icon='<i class="fa-solid fa-gears"></i>',
             )
         ]
     )

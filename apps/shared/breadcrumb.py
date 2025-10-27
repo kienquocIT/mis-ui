@@ -473,12 +473,12 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     HRM_OVERTIME_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     HRM_OVERTIME_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
     # HRM PAYROLL TEMPLATE
-    HRM_PAYROLL_TEMPLATE_LIST_PAGE = BreadcrumbChildren(_('Payroll tempate'), 'PayrollTemplateList')
+    HRM_PAYROLL_TEMPLATE_LIST_PAGE = BreadcrumbChildren(_('Payroll template'), 'PayrollTemplateList')
     HRM_PAYROLL_TEMPLATE_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'PayrollTemplateCreate')
     HRM_PAYROLL_TEMPLATE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     HRM_PAYROLL_TEMPLATE_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
     # HRM TEMPLATE ATTRIBUTE
-    HRM_TEMPLATE_ATTRIBUTE_LIST_PAGE = BreadcrumbChildren(_('Tempate attribute'), 'PayrollTemplateAttributeList')
+    HRM_TEMPLATE_ATTRIBUTE_LIST_PAGE = BreadcrumbChildren(_('Tempate attribute'), 'PayrollTemplAttrList')
 
     # CONTRACT TEMPLATE
     CONTRACT_TEMPLATE_LIST_PAGE = BreadcrumbChildren(_('Contract template list'), 'ContractTemplateList')

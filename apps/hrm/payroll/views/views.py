@@ -2,7 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL
+from apps.shared import mask_view, ServerAPI, ApiURL, InputMappingProperties
 from apps.shared.msg import BaseMsg
 from apps.shared.msg.hrm_employee import HRMMsg
 
@@ -57,8 +57,10 @@ class PayrollTemplateDetail(View):
         breadcrumb='HRM_PAYROLL_TEMPLATE_DETAIL_PAGE',
         menu_active='menu_payroll_template',
     )
-    def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+    def get(self, request, pk, *args, **kwargs):
+        return {
+                   'doc_id': pk,
+               }, status.HTTP_200_OK
 
 
 class PayrollTemplateDetailAPI(APIView):
@@ -89,8 +91,12 @@ class PayrollTemplateUpdate(View):
         breadcrumb='HRM_PAYROLL_TEMPLATE_UPDATE_PAGE',
         menu_active='menu_payroll_template',
     )
-    def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+    def get(self, request, pk, *args, **kwargs):
+        return {
+                   'doc_id': pk,
+                   'input_mapping_properties': InputMappingProperties.HRM_PAYROLL_TEMPLATE,
+                   'form_id': 'payroll_template_form',
+               }, status.HTTP_200_OK
 
 
 class PayrollTemplAttrList(View):

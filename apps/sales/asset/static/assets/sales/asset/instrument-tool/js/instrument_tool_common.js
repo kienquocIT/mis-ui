@@ -341,7 +341,7 @@ class ToolCommonHandler{
                             let increasedFA = row?.['increased_FA_value'] ? Number(row?.['increased_FA_value']) : 0
 
                             if(dataITDetail?.['ap_invoice_items']){
-                                const instrumentToolAPInvoiceItem = dataITDetail?.['ap_invoice_items'].find(item=>item.ap_invoice_item_id=apInvoiceProdId)
+                                const instrumentToolAPInvoiceItem = dataITDetail?.['ap_invoice_items'].find(item=>item.ap_invoice_item_id===apInvoiceProdId)
                                 if(instrumentToolAPInvoiceItem){
                                     increasedFA = increasedFA - instrumentToolAPInvoiceItem?.['increased_FA_value']
                                 }
@@ -365,7 +365,7 @@ class ToolCommonHandler{
                                 }
 
                                 if(dataITDetail?.['ap_invoice_items']){
-                                    const instrumentToolAPInvoiceItem = dataITDetail?.['ap_invoice_items'].find(item=>item.ap_invoice_item_id=apInvoiceProdId)
+                                    const instrumentToolAPInvoiceItem = dataITDetail?.['ap_invoice_items'].find(item=>item.ap_invoice_item_id===apInvoiceProdId)
                                     if(instrumentToolAPInvoiceItem){
                                         value = instrumentToolAPInvoiceItem?.['increased_FA_value']
                                     }

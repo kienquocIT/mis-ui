@@ -7185,8 +7185,16 @@ msgid "Goods issue type"
 msgstr "Loại xuất hàng"
 
 #
-msgid "Select inventory adjustment"
-msgstr "Chọn phiếu kiểm kê kho"
+msgid "Select Inventory adjustment"
+msgstr "Chọn Phiếu kiểm kê kho"
+
+#
+msgid "Select Production order/Work order"
+msgstr "Chọn Lệnh sản xuất/Yêu cầu sản xuất"
+
+#
+msgid "Select Product modification"
+msgstr "Chọn Phiếu Ráp-Rã thiết bị"
 
 #
 msgid "Input data later"
@@ -12300,14 +12308,6 @@ msgid "Specific value"
 msgstr "Giá đích danh"
 
 #
-msgid "Warehouse for product modification"
-msgstr "Kho cho Ráp-Rã"
-
-#
-msgid "If this product’s valuation method is not Specific Identification, its cost will be mixed in this warehouse. A quantity of 1 is recommended when performing a Product Modification."
-msgstr "Nếu phương pháp định giá của sản phẩm này không phải là Thực tế đích danh, giá trị của nó sẽ bị lẫn lộn trong kho này. Khuyến nghị nên đảm bảo số lượng = 1 khi muốn thực hiện Ráp-Rã."
-
-#
 msgid "Specific serial number"
 msgstr "Serial đích danh"
 
@@ -12322,3 +12322,7 @@ msgstr "Báo giá dịch vụ"
 #
 msgid "Sale quotation"
 msgstr "Báo giá bán"
+
+#
+msgid "Payroll"
+msgstr "Tính lương"

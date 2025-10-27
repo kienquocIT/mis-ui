@@ -106,11 +106,10 @@ $(document).ready(function () {
                 {
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'open') {
-                            return `<label class="text-center text-secondary">${row?.['ob_label']}</label>`
+                            return `<span class="text-center text-secondary">${row?.['ob_label']}</span>`
                         }
                         else if (row?.['row_type'] === 'log') {
-                            return `<label class="text-${row?.['text_color']}">${row?.['trans_title']}</label>&nbsp;
-                                    <span class="badge badge-sm badge-${row?.['text_color']}">${row?.['trans_code']}</span>`
+                            return `<span class="text-${row?.['text_color']}">${row?.['trans_title']} ${row?.['trans_code']}</span>`
                         }
                         return ``
                     }

@@ -16,18 +16,10 @@ class PayrollConfigElements {
         this.$personalTax = $('#personal_tax');
         this.$dependentTax = $('#dependent_tax');
         this.$effectiveDate = $('#effective_date');
+        this.$taxBracketEffectiveDay = $('#effective_day_tax_bracket');
+        this.$taxBracketStatus = $('#status_field');
         this.$tblTaxBracket = $('#table_tax_bracket');
-
-        // constant
-        this.$taxBracketData = [
-            {'order': '1', 'from': '0', 'to': '5,000,000', 'rate': '5'},
-            {'order': '2', 'from': '5,000,000', 'to': '10,000,000', 'rate': '10'},
-            {'order': '3', 'from': '10,000,000', 'to': '18,000,000', 'rate': '15'},
-            {'order': '4', 'from': '18,000,000', 'to': '32,000,000', 'rate': '20'},
-            {'order': '5', 'from': '32,000,000', 'to': '52,000,000', 'rate': '25'},
-            {'order': '6', 'from': '52,000,000', 'to': '80,000,000', 'rate': '30'},
-            {'order': '7', 'from': '80,000,000', 'to': '', 'rate': '35'}
-        ];
+        this.$btnAddBracket = $('#add_tax_bracket');
 
         // form
         this.$frmPayrollConfig = $('#frm_payroll_config');
@@ -37,40 +29,56 @@ class PayrollConfigElements {
 const payrollConfigElements = new PayrollConfigElements();
 
 class PayrollConfigDataHandler {
-    static initTaxBracketTable() {
+    static initTaxBracketTable(data) {
         payrollConfigElements.$tblTaxBracket.DataTable().clear().destroy();
         payrollConfigElements.$tblTaxBracket.DataTableDefault({
             scrollY: '70vh',
             scrollX: true,
             scrollCollapse: true,
             rowIndex: false,
-            data: payrollConfigElements.$taxBracketData,
+            data: data,
             columns: [
                 {
                     className: "w-10 text-center",
                     render: (data, type, row) => {
-                        return row?.['order'] || '0';
+                        return `<input class="form-control row_level" type="text">`;
                     }
                 },
                 {
-                    className: "w-40 text-center",
+                    className: "w-35 text-center",
                     render: (data, type, row) => {
-                        return row?.['from'] || '';
+                        return `<input class="form-control row_min_amount" type="text">`;
                     }
                 },
                 {
-                    className: "w-40 text-center",
+                    className: "w-35 text-center",
                     render: (data, type, row) => {
-                        return row?.['to'] || '';
+                        return `<input class="form-control row_max_amount" type="text">`;
                     }
                 },
                 {
                     className: "w-10 text-center",
                     render: (data, type, row) => {
-                        return row?.['rate'] || '';
+                        return `<input class="form-control row_rate" type="text">`;
                     }
                 },
-            ]
+                {
+                    className: "w-10 text-center",
+                    render: () => {
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del_row">
+                                   <span class="icon"><i class="far fa-trash-alt"></i></span>
+                              </button>`;
+                    }
+                },
+            ],
+            initComplete: function() {
+                payrollConfigElements.$tblTaxBracket.find('tbody tr').each(function (index, ele) {
+                    $(ele).find('.row_level').val(data[index]?.order || 1)
+                    $(ele).find('.row_min_amount').val(data[index]?.min_amount || 0)
+                    $(ele).find('.row_max_amount').val(data[index]?.max_amount || 0)
+                    $(ele).find('.row_rate').val(data[index]?.rate || 0)
+                })
+            }
         });
     }
 
@@ -134,12 +142,36 @@ class PayrollConfigDataHandler {
         };
 
         // combine tax bracket data
-        const taxBracketData = payrollConfigElements.$taxBracketData.map(item => ({
-            order: parseInt(item.order),
-            min_amount: parseFloat(item.from.replace(/,/g, '')) || 0,
-            max_amount: item.to ? parseFloat(item.to.replace(/,/g, '')) : 0,
-            rate: parseFloat(item.rate)
-        }));
+        const taxBracketData = [];
+        payrollConfigElements.$tblTaxBracket.find('tbody tr').each(function () {
+            let $tr = $(this);
+            let status = false;
+            let effectiveDateStr = payrollConfigElements.$taxBracketEffectiveDay.val()
+                ? DateTimeControl.formatDateType(
+                    'DD/MM/YYYY',
+                    'YYYY-MM-DD',
+                    payrollConfigElements.$taxBracketEffectiveDay.val()) : null
+
+            if (effectiveDateStr) {
+                const effectiveDate = new Date(effectiveDateStr);
+                const today = new Date();
+
+                effectiveDate.setHours(0, 0, 0, 0);
+                today.setHours(0, 0, 0, 0);
+
+                status = effectiveDate >= today;
+            }
+
+            let item = {
+                order: parseInt($tr.find('.row_level').val() || 1),
+                min_amount: parseFloat($tr.find('.row_min_amount').val() || 0),
+                max_amount: parseFloat($tr.find('.row_max_amount').val() || 0),
+                rate: parseFloat($tr.find('.row_rate').val() || 0),
+                effective_date: effectiveDateStr,
+                status: status
+            }
+            taxBracketData.push(item);
+        })
 
         // assign all to form data
         $form.dataForm = {
@@ -160,8 +192,14 @@ class PayrollConfigDataHandler {
         }).then(
             (resp) => {
                 const data = $.fn.switcherResp(resp);
+                const today = moment().startOf('day');
                 let insurance_data = data?.insurance_data[0] || {};
                 let personal_tax_data = data?.personal_tax_data[0] || {};
+                let tax_bracket_data = data?.tax_bracket_data || [];
+
+                let tax_bracket_effective_date = tax_bracket_data[0]?.effective_date
+                    ? moment(tax_bracket_data[0]?.effective_date, 'YYYY-MM-DD').startOf('day') : null;
+
                 payrollConfigElements.$socialEmployeeRate.val(insurance_data?.social_insurance_employee || 0);
                 payrollConfigElements.$socialEmployerRate.val(insurance_data?.social_insurance_employer || 0);
                 payrollConfigElements.$socialCeilingRate.attr('value', insurance_data?.social_insurance_ceiling || 0);
@@ -175,9 +213,68 @@ class PayrollConfigDataHandler {
 
                 payrollConfigElements.$personalTax.attr('value', personal_tax_data?.personal_deduction || 0);
                 payrollConfigElements.$dependentTax.attr('value', personal_tax_data?.dependent_deduction || 0);
-                payrollConfigElements.$effectiveDate.val(personal_tax_data?.effective_date ? moment(personal_tax_data?.effective_date).format('DD/MM/YYYY') : '');
+                payrollConfigElements.$effectiveDate.val(
+                    personal_tax_data?.effective_date ? moment(personal_tax_data?.effective_date).format('DD/MM/YYYY') : ''
+                );
+
+                payrollConfigElements.$taxBracketEffectiveDay.val(tax_bracket_effective_date ? tax_bracket_effective_date.format('DD/MM/YYYY') : '');
+
+                if (tax_bracket_effective_date && tax_bracket_effective_date.isBefore(today)) {
+                    payrollConfigElements.$taxBracketStatus
+                        .text($.fn.gettext('Expired'))
+                        .removeClass('text-success')
+                        .addClass('text-danger');
+                } else {
+                    payrollConfigElements.$taxBracketStatus
+                        .text($.fn.gettext('Active'))
+                        .removeClass('text-danger')
+                        .addClass('text-success');
+                }
+
+                if (data?.tax_bracket_data) {
+                    data.tax_bracket_data.sort((a, b) => a.order - b.order);
+                }
+                PayrollConfigDataHandler.initTaxBracketTable(tax_bracket_data);
 
             }
         )
+    }
+}
+
+class PayrollConfigEventHandler {
+    static InitPageEvent() {
+        // event when click add button
+        payrollConfigElements.$btnAddBracket.on('click', function () {
+            UsualLoadPageFunction.AddTableRow(payrollConfigElements.$tblTaxBracket);
+        });
+
+        // event for deleting row
+        payrollConfigElements.$tblTaxBracket.on('click', '.del_row', function () {
+            const table = payrollConfigElements.$tblTaxBracket.DataTable();
+            const row = $(this).closest('tr');
+            table.row(row).remove().draw(false);
+
+            // update order after deleting
+            table.rows().every(function (index) {
+                $(this.node()).find('.row_level').val(index + 1);
+            });
+        });
+
+        // event when change effective day tax bracket
+        $('#btn_apply').on('click', function () {
+            const inputValue = payrollConfigElements.$taxBracketEffectiveDay.val();
+            const parts = inputValue.split('/');
+            const inputDate = new Date(parts[2], parts[1] - 1, parts[0]);
+            const today = new Date();
+
+            inputDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+
+            if (inputDate < today) {
+                payrollConfigElements.$taxBracketStatus.text($.fn.gettext('Expired')).removeClass('text-success').addClass('text-danger');
+            } else {
+                payrollConfigElements.$taxBracketStatus.text($.fn.gettext('Active')).removeClass('text-danger').addClass('text-success');
+            }
+        });
     }
 }

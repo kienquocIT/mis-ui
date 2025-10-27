@@ -1,7 +1,8 @@
 $(document).ready(function () {
     UsualLoadPageFunction.LoadDate({element: payrollConfigElements.$effectiveDate, empty: true});
-    PayrollConfigDataHandler.initTaxBracketTable();
+    UsualLoadPageFunction.LoadDate({element: payrollConfigElements.$taxBracketEffectiveDay, empty: true});
     PayrollConfigDataHandler.loadDetailPayrollConfig();
+    PayrollConfigEventHandler.InitPageEvent();
 
     payrollConfigElements.$frmPayrollConfig.on('submit', function (e) {
         e.preventDefault();

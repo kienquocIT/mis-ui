@@ -2656,6 +2656,8 @@ class QuotationLoadDataHandle {
         if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
             QuotationCheckConfigHandle.checkConfig(0, null, data?.['opportunity']?.['id']);
         }
+        // init currency exchange
+        MaskMoney2.initCurrencyExchange(data);
     };
 
     static loadDataProductAll() {
@@ -5628,7 +5630,13 @@ class QuotationCalculateCaseHandle {
                         }
                         if (app === 'sale_order') {
                             if ($(eleRowQuantityTime).val()) {
-                                discountAmount += parseFloat($(eleRowDiscount).valCurrency()) * parseFloat($(eleRowQuantity).val()) * parseFloat($(eleRowQuantityTime).val());
+                                let time = parseFloat($(eleRowQuantityTime).val());
+                                if (time === 0) {
+                                    discountAmount += parseFloat($(eleRowDiscount).valCurrency()) * parseFloat($(eleRowQuantity).val());
+                                }
+                                if (time > 0) {
+                                    discountAmount += parseFloat($(eleRowDiscount).valCurrency()) * parseFloat($(eleRowQuantity).val()) * parseFloat($(eleRowQuantityTime).val());
+                                }
                             }
 
                         }

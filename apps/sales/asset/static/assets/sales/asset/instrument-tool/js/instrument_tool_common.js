@@ -511,7 +511,7 @@ class ToolCommonHandler{
                 const increasedFA = Number($(ele).closest('tr').find('.prior-increased-fa').attr('data-init-money')) || 0
                 const totalValue = Number($(ele).closest('tr').find('.total-value').attr('data-init-money')) || 0
 
-                if(currIncreaseValue<=0){
+                if(currIncreaseValue<0){
                     const text = this.$transScript.attr('data-increase-must-positive')
                     $.fn.notifyB({'title': '','description': text}, 'failure')
                     isValid = false

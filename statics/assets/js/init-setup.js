@@ -278,7 +278,7 @@ class MaskMoney2 {
 
     static blurInputMoney($eleSelected) {
         DocumentControl.getCompanyCurrencyConfig().then((configData) => {
-            $($eleSelected).val(new MaskMoney2(configData).applyConfig($($eleSelected).attr('data-other-abbreviation'), $($eleSelected).attr('value')));
+            $($eleSelected).val(new MaskMoney2(configData).applyConfig($($eleSelected), $($eleSelected).attr('value')));
         });
     }
 

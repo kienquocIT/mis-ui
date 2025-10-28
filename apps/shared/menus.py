@@ -1065,7 +1065,7 @@ class SpaceCommon:
 class SpaceItem:
     mapping = {
         'crm': SpaceCommon(
-            'Sales',
+            'SALES',
             'crm',
             icon='<i class="fa-solid fa-comments-dollar"></i>',
             menus=[
@@ -1107,7 +1107,7 @@ class SpaceItem:
             ],
         ),
         'e-office': SpaceCommon(
-            'E-office',
+            'E-OFFICE',
             'e-office',
             icon='<i class="fas fa-solid fa-laptop-file"></i>',
             menus=[
@@ -1120,7 +1120,7 @@ class SpaceItem:
             ],
         ),
         'financials': SpaceCommon(
-            'Financials',
+            'FINANCIALS',
             'financials',
             icon='<i class="fas fa-balance-scale"></i>',
             menus=[
@@ -1134,7 +1134,7 @@ class SpaceItem:
             ]
         ),
         'forms': SpaceCommon(
-            'Forms',
+            'FORMS',
             'forms',
             icon='<i class="fas fa-solid fa-pager"></i>',
             menus=[
@@ -1154,7 +1154,7 @@ class SpaceItem:
             ],
         ),
         'inventory': SpaceCommon(
-            'Inventory',
+            'INVENTORY',
             'inventory',
             icon='<i class="fas fas fa-warehouse"></i>',
             menus=[
@@ -1164,7 +1164,7 @@ class SpaceItem:
             ],
         ),
         'purchase': SpaceCommon(
-            'Purchasing',
+            'PURCHASE',
             'purchase',
             icon='<i class="fas fas fa-cash-register"></i>',
             menus=[
@@ -1173,7 +1173,7 @@ class SpaceItem:
             ],
         ),
         'production': SpaceCommon(
-            'Production',
+            'PRODUCTION',
             'production',
             icon='<i class="fas bi bi-robot"></i>',
             menus=[
@@ -1182,7 +1182,7 @@ class SpaceItem:
             ]
         ),
         'project': SpaceCommon(
-            'Project',
+            'PROJECT',
             'project',
             icon='<i class="fas fa-solid fa-weight-scale"></i>',
             menus=[
@@ -1193,7 +1193,7 @@ class SpaceItem:
             ]
         ),
         'report': SpaceCommon(
-            'Report',
+            'REPORT',
             'report',
             icon='<i class="fas fa-table"></i>',
             menus=[
@@ -1205,7 +1205,7 @@ class SpaceItem:
             ],
         ),
         'definition': SpaceCommon(
-            'Definition',
+            'DEFINITION',
             'definition',
             icon='<i class="fas fa-solid fa-square-pen"></i>',
             menus=[
@@ -1214,7 +1214,7 @@ class SpaceItem:
             ],
         ),
         'partner-center': SpaceCommon(
-            'Partner Center',
+            'PARTNER CENTER',
             'partner-center',
             icon='<i class="fas fa-solid fa-user-tag"></i>',
             menus=[
@@ -1223,7 +1223,7 @@ class SpaceItem:
             ],
         ),
         'company-system': SpaceCommon(
-            'Company',
+            'COMPANY SYSTEM',
             'company-system',
             icon='<i class="fas far fa-building"></i>',
             menus=[
@@ -1237,7 +1237,7 @@ class SpaceItem:
             ],
         ),
         'core-configurations': SpaceCommon(
-            'Settings',
+            'SETTINGS',
             'core-configurations',
             icon='<i class="fas fas fa-cog"></i>',
             menus=[

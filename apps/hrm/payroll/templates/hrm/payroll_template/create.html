@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Payroll template' %} {% trans 'create' %}
+{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'assets/css/extends/component/offcanvas-formula.css' %}" rel="stylesheet" type="text/css"/>
+
+    <link href="{% static 'assets/payroll/template/css/payroll-template.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="payroll_template_form">
+            <span>
+                <span>{% trans 'Save' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-floppy-disk"></i>
+                </span>
+            </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form class="container-fluid mt-4" id="payroll_template_form" method="post" data-method="POST" autocomplete="off"
+          data-url-redirect="{% url 'PayrollTemplateList' %}" data-url="{% url 'PayrollTemplateListAPI' %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-12 col-lg-6">
+                <div class="form-group max-w-375p ">
+                    <label class="form-label required" for="ipt_title">{% trans 'Template name' %}</label>
+                    <input type="text" id="ipt_title" class="form-control" name="title" required>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label" for="select-apply-for">{% trans 'Apply for' %}</label>
+                    <select class="form-select" name="department_applied"
+                            id="select-apply-for"
+                            data-url="{% url 'GroupDDListAPI' %}"
+                            data-method="GET" data-keyResp="group_dd_list"
+                            data-allowClear="true"
+                            multiple
+                            data-closeOnSelect="false"
+                    ></select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label" for="ipt_remarks">{% trans 'Description' %}</label>
+                    <textarea rows="2" type="text" id="ipt_remarks" class="form-control" name="remarks"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+            <table class="table nowrap min-w-1500p w-100" id="tbl_attribute_list">
+                 <thead>
+                    <tr>
+                        <td>#</td>
+                        <td>{% trans 'Column title' %}</td>
+                        <td>{% trans 'Data source' %}</td>
+                        <td>{% trans 'Value code' %}</td>
+                        <td>{% trans 'Data type' %}</td>
+                        <td>{% trans 'Formula' %}</td>
+                        <td></td>
+                    </tr>
+                </thead>
+            </table>
+            <button class="btn btn-icon btn btn-outline-primary" type="button" id="add-new-row-attr">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
+    </form>
+{% endblock %}
+{% block modalData %}
+    {%  include 'hrm/payroll_template/modals-formula.html' %}
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory" aria-label="url factory"
+    data-attr-lst-api="{% url 'PayrollTemplAttrListAPI' %}"
+    data-attr-lst="{% url 'PayrollTemplAttrList' %}"
+    >
+    <div id="template_select">
+        <div class="dropdown dropdown-in-table">
+            <a class="dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                {% trans 'Select data source' %}</a>
+            <div class="dropdown-menu">
+                <div class="dropdown-item position-relative menus-attr">
+                    <span>{% trans 'Select attribute' %}</span>
+                    <span><i class="fa-solid fa-chevron-right fa-2xs"></i></span>
+                    <ul>
+                        <li>
+                            <a href="#">
+                                {% trans 'Add new attribute' %}
+                                <span><i class="fa-solid fa-circle-plus"></i></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <a class="dropdown-item" href="#" data-selected="formula">
+                    <span>{% trans 'Formula' %}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/extends/components/offcanvas-formula.js' %}"></script>
+
+    <script src="{% static 'assets/payroll/template/js/common.js' %}"></script>
+    <script src="{% static 'assets/payroll/template/js/create.js' %}"></script>
+{% endblock %}

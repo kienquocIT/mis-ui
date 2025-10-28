@@ -933,12 +933,16 @@ class MenusHRM:
     )
     PAYROLL = MenuCommon(
         name='Payroll', code='menu_payroll', view_name='',
-        icon='<i class="fas fa-cash-register"></i>',
+        icon='<i class="fa-solid fa-wallet"></i>',
         child=[
-            # MenuCommon(
-            #     name='Payroll config', code='menu_payroll_config', view_name='PayrollConfigDetail',
-            #     icon='<i class="fas fa-cog"></i>',
-            # ),
+            MenuCommon(
+                name='Payroll template', code='menu_payroll_template', view_name='PayrollTemplateList',
+                icon='<i class="fa-solid fa-gears"></i>',
+            ),
+            MenuCommon(
+                name='Template attribute', code='menu_template_attribute_list',
+                view_name='PayrollTemplAttrList', icon='<i class="fa-solid fa-gears"></i>',
+            )
         ]
     )
 
@@ -1146,7 +1150,7 @@ class SpaceItem:
                 MenusHRM.HUMAN_RESOURCES,
                 MenusHRM.ATTENDANCE,
                 MenusHRM.OVERTIME_REQUEST,
-                MenusHRM.PAYROLL
+                MenusHRM.PAYROLL,
             ],
         ),
         'inventory': SpaceCommon(

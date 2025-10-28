@@ -1,0 +1,42 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-05 00:08+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+#
+msgid "Payroll"
+msgstr "Bảng lương"
+#
+msgid "Oops, something went wrong, please reload the page and try again"
+msgstr "Có sự cố, vui lòng thử lại"
+#
+msgid "Value code should not be null"
+msgstr "Mã giá trị không nên bỏ trống"
+#
+msgid ") expected"
+msgstr ") cần có"
+#
+msgid "syntax error"
+msgstr "lỗi cú pháp"
+#
+msgid "single quote (') not allowed"
+msgstr "dấu nháy đơn (') không hợp lệ"
+#
+msgid "value or operator expected"
+msgstr "Thuộc tính hoặc phép tính cần thiết"
+#
+msgid "Attribute list not found"
+msgstr "Danh sách thuộc tính trống"

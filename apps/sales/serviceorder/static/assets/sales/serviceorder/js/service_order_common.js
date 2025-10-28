@@ -3326,7 +3326,7 @@ const ServiceOrder = (function($) {
                                     for (let dataLog of dataLogs) {
                                         for (let dataProd of dataLog?.['products']) {
                                             if (dataProd?.['product_data']?.['code'] === dataRow?.['code'] && String(dataProd?.['work_data']?.['order']) === workID) {
-                                                $(bodyEle).append(`<div><b>Phiên bản: </b><span>${dataLog?.['service_order_data']?.['code']}</span></div>
+                                                $(bodyEle).append(`<div><b>Phiên bản đơn dịch vụ: </b><span>${dataLog?.['service_order_data']?.['code']}</span></div>
                                                                     <div><b>SL giao hàng: </b><span>${dataProd?.['delivery_quantity']}</span></div>`);
                                             }
                                         }

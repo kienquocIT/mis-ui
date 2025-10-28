@@ -7248,6 +7248,7 @@ class QuotationSubmitHandle {
                 }
                 let eleTaxAmount = row.querySelector('.table-row-tax-amount');
                 if (eleTaxAmount) {
+                    rowData['product_tax_amount'] = 0;
                     if ($(eleTaxAmount).valCurrency()) {
                         rowData['product_tax_amount'] = parseFloat($(eleTaxAmount).valCurrency());
                     }
@@ -7325,6 +7326,7 @@ class QuotationSubmitHandle {
                 }
                 let eleTaxAmount = row.querySelector('.table-row-tax-amount');
                 if (eleTaxAmount) {
+                    rowData['product_tax_amount'] = 0;
                     if ($(eleTaxAmount).valCurrency()) {
                         rowData['product_tax_amount'] = parseFloat($(eleTaxAmount).valCurrency());
                     }
@@ -7379,6 +7381,7 @@ class QuotationSubmitHandle {
                 }
                 let eleTaxAmount = row.querySelector('.table-row-tax-amount');
                 if (eleTaxAmount) {
+                    rowData['product_tax_amount'] = 0;
                     if ($(eleTaxAmount).valCurrency()) {
                         rowData['product_tax_amount'] = parseFloat($(eleTaxAmount).valCurrency());
                     }

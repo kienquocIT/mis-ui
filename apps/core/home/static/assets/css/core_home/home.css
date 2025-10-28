@@ -127,11 +127,11 @@
     display: flex;
 }
 
-.event-at-head .event-at-title {
-    {#font-weight: bold;}
-    {#flex-basis: 45%;}
-    flex-basis: 60%;
-}
+/*.event-at-head .event-at-title {*/
+/*    {#font-weight: bold;}*/
+/*    {#flex-basis: 45%;}*/
+/*    flex-basis: 60%;*/
+/*}*/
 
 .event-at-item .event-at-head .event-at-date-group-in-title {
     display: inline-block;

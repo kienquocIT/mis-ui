@@ -565,6 +565,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Payroll configuration
     PAYROLL_CONFIG_PAGE = BreadcrumbChildren(_('Payroll config'), 'PayrollConfigDetail')
 
+    # Payroll attribute
+    PAYROLL_ATTRIBUTE_LIST = BreadcrumbChildren(_('Payroll attribute'), 'PayrollAttributeList')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -1538,4 +1541,7 @@ class BreadcrumbView:
 
     PAYROLL_CONFIG_PAGE = [
         BreadcrumbItem.PAYROLL_CONFIG_PAGE
+    ]
+    PAYROLL_ATTRIBUTE_PAGE = [
+        BreadcrumbItem.PAYROLL_ATTRIBUTE_LIST
     ]

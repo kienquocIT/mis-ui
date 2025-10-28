@@ -935,10 +935,10 @@ class MenusHRM:
         name='Payroll', code='menu_payroll', view_name='',
         icon='<i class="fas fa-cash-register"></i>',
         child=[
-            # MenuCommon(
-            #     name='Payroll config', code='menu_payroll_config', view_name='PayrollConfigDetail',
-            #     icon='<i class="fas fa-cog"></i>',
-            # ),
+            MenuCommon(
+                name='Payroll attribute', code='menu_payroll_attribute', view_name='PayrollAttributeList',
+                icon='<i class="fas fa-users-cog"></i>',
+            ),
         ]
     )
 
@@ -948,7 +948,8 @@ class MenusPartnerCenter:
         name='Home', code='id_menu_partner_center_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
     LISTS = MenuCommon(
-        name='Lists', code='menu_partner_center_lists', view_name='ListList', icon='<i class="fas fa-solid fa-search"></i>',
+        name='Lists', code='menu_partner_center_lists', view_name='ListList',
+        icon='<i class="fas fa-solid fa-search"></i>',
     )
 
 

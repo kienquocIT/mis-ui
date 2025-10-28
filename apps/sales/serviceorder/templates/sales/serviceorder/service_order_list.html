@@ -38,6 +38,7 @@
             type="hidden" id="url-factory"
             data-create-delivery="{% url 'ServiceOrderDetailDeliveryAPI' 1 %}"
             data-delivery="{% url 'OrderDeliveryList' %}" data-picking="{% url 'OrderPickingList' %}"
+            data-delivery-log-url='{% url 'DeliveryWorkLogListAPI' %}'
     >
 {% endblock %}
 {% block jsFooter %}

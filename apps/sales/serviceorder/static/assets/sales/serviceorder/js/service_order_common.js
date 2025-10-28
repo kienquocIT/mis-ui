@@ -3299,6 +3299,7 @@ const ServiceOrder = (function($) {
     function handleClickOpenDeliveryLogs() {
         pageElement.modalData.$tableProductContribution.on('click', '.btn-delivery-log', function () {
             WindowControl.showLoading();
+            let $transEle = $('#app-trans-factory');
             let row = this.closest('tr');
             let desModalEle = pageElement.modalData.$modalProductContribution[0].querySelector('.work-order-description');
             let $modalEle = $('#deliveryLogModal');
@@ -3326,8 +3327,8 @@ const ServiceOrder = (function($) {
                                     for (let dataLog of dataLogs) {
                                         for (let dataProd of dataLog?.['products']) {
                                             if (dataProd?.['product_data']?.['code'] === dataRow?.['code'] && String(dataProd?.['work_data']?.['order']) === workID) {
-                                                $(bodyEle).append(`<div class="mb-2"><b class="text-primary">Phiên bản đơn dịch vụ: </b><span>${dataLog?.['service_order_data']?.['code']}</span></div>
-                                                                    <div><b class="text-primary">SL giao hàng: </b><span>${dataProd?.['delivery_quantity']}</span></div>`);
+                                                $(bodyEle).append(`<div class="bg-light p-2 border rounded-5 mb-2"><div class="mb-2"><b class="text-primary">${$transEle.attr('data-service-order-version')}: </b><span>${dataLog?.['service_order_data']?.['code']}</span></div>
+                                                                    <div><b class="text-primary">${$transEle.attr('data-delivery-quantity')}: </b><span>${dataProd?.['delivery_quantity']}</span></div></div>`);
                                             }
                                         }
                                     }

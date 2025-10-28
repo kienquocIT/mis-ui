@@ -55,6 +55,11 @@
     {% include 'extends/indicator/all.html' with is_order=True %}
 {% endblock %}
 {% block dataHiddenGroup %}
+    <input
+            type="hidden" id="app-trans-factory"
+            data-service-order-version="{% trans 'Service order version' %}"
+            data-delivery-quantity="{% trans 'Delivery quantity' %}"
+    >
     <script id="script-url"
             data-expense-item-list-url="{% url 'ExpenseItemListAPI' %}"
             data-tax-list-url = '{% url 'TaxListAPI' %}'

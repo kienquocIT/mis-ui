@@ -86,5 +86,9 @@ msgid "Select representative product (Product Modification)"
 msgstr "Chọn sản phẩm đại diện (cho Ráp-Rã)"
 
 #
+msgid "Representative product"
+msgstr "Sản phẩm đại diện"
+
+#
 msgid "Due to the selected product does not use the Specific Identification valuation method. When you perform the Product modification, the cost of this product will be mixed with the remaining inventory. Using a representative product to accurately track details as the original item."
 msgstr "Vì sản phẩm được chọn không áp dụng phương pháp tính giá Thực tế đích danh. Khi bạn thực hiện thao tác Ráp-Rã, giá cost của sản phẩm này sẽ được gộp chung với tồn kho còn lại. Sử dụng sản phẩm đại diện để có thể theo dõi chi tiết như sản phẩm gốc ban đầu."

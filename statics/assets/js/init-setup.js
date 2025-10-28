@@ -633,7 +633,6 @@ class LogController {
         }
         if (stagesData.length > 0) {
             stagesData.map((item) => {
-                // let baseHTML = `<div class="row"><div class="col-12"><div class="card"><div class="hk-ribbon-type-1 start-touch">` + `<span>{stationName}</span></div><h5 class="card-title"></h5>{logData}{assigneeData}</div></div></div>`;
                 let baseHTML = `<div class="row"><div class="col-12"><div class="card"><div class="hk-ribbon-type-1 start-touch">` + `<span>{stationName}</span></div>{logData}</div></div></div>`;
                 let stationName = item['code'] ? `<i class="fas fa-cog"></i><span class="ml-1">${item['title']}</span>` : item['title'];
 

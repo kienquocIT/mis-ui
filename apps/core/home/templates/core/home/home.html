@@ -8,19 +8,22 @@
     <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/themes/themes.light.min.css' %}">
     <style>
-{#        #idxPageContent {#}
-            {#background-color: #A7C1E1;#}
-{#            background-image: url("{% static 'assets/js/home_4.jpg' %}");#}
-{#            background-repeat: no-repeat;#}
-{#            background-position: center;#}
-{#            background-size: cover;#}
-{#            padding: 1rem;#}
-{#        }#}
-    #idxPageContent {
-        /* Thêm dòng này để tạo hiệu ứng chuyển màu mượt mà */
-        transition: background 1.5s ease-in-out;
-        background-size: 100% 100%;
-    }
+        #idxPageContent {
+            background-color: #A7C1E1;
+            background-image: url("{% static 'assets/js/home_4.jpg' %}");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            padding: 1rem;
+
+            border-radius: 8px;
+            border: 2px solid #fff;
+        }
+        {##idxPageContent {#}
+        {#    /* Thêm dòng này để tạo hiệu ứng chuyển màu mượt mà */#}
+        {#    transition: background 1.5s ease-in-out;#}
+        {#    background-size: 100% 100%;#}
+        {#}#}
     </style>
 {% endblock %}
 {% block pageAction %}{% endblock %}
@@ -35,52 +38,71 @@
     </div>
     <div class="row mb-5" style="display: none;">
         <div class="col-12 mb-3">
-            <h1 class="fw-bold text-black" id="employee-current-fullname"></h1>
-            <h6 class="fw-bold text-black" id="employee-current-company"></h6>
+            <h1 class="fw-bold text-white" style="opacity: 0.9;" id="employee-current-fullname"></h1>
+            <h6 class="fw-bold text-white" style="opacity: 0.9;" id="employee-current-company"></h6>
         </div>
-        <div class="col col-sm-12 col-md-6 col-lg-6 col-xl-9">
+        <div class="col-12 col-md-12 col-lg-9">
             <div class="row" id="my-task-summary-report" data-url="{% url 'MyTaskSummaryReport' %}">
-                <div class="col-12 col-md-3 col-lg-3">
+                <!-- Active Task -->
+                <div class="col-12 col-md-6 col-lg-3">
                     <div class="card transparent-card">
-                        <div class="card-body p-2">
-                            <div class="summary-item" data-item="actives">
-                                <p class="summary-value text-black"></p>
-                                <p class="summary-title text-black">{% trans 'Actives Task' %}</p>
+                        <div class="card-body d-flex align-items-center">
+                            <div class="summary-icon-wrapper mr-4">
+                                <i class="fa-solid fa-list-check summary-icon text-primary"></i>
+                            </div>
+                            <div class="summary-item flex-fill" data-item="actives">
+                                <p class="summary-value fw-bold"></p>
+                                <p class="summary-title">{% trans 'Active Tasks' %}</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-3 col-lg-3">
+                <!-- Overdue -->
+                <div class="col-12 col-md-6 col-lg-3">
                     <div class="card transparent-card">
-                        <div class="card-body p-2">
-                            <div class="summary-item" data-item="overdue">
-                                <p class="summary-value text-black"></p>
-                                <p class="summary-title text-black">{% trans 'Overdue Task' %}</p>
+                        <div class="card-body d-flex align-items-center">
+                            <div class="summary-icon-wrapper mr-4">
+                                <i class="fa-solid fa-triangle-exclamation summary-icon text-orange"></i>
+                            </div>
+                            <div class="summary-item flex-fill" data-item="overdue">
+                                <p class="summary-value fw-bold"></p>
+                                <p class="summary-title">{% trans 'Overdue Tasks' %}</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-3 col-lg-3">
+                <!-- Upcoming Today -->
+                <div class="col-12 col-md-6 col-lg-3">
                     <div class="card transparent-card">
-                        <div class="card-body p-2">
-                            <div class="summary-item" data-item="upcoming_today">
-                                <p class="summary-value text-black"></p>
-                                <p class="summary-title text-black">{% trans 'Upcoming Today Task' %}</p>
+                        <div class="card-body d-flex align-items-center">
+                            <div class="summary-icon-wrapper mr-4">
+                                <i class="fa-solid fa-sun summary-icon text-warning"></i>
+                            </div>
+                            <div class="summary-item flex-fill" data-item="upcoming_today">
+                                <p class="summary-value fw-bold"></p>
+                                <p class="summary-title">{% trans 'Upcoming Today' %}</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-3 col-lg-3">
+                <!-- Upcoming 3 Days -->
+                <div class="col-12 col-md-6 col-lg-3">
                     <div class="card transparent-card">
-                        <div class="card-body p-2">
-                            <div class="summary-item" data-item="upcoming_soon">
-                                <p class="summary-value text-black"></p>
-                                <p class="summary-title text-black">{% trans 'Upcoming 3 days Task' %}</p>
+                        <div class="card-body d-flex align-items-center">
+                            <div class="summary-icon-wrapper mr-4">
+                                <i class="fa-solid fa-calendar-days summary-icon text-blue"></i>
+                            </div>
+                            <div class="summary-item flex-fill" data-item="upcoming_soon">
+                                <p class="summary-value fw-bold"></p>
+                                <p class="summary-title">{% trans 'Upcoming 3 Days' %}</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <p>{% trans "Current task data is being collected." %}</p>
+                <p class="text-muted text-center mt-2 small">
+                    <i class="fa-solid fa-spinner fa-spin me-1"></i>
+                    {% trans "Current task data is being collected." %}
+                </p>
             </div>
             <div class="row">
                 <div class="col-12">
@@ -108,7 +130,7 @@
                                     <div class="row">
                                         <div class="col-12">
                                             <table class="table nowrap w-100" id="tbl_my_task" data-url="{% url 'FlowRuntimeTaskListAPI' %}" data-method="GET">
-                                                <thead class="bg-secondary-light-5">
+                                                <thead>
                                                     <tr>
                                                         <th style="min-width: 50px"></th>
                                                         <th style="min-width: 300px">{% trans 'Application' %}</th>
@@ -127,7 +149,7 @@
                                     <div class="row">
                                         <div class="col-12">
                                             <table id="tbl_following_data" class="table nowrap w-100" data-url="{% url 'FlowRuntimeMeListAPI' %}" data-method="GET">
-                                                <thead class="bg-secondary-light-5">
+                                                <thead>
                                                 <tr>
                                                     <th style="min-width: 50px"></th>
                                                     <th style="min-width: 300px">{% trans 'Application' %}</th>
@@ -146,7 +168,7 @@
                                     <div class="row">
                                         <div class="col-12">
                                             <table class="table nowrap w-100" id="tbl_block_doc_pined" data-url="{% url 'DocPinedListAPI' %}" data-url-detail="{% url 'DocPinedDetailAPI' pk=1 %}" data-method="GET">
-                                                <thead class="bg-secondary-light-5">
+                                                <thead>
                                                 <tr>
                                                     <th style="min-width: 50px"></th>
                                                     <th style="min-width: 300px">{% trans 'Application' %}</th>
@@ -205,7 +227,7 @@
                 </div>
             </div>
         </div>
-        <div class="col col-sm-12 col-md-6 col-lg-6 col-xl-3 mb-3">
+        <div class="col-12 col-md-12 col-lg-3">
             <div class="row calendar-group">
                 <div class="col-12">
                     <div class="card transparent-card">
@@ -217,16 +239,16 @@
                 <div class="col-12">
                     <div class="card transparent-card">
                         <div class="card-body p-2">
-                            <div class="w-100 pt-2">
+                            <div class="w-100">
                                 <div class="d-flex">
                                     <div id="event-at-day-selected-date" data-text-today="{% trans 'Today' %}" data-bs-toggle="tooltip"
                                          title="{% trans 'There is a delay in updating the data with new changes. Estimated within 5 minutes of change.' %}"
                                     ></div>
-                                    <div style="margin-left: auto;display: flex; align-items: start;">
-                                        <button class="btn btn-xs btn-soft-primary event-at-btn-all mr-1" id="event-at-expand-all" data-bs-toggle="tooltip" title="{% trans 'Expand all' %}">
+                                    <div style="margin-left: auto; display: flex; align-items: start;">
+                                        <button class="btn btn-xs btn-primary event-at-btn-all mr-1" id="event-at-expand-all" data-bs-toggle="tooltip" title="{% trans 'Expand all' %}">
                                             <i class="fa-solid fa-chevron-down fa-xs"></i>
                                         </button>
-                                        <button class="btn btn-xs btn-soft-primary event-at-btn-all" id="event-at-collapse-all" data-bs-toggle="tooltip" title="{% trans 'Collapse all' %}">
+                                        <button class="btn btn-xs btn-primary event-at-btn-all" id="event-at-collapse-all" data-bs-toggle="tooltip" title="{% trans 'Collapse all' %}">
                                             <i class="fa-solid fa-chevron-up fa-xs"></i>
                                         </button>
                                     </div>
@@ -276,8 +298,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-12">
                     <div class="card transparent-card">
                         <div class="card-body p-2">
@@ -285,11 +305,9 @@
                                 <h6>{% trans 'Bookmarks' %}</h6>
                                 <div id="boxBookmarkDisplay" data-url="{% url 'BookMarkListAPI' %}" data-url-delete="{% url 'BookMarkDetailAPI' pk=1 %}">
                                     <div class="row d-flex justify-content-start flex-wrap" id="boxBookmarkDisplayData">
-                                        <div id="boxBtnAddNewBM" class="bookmark-item d-15 m-2" data-bs-toggle="modal" data-bs-target="#modalAddBookMark">
-                                            <div class="bg-blue-light-4 text-light rounded-5 d-10 d-flex flex-column justify-content-center align-items-center overflow-hidden">
-                                                <span class="mb-1">
-                                                    <i class="fa-solid fa-plus"></i>
-                                                </span>
+                                        <div id="boxBtnAddNewBM" class="bookmark-item d-10 m-2" data-bs-toggle="modal" data-bs-target="#modalAddBookMark">
+                                            <div style="opacity: 0.5; border-radius: 12px;" class="bg-light d-15 d-flex flex-column justify-content-center align-items-center overflow-hidden">
+                                                <i class="fa-solid fa-plus"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -507,7 +525,7 @@
         const msgTextErrLinked = `{% trans "Hasn't been link to the employee!" %}`;
         const msgTextErrLinked2 = "{% trans 'Please switch the current company to the one that already has an employee link or contact the administrator to add an employee to the account.' %}"
     </script>
-    <script src="{% static 'assets/js/core_home/day_flow_homepage.js' %}"></script>
+{#    <script src="{% static 'assets/js/core_home/day_flow_homepage.js' %}"></script>#}
     <script src="{% static 'assets/js/core_home/home.js' %}"></script>
 
     <script src="{% static 'vendors/chartjs/chart.umd.min.js' %}"></script>

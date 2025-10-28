@@ -22,19 +22,19 @@ msgid "Today Assigned Task"
 msgstr "Công việc đã giao hôm nay"
 
 #
-msgid "Overdue Task"
+msgid "Overdue Tasks"
 msgstr "Công việc quá hạn"
 
 #
-msgid "Upcoming Today Task"
-msgstr "Công việc hôm nay đến hạn"
+msgid "Upcoming Today"
+msgstr "Đến hạn hôm nay"
 
 #
-msgid "Upcoming 3 days Task"
-msgstr "Công việc đến hạn trong 3 ngày tới"
+msgid "Upcoming 3 Days"
+msgstr "Đến hạn trong 3 ngày tới"
 
 #
-msgid "Actives Task"
+msgid "Active Tasks"
 msgstr "Công việc đang thực hiện"
 
 #

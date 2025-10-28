@@ -287,6 +287,11 @@ PLAN_APP_OF_HRM = {
             list_view_name='OvertimeList', detail_view_name='OvertimeDetail'
         ).data,
     },
+    'payrolltemplate': {
+        'payrolltemplate': ReverseUrlCommon(
+            list_view_name='PayrollTemplateList', detail_view_name='PayrollTemplateDetail'
+        ).data,
+    },
 }
 
 PLAN_APP_OF_KMS = {

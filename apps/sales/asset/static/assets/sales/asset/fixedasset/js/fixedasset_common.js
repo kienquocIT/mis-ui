@@ -341,7 +341,7 @@ class CommonHandler{
                             let increasedFA = row?.['increased_FA_value'] ? Number(row?.['increased_FA_value']) : 0
 
                             if(dataFADetail?.['ap_invoice_items']){
-                                const fixedAssetAPInvoiceItem = dataFADetail?.['ap_invoice_items'].find(item=>item.ap_invoice_item_id=apInvoiceProdId)
+                                const fixedAssetAPInvoiceItem = dataFADetail?.['ap_invoice_items'].find(item=>item.ap_invoice_item_id===apInvoiceProdId)
                                 if(fixedAssetAPInvoiceItem){
                                     increasedFA = increasedFA - fixedAssetAPInvoiceItem?.['increased_FA_value']
                                 }
@@ -364,7 +364,7 @@ class CommonHandler{
                                     dataFADetail = JSON.parse(dataFADetail)
                                 }
                                 if(dataFADetail?.['ap_invoice_items']){
-                                    const fixedAssetAPInvoiceItem = dataFADetail?.['ap_invoice_items'].find(item=>item.ap_invoice_item_id=apInvoiceProdId)
+                                    const fixedAssetAPInvoiceItem = dataFADetail?.['ap_invoice_items'].find(item=>item.ap_invoice_item_id===apInvoiceProdId)
                                     if(fixedAssetAPInvoiceItem){
                                         value= fixedAssetAPInvoiceItem?.['increased_FA_value']
                                     }
@@ -511,7 +511,7 @@ class CommonHandler{
                 const increasedFA = Number($(ele).closest('tr').find('.prior-increased-fa').attr('data-init-money')) || 0
                 const totalValue = Number($(ele).closest('tr').find('.total-value').attr('data-init-money')) || 0
 
-                if(currIncreaseValue<=0){
+                if(currIncreaseValue<0){
                     const text = this.$transScript.attr('data-increase-must-positive')
                     $.fn.notifyB({'title': '','description': text}, 'failure')
                     isValid = false
@@ -664,15 +664,16 @@ class CommonHandler{
 
     // detail page
     disableFields(){
-        const $fields = $('#form-fixed-asset').find('input, select, button:not(#load-depreciation-btn)')
-        $fields.attr('disabled', true)
-        $fields.attr('readonly', true)
+        const $fields = $('#form-fixed-asset').find('input, select, button:not(#load-depreciation-btn, .open-modal)')
+        $fields.prop('disabled', true)
+        $fields.prop('readonly', true)
 
         $('#datatable-asset-source').on('draw.dt', function() {
-            $(this).find('input, button').attr('disabled', true).attr('readonly', true);
+            // $(this).find('input').prop({
+            //     disabled: true,
+            //     readonly: true
+            // });
         });
-
-
     }
 
     fetchDetailData(disabledFields=false){

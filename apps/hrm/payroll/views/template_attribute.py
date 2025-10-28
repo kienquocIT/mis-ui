@@ -39,6 +39,10 @@ class PayrollTemplAttrListAPI(APIView):
         return resp.auto_return()
 
 
+class PayrollTemplAttrDetail(View):
+    pass
+
+
 class PayrollTemplateAttributeDetailAPI(APIView):
     @mask_view(
         auth_require=True,

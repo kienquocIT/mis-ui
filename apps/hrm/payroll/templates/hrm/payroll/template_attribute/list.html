@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block title %}
-    {% trans 'Payroll Attribute list' %}
+    {% trans 'Template Attribute list' %}
 {% endblock %}
 {% block cssHeader %}
 {% endblock %}
 
 {% block pageAction %}
-    <a href="#" data-bs-toggle="modal" data-bs-target="#PayrollAttributeModal" id="create_payroll_attribute">
+    <a href="#" data-bs-toggle="modal" data-bs-target="#templateAttributeModal">
         <button class="btn btn-outline-primary">
             <span>
                 <span>{% trans 'Add' %}</span>
@@ -20,28 +20,25 @@
 {% block pageContent %}
     <div class="row">
         <div class="col-12">
-            <table class="table nowrap w-100" data-method="GET" data-url="{% url 'PayrollAttributeListAPI' %}" id="tbl_payroll_attribute">
+            <table class="table nowrap w-100" data-method="GET" id="tbl_template_attr" data-url="{% url 'PayrollTemplAttrListAPI' %}">
                 <thead>
-                <tr>
-                    <th></th>
-                    <th>{% trans 'Description' %}</th>
-                    <th>{% trans 'Type' %}</th>
-                    <th>{% trans 'Employee' %}</th>
-                    <th>{% trans 'Created date' %}</th>
-                    <th>{% trans 'Status' %}</th>
-                </tr>
+                    <tr>
+                        <th></th>
+                        <th>{% trans 'Description' %}</th>
+                        <th>{% trans 'Type' %}</th>
+                        <th>{% trans 'Employee' %}</th>
+                        <th>{% trans 'Created date' %}</th>
+                        <th>{% trans 'Status' %}</th>
+                    </tr>
                 </thead>
             </table>
         </div>
     </div>
 {% endblock %}
 {% block modalData %}
-    {% include 'hrm/payroll/payrollattribute/payroll_attribute_modal.html' %}
+    {% include 'hrm/payroll/template_attribute/template_attribute_modal.html' %}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/hrm/absenceexplanation/js/common.js' %}"></script>
     <script src="{% static 'assets/hrm/absenceexplanation/js/list.js' %}"></script>
 {% endblock %}
-
-
-

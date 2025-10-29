@@ -22,10 +22,6 @@ msgid "modified by Product Modification"
 msgstr "đã chỉnh sửa bởi Ráp-Rã Sản phẩm"
 
 #
-msgid "GR completed"
-msgstr "Đã nhập kho xong"
-
-#
 msgid "GR is pending"
 msgstr "Đang chờ nhập kho"
 

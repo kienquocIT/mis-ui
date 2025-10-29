@@ -32,7 +32,7 @@ $(document).ready(async function() {
         '.btn-close', '.modal-header button', '#view-dashboard',
         '#btn-open-exchange-modal', '.btn-list-task',
         '.btn-open-service-delivery', '.btn-open-work-order-cost',
-        '.btn-open-contribution-package', '.btn-open-product-attribute'
+        '.btn-open-contribution-package', '.btn-open-product-attribute', '#version-select'
     ]);
     handleDetailEvents()
     handleClickIndicator()

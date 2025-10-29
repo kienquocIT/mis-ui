@@ -4,102 +4,32 @@
 {% block title %}{% trans 'Dashboard' %}{% endblock %}
 {% block cssHeader %}
     <style>
-        :root {
-            --primary-color: #3b82f6;
-            --secondary-color: #64748b;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --info-color: #06b6d4;
-            --light-color: #f8fafc;
-            --dark-color: #1e293b;
-            --border-radius: 12px;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            --gradient-warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-            --gradient-info: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-        }
-
         #idxPageContent {
-            {#background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);#}
-            background-image: url("{% static 'assets/js/home_4.jpg' %}");
-            background-repeat: no-repeat;
-            background-position: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             background-size: cover;
-            padding: 1rem 0;
-        }
-        
-        .dashboard-cards {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 30px;
-        }
-
-        .dashboard-card {
-            border: none;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            background: rgba(255, 255, 255, 0.25)
-        }
-
-        .card-title {
-            font-size: 2rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .card-description {
-            font-size: 1.2rem;
-            margin-bottom: 0;
-            line-height: 1.5;
-        }
-
-        @media (max-width: 768px) {
-            #idxPageContent {
-                padding: 20px 15px;
-            }
-            
-            .dashboard-cards {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .dashboard-card {
-                width: 100%;
-                max-width: 320px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .dashboard-card {
-                padding: 25px 15px;
-            }
-            
-            .card-icon {
-                font-size: 2.5rem;
-            }
         }
     </style>
 {% endblock %}
 {% block pageContent %}
-    <div class="dashboard-cards">
-        <a href="{% url 'DashboardGeneralList' %}" class="dashboard-card">
-            <h3 class="card-title">{% trans 'General' %}</h3>
-            <p class="card-description">{% trans 'Overview of revenue, profit and key performance indicators' %}</p>
-        </a>
-        
-        <a href="{% url 'DashboardPipelineList' %}" class="dashboard-card pipeline-card">
-            <h3 class="card-title">{% trans 'Pipeline' %}</h3>
-            <p class="card-description">{% trans 'Sales pipeline analysis, conversion rates and deal tracking' %}</p>
-        </a>
+    <div class="row">
+        <div class="d-flex flex-wrap justify-content-center align-items-center">
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="bflow-glass-card">
+                    <a href="{% url 'DashboardGeneralList' %}">
+                        <h1 class="text-white fw-bold">{% trans 'General' %}</h1>
+                        <h5 class="text-white mt-3">{% trans 'Overview of revenue, profit and key performance indicators' %}</h5>
+                    </a>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="bflow-glass-card">
+                    <a href="{% url 'DashboardPipelineList' %}">
+                        <h1 class="text-white fw-bold">{% trans 'Pipeline' %}</h1>
+                        <h5 class="text-white mt-3">{% trans 'Sales pipeline analysis, conversion rates and deal tracking' %}</h5>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
 {% block jsFooter %}

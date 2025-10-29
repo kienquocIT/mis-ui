@@ -5,122 +5,15 @@
 {% block cssHeader %}
     <link href="{% static 'assets/core/workflow/css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"/>
     <style>
-        /* Modern Dashboard v2 with Enhanced Design */
-        :root {
-            --primary-color: #3b82f6;
-            --secondary-color: #64748b;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --info-color: #06b6d4;
-            --light-color: #f8fafc;
-            --dark-color: #1e293b;
-            --border-radius: 12px;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            --gradient-warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-            --gradient-info: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-        }
-
         #idxPageContent {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             background-size: cover;
-            padding: 1rem;
         }
-
-        .container-fluid {
-            position: relative;
-            z-index: 1;
+        .advance-list-item {
+            transition: none;
         }
-
-        /* Enhanced Cards */
-        .transparent-card {
-            border: none;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
-            padding: 5px;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            background: rgba(255, 255, 255, 0.2)
-        }
-
-        .transparent-main-card {
-            border: none;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
-            padding: 15px;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            background: rgba(255, 255, 255, 0.2)
-        }
-
-        .progress-card {
-            border: none;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
-            padding: 5px;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        #service-order-progress {
-            transition: width 1s ease-in-out; /* mượt trong 1 giây */
-        }
-
-        .service-card {
-            border: none;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
-            background: #c9d3e3;
-            padding: 15px;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        /* Chart Container Enhancements */
-        .chart-container {
-            position: relative;
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 1rem;
-            margin-bottom: 0.5rem;
-            box-shadow: var(--shadow-sm);
-        }
-
-        /* Ensure proper spacing for chart containers */
-        .chart-container > div {
-            position: relative;
-            overflow: visible !important;
-        }
-
-        .chart-title {
-            font-size: 1.125rem !important;
-            font-weight: 700 !important;
-            color: #1e293b !important;
-            margin: 0 !important;
-            display: flex !important;
-            align-items: center !important;
-            gap: 0.5rem !important;
-        }
-
-        .chart-title i {
-            color: var(--primary-color) !important;
-        }
-
-        /* Filter Panel */
-        .custom-panel {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid #e2e8f0;
+        .advance-list-item:hover {
+            transform: none;
         }
     </style>
 {% endblock %}
@@ -132,79 +25,57 @@
     <script id="script-url"
             data-url-service-order-detail-for-dashboard="{% url 'ServiceOrderDetailDashboardAPI' '0'%}"
     ></script>
-    <script id="trans-script"
-    ></script>
+    <script id="trans-script"></script>
 
-    <div class="container-fluid mt-5 mb-10">
-        <div class="row">
-            <div class="col-12">
-                <span class="text-white">{% trans 'TITLE' %}</span>
-                <h2 class="fw-bold text-white" id="service-order-title"></h2>
-            </div>
-            <div class="col-12">
-                <div class="separator"></div>
-            </div>
-            <div class="col-12 col-md-9 col-lg-9">
-                <span class="text-white">{% trans 'CUSTOMER' %}</span>
-                <h4 class="fw-bold text-white" id="service-order-customer"></h4>
-            </div>
-            <div class="col-12 col-md-3 col-lg-3">
-                <span class="text-white">{% trans 'TIME' %}</span>
-                <h4 class="fw-bold text-white" id="service-order-time"></h4>
-            </div>
-            <div class="col-12">
-                <div class="separator"></div>
-            </div>
-            <div class="col-12 mb-5" id="service-order-progress">
-                <span class="text-white">{% trans 'OVERALL PROGRESS' %}</span>
-            </div>
-            <div class="col-12 col-md-3 col-lg-3">
-                <div class="card transparent-card">
-                    <div class="card-body p-2">
-                        <span class="text-white">{% trans 'TOTAL SERVICES' %}</span>
-                        <h1 class="fw-bold text-white" id="total-services"></h1>
-                        <span class="fst-italic text-white" id="total-services-des"><span id="svo-completed"></span> {% trans 'completed' %} - <span id="svo-progressing"></span> {% trans 'progressing' %} - <span id="svo-waiting"></span> {% trans 'waiting' %}</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-3 col-lg-3">
-                <div class="card transparent-card">
-                    <div class="card-body p-2">
-                        <span class="text-white">{% trans 'TOTAL WORKS' %}</span>
-                        <h1 class="fw-bold text-white" id="total-work-orders"></h1>
-                        <span class="fst-italic text-white" id="total-work-orders-des"><span id="wo-completed"></span> {% trans 'completed' %} - <span id="wo-progressing"></span> {% trans 'progressing' %} - <span id="wo-waiting"></span> {% trans 'waiting' %}</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-3 col-lg-3">
-                <div class="card transparent-card">
-                    <div class="card-body p-2">
-                        <span class="text-white">{% trans 'TOTAL TASKS' %}</span>
-                        <h1 class="fw-bold text-white" id="total-tasks"></h1>
-                        <span class="fst-italic text-white" id="total-tasks-des"><span id="task-completed"></span> {% trans 'completed' %} - <span id="task-progressing"></span> {% trans 'progressing' %} - <span id="task-waiting"></span> {% trans 'waiting' %}</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-3 col-lg-3">
-                <div class="card transparent-card">
-                    <div class="card-body p-2">
-                        <span class="text-white">{% trans 'CONTRACT VALUE' %}</span>
-                        <h1 class="fw-bold text-white"><span class="mask-money" id="contract-value" data-init-money="0"></span></h1>
-                        <span class="fst-italic text-white" id="contract-value-des"><span class="mask-money" id="contract-value-delivered" data-init-money="0"></span> {% trans 'delivered' %} (~<span id="contract-value-delivered-percent"></span>%)</span>
-                    </div>
-                </div>
+    <div class="row">
+        <div class="col-12 col-md-9 col-lg-9">
+            <h2 class="fw-bold text-white" id="service-order-title"></h2>
+            <h6 class="text-white" id="service-order-customer"></h6>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3 text-right">
+            <h5 class="fw-bold text-white" id="service-order-time"></h5>
+        </div>
+        <div class="col-12 mt-3 mb-3">
+            <div class="bflow-glass-card" id="service-order-progress">
+                <span class="fw-bold text-white">{% trans 'OVERALL PROGRESS' %}</span>
             </div>
         </div>
-        <div class="row mt-5">
-            <div class="col-12">
-                <h3 class="text-white">{% trans 'SERVICE PROGRESS' %}</h3>
+        <div class="col-12 col-md-3 col-lg-3">
+            <div class="bflow-glass-card">
+                <span class="fw-bold text-white">{% trans 'TOTAL SERVICES' %}</span>
+                <h1 class="fw-bold text-white" id="total-services"></h1>
+                <span class="text-white" id="total-services-des"><span id="svo-completed"></span> {% trans 'completed' %} - <span id="svo-progressing"></span> {% trans 'progressing' %} - <span id="svo-waiting"></span> {% trans 'waiting' %}</span>
             </div>
-            <div class="col-12">
-                <div class="card transparent-main-card">
-                    <div class="card-body p-2">
-                        <div class="row" id="service-detail-list"></div>
-                    </div>
-                </div>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3">
+            <div class="bflow-glass-card">
+                <span class="fw-bold text-white">{% trans 'TOTAL WORKS' %}</span>
+                <h1 class="fw-bold text-white" id="total-work-orders"></h1>
+                <span class="text-white" id="total-work-orders-des"><span id="wo-completed"></span> {% trans 'completed' %} - <span id="wo-progressing"></span> {% trans 'progressing' %} - <span id="wo-waiting"></span> {% trans 'waiting' %}</span>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3">
+            <div class="bflow-glass-card">
+                <span class="fw-bold text-white">{% trans 'TOTAL TASKS' %}</span>
+                <h1 class="fw-bold text-white" id="total-tasks"></h1>
+                <span class="text-white" id="total-tasks-des"><span id="task-completed"></span> {% trans 'completed' %} - <span id="task-progressing"></span> {% trans 'progressing' %} - <span id="task-waiting"></span> {% trans 'waiting' %}</span>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3">
+            <div class="bflow-glass-card">
+                <span class="fw-bold text-white">{% trans 'CONTRACT VALUE' %}</span>
+                <h1 class="fw-bold text-white"><span class="mask-money" id="contract-value" data-init-money="0"></span></h1>
+                <span class="text-white" id="contract-value-des"><span class="mask-money" id="contract-value-delivered" data-init-money="0"></span> {% trans 'delivered' %} (~<span id="contract-value-delivered-percent"></span>%)</span>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="fw-bold text-white">{% trans 'SERVICE PROGRESS' %}</h3>
+        </div>
+        <div class="col-12">
+            <div class="bflow-glass-card">
+                <div class="row" id="service-detail-list"></div>
             </div>
         </div>
     </div>

@@ -13,6 +13,24 @@
             background-repeat: no-repeat;
             background-position: center;
             background-size: cover;
+            height: 150vh;
+            animation: floatBG 15s ease-in-out infinite;
+        }
+
+        @keyframes floatBG {
+            0%,
+            100% {
+                background-position: center center;
+            }
+            25% {
+                background-position: 30% 70%;
+            }
+            50% {
+                background-position: 70% 30%;
+            }
+            75% {
+                background-position: 40% 60%;
+            }
         }
     </style>
 {% endblock %}
@@ -36,13 +54,10 @@
                 <!-- Active Task -->
                 <div class="col-12 col-md-6 col-lg-3 mb-3">
                     <div class="bflow-glass-card">
-                        <div class="d-flex align-items-center">
-                            <div class="summary-icon-wrapper mr-4">
-                                <i class="fa-solid fa-list-check summary-icon text-primary"></i>
-                            </div>
-                            <div class="summary-item flex-fill" data-item="actives">
-                                <p class="summary-value fw-bold"></p>
-                                <p class="summary-title">{% trans 'Active Tasks' %}</p>
+                        <div class="summary-item" data-item="actives">
+                            <div class="text-center">
+                                <span style="font-size: 48px" class="text-white summary-value fw-bold"></span><br>
+                                <span style="font-size: 18px" class="text-white summary-title mt-1">{% trans 'Active Tasks' %}</span>
                             </div>
                         </div>
                     </div>
@@ -50,13 +65,10 @@
                 <!-- Overdue -->
                 <div class="col-12 col-md-6 col-lg-3 mb-3">
                     <div class="bflow-glass-card">
-                        <div class="d-flex align-items-center">
-                            <div class="summary-icon-wrapper mr-4">
-                                <i class="fa-solid fa-triangle-exclamation summary-icon text-orange"></i>
-                            </div>
-                            <div class="summary-item flex-fill" data-item="overdue">
-                                <p class="summary-value fw-bold"></p>
-                                <p class="summary-title">{% trans 'Overdue Tasks' %}</p>
+                        <div class="summary-item" data-item="overdue">
+                            <div class="text-center">
+                                <span style="font-size: 48px" class="text-white summary-value fw-bold"></span><br>
+                                <span style="font-size: 18px" class="text-white summary-title mt-1">{% trans 'Overdue Tasks' %}</span>
                             </div>
                         </div>
                     </div>
@@ -64,13 +76,10 @@
                 <!-- Upcoming Today -->
                 <div class="col-12 col-md-6 col-lg-3 mb-3">
                     <div class="bflow-glass-card">
-                        <div class="d-flex align-items-center">
-                            <div class="summary-icon-wrapper mr-4">
-                                <i class="fa-solid fa-sun summary-icon text-warning"></i>
-                            </div>
-                            <div class="summary-item flex-fill" data-item="upcoming_today">
-                                <p class="summary-value fw-bold"></p>
-                                <p class="summary-title">{% trans 'Upcoming Today' %}</p>
+                        <div class="summary-item" data-item="upcoming_today">
+                            <div class="text-center">
+                                <span style="font-size: 48px" class="text-white summary-value fw-bold"></span><br>
+                                <span style="font-size: 18px" class="text-white summary-title mt-1">{% trans 'Upcoming Today' %}</span>
                             </div>
                         </div>
                     </div>
@@ -78,13 +87,10 @@
                 <!-- Upcoming 3 Days -->
                 <div class="col-12 col-md-6 col-lg-3 mb-3">
                     <div class="bflow-glass-card">
-                        <div class="d-flex align-items-center">
-                            <div class="summary-icon-wrapper mr-4">
-                                <i class="fa-solid fa-calendar-days summary-icon text-blue"></i>
-                            </div>
-                            <div class="summary-item flex-fill" data-item="upcoming_soon">
-                                <p class="summary-value fw-bold"></p>
-                                <p class="summary-title">{% trans 'Upcoming 3 Days' %}</p>
+                        <div class="summary-item" data-item="upcoming_soon">
+                            <div class="text-center">
+                                <span style="font-size: 48px" class="text-white summary-value fw-bold"></span><br>
+                                <span style="font-size: 18px" class="text-white summary-title mt-1">{% trans 'Upcoming 3 Days' %}</span>
                             </div>
                         </div>
                     </div>
@@ -96,7 +102,7 @@
             </div>
             <div class="row">
                 <div class="col-12 mb-3">
-                    <div class="bflow-glass-card-blur w-100">
+                    <div class="bflow-glass-card-blur-2 w-100">
                         <div id="task-list-group">
                             <ul class="nav nav-pills-bfl">
                                 <li class="nav-item">

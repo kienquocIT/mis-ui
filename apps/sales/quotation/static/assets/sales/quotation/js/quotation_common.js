@@ -5134,7 +5134,7 @@ class QuotationDataTableHandle {
                 type: 'GET',
                 data: {
                     'product_id': productID,
-                    'from_pm': true,
+                    // 'from_pm': true,
                     'product_warehouse_serial__serial_status': 0,
                 },
                 dataSrc: function (resp) {

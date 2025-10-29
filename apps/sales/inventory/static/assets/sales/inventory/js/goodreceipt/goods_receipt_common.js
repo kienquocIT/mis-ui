@@ -1073,7 +1073,8 @@ class GRLoadDataHandle {
                         'method': 'GET',
                         'data': {
                             'product_warehouse__product_id': dataStore?.['product_data']?.['id'],
-                            'serial_number': serial_number
+                            'serial_number': serial_number,
+                            'serial_status': 0,
                         },
                         'isDropdown': true,
                     }

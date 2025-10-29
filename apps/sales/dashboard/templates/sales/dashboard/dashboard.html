@@ -4,6 +4,25 @@
 {% block title %}{% trans 'Dashboard' %}{% endblock %}
 {% block cssHeader %}
     <style>
+        :root {
+            --primary-color: #3b82f6;
+            --secondary-color: #64748b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #06b6d4;
+            --light-color: #f8fafc;
+            --dark-color: #1e293b;
+            --border-radius: 12px;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --gradient-info: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
         #idxPageContent {
             {#background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);#}
             background-image: url("{% static 'assets/js/home_4.jpg' %}");
@@ -21,49 +40,26 @@
         }
 
         .dashboard-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 15px;
-            padding: 40px 30px;
-            text-align: center;
-            text-decoration: none;
-            color: white;
-            width: 40vw;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: rgba(255, 255, 255, 0.25)
         }
 
-        .dashboard-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            background: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-            text-decoration: none;
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .card-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: white;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        
         .card-title {
             font-size: 2rem;
             font-weight: 600;
             margin-bottom: 10px;
-            color: white;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
-        
+
         .card-description {
             font-size: 1.2rem;
-            color: #706f6f;
             margin-bottom: 0;
             line-height: 1.5;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         @media (max-width: 768px) {
@@ -96,17 +92,11 @@
 {% block pageContent %}
     <div class="dashboard-cards">
         <a href="{% url 'DashboardGeneralList' %}" class="dashboard-card">
-            <div class="card-icon">
-                <i class="fas fa-chart-line"></i>
-            </div>
             <h3 class="card-title">{% trans 'General' %}</h3>
             <p class="card-description">{% trans 'Overview of revenue, profit and key performance indicators' %}</p>
         </a>
         
         <a href="{% url 'DashboardPipelineList' %}" class="dashboard-card pipeline-card">
-            <div class="card-icon">
-                <i class="fas fa-filter"></i>
-            </div>
             <h3 class="card-title">{% trans 'Pipeline' %}</h3>
             <p class="card-description">{% trans 'Sales pipeline analysis, conversion rates and deal tracking' %}</p>
         </a>

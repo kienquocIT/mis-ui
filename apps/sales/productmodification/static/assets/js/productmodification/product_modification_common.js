@@ -589,6 +589,7 @@ class ProductModificationPageFunction {
     static LoadTableProductCurrentComponentList(data_list=[], option='create') {
         pageElements.$table_product_current_component.DataTable().clear().destroy()
         pageElements.$table_product_current_component.DataTableDefault({
+            styleDom: 'hide-foot',
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
@@ -695,6 +696,7 @@ class ProductModificationPageFunction {
     static LoadTableProductRemovedComponentList(data_list=[], option='create') {
         pageElements.$table_product_removed_component.DataTable().clear().destroy()
         pageElements.$table_product_removed_component.DataTableDefault({
+            styleDom: 'hide-foot',
             rowIdx: true,
             reloadCurrency: true,
             paging: false,

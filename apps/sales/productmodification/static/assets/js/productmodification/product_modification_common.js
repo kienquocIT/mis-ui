@@ -1395,7 +1395,7 @@ class ProductModificationHandler {
                 if (data) {
                     data = data['product_modification_detail'];
 
-                    console.log(data)
+                    // console.log(data)
 
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
@@ -1521,7 +1521,6 @@ class ProductModificationEventHandler {
                     Promise.all([latest_component_list_ajax]).then(
                         (results) => {
                             let current_component_data = results[0]?.['current_component_data'] || []
-                            console.log(current_component_data)
                             let parsed_current_component_data = []
                             for (let i= 0; i < (current_component_data || []).length; i++) {
                                 let item = current_component_data[i]
@@ -2007,7 +2006,6 @@ class ProductModificationEventHandler {
         })
         pageElements.$btn_accept_part_mapping.on('click', function () {
             let data_removed_component = ProductModificationPageFunction.ParseDataMapping()
-            console.log(data_removed_component)
             if (Object.keys(data_removed_component).length !== 0) {
                 pageVariables.removed_component_row.find('.btn-open-modal-mapping').attr('data-mapping', JSON.stringify(data_removed_component))
                 pageVariables.removed_component_row.find('.is-mapped-icon').prop('hidden', false)

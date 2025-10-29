@@ -223,6 +223,9 @@ class loadServiceOrderInfo {
                                                     for (let dataProd of dataLog?.['products']) {
                                                         if (dataProd?.['product_data']?.['code'] === workProduct?.['code'] && dataProd?.['work_data']?.['order'] === workData?.['order']) {
                                                             workProduct['delivered_quantity'] = workProduct['delivered_quantity'] - dataProd?.['delivery_quantity'];
+                                                            if (workProduct?.['delivered_quantity'] < 0) {
+                                                                workProduct['delivered_quantity'] = 0;
+                                                            }
                                                         }
                                                     }
                                                 }

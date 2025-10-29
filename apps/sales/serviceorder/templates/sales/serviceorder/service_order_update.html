@@ -57,6 +57,7 @@
 {% block dataHiddenGroup %}
     <input
             type="hidden" id="app-trans-factory"
+            data-delivery-logs="{% trans 'Delivery logs' %}"
             data-service-order-version="{% trans 'Service order version' %}"
             data-delivery-quantity="{% trans 'Delivery quantity' %}"
     >
@@ -72,6 +73,7 @@
             data-uom-url="{% url "UnitOfMeasureListAPI" %}"
             data-tax-url='{% url 'TaxListAPI' %}'
             data-delivery-log-url='{% url 'DeliveryWorkLogListAPI' %}'
+            data-service-order-detail-url='{% url 'ServiceOrderDetail' 1 %}'
     ></script>
 {% endblock %}
 {% block jsFooter %}

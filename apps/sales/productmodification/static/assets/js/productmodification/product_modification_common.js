@@ -76,26 +76,26 @@ class ProductModificationPageFunction {
                     }
                 },
                 {
-                    className: 'w-30',
+                    className: 'w-25',
                     render: (data, type, row) => {
-                        return `<div class="d-flex align-items-center">
-                                    <a data-bs-toggle="collapse" href=".d1_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d1_${row?.['id']}">
-                                        <i class="bi bi-info-circle"></i>
-                                    </a>
-                                    <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code'] || ''}</span><br>
-                                </div>
-                                <span>${row?.['title'] || ''}</span>
-                                <div class="collapse d1_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
+                        return `<span class="badge badge-sm badge-soft-secondary badge-outline">${row?.['code'] || ''}</span><br>
+                                <span>${row?.['title'] || ''}</span>`
                     }
                 },
                 {
-                    className: 'w-25',
+                    className: 'w-20',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['description'] || ''}</span>`
+                    }
+                },
+                {
+                    className: 'w-20',
                     render: (data, type, row) => {
                         return `<span class="prd-modified-text-detail"></span>`;
                     }
                 },
                 {
-                    className: 'w-40',
+                    className: 'w-30',
                     render: (data, type, row) => {
                         return `<textarea ${option === 'detail' ? 'disabled readonly' : ''} class="form-control new-des">${new_description || row?.['description'] || ''}</textarea>`
                     }
@@ -162,16 +162,16 @@ class ProductModificationPageFunction {
                     }
                 },
                 {
-                    className: 'w-90',
+                    className: 'w-40',
                     render: (data, type, row) => {
-                        return `<div class="d-flex align-items-center">
-                                    <a data-bs-toggle="collapse" href=".d2_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d2_${row?.['id']}">
-                                        <i class="bi bi-info-circle"></i>
-                                    </a>
-                                    <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code']}</span><br>
-                                </div>
-                                <span>${row?.['title']}</span>
-                                <div class="collapse d2_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
+                        return `<span class="badge badge-sm badge-soft-secondary badge-outline">${row?.['code']}</span><br>
+                                <span>${row?.['title']}</span>`
+                    }
+                },
+                {
+                    className: 'w-45',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['description'] || ''}</span>`
                     }
                 }
             ]
@@ -211,45 +211,65 @@ class ProductModificationPageFunction {
                             <input type="radio"
                                 name="product-modified-select"
                                 class="form-check-input product-modified-select"
-                                data-product-id="${row?.['id']}"
-                                data-product-code="${row?.['code']}"
-                                data-product-title="${row?.['title']}"
-                                data-product-description="${row?.['new_description'] || row?.['description'] || ''}"
-                                data-product-general-traceability-method="${row?.['general_traceability_method']}"
-                                data-prd-wh="${row?.['product_warehouse_id'] || ''}"
-                                data-prd-wh-lot="${row?.['product_warehouse_lot_id'] || ''}"
-                                data-prd-wh-serial="${row?.['product_warehouse_serial_id'] || ''}"
-                                data-modified-number="${row?.['modified_number'] || ''}"
-                                data-serial-number="${row?.['serial_number'] || ''}"
-                                data-lot-number="${row?.['lot_number'] || ''}"
-                                data-warehouse-data='${JSON.stringify(row?.['warehouse_data'])}'
+                                data-product-id="${row?.['product_data']?.['id']}"
+                                data-product-code="${row?.['product_data']?.['code']}"
+                                data-product-title="${row?.['product_data']?.['title']}"
+                                data-product-description="${row?.['product_data']?.['new_description'] || row?.['product_data']?.['description'] || ''}"
+                                data-product-general-traceability-method="${row?.['product_data']?.['general_traceability_method']}"
+                                data-prd-wh="${row?.['product_data']?.['product_warehouse_id'] || ''}"
+                                data-prd-wh-lot="${row?.['product_data']?.['product_warehouse_lot_id'] || ''}"
+                                data-prd-wh-serial="${row?.['product_data']?.['product_warehouse_serial_id'] || ''}"
+                                data-modified-number="${row?.['product_data']?.['modified_number'] || ''}"
+                                data-serial-number="${row?.['product_data']?.['serial_number'] || ''}"
+                                data-lot-number="${row?.['product_data']?.['lot_number'] || ''}"
+                                data-warehouse-data='${JSON.stringify(row?.['product_data']?.['warehouse_data'] || {})}'
                             >
                         </div>`;
                     }
                 },
                 {
-                    className: 'w-20',
+                    className: 'w-15',
                     render: (data, type, row) => {
                         if (row?.['serial_number']) {
-                            return `<span class="text-primary fw-bold">${row?.['modified_number']}</span><br><span class="small">Serial: ${row?.['serial_number'] || ''}</span>`
+                            return `<span class="text-primary fw-bold">${row?.['product_data']?.['modified_number']}</span><br><span class="small">Serial: ${row?.['product_data']?.['serial_number'] || ''}</span>`
                         }
                         if (row?.['lot_number']) {
-                            return `<span class="text-primary fw-bold">${row?.['modified_number']}</span><br><span class="small">Lot: ${row?.['lot_number'] || ''}</span>`
+                            return `<span class="text-primary fw-bold">${row?.['product_data']?.['modified_number']}</span><br><span class="small">Lot: ${row?.['product_data']?.['lot_number'] || ''}</span>`
                         }
-                        return `<span class="text-primary fw-bold">${row?.['modified_number']}</span>`
+                        return `<span class="text-primary fw-bold">${row?.['product_data']?.['modified_number']}</span>`
                     }
                 },
                 {
-                    className: 'w-70',
+                    className: 'w-25',
                     render: (data, type, row) => {
-                        return `<div class="d-flex align-items-center">
-                                    <a data-bs-toggle="collapse" href=".d2_${row?.['modified_number']}" role="button" aria-expanded="false" aria-controls=".d2_${row?.['modified_number']}">
-                                        <i class="bi bi-info-circle"></i>
-                                    </a>
-                                    <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code']}</span><br>
-                                </div>
-                                <span>${row?.['title']}</span>
-                                <div class="collapse d2_${row?.['modified_number']}"><span class="small">${row?.['new_description'] || row?.['description'] || ''}</span></div>`
+                        // đã parse đúng thứ tự SP gốc và SP đại diện, chú ý khi sửa block này
+                        let root_product = {}
+                        if (Object.keys(row?.['product_data']?.['root_product']).length !== 0) {
+                            let representative_product_html = ''
+                            root_product = row?.['product_data']?.['root_product']
+                            let representative_product = row?.['product_data']
+                            representative_product_html = `<span class="badge badge-sm badge-primary mr-1">${representative_product?.['code'] || ''}</span><span>${representative_product?.['title'] || ''}</span>`
+                            return `<span class="badge badge-sm badge-soft-secondary badge-outline">${root_product?.['code']}</span><br>
+                                    <span>${root_product?.['title']}</span><br>
+                                    <span class="text-primary">${$.fn.gettext('Specific tracking through product')}</span><br>
+                                    <span class="text-primary fw-bold" id="representative-product-modified">${representative_product_html}</span>`
+                        }
+                        else {
+                            return `<span class="badge badge-sm badge-soft-secondary badge-outline">${row?.['product_data']?.['code']}</span><br>
+                                    <span>${row?.['product_data']?.['title']}</span>`
+                        }
+                    }
+                },
+                {
+                    className: 'w-25',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['product_data']?.['description'] || ''}</span>`
+                    }
+                },
+                {
+                    className: 'w-25',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['product_data']?.['new_description'] || ''}</span>`
                     }
                 },
             ]
@@ -568,7 +588,7 @@ class ProductModificationPageFunction {
             reloadCurrency: true,
             paging: false,
             scrollX: true,
-            scrollY: '63vh',
+            scrollY: '60vh',
             scrollCollapse: true,
             data: data_list,
             columns: [
@@ -579,17 +599,16 @@ class ProductModificationPageFunction {
                     }
                 },
                 {
-                    className: 'w-70',
+                    className: 'w-35',
                     render: (data, type, row) => {
-                        let product_code = `<span class="badge badge-sm badge-soft-secondary ml-1">${row?.['component_code'] || ''}</span><br>`;
-                        return `<div class="d-flex align-items-center">
-                                    <a data-bs-toggle="collapse" href=".d3_${row?.['component_id']}" role="button" aria-expanded="false" aria-controls=".d3_${row?.['component_id']}">
-                                        <i class="bi bi-info-circle"></i>
-                                    </a>
-                                    ${product_code}
-                                </div>
-                                <span class="component-title" data-row-type="${row?.['row_type'] || ''}" data-component-id="${row?.['component_id'] || ''}">${row?.['component_name'] || ''}</span>
-                                <div class="collapse d3_${row?.['component_id']}"><span class="small component-des">${row?.['component_des'] || ''}</span></div>`
+                        return `<span class="badge badge-sm badge-soft-secondary badge-outline">${row?.['component_code'] || ''}</span><br>
+                                <span class="component-title" data-row-type="${row?.['row_type'] || ''}" data-component-id="${row?.['component_id'] || ''}">${row?.['component_name'] || ''}</span>`
+                    }
+                },
+                {
+                    className: 'w-35',
+                    render: (data, type, row) => {
+                        return `<span class="component-des">${row?.['component_des'] || ''}</span>`
                     }
                 },
                 {
@@ -663,7 +682,7 @@ class ProductModificationPageFunction {
             reloadCurrency: true,
             paging: false,
             scrollX: true,
-            scrollY: '63vh',
+            scrollY: '60vh',
             scrollCollapse: true,
             data: data_list,
             columns: [
@@ -674,17 +693,16 @@ class ProductModificationPageFunction {
                     }
                 },
                 {
-                    className: 'w-65',
+                    className: 'w-30',
                     render: (data, type, row) => {
-                        let product_code = `<span class="badge badge-sm badge-soft-secondary ml-1">${row?.['component_code'] || ''}</span><br>`;
-                        return `<div class="d-flex align-items-center">
-                                    <a data-bs-toggle="collapse" href=".d4_${row?.['component_id']}" role="button" aria-expanded="false" aria-controls=".d4_${row?.['component_id']}">
-                                        <i class="bi bi-info-circle"></i>
-                                    </a>
-                                    ${product_code}
-                                </div>
-                                <span class="component-title" data-component-id="${row?.['component_id']}">${row?.['component_name'] || ''}</span>
-                                <div class="collapse d4_${row?.['component_id']}"><span class="small component-des">${row?.['component_des'] || ''}</span></div>`
+                        return `<span class="badge badge-sm badge-soft-secondary badge-outline">${row?.['component_code'] || ''}</span><br>
+                                <span class="component-title" data-component-id="${row?.['component_id']}">${row?.['component_name'] || ''}</span>`
+                    }
+                },
+                {
+                    className: 'w-35',
+                    render: (data, type, row) => {
+                        return `<span class="component-des">${row?.['component_des'] || ''}</span>`
                     }
                 },
                 {
@@ -694,7 +712,7 @@ class ProductModificationPageFunction {
                     }
                 },
                 {
-                    className: 'w-5',
+                    className: 'text-center w-5',
                     render: (data, type, row) => {
                         return `<button class="btn-icon btn-rounded flush-soft-hover btn btn-flush-dark btn-open-modal-mapping"
                                         ${option === 'detail' ? 'disabled' : ''}
@@ -732,7 +750,7 @@ class ProductModificationPageFunction {
             useDataServer: true,
             rowIdx: true,
             scrollX: true,
-            scrollY: '63vh',
+            scrollY: '65vh',
             scrollCollapse: true,
             reloadCurrency: true,
             ajax: {
@@ -769,16 +787,16 @@ class ProductModificationPageFunction {
                     }
                 },
                 {
-                    className: 'w-90',
+                    className: 'w-45',
                     render: (data, type, row) => {
-                        return `<div class="d-flex align-items-center">
-                                    <a data-bs-toggle="collapse" href=".d6_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d6_${row?.['id']}">
-                                        <i class="bi bi-info-circle"></i>
-                                    </a>
-                                    <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code']}</span><br>
-                                </div>
-                                <span>${row?.['title']}</span>
-                                <div class="collapse d6_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
+                        return `<span class="badge badge-sm badge-soft-secondary badge-outline">${row?.['code']}</span><br>
+                                <span>${row?.['title']}</span>`
+                    }
+                },
+                {
+                    className: 'w-45',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['description'] || ''}</span>`
                     }
                 }
             ]
@@ -1195,7 +1213,7 @@ class ProductModificationPageFunction {
             useDataServer: true,
             rowIdx: true,
             scrollX: true,
-            scrollY: '45vh',
+            scrollY: '40vh',
             scrollCollapse: true,
             reloadCurrency: true,
             ajax: {
@@ -1232,16 +1250,16 @@ class ProductModificationPageFunction {
                     }
                 },
                 {
-                    className: 'w-90',
+                    className: 'w-45',
                     render: (data, type, row) => {
-                        return `<div class="d-flex align-items-center">
-                                    <a data-bs-toggle="collapse" href=".d5_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d5_${row?.['id']}">
-                                        <i class="bi bi-info-circle"></i>
-                                    </a>
-                                    <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code']}</span><br>
-                                </div>
-                                <span>${row?.['title']}</span>
-                                <div class="collapse d5_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
+                        return `<span class="badge badge-sm badge-soft-secondary badge-outline">${row?.['code']}</span><br>
+                                <span>${row?.['title']}</span>`
+                    }
+                },
+                {
+                    className: 'w-45',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['description'] || ''}</span>`
                     }
                 }
             ]
@@ -1417,6 +1435,9 @@ class ProductModificationEventHandler {
             ProductModificationPageFunction.LoadTableProductModifiedBefore()
         })
         pageElements.$accept_product_modified_btn.on('click', function () {
+            pageElements.$btn_open_modal_product.removeClass('btn-secondary').addClass('btn-success')
+            pageElements.$btn_modal_picking_product.removeClass('btn-success').addClass('btn-secondary')
+
             const $checkedEle = pageElements.$select_product_modified_modal.find('.nav-link[href="#tab_product"]').hasClass('active') ? pageElements.$table_select_product_modified.find('.product-modified-select:checked').first() : pageElements.$table_select_product_modified_before.find('.product-modified-select:checked').first()
             if ($checkedEle.length > 0) {
                 pageVariables.current_product_modified = {
@@ -1470,6 +1491,7 @@ class ProductModificationEventHandler {
                     Promise.all([latest_component_list_ajax]).then(
                         (results) => {
                             let current_component_data = results[0]?.['current_component_data'] || []
+                            console.log(current_component_data)
                             let parsed_current_component_data = []
                             for (let i= 0; i < (current_component_data || []).length; i++) {
                                 let item = current_component_data[i]
@@ -1480,7 +1502,7 @@ class ProductModificationEventHandler {
                                         'component_id': component_product_data?.['id'] || '',
                                         // 'component_code': component_product_data?.['code'] || '',
                                         // coi như 1 SP mới chứa các component
-                                        'component_code': '',
+                                        'component_code': component_product_data?.['code'] || '',
                                         'component_name': component_product_data?.['title'] || '',
                                         'component_des': component_product_data?.['description'] || '',
                                         'component_quantity': item?.['component_quantity'],
@@ -1506,15 +1528,14 @@ class ProductModificationEventHandler {
                     )
 
                     pageElements.$insert_component_btn.prop('hidden', false)
+
+                    pageElements.$btn_modal_picking_product.removeClass('btn-secondary').addClass('btn-success')
                 }
 
                 if (Object.keys(pageVariables.current_product_modified?.['representative_product'] || {}).length > 0) {
                     $('#specific-notify-space').prop('hidden', false)
                     ProductModificationPageFunction.LoadRepresentativeProduct(pageVariables.current_product_modified?.['representative_product'] || {})
                 }
-
-                pageElements.$btn_open_modal_product.removeClass('btn-secondary').addClass('btn-success')
-                pageElements.$btn_modal_picking_product.removeClass('btn-success').addClass('btn-secondary')
             }
             else {
                 $.fn.notifyB({description: 'Nothing is selected'}, 'failure')

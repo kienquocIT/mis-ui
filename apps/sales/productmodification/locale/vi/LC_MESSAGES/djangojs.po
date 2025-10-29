@@ -36,3 +36,7 @@ msgstr "Đang chờ xuất sản phẩm gốc"
 #
 msgid "Issued for root product"
 msgstr "Đã xuất sản phẩm gốc"
+
+#
+msgid "Specific tracking through product"
+msgstr "Đang theo dõi đích danh thông qua sản phẩm"

@@ -40,3 +40,11 @@ msgstr "Đã xuất sản phẩm gốc"
 #
 msgid "Specific tracking through product"
 msgstr "Đang theo dõi đích danh thông qua sản phẩm"
+
+#
+msgid "Inserted component"
+msgstr "Thành phần ráp vào"
+
+#
+msgid "Removed component"
+msgstr "Thành phần tháo rã"

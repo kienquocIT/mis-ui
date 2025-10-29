@@ -104,13 +104,13 @@ class ProductModificationPageFunction {
             initComplete: function () {
                 if (warehouse_code) {
                     if (lot_number) {
-                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-soft-blue mr-1">${warehouse_code}</span><span>${warehouse_title}</span><br><span>Lot: ${lot_number}</span>`)
+                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-soft-blue badge-outline">${warehouse_code}</span><br><span>${warehouse_title}</span><br><span>Lot: ${lot_number}</span>`)
                     }
                     else if (serial_number) {
-                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-soft-blue mr-1">${warehouse_code}</span><span>${warehouse_title}</span><br><span>Serial: ${serial_number}</span>`)
+                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-soft-blue badge-outline">${warehouse_code}</span><br><span>${warehouse_title}</span><br><span>Serial: ${serial_number}</span>`)
                     }
                     else {
-                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-soft-blue mr-1">${warehouse_code}</span><span>${warehouse_title}</span>`)
+                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-soft-blue badge-outline">${warehouse_code}</span><br><span>${warehouse_title}</span>`)
                     }
                 }
             }
@@ -121,6 +121,7 @@ class ProductModificationPageFunction {
         pageElements.$table_select_product_modified.DataTableDefault({
             useDataServer: true,
             rowIdx: true,
+            pageLength: 5,
             scrollX: true,
             scrollY: '50vh',
             scrollCollapse: true,
@@ -182,6 +183,7 @@ class ProductModificationPageFunction {
         pageElements.$table_select_product_modified_before.DataTableDefault({
             useDataServer: true,
             rowIdx: true,
+            pageLength: 5,
             scrollX: true,
             scrollY: '50vh',
             scrollCollapse: true,
@@ -207,22 +209,23 @@ class ProductModificationPageFunction {
                 {
                     className: 'text-center w-5',
                     render: (data, type, row) => {
+                        let representative_product = row?.['product_data'] || {}
                         return `<div class="form-check">
                             <input type="radio"
                                 name="product-modified-select"
                                 class="form-check-input product-modified-select"
-                                data-product-id="${row?.['product_data']?.['id']}"
-                                data-product-code="${row?.['product_data']?.['code']}"
-                                data-product-title="${row?.['product_data']?.['title']}"
-                                data-product-description="${row?.['product_data']?.['new_description'] || row?.['product_data']?.['description'] || ''}"
-                                data-product-general-traceability-method="${row?.['product_data']?.['general_traceability_method']}"
-                                data-prd-wh="${row?.['product_data']?.['product_warehouse_id'] || ''}"
-                                data-prd-wh-lot="${row?.['product_data']?.['product_warehouse_lot_id'] || ''}"
-                                data-prd-wh-serial="${row?.['product_data']?.['product_warehouse_serial_id'] || ''}"
-                                data-modified-number="${row?.['product_data']?.['modified_number'] || ''}"
-                                data-serial-number="${row?.['product_data']?.['serial_number'] || ''}"
-                                data-lot-number="${row?.['product_data']?.['lot_number'] || ''}"
-                                data-warehouse-data='${JSON.stringify(row?.['product_data']?.['warehouse_data'] || {})}'
+                                data-product-id="${representative_product?.['id']}"
+                                data-product-code="${representative_product?.['code']}"
+                                data-product-title="${representative_product?.['title']}"
+                                data-product-description="${representative_product?.['new_description'] || representative_product?.['description'] || ''}"
+                                data-product-general-traceability-method="${representative_product?.['general_traceability_method']}"
+                                data-prd-wh="${representative_product?.['product_warehouse_id'] || ''}"
+                                data-prd-wh-lot="${representative_product?.['product_warehouse_lot_id'] || ''}"
+                                data-prd-wh-serial="${representative_product?.['product_warehouse_serial_id'] || ''}"
+                                data-modified-number="${representative_product?.['modified_number'] || ''}"
+                                data-serial-number="${representative_product?.['serial_number'] || ''}"
+                                data-lot-number="${representative_product?.['lot_number'] || ''}"
+                                data-warehouse-data='${JSON.stringify(representative_product?.['warehouse_data'] || {})}'
                             >
                         </div>`;
                     }
@@ -243,33 +246,35 @@ class ProductModificationPageFunction {
                     className: 'w-25',
                     render: (data, type, row) => {
                         // đã parse đúng thứ tự SP gốc và SP đại diện, chú ý khi sửa block này
-                        let root_product = {}
-                        if (Object.keys(row?.['product_data']?.['root_product']).length !== 0) {
-                            let representative_product_html = ''
-                            root_product = row?.['product_data']?.['root_product']
-                            let representative_product = row?.['product_data']
-                            representative_product_html = `<span class="badge badge-sm badge-primary mr-1">${representative_product?.['code'] || ''}</span><span>${representative_product?.['title'] || ''}</span>`
+                        let root_product = row?.['product_data']?.['root_product'] || {}
+                        let representative_product = row?.['product_data'] || {}
+                        if (Object.keys(root_product).length !== 0) {
+                            let representative_product_html = `<span class="badge badge-sm badge-primary mr-1">${representative_product?.['code'] || ''}</span><span>${representative_product?.['title'] || ''}</span>`
                             return `<span class="badge badge-sm badge-soft-secondary badge-outline">${root_product?.['code']}</span><br>
                                     <span>${root_product?.['title']}</span><br>
                                     <span class="text-primary">${$.fn.gettext('Specific tracking through product')}</span><br>
                                     <span class="text-primary fw-bold" id="representative-product-modified">${representative_product_html}</span>`
                         }
-                        else {
-                            return `<span class="badge badge-sm badge-soft-secondary badge-outline">${row?.['product_data']?.['code']}</span><br>
-                                    <span>${row?.['product_data']?.['title']}</span>`
-                        }
+                        return `<span class="badge badge-sm badge-soft-secondary badge-outline">${representative_product?.['code']}</span><br>
+                                <span>${representative_product?.['title']}</span>`
                     }
                 },
                 {
-                    className: 'w-25',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         return `<span>${row?.['product_data']?.['description'] || ''}</span>`
                     }
                 },
                 {
-                    className: 'w-25',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         return `<span>${row?.['product_data']?.['new_description'] || ''}</span>`
+                    }
+                },
+                {
+                    className: 'w-10 text-right',
+                    render: (data, type, row) => {
+                        return $x.fn.displayRelativeTime(row?.['date_modified'], {'outputFormat': 'DD/MM/YYYY HH:mm'}, true);
                     }
                 },
             ]
@@ -588,7 +593,7 @@ class ProductModificationPageFunction {
             reloadCurrency: true,
             paging: false,
             scrollX: true,
-            scrollY: '60vh',
+            scrollY: '62vh',
             scrollCollapse: true,
             data: data_list,
             columns: [
@@ -601,7 +606,8 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-35',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-soft-secondary badge-outline">${row?.['component_code'] || ''}</span><br>
+                        let prd_code = `<span class="badge badge-sm badge-soft-secondary badge-outline">${row?.['component_code'] || ''}</span><br>`
+                        return `${row?.['component_code'] ? prd_code : ''}
                                 <span class="component-title" data-row-type="${row?.['row_type'] || ''}" data-component-id="${row?.['component_id'] || ''}">${row?.['component_name'] || ''}</span>`
                     }
                 },
@@ -672,6 +678,17 @@ class ProductModificationPageFunction {
                         pageVariables.component_inserted_id_list.add($(ele).find('.component-title').attr('data-component-id'))
                     }
                 })
+
+                let wrapper$ = pageElements.$table_product_current_component.closest('.dataTables_wrapper');
+                const headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+                const textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+                headerToolbar$.prepend(textFilter$);
+                if (textFilter$.length > 0) {
+                    textFilter$.css('display', 'flex');
+                    textFilter$.append(
+                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="h5 text-primary">${$.fn.gettext('Inserted component')}</span>`)
+                    )
+                }
             }
         });
     }
@@ -682,7 +699,7 @@ class ProductModificationPageFunction {
             reloadCurrency: true,
             paging: false,
             scrollX: true,
-            scrollY: '60vh',
+            scrollY: '62vh',
             scrollCollapse: true,
             data: data_list,
             columns: [
@@ -695,7 +712,8 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-30',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-soft-secondary badge-outline">${row?.['component_code'] || ''}</span><br>
+                        let prd_code = `<span class="badge badge-sm badge-soft-secondary badge-outline">${row?.['component_code'] || ''}</span><br>`
+                        return `${row?.['component_code'] ? prd_code : ''}
                                 <span class="component-title" data-component-id="${row?.['component_id']}">${row?.['component_name'] || ''}</span>`
                     }
                 },
@@ -740,7 +758,19 @@ class ProductModificationPageFunction {
                                 </button>`;
                     }
                 },
-            ]
+            ],
+            initComplete: function () {
+                let wrapper$ = pageElements.$table_product_removed_component.closest('.dataTables_wrapper');
+                const headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+                const textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+                headerToolbar$.prepend(textFilter$);
+                if (textFilter$.length > 0) {
+                    textFilter$.css('display', 'flex');
+                    textFilter$.append(
+                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="h5 text-danger">${$.fn.gettext('Removed component')}</span>`)
+                    )
+                }
+            }
         });
     }
     // space
@@ -1502,7 +1532,6 @@ class ProductModificationEventHandler {
                                         'component_id': component_product_data?.['id'] || '',
                                         // 'component_code': component_product_data?.['code'] || '',
                                         // coi như 1 SP mới chứa các component
-                                        'component_code': component_product_data?.['code'] || '',
                                         'component_name': component_product_data?.['title'] || '',
                                         'component_des': component_product_data?.['description'] || '',
                                         'component_quantity': item?.['component_quantity'],

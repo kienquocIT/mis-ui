@@ -50,14 +50,6 @@ msgid "Picking detail modified product"
 msgstr "Lấy cụ thể sản phẩm ráp-rã"
 
 #
-msgid "Current component"
-msgstr "Thành phần hiện tại"
-
-#
-msgid "Removed component"
-msgstr "Thành phần bị tháo"
-
-#
 msgid "Insert component"
 msgstr "Thêm thành phần"
 
@@ -88,6 +80,10 @@ msgstr "Chọn sản phẩm đại diện (cho Ráp-Rã)"
 #
 msgid "Representative product"
 msgstr "Sản phẩm đại diện"
+
+#
+msgid "Latest version"
+msgstr "Phiên bản gần nhất"
 
 #
 msgid "Due to the selected product does not use the Specific Identification valuation method. When you perform the Product modification, the cost of this product will be mixed with the remaining inventory. Using a representative product to accurately track details as the original item."

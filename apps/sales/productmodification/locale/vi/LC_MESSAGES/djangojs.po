@@ -22,10 +22,6 @@ msgid "modified by Product Modification"
 msgstr "đã chỉnh sửa bởi Ráp-Rã Sản phẩm"
 
 #
-msgid "GR completed"
-msgstr "Đã nhập kho xong"
-
-#
 msgid "GR is pending"
 msgstr "Đang chờ nhập kho"
 
@@ -40,3 +36,11 @@ msgstr "Đã xuất sản phẩm gốc"
 #
 msgid "Specific tracking through product"
 msgstr "Đang theo dõi đích danh thông qua sản phẩm"
+
+#
+msgid "Inserted component"
+msgstr "Thành phần ráp vào"
+
+#
+msgid "Removed component"
+msgstr "Thành phần tháo rã"

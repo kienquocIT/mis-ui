@@ -44,49 +44,10 @@
             border: none;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow-md);
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.5)
-        }
-
-        /* KPI Cards */
-        .kpi-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.125rem;
-            margin-bottom: 0;
-            flex-shrink: 0;
-        }
-
-        .kpi-icon.primary {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            color: white;
-        }
-
-        .kpi-icon.success {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-        }
-
-        .kpi-value {
-            font-size: 1.25rem !important;
-            font-weight: 700 !important;
-            margin: 0 !important;
-            line-height: 1.2 !important;
-            display: block !important;
-        }
-
-        .kpi-label {
-            font-size: 0.7rem !important;
-            color: #64748b !important;
-            font-weight: 500 !important;
-            margin: 0 0 0.25rem 0 !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.3px !important;
-            line-height: 1 !important;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: rgba(255, 255, 255, 0.25)
         }
 
         /* Chart Container Enhancements */
@@ -96,7 +57,7 @@
             border-radius: var(--border-radius);
             padding: 1rem;
             margin-bottom: 0.5rem;
-            box-shadow: var(--shadow-sm);
+            background: rgba(255, 255, 255, 0.5)
         }
 
         /* Ensure proper spacing for chart containers */
@@ -148,29 +109,21 @@
         }
 
         /* Filter Panel */
-        .custom-panel {
-            background: white;
+        .custom-panel-filter {
+            border: none;
             border-radius: var(--border-radius);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid #e2e8f0;
+            box-shadow: var(--shadow-md);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: rgba(255, 255, 255, 0.25)
         }
 
         /* Responsive Enhancements */
         @media (max-width: 768px) {
             .card-body {
                 padding: 1rem;
-            }
-
-            .kpi-value {
-                font-size: 1.5rem;
-            }
-
-            .kpi-icon {
-                width: 32px;
-                height: 32px;
-                font-size: 1rem;
             }
 
             .chart-container {
@@ -189,10 +142,6 @@
 
             .container-fluid {
                 padding: 0 0.5rem;
-            }
-
-            .kpi-value {
-                font-size: 1.25rem;
             }
         }
     </style>
@@ -244,9 +193,9 @@
     
     <div class="container-fluid mb-5">
         <!-- Filter Section -->
-        <div class="row">
+        <div class="row mb-3">
             <div class="col-12 col-md-8">
-                <div class="custom-panel">
+                <div class="custom-panel-filter">
                     <div class="row">
                         <div class="col-12 col-md-3">
                             <div class="form-group">
@@ -282,9 +231,9 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-body p-2">
+                    <div class="card-body">
                         <!-- Chart Controls -->
-                        <div class="d-flex justify-content-between align-items-center m-2">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
                             <div class="d-flex">
                                 <div class="me-2">
                                     <div class="input-group" style="width: 400px;">
@@ -304,7 +253,7 @@
                         </div>
 
                         <!-- Charts -->
-                        <div class="row p-2">
+                        <div class="row">
                             <div class="col-12 col-lg-6">
                                 <div class="chart-container">
                                     <div id="total_pipeline_chart" style="width: 100%; height: 350px;"></div>
@@ -325,9 +274,9 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-body p-2">
+                    <div class="card-body">
                         <!-- Chart Controls -->
-                        <div class="d-flex justify-content-between align-items-center m-2">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
                             <div class="d-flex">
                                 <div class="me-2">
                                     <div class="input-group" style="width: 400px;">
@@ -357,7 +306,7 @@
                         </div>
 
                         <!-- Charts -->
-                        <div class="row p-2">
+                        <div class="row">
                             <div class="col-12">
                                 <div class="chart-container">
                                     <div id="forecast_chart" style="width: 100%; height: 350px;"></div>
@@ -373,9 +322,9 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-body p-2">
+                    <div class="card-body">
                         <!-- Chart Controls -->
-                        <div class="d-flex justify-content-between align-items-center m-2">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
                             <div class="d-flex">
                                 <div class="me-2" style="width: 350px;">
                                     <div class="input-group">
@@ -398,7 +347,7 @@
                         </div>
 
                         <!-- Charts -->
-                        <div class="row p-2">
+                        <div class="row">
                             <div class="col-12">
                                 <div class="chart-container">
                                     <div id="activity_chart" style="width: 100%; height: 350px;"></div>

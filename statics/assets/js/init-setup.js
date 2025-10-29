@@ -4666,11 +4666,14 @@ class UtilControl {
         return false;
     }
 
-    static displayRelativeTime(dataStr, opts = {}) {
+    static displayRelativeTime(dataStr, opts = {}, only_date=false) {
         if (dataStr) {
             let format = opts?.['format'] || "YYYY-MM-DD HH:mm:ss";
             let outputFormat = opts?.['outputFormat'] || "DD-MM-YYYY HH:mm:ss";
             let callback = opts?.['callback'] || function (data) {
+                if (only_date) {
+                    return `<span>${data.output}</span>`;
+                }
                 return `<span>${data.output}</span> <span class="small">(${data.relate})</span>`;
             }
             const objDT = moment(dataStr, format);
@@ -5913,7 +5916,7 @@ class DTBControl {
                 url: globeDTBLanguageConfig.trim(),
             },
             lengthMenu: [
-                [10, 20, 30, 50, -1], [10, 20, 30, 50, $.fn.transEle.attr('data-all')],
+                [5, 10, 20, 30, 50, -1], [5, 10, 20, 30, 50, $.fn.transEle.attr('data-all')],
             ],
             pageLength: 20,
             ...domOpts,

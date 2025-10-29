@@ -11,26 +11,7 @@
         #idxPageContent {
             background-image: url("{% static 'assets/js/home_4.jpg' %}");
             background-repeat: no-repeat;
-            background-position: center;
             background-size: cover;
-            height: 150vh;
-            animation: floatBG 15s ease-in-out infinite;
-        }
-
-        @keyframes floatBG {
-            0%,
-            100% {
-                background-position: center center;
-            }
-            25% {
-                background-position: 30% 70%;
-            }
-            50% {
-                background-position: 70% 30%;
-            }
-            75% {
-                background-position: 40% 60%;
-            }
         }
     </style>
 {% endblock %}
@@ -102,7 +83,7 @@
             </div>
             <div class="row">
                 <div class="col-12 mb-3">
-                    <div class="bflow-glass-card-blur-2 w-100">
+                    <div class="bflow-glass-card-100 w-100">
                         <div id="task-list-group">
                             <ul class="nav nav-pills-bfl">
                                 <li class="nav-item">

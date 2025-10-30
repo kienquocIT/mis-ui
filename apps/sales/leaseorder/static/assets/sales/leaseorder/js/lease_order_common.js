@@ -3943,7 +3943,7 @@ class LeaseOrderDataTableHandle {
                             itemType = 2  // shipping
                         }
                         if (itemType === 0) { // PRODUCT
-                            return `<textarea class="form-control table-row-item-show zone-readonly" rows="2" data-zone="${dataZone}" readonly>${row?.['product_data']?.['title']}</textarea>
+                            return `<textarea class="form-control table-row-item-show zone-readonly" rows="3" data-zone="${dataZone}" readonly>${row?.['product_data']?.['title']}</textarea>
                                     <div class="row table-row-item-area hidden">
                                         <select 
                                             class="form-select table-row-item"
@@ -3957,7 +3957,7 @@ class LeaseOrderDataTableHandle {
                                         </select>
                                     </div>`;
                         } else if (itemType === 1) { // PROMOTION
-                            return `<textarea class="form-control table-row-promotion-show zone-readonly" rows="2" data-zone="${dataZone}" readonly>${LeaseOrderLoadDataHandle.transEle.attr('data-promotion')}</textarea>
+                            return `<textarea class="form-control table-row-promotion-show zone-readonly" rows="3" data-zone="${dataZone}" readonly>${LeaseOrderLoadDataHandle.transEle.attr('data-promotion')}</textarea>
                                     <div class="row hidden">
                                         <div class="col-12 col-md-12 col-lg-12">
                                             <select 
@@ -3970,7 +3970,7 @@ class LeaseOrderDataTableHandle {
                                         </div>
                                     </div>`;
                         } else if (itemType === 2) { // SHIPPING
-                            return `<textarea class="form-control table-row-shipping-show zone-readonly" rows="2" data-zone="${dataZone}" readonly>${LeaseOrderLoadDataHandle.transEle.attr('data-shipping')}</textarea>
+                            return `<textarea class="form-control table-row-shipping-show zone-readonly" rows="3" data-zone="${dataZone}" readonly>${LeaseOrderLoadDataHandle.transEle.attr('data-shipping')}</textarea>
                                     <div class="row hidden">
                                         <div class="col-12 col-md-12 col-lg-12">
                                             <select 
@@ -4015,7 +4015,7 @@ class LeaseOrderDataTableHandle {
                             }
                         }
                         return `<div class="d-flex align-items-center">
-                                    <textarea class="form-control table-row-offset-show zone-readonly" rows="2" data-zone="${dataZone}" readonly></textarea>
+                                    <textarea class="form-control table-row-offset-show zone-readonly" rows="3" data-zone="${dataZone}" readonly></textarea>
                                     <button
                                             type="button"
                                             class="btn btn-icon btn-select-offset"
@@ -4323,7 +4323,7 @@ class LeaseOrderDataTableHandle {
                             if (row?.['asset_type'] === 3) {
                                 target = row?.['asset_data'];
                             }
-                            return `<textarea class="form-control table-row-item-show zone-readonly" rows="2" data-zone="${dataZone}" readonly>${target?.['title']}</textarea>
+                            return `<textarea class="form-control table-row-item-show zone-readonly" rows="3" data-zone="${dataZone}" readonly>${target?.['title']}</textarea>
                                     <div class="row table-row-item-area hidden">
                                         <select
                                             class="form-select table-row-item"
@@ -4380,7 +4380,7 @@ class LeaseOrderDataTableHandle {
                         if (row?.['asset_type'] === 3) {
                             target = row?.['asset_data'];
                         }
-                        return `<textarea class="form-control table-row-code" rows="2" readonly>${target?.['code'] ? target?.['code'] : ''}</textarea>`;
+                        return `<textarea class="form-control table-row-code" rows="3" readonly>${target?.['code'] ? target?.['code'] : ''}</textarea>`;
                     }
                 },
                 {
@@ -5261,7 +5261,7 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<textarea class="form-control table-row-description" rows="2" readonly>${row?.['description'] ? row?.['description'] : ''}</textarea>`
+                        return `<textarea class="form-control table-row-description" rows="3" readonly>${row?.['description'] ? row?.['description'] : ''}</textarea>`
                     }
                 },
                 {

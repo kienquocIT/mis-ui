@@ -222,3 +222,14 @@ class TaskAssigneeGroupListAPI(APIView):
             resp.result['message'] = f'{BaseMsg.CREATE} {BaseMsg.SUCCESS}'
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
+
+
+class TaskDashboard(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/task/dashboard.html',
+        breadcrumb='OPPORTUNITY_TASK_LIST_PAGE',
+        menu_active='menu_opportunity_task',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK

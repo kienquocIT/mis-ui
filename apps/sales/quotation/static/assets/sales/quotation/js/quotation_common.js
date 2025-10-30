@@ -2595,6 +2595,7 @@ class QuotationLoadDataHandle {
                             if (data?.['payment_terms_list'].length === 0) {
                                 FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [], {}, null, true);
                             }
+                            QuotationLoadDataHandle.loadChangePaymentTerm();
                             WindowControl.hideLoading();
                         }
                     }

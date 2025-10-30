@@ -234,6 +234,14 @@ $(function () {
             NodeLoadDataHandle.loadCollabArea();
         });
 
+        NodeDataTableHandle.$tableOFEmp.on('click', '.table-row-checkbox', function () {
+            NodeLoadDataHandle.loadStoreCheckOFEmployee(this);
+        });
+
+        NodeLoadDataHandle.$modalNode.on('click', '.out-form-emp-show', function () {
+            NodeDataTableHandle.dataTableCollabOutFormEmployee();
+        });
+
         NodeLoadDataHandle.$modalNode.on('click', '.btn-save-out-form-employee', function () {
             NodeLoadDataHandle.loadOFEmpShow();
         });

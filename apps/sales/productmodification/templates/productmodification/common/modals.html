@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <div class="modal fade" id="select-product-modified-modal" tabindex="-1" role="dialog" aria-labelledby="select-product-modified-modal">
-    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-dialog modal-lg" style="min-width: 90%" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{% trans 'Select modified product' %}</h5>
@@ -32,6 +32,7 @@
                                             <th style="min-width: 50px"></th>
                                             <th style="min-width: 20px"></th>
                                             <th style="min-width: 200px">{% trans 'Product' %}</th>
+                                            <th style="min-width: 200px">{% trans 'Description' %}</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -44,6 +45,9 @@
                                             <th style="min-width: 20px"></th>
                                             <th style="min-width: 100px">{% trans 'Modified number' %}</th>
                                             <th style="min-width: 200px">{% trans 'Product' %}</th>
+                                            <th style="min-width: 200px">{% trans 'Description' %}</th>
+                                            <th style="min-width: 200px">{% trans 'New description' %}</th>
+                                            <th style="min-width: 150px">{% trans 'Latest version' %}</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -161,7 +165,7 @@
     </div>
 </div>
 
-<div class="offcanvas offcanvas-end" style="width: 48%" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="insert-component-offcanvas" aria-labelledby="insert-component-offcanvas">
+<div class="offcanvas offcanvas-end" style="width: 50%" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="insert-component-offcanvas" aria-labelledby="insert-component-offcanvas">
     <div class="offcanvas-header">
         <h5><b>{% trans 'Select inserted component' %}</b></h5>
         <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
@@ -174,7 +178,8 @@
                         <tr>
                             <th style="min-width: 50px"></th>
                             <th style="min-width: 20px"></th>
-                            <th style="min-width: 400px">{% trans 'Component' %}</th>
+                            <th style="min-width: 200px">{% trans 'Component' %}</th>
+                            <th style="min-width: 200px">{% trans 'Description' %}</th>
                         </tr>
                     </thead>
                 </table>
@@ -247,7 +252,7 @@
 </div>
 
 <div class="modal fade" id="modal-part-mapping" tabindex="-1" role="dialog" aria-labelledby="modal-part-mapping">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-lg" style="min-width: 65%" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{% trans 'Product mapping' %}</h5>
@@ -272,13 +277,13 @@
                     <span class="text-primary mb-3">{% trans 'These fields are necessary to quickly create a new product' %}. {% trans 'Products will be created once this document is approved' %}</span>
                     <div class="col-12">
                         <div class="row">
-                            <div class="col-12 col-md-6 col-lg-6">
+                            <div class="col-12 col-md-4 col-lg-4">
                                 <div class="form-group">
                                     <label class="form-label required" for="product-code">{% trans 'Product code' %}</label>
                                     <input required class="form-control" id="product-code">
                                 </div>
                             </div>
-                            <div class="col-12">
+                            <div class="col-12 col-md-8 col-lg-8">
                                 <div class="form-group">
                                     <label class="form-label required" for="product-name">{% trans 'Product name' %}</label>
                                     <input required class="form-control" id="product-name">
@@ -290,25 +295,25 @@
                                     <textarea class="form-control" id="product-des"></textarea>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6 col-lg-6">
+                            <div class="col-12 col-md-4 col-lg-4">
                                 <div class="form-group">
                                     <label class="form-label required" for="product-type">{% trans 'Product type' %}</label>
                                     <select required class="form-select select2" id="product-type" data-url="{% url 'ProductTypeListAPI' %}"></select>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6 col-lg-6">
+                            <div class="col-12 col-md-4 col-lg-4">
                                 <div class="form-group">
                                     <label class="form-label required" for="product-category">{% trans 'Product category' %}</label>
                                     <select required class="form-select select2" id="product-category" data-url="{% url 'ProductCategoryListAPI' %}"></select>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6 col-lg-6">
+                            <div class="col-12 col-md-4 col-lg-4">
                                 <div class="form-group">
                                     <label class="form-label required" for="product-uom-group">{% trans 'UOM Group' %}</label>
                                     <select required class="form-select select2" id="product-uom-group" data-url="{% url 'UnitOfMeasureGroupListAPI' %}"></select>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6 col-lg-6">
+                            <div class="col-12 col-md-4 col-lg-4">
                                 <div class="form-group">
                                     <label class="form-label" for="product-general-traceability-method">{% trans "Traceability method" %}</label>
                                     <select id="product-general-traceability-method" class="form-select">
@@ -318,13 +323,13 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6 col-lg-6">
+                            <div class="col-12 col-md-4 col-lg-4">
                                 <div class="form-group">
                                     <label class="form-label required" for="product-inventory-uom">{% trans 'Inventory UOM' %}</label>
                                     <select required class="form-select select2" id="product-inventory-uom" data-url="{% url 'UnitOfMeasureListAPI' %}"></select>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6 col-lg-6">
+                            <div class="col-12 col-md-4 col-lg-4">
                                 <div class="form-group">
                                     <label class="form-label required" for="product-valuation-method">{% trans 'Valuation method' %}</label>
                                     <select id="product-valuation-method" class="form-select required">
@@ -345,13 +350,14 @@
                                     <th style="min-width: 50px"></th>
                                     <th style="min-width: 20px"></th>
                                     <th style="min-width: 200px">{% trans 'Product' %}</th>
+                                    <th style="min-width: 200px">{% trans 'Description' %}</th>
                                 </tr>
                             </thead>
                         </table>
                     </div>
                 </div>
                 <div class="row mt-3">
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12 col-md-4 col-lg-4">
                         <div class="form-group">
                             <label class="form-label required" for="product-fair-value">{% trans 'Fair value' %}</label>
                             <input required class="form-control mask-money border-2 border-primary" id="product-fair-value" value="0">

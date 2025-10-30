@@ -72,20 +72,19 @@ $(document).ready(function(){
                         data: 'price',
                         width: '15%',
                         render: (row, type, data, meta) => {
-                            return `<input type="text" class="form-control mask-money-price" name="price_${meta.row}" value="${row}" readonly>`
+                            return `<input type="text" class="form-control mask-money" name="price_${meta.row}" value="${row}" readonly>`
                         }
                     },
                     {
                         data: 'subtotal',
                         width: '15%',
                         render: (row, type, data, meta) => {
-                            return `<input type="text" class="form-control mask-money-subtotal"  name="subtotal_${meta.row}" readonly value="${row}">`
+                            return `<input type="text" class="form-control mask-money"  name="subtotal_${meta.row}" readonly value="${row}">`
                         }
                     }
                 ],
-                drawCallback: (settings) => {
-                    $.fn.initMaskMoney2($('.mask-money-price'), 'input')
-                    $.fn.initMaskMoney2($('.mask-money-subtotal'), 'input')
+                drawCallback: (row) => {
+                    $.fn.initMaskMoney2($('.mask-money', row), 'input')
                 },
                 footerCallback: function () {
                     let api = this.api();

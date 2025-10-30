@@ -12330,3 +12330,7 @@ msgstr "Tính lương"
 #
 msgid "Copy configuration from product"
 msgstr "Sao chép cấu hình từ sản phẩm"
+
+#
+msgid "Export to Excel"
+msgstr "Xuất bản thành Excel"

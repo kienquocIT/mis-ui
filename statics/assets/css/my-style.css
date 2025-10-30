@@ -1552,7 +1552,7 @@ table.dataTable tr.dtrg-group th {
 
 /* bflow liquid glass*/
 .bflow-glass-card {
-    padding: 15px;
+    padding: 20px 15px;
     border: none;
     border-radius: 1.25rem;
     /* Tăng độ trong suốt */
@@ -1568,7 +1568,7 @@ table.dataTable tr.dtrg-group th {
 }
 
 .bflow-glass-card-60 {
-    padding: 15px;
+    padding: 20px 15px;
     border: none;
     border-radius: 1.25rem;
     /* Tăng độ trong suốt */
@@ -1584,7 +1584,7 @@ table.dataTable tr.dtrg-group th {
 }
 
 .bflow-glass-card-80 {
-    padding: 15px;
+    padding: 20px 15px;
     border: none;
     border-radius: 1.25rem;
     /* Tăng độ trong suốt */
@@ -1600,7 +1600,7 @@ table.dataTable tr.dtrg-group th {
 }
 
 .bflow-glass-card-100 {
-    padding: 15px;
+    padding: 20px 15px;
     border: none;
     border-radius: 1.25rem;
     /* Tăng độ trong suốt */

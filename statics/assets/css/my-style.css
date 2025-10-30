@@ -1567,6 +1567,38 @@ table.dataTable tr.dtrg-group th {
     transition: transform .25s ease, box-shadow .25s ease;
 }
 
+.bflow-glass-card-20 {
+    padding: 20px 15px;
+    border: none;
+    border-radius: 1.25rem;
+    /* Tăng độ trong suốt */
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    /* Viền & nổi khối tinh tế hơn */
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.16),  /* viền trắng mềm hơn */
+        inset 0 10px 24px rgba(255, 255, 255, 0.04),/* ánh glass nhẹ */
+        0 4px 14px rgba(0, 0, 0, 0.18);             /* đổ bóng ngoài */
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.bflow-glass-card-40 {
+    padding: 20px 15px;
+    border: none;
+    border-radius: 1.25rem;
+    /* Tăng độ trong suốt */
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    /* Viền & nổi khối tinh tế hơn */
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.16),  /* viền trắng mềm hơn */
+        inset 0 10px 24px rgba(255, 255, 255, 0.04),/* ánh glass nhẹ */
+        0 4px 14px rgba(0, 0, 0, 0.18);             /* đổ bóng ngoài */
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
 .bflow-glass-card-60 {
     padding: 20px 15px;
     border: none;

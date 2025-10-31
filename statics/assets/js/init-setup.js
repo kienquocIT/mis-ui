@@ -278,7 +278,7 @@ class MaskMoney2 {
 
     static blurInputMoney($eleSelected) {
         DocumentControl.getCompanyCurrencyConfig().then((configData) => {
-            $($eleSelected).val(new MaskMoney2(configData).applyConfig($($eleSelected).attr('data-other-abbreviation'), $($eleSelected).attr('value')));
+            $($eleSelected).val(new MaskMoney2(configData).applyConfig($($eleSelected), $($eleSelected).attr('value')));
         });
     }
 
@@ -633,7 +633,6 @@ class LogController {
         }
         if (stagesData.length > 0) {
             stagesData.map((item) => {
-                // let baseHTML = `<div class="row"><div class="col-12"><div class="card"><div class="hk-ribbon-type-1 start-touch">` + `<span>{stationName}</span></div><h5 class="card-title"></h5>{logData}{assigneeData}</div></div></div>`;
                 let baseHTML = `<div class="row"><div class="col-12"><div class="card"><div class="hk-ribbon-type-1 start-touch">` + `<span>{stationName}</span></div>{logData}</div></div></div>`;
                 let stationName = item['code'] ? `<i class="fas fa-cog"></i><span class="ml-1">${item['title']}</span>` : item['title'];
 
@@ -4667,11 +4666,14 @@ class UtilControl {
         return false;
     }
 
-    static displayRelativeTime(dataStr, opts = {}) {
+    static displayRelativeTime(dataStr, opts = {}, only_date=false) {
         if (dataStr) {
             let format = opts?.['format'] || "YYYY-MM-DD HH:mm:ss";
             let outputFormat = opts?.['outputFormat'] || "DD-MM-YYYY HH:mm:ss";
             let callback = opts?.['callback'] || function (data) {
+                if (only_date) {
+                    return `<span>${data.output}</span>`;
+                }
                 return `<span>${data.output}</span> <span class="small">(${data.relate})</span>`;
             }
             const objDT = moment(dataStr, format);
@@ -5914,7 +5916,7 @@ class DTBControl {
                 url: globeDTBLanguageConfig.trim(),
             },
             lengthMenu: [
-                [10, 20, 30, 50, -1], [10, 20, 30, 50, $.fn.transEle.attr('data-all')],
+                [5, 10, 20, 30, 50, -1], [5, 10, 20, 30, 50, $.fn.transEle.attr('data-all')],
             ],
             pageLength: 20,
             ...domOpts,

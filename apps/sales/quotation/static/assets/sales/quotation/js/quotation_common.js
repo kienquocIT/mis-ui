@@ -2595,6 +2595,7 @@ class QuotationLoadDataHandle {
                             if (data?.['payment_terms_list'].length === 0) {
                                 FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [], {}, null, true);
                             }
+                            QuotationLoadDataHandle.loadChangePaymentTerm();
                             WindowControl.hideLoading();
                         }
                     }
@@ -5134,7 +5135,7 @@ class QuotationDataTableHandle {
                 type: 'GET',
                 data: {
                     'product_id': productID,
-                    'from_pm': true,
+                    // 'from_pm': true,
                     'product_warehouse_serial__serial_status': 0,
                 },
                 dataSrc: function (resp) {

@@ -348,16 +348,16 @@ $(document).ready(function () {
 
                 let assign_toData = {};
                 if ($empElm[0].closest('#formOpportunityTask')) {
-                const assign_to = $empElm.select2('data')[0]
-                // let assign_toData = {}
-                if (assign_to) {
-                    assign_toData = {
-                        'id': assign_to.id,
-                        'full_name': assign_to.text,
-                        'first_name': assign_to.first_name,
-                        'last_name': assign_to.last_name,
+                    const assign_to = $empElm.select2('data')[0]
+                    // let assign_toData = {}
+                    if (assign_to) {
+                        assign_toData = {
+                            'id': assign_to.id,
+                            'full_name': assign_to.text,
+                            'first_name': assign_to.first_name,
+                            'last_name': assign_to.last_name,
+                        }
                     }
-                }
                 }
 
                 if ($customAssignee.length > 0) {

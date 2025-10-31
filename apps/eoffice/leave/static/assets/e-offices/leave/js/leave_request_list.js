@@ -29,7 +29,7 @@ $(document).ready(function () {
                 data: 'title',
                 render: (row, type, data) => {
                     const url = $urlFact.attr('data-leave-detail').format_url_with_uuid(data.id)
-                    return row ? `<a href="${url}" target="blank">${row}</a>` : '--'
+                    return `<a href="${url}" target="blank">${row ? row : '--'}</a>`
                 }
             },
             {

@@ -1,9 +1,9 @@
 from django.urls import path
 
-from apps.sales.task.views import (
+from .views import (
     OpportunityTaskConfig, OpportunityTaskConfigAPI, OpportunityTaskList,
     OpportunityTaskListAPI, OpportunityTaskStatusAPI, OpportunityTaskDetailAPI, OpportunityTaskLogTimeAPI,
-    MyTaskReportAPI, MyTaskSummaryReport, TaskAssigneeGroupListAPI, OpportunityTaskHasGroupListAPI
+    MyTaskReportAPI, MyTaskSummaryReport, TaskAssigneeGroupListAPI, OpportunityTaskHasGroupListAPI, TaskDashboard
 )
 
 urlpatterns = [
@@ -23,4 +23,5 @@ urlpatterns = [
         'list-with-group/api', OpportunityTaskHasGroupListAPI.as_view(),
         name='OpportunityTaskHasGroupListAPI'
     ),
+    path('dashboard', TaskDashboard.as_view(), name='TaskDashboard'),
 ]

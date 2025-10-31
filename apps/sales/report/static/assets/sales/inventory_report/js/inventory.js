@@ -36,6 +36,7 @@ $(document).ready(function () {
     }
     let PERIODIC_CLOSED = false
     let current_view_mode = 'general'
+    let export_inventory_data_list = []
 
     let detail_lot_tbl = $('#view-wh-available-prd-detail-table-lot')
     let detail_sn_tbl = $('#view-wh-available-prd-detail-table-serial')
@@ -106,7 +107,43 @@ $(document).ready(function () {
     }
     LoadProjectSelectBox(project_select_Ele)
 
+    function ExportInventory() {
+        let parseData = []
+        export_inventory_data_list = export_inventory_data_list.filter(item => {return item?.type === "product_row"})
+        export_inventory_data_list.forEach(function (data, index) {
+            parseData.push({
+                "Product Code": data?.['product_code'] || '',
+                "Product Name": data?.['product_title'] || '',
+                "Serial Number": data?.['product_serial_number'] || '',
+                "Lot Number": data?.['product_lot_number'] || '',
+                "Warehouse Code": data?.['warehouse_code'] || '',
+                "Warehouse Name": data?.['warehouse_title'] || '',
+                "Current Quantity": data?.['prd_end_quantity'] || 0,
+                "Current Value": data?.['prd_end_value'] || 0
+            })
+        })
+
+        const worksheet = XLSX.utils.json_to_sheet(parseData);
+
+        const colWidths = Object.keys(parseData[0]).map(key => {
+            const maxLength = Math.max(
+                key.length,
+                ...parseData.map(row => String(row[key] || "").length)
+            );
+            return {wch: maxLength + 2};
+        });
+        worksheet['!cols'] = colWidths;
+
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Inventory Report");
+
+        const now = new Date();
+        const timestamp = now.toISOString().replace(/[:.]/g, "_");
+        XLSX.writeFile(workbook, `inventory_${timestamp}.xlsx`);
+    }
+
     function RenderMainTable(table, data_list=[], data_wh=[], table_detail=false) {
+        export_inventory_data_list = data_list
         table.DataTable().clear().destroy()
         let order_code_list = []
         table.DataTableDefault({
@@ -1881,6 +1918,10 @@ $(document).ready(function () {
                 $.fn.notifyB({"description": 'No sub period selected.', "timeout": 3500}, 'warning')
             }
         }
+    })
+
+    $('#btn-export-to-excel').on('click', function () {
+        ExportInventory()
     })
 
     function MatchTooltip() {

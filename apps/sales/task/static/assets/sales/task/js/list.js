@@ -608,6 +608,8 @@ $(function () {
             $elm.find('.badge-icon').removeClass('text-success text-warning text-danger')
             $elm.find('.badge-icon').addClass(`text-${priority_list[data.priority]}`)
             $elm.find('.card-title').text(data.title).attr('title', data.title)
+            $elm.find('.card-title').text(data.title).attr('title', data.title)
+            $elm.find('.card-ticket span').text(data.percent_completed)
             if (data?.['assign_to']) {
                 const assign_to = data['assign_to']
                 if (assign_to?.['avatar']) $elm.find('img').attr('src', assign_to?.['avatar'])

@@ -313,7 +313,7 @@ class SelectDDControl {
         //  3. {}
 
         let params = this.opts?.['dataParams'];
-        if (params && typeof params === 'object') return params;
+        if (params && typeof params === 'object' && Object.keys(params).length > 0) return params;
 
         params = this.ele.attr('data-params');
         if (params) {

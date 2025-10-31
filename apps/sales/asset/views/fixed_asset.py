@@ -17,7 +17,9 @@ __all__ = [
     'FixedAssetListAPI',
     'AssetForLeaseListAPI',
     'AssetStatusLeaseListAPI',
+    'FixedAssetListDDAPI',
 ]
+
 
 def create(request, url, msg):
     resp = ServerAPI(user=request.user, url=url).post(request.data)
@@ -62,6 +64,7 @@ class FixedAssetCreate(View):
         }
         return ctx, status.HTTP_200_OK
 
+
 class FixedAssetDetail(View):
     @mask_view(
         auth_require=True,
@@ -77,6 +80,7 @@ class FixedAssetDetail(View):
         }
         return ctx, status.HTTP_200_OK
 
+
 class FixedAssetUpdate(View):
     @mask_view(
         auth_require=True,
@@ -91,6 +95,7 @@ class FixedAssetUpdate(View):
             'form_id': 'form-fixed-asset',
         }
         return ctx, status.HTTP_200_OK
+
 
 class FixedAssetListAPI(APIView):
     @mask_view(
@@ -112,6 +117,18 @@ class FixedAssetListAPI(APIView):
             url=ApiURL.FIXED_ASSET_LIST,
             msg=BaseMsg.SUCCESS
         )
+
+
+class FixedAssetListDDAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.FIXED_ASSET_DD_LIST).get(data)
+        return resp.auto_return(key_success='fixed_asset_dd_list')
+
 
 class FixedAssetDetailAPI(APIView):
     @mask_view(

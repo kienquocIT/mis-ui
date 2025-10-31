@@ -85,15 +85,6 @@
     display: none;
 }
 
-.summary-item .summary-title {
-    font-size: 14px;
-    margin-top: 5px;
-}
-
-.summary-item .summary-value {
-    font-size: 36px;
-}
-
 /* animate increment number */
 @property --num {
     syntax: "<integer>";
@@ -217,31 +208,4 @@
 }
 #setting-home:hover .icon {
     transform: rotate(90deg);
-}
-
-/* Enhanced Cards */
-.transparent-card {
-    border: none;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-md);
-    padding: 5px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background: rgba(255, 255, 255, 0.25)
-}
-
-.transparent-main-card {
-    border: none;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-md);
-    padding: 5px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background: rgba(255, 255, 255, 0.75)
-}
-
-.summary-icon {
-    font-size: 2.5rem;
 }

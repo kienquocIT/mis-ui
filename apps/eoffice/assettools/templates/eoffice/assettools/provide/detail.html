@@ -80,38 +80,30 @@
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="products">
                         <table id="products_detail_tbl" class="table nowrap w-100 mb-5 min-w-1500p">
-                                <thead>
-                                <tr>
-                                    <th>{% trans 'Product' %}</th>
-                                    <th>{% trans 'Remarks' %}</th>
-                                    <th>{% trans 'UOM' %}</th>
-                                    <th>{% trans 'Quantity' %}</th>
-                                    <th>{% trans 'Unit price' %}</th>
-                                    <th>{% trans 'Subtotal price' %}</th>
-                                </tr>
-                                </thead>
-                                <tbody></tbody>
-                                <tfoot>
-                                <tr>
-                                    <th colspan="6" class="border-0"></th>
-                                </tr>
-                                <tr>
-                                    <th colspan="4" class="border-0"></th>
-                                    <th class="border-bottom-0 border-dark"><p style="text-align:right">{% trans 'Total' %}:</p></th>
-                                    <th colspan="2" class="border-bottom-0 border-dark"><p class="pl-3 font-3"><b><i>0 VND</i></b></p></th>
-                                </tr>
-                                </tfoot>
-                            </table>
-                        <div>
-                            <button class="btn btn-outline-primary" type="button" id="add_new_line">
-                                <span>
-                                    <span>{% trans 'Add new' %}</span>
-                                    <span class="icon">
-                                        <i class="fa-regular fa-plus"></i>
-                                    </span>
-                                </span>
-                            </button>
-                        </div>
+                            <thead>
+                            <tr>
+                                <th>{% trans 'Product' %}</th>
+                                <th>{% trans 'Remarks' %}</th>
+                                <th>{% trans 'UOM' %}</th>
+                                <th>{% trans 'Quantity' %}</th>
+                                <th>{% trans 'Unit price' %}</th>
+                                <th>{% trans 'Subtotal price' %}</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                            <tr>
+                                <th colspan="6" class="border-0"></th>
+                            </tr>
+                            <tr>
+                                <th colspan="4" class="border-0"></th>
+                                <th class="border-bottom-0 border-dark"><p
+                                        style="text-align:right">{% trans 'Total' %}:</p></th>
+                                <th colspan="2" class="border-bottom-0 border-dark"><p class="pl-3 font-3"><b><i>0
+                                    VND</i></b></p></th>
+                            </tr>
+                            </tfoot>
+                        </table>
                     </div>
                     <div class="tab-pane fade" id="attachment">
                         {% include 'extends/files/all.html' %}

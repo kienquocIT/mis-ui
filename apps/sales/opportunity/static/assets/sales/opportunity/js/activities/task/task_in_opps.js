@@ -285,7 +285,7 @@ class Task_in_opps {
         //--DROPDOWN ASSIGN TO-- assign to me btn
         const $assignBtnElm = $(`<a href="#" class="form-text text-muted link-info btn-assign">${$('#form_valid').attr('data-assign-txt')}</a>`)
         $empElm.parents('.form-group').append($assignBtnElm)
-        let getParams = JSON.parse($empElm.attr('data-params'))
+        let getParams = JSON.parse($empElm.attr('data-params').replace(/'/g, '"') || '{}')
         $empElm.attr('data-params', JSON.stringify({...getParams, list_from_opp: opps_info.id}))
         $assignBtnElm.off().on('click', function () {
             if ($(this).hasClass('disabled')) return false

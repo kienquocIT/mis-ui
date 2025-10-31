@@ -58,16 +58,13 @@ $(async function () {
 
             // Kiểm tra giao hàng theo đơn bán hàng hay đơn cho thuê
             let targetItemData = prod_data?.['product_data'];
-            if (prod_data?.['offset_data']?.['id']) {
-                targetItemData = prod_data?.['offset_data'];
-            }
             $tableProductNew.DataTable().clear().draw();
 
             if (prod_data?.['asset_type'] === null) {
                $tableProductNew.DataTable().rows.add([prod_data]).draw();
             }
             if (prod_data?.['asset_type'] === 1) {
-               $tableProductNew.DataTable().rows.add([prod_data]).draw();
+               $tableProductNew.DataTable().rows.add(prod_data?.['offset_data']).draw();
             }
             if (prod_data?.['asset_type'] === 2) {
                $tableProductNew.DataTable().rows.add(prod_data?.['tool_data']).draw();
@@ -161,6 +158,7 @@ $(async function () {
                     $btnSave.off().on('click', function () {
                         let temp_picked = 0;
                         let delivery_data = [];
+                        let offset_data = [];
                         let tool_data = [];
                         let asset_data = [];
                         $tableProductNew.DataTable().rows().every(function () {
@@ -171,17 +169,17 @@ $(async function () {
 
                             temp_picked += rowData?.['picked_quantity'];
                             delivery_data = rowData?.['delivery_data'] ? rowData?.['delivery_data'] : [];
+                            if (rowData?.['offset_data']?.['id']) {
+                                offset_data.push(rowData);
+                                delivery_data = [];
+                            }
                             if (rowData?.['tool_data']?.['id']) {
-                                if ($actDate.val()) {
-                                    rowData['product_lease_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
-                                }
                                 tool_data.push(rowData);
+                                delivery_data = [];
                             }
                             if (rowData?.['asset_data']?.['id']) {
-                                if ($actDate.val()) {
-                                    rowData['product_lease_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
-                                }
                                 asset_data.push(rowData);
+                                delivery_data = [];
                             }
                         });
                         if (temp_picked > 0) {
@@ -189,22 +187,34 @@ $(async function () {
                             let tableTargetData = _this.getProdList;
                             tableTargetData[idx]['picked_quantity'] = temp_picked;
                             tableTargetData[idx]['delivery_data'] = delivery_data;
+                            tableTargetData[idx]['offset_data'] = offset_data;
                             tableTargetData[idx]['tool_data'] = tool_data;
                             tableTargetData[idx]['asset_data'] = asset_data;
-                            // Kiểm tra nếu giao đơn cho thuê cho SP thì dùng $actDate.val() override product_depreciation_start_date, product_lease_start_date
-                            if ($actDate.val() && tableTargetData[idx]?.['asset_type'] === 1) {
-                                tableTargetData[idx]['product_depreciation_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
-                                tableTargetData[idx]['product_lease_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
-                                tableTargetData[idx]['depreciation_data'] = DepreciationControl.callDepreciation({
-                                    "method": tableTargetData[idx]?.['product_depreciation_method'],
-                                    "months": tableTargetData[idx]?.['product_depreciation_time'],
-                                    "start_date": $actDate.val(),
-                                    "end_date": moment(tableTargetData[idx]?.['product_depreciation_end_date']).format('DD/MM/YYYY'),
-                                    "price": tableTargetData[idx]?.['product_cost'],
-                                    "adjust": tableTargetData[idx]?.['product_depreciation_adjustment'],
-                                });
+                            // Kiểm tra nếu giao đơn cho thuê cho offset thì tính lại depreciation_data theo $actDate.val()
+                            if (tableTargetData[idx]?.['asset_type'] === 1) {
+                                for (let offsetData of tableTargetData[idx]?.['offset_data'] ? tableTargetData[idx]?.['offset_data'] : []) {
+                                    offsetData['product_depreciation_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                                    offsetData['product_lease_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                                    offsetData['depreciation_data'] = DepreciationControl.callDepreciation({
+                                        "method": offsetData?.['product_depreciation_method'],
+                                        "months": offsetData?.['product_depreciation_time'],
+                                        "start_date": $actDate.val(),
+                                        "end_date": moment(offsetData?.['product_depreciation_end_date']).format('DD/MM/YYYY'),
+                                        "price": offsetData?.['product_cost'],
+                                        "adjust": offsetData?.['product_depreciation_adjustment'],
+                                    });
+                                }
                             }
-
+                            if (tableTargetData[idx]?.['asset_type'] === 2) {
+                                for (let toolData of tableTargetData[idx]?.['tool_data'] ? tableTargetData[idx]?.['tool_data'] : []) {
+                                    toolData['product_lease_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                                }
+                            }
+                            if (tableTargetData[idx]?.['asset_type'] === 3) {
+                                for (let assetData of tableTargetData[idx]?.['asset_data'] ? tableTargetData[idx]?.['asset_data'] : []) {
+                                    assetData['product_lease_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                                }
+                            }
                             _this.setProdList = tableTargetData;
                             $tableMain.DataTable().row(idx).data(tableTargetData[idx]).draw();
                         }
@@ -492,6 +502,9 @@ $(async function () {
                 if (!pwh.hasOwnProperty('lease_order') && type === 0) {
                     if ($eleSO.attr('data-lo')) {
                         pwh['lease_order_data'] = JSON.parse($eleSO.attr('data-lo'));
+                        if (pwh?.['lease_order_data']?.['id']) {
+                            pwh['lease_order_id'] = pwh?.['lease_order_data']?.['id'];
+                        }
                         for (let deliveryData of prod_data?.['delivery_data'] ? prod_data?.['delivery_data'] : []) {
                             if (pwh?.['warehouse_data']?.['id'] === deliveryData?.['warehouse_data']?.['id']) {
                                 pwh['picked_quantity'] = deliveryData?.['picked_quantity'];
@@ -1630,7 +1643,6 @@ $(async function () {
 
             return true;
         };
-
     }
 
     let prodTable = new prodDetailUtil();
@@ -1859,6 +1871,7 @@ $(async function () {
                         'product_id': prod?.['product_data']?.['id'],
                         'done': prod?.['picked_quantity'],
                         'delivery_data': prod?.['delivery_data'],
+                        'offset_data': prod?.['offset_data'],
                         'tool_data': prod?.['tool_data'],
                         'asset_data': prod?.['asset_data'],
                         'product_depreciation_start_date': prod?.['product_depreciation_start_date'],

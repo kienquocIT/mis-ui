@@ -96,12 +96,65 @@ $(function () {
             LeaseOrderLoadDataHandle.loadNewProduct();
         });
 
+        LeaseOrderDataTableHandle.$tableSOffset.on('click', '.table-row-checkbox', function () {
+            LeaseOrderLoadDataHandle.loadStoreCheckOffset(this);
+        });
+
+        LeaseOrderDataTableHandle.$tableSOffset.on('change', '.table-row-quantity', function () {
+            if ($(this).val()) {
+                let row = this.closest('tr');
+                if (row) {
+                    let checkELe = row.querySelector('.table-row-checkbox');
+                    if (checkELe) {
+                        if ($(this).val() > 0) {
+                            checkELe.checked = true;
+                        }
+                        if ($(this).val() <= 0) {
+                            checkELe.checked = false;
+                        }
+                    }
+                }
+                LeaseOrderLoadDataHandle.loadStoreCheckOffset(this);
+            }
+        });
+
         LeaseOrderLoadDataHandle.$btnSaveSelectOffset.on('click', function () {
             LeaseOrderLoadDataHandle.loadOffset(this);
+            LeaseOrderStoreDataHandle.storeDtbData(1);
         });
 
         LeaseOrderDataTableHandle.$tableSTool.on('click', '.table-row-checkbox', function () {
             LeaseOrderLoadDataHandle.loadStoreCheckTool(this);
+        });
+
+        LeaseOrderDataTableHandle.$tableSTool.on('change', '.table-row-quantity', function () {
+            if ($(this).val()) {
+                let lease = parseFloat($(this).val());
+                let row = this.closest('tr');
+                if (row) {
+                    let availableEle = row.querySelector('.table-row-available');
+                    if (availableEle) {
+                        if (availableEle.innerHTML) {
+                            let available = parseFloat(availableEle.innerHTML);
+                            if (lease > available) {
+                                $(this).val(0);
+                                $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-exceed-quantity')}, 'failure');
+                                return false;
+                            }
+                        }
+                    }
+                    let checkELe = row.querySelector('.table-row-checkbox');
+                    if (checkELe) {
+                        if ($(this).val() > 0) {
+                            checkELe.checked = true;
+                        }
+                        if ($(this).val() <= 0) {
+                            checkELe.checked = false;
+                        }
+                    }
+                }
+                LeaseOrderLoadDataHandle.loadStoreCheckTool(this);
+            }
         });
 
         LeaseOrderLoadDataHandle.$btnSaveSelectTool.on('click', function () {
@@ -174,7 +227,7 @@ $(function () {
                     if (data && (data['status'] === 201 || data['status'] === 200)) {
                         $.fn.notifyB({description: data.message}, 'success');
                         LeaseOrderLoadDataHandle.loadModalSProduct();
-                        $('#selectProductModal').modal('show');
+                        $('#selectProductModal').offcanvas('show');
                         setTimeout(() => {
                             WindowControl.hideLoading();
                         }, 1000);
@@ -240,35 +293,6 @@ $(function () {
                                     priceGrEle.setAttribute('data-price-id', dataPrice?.['id']);
                                 }
                             }
-                        }
-                    }
-                }
-            }
-        });
-
-        LeaseOrderDataTableHandle.$tableSTool.on('change', '.table-row-quantity', function () {
-            if ($(this).val()) {
-                let lease = parseFloat($(this).val());
-                let row = this.closest('tr');
-                if (row) {
-                    let availableEle = row.querySelector('.table-row-available');
-                    if (availableEle) {
-                        if (availableEle.innerHTML) {
-                            let available = parseFloat(availableEle.innerHTML);
-                            if (lease > available) {
-                                $(this).val(0);
-                                $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-exceed-quantity')}, 'failure');
-                                return false;
-                            }
-                        }
-                    }
-                    let checkELe = row.querySelector('.table-row-checkbox');
-                    if (checkELe) {
-                        if ($(this).val() > 0) {
-                            checkELe.checked = true;
-                        }
-                        if ($(this).val() <= 0) {
-                            checkELe.checked = false;
                         }
                     }
                 }

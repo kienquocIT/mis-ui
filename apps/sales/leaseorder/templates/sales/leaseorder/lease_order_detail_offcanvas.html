@@ -61,164 +61,129 @@
     </div>
 </div>
 
-<div
-        class="modal fade" id="selectProductModal" tabindex="-1"
-        role="dialog" aria-labelledby="selectProductModal"
-        aria-hidden="true"
->
-    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><b>{% trans 'Select service' %}</b></h5>
-                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
-            </div>
-            <div class="modal-body">
-                <table
-                        id="table-select-product"
-                        class="table nowrap w-100 mb-5"
-                >
-                    <thead>
-                    <tr class="bg-light">
-                        <th class="w-20">{% trans 'Product name' %}</th>
-                        <th class="w-20">{% trans 'Product code' %}</th>
-                        <th class="w-15">{% trans 'Description' %}</th>
-                        <th class="w-10">{% trans 'Category' %}</th>
-                        <th class="w-10">{% trans 'UOM' %}</th>
-                        <th class="w-10">{% trans 'Status' %}</th>
-                        <th class="w-10">{% trans 'Note' %}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="lease_products_data">{% trans 'Close' %}</button>
-                <button type="button" class="btn btn-primary" id="btn-save-select-product" data-bs-dismiss="modal" data-zone="lease_products_data">{% trans 'Save' %}</button>
-            </div>
-        </div>
+<div class="offcanvas offcanvas-end w-90" id="selectProductModal" tabindex="-1" aria-labelledby="selectProductModal">
+    <div class="modal-header">
+        <h5 class="modal-title"><b>{% trans 'Select service' %}</b></h5>
+        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+    </div>
+    <div class="offcanvas-body">
+        <table
+                id="table-select-product"
+                class="table nowrap w-100 mb-5"
+        >
+            <thead>
+            <tr class="bg-light">
+                <th class="w-20">{% trans 'Product name' %}</th>
+                <th class="w-20">{% trans 'Product code' %}</th>
+                <th class="w-15">{% trans 'Description' %}</th>
+                <th class="w-10">{% trans 'Category' %}</th>
+                <th class="w-10">{% trans 'UOM' %}</th>
+                <th class="w-10">{% trans 'Status' %}</th>
+                <th class="w-10">{% trans 'Note' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas" data-zone="lease_products_data">{% trans 'Close' %}</button>
     </div>
 </div>
 
-<div
-        class="modal fade" id="selectOffsetModal" tabindex="-1"
-        role="dialog" aria-labelledby="selectOffsetModal"
-        aria-hidden="true"
->
-    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><b>{% trans 'Select offset item' %}</b></h5>
-                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
-            </div>
-            <div class="modal-body">
-                <table
-                        id="table-select-offset"
-                        class="table nowrap w-100 mb-5"
-                >
-                    <thead>
-                    <tr class="bg-light">
-                        <th class="w-25">{% trans 'Product name' %}</th>
-                        <th class="w-15">{% trans 'Product code' %}</th>
-                        <th class="w-25">{% trans 'Description' %}</th>
-                        <th class="w-10">{% trans 'UOM' %}</th>
-                        <th class="w-10">{% trans 'Status' %}</th>
-                        <th class="w-15">{% trans 'Note' %}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="lease_products_data">{% trans 'Close' %}</button>
-                <button type="button" class="btn btn-primary" id="btn-save-select-offset" data-bs-dismiss="modal" data-zone="lease_products_data">{% trans 'Save' %}</button>
-            </div>
-        </div>
+<div class="offcanvas offcanvas-end w-70" id="selectOffsetModal" tabindex="-1" aria-labelledby="selectOffsetModal">
+    <div class="modal-header">
+        <h5 class="modal-title"><b>{% trans 'Select offset item' %}</b></h5>
+        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+    </div>
+    <div class="offcanvas-body">
+        <table
+                id="table-select-offset"
+                class="table nowrap w-100 mb-5"
+        >
+            <thead>
+            <tr class="bg-light">
+                <th class="w-25">{% trans 'Product name' %}</th>
+                <th class="w-15">{% trans 'Product code' %}</th>
+                <th class="w-25">{% trans 'Description' %}</th>
+                <th class="w-10">{% trans 'UOM' %}</th>
+                <th class="w-10">{% trans 'Lease' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas" data-zone="lease_products_data">{% trans 'Close' %}</button>
     </div>
 </div>
 
-<div
-        class="modal fade" id="selectToolModal" tabindex="-1"
-        role="dialog" aria-labelledby="selectToolModal"
->
-    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><b>{% trans 'Select tool' %}</b></h5>
-                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <table
-                            id="table-select-tool"
-                            class="table nowrap w-100 mb-5"
-                    >
-                        <thead>
-                        <tr class="bg-light">
-                            <th class="w-10">{% trans 'Tool name' %}</th>
-                            <th class="w-10">{% trans 'Tool code' %}</th>
-                            <th class="w-5">{% trans 'Quantity' %}</th>
-                            <th class="w-15">{% trans 'Original cost' %}</th>
-                            <th class="w-10">{% trans 'Depreciation from' %}</th>
-                            <th class="w-15">{% trans 'Net value' %}</th>
-                            <th class="w-15">{% trans 'Depreciation time' %}</th>
-                            <th class="w-10">{% trans 'Available' %}</th>
-                            <th class="w-10">{% trans 'Lease' %}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="row"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="lease_products_data">{% trans 'Close' %}</button>
-                <button type="button" class="btn btn-primary" id="btn-save-select-tool" data-bs-dismiss="modal" data-zone="lease_products_data">{% trans 'Save' %}</button>
-            </div>
+<div class="offcanvas offcanvas-end w-70" id="selectToolModal" tabindex="-1" aria-labelledby="selectToolModal">
+    <div class="modal-header">
+        <h5 class="modal-title"><b>{% trans 'Select tool' %}</b></h5>
+        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="row">
+            <table
+                    id="table-select-tool"
+                    class="table nowrap w-100 mb-5"
+            >
+                <thead>
+                <tr class="bg-light">
+                    <th class="w-10">{% trans 'Tool name' %}</th>
+                    <th class="w-10">{% trans 'Tool code' %}</th>
+                    <th class="w-5">{% trans 'Quantity' %}</th>
+                    <th class="w-15">{% trans 'Original cost' %}</th>
+                    <th class="w-10">{% trans 'Depreciation from' %}</th>
+                    <th class="w-15">{% trans 'Net value' %}</th>
+                    <th class="w-15">{% trans 'Depreciation time' %}</th>
+                    <th class="w-10">{% trans 'Available' %}</th>
+                    <th class="w-10">{% trans 'Lease' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
         </div>
+        <div class="row"></div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas" data-zone="lease_products_data">{% trans 'Close' %}</button>
     </div>
 </div>
 
-<div
-        class="modal fade" id="selectAssetModal" tabindex="-1"
-        role="dialog" aria-labelledby="selectAssetModal"
->
-    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><b>{% trans 'Select asset' %}</b></h5>
-                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <table
-                            id="table-select-asset"
-                            class="table nowrap w-100 mb-5"
-                    >
-                        <thead>
-                        <tr class="bg-light">
-                            <th class="w-15">{% trans 'Asset name' %}</th>
-                            <th class="w-15">{% trans 'Asset code' %}</th>
-                            <th class="w-15">{% trans 'Original cost' %}</th>
-                            <th class="w-15">{% trans 'Start depreciation' %}</th>
-                            <th class="w-15">{% trans 'Net value' %}</th>
-                            <th class="w-15">{% trans 'Depreciation time' %}</th>
-                            <th class="w-10">{% trans 'Lease' %}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="row"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="lease_products_data">{% trans 'Close' %}</button>
-                <button type="button" class="btn btn-primary" id="btn-save-select-asset" data-bs-dismiss="modal" data-zone="lease_products_data">{% trans 'Save' %}</button>
-            </div>
+<div class="offcanvas offcanvas-end w-70" id="selectAssetModal" tabindex="-1" aria-labelledby="selectAssetModal">
+    <div class="modal-header">
+        <h5 class="modal-title"><b>{% trans 'Select asset' %}</b></h5>
+        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="row">
+            <table
+                    id="table-select-asset"
+                    class="table nowrap w-100 mb-5"
+            >
+                <thead>
+                <tr class="bg-light">
+                    <th class="w-15">{% trans 'Asset name' %}</th>
+                    <th class="w-15">{% trans 'Asset code' %}</th>
+                    <th class="w-15">{% trans 'Original cost' %}</th>
+                    <th class="w-15">{% trans 'Start depreciation' %}</th>
+                    <th class="w-15">{% trans 'Net value' %}</th>
+                    <th class="w-15">{% trans 'Depreciation time' %}</th>
+                    <th class="w-10">{% trans 'Lease' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
         </div>
+        <div class="row"></div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas" data-zone="lease_products_data">{% trans 'Close' %}</button>
     </div>
 </div>
 

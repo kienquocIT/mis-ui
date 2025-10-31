@@ -57,7 +57,7 @@ class PayrollTemplateAttributeDetailAPI(APIView):
         is_api=True
     )
     def put(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.HRM_PAYROLL_TEMPLATE_DETAIL.fill_key(pk=pk)).put(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.HRM_PAYROLL_ATTRIBUTE_DETAIL.fill_key(pk=pk)).put(request.data)
         if resp.state:
             resp.result['message'] = f'{HRMMsg.HRM_PAYROLL_TEMPLATE} {BaseMsg.UPDATE} {BaseMsg.SUCCESS}'
             return resp.result, status.HTTP_200_OK

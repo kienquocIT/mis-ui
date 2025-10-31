@@ -21,7 +21,7 @@
     <div class="row">
         <div class="col-12">
             <table class="table nowrap w-100" data-method="GET" id="tbl_template_attr"
-                   data-url="{% url 'PayrollTemplAttrListAPI' %}">
+                    data-url="{% url 'PayrollTemplAttrListAPI' %}">
                 <thead>
                     <tr>
                         <th></th>
@@ -29,8 +29,7 @@
                         <th>{% trans 'Name' %}</th>
                         <th>{% trans 'Code' %}</th>
                         <th>{% trans 'Attribute Type' %}</th>
-                        <th>{% trans 'Created date' %}</th>
-                        <th>{% trans 'Action' %}</th>
+                        <th></th>
                     </tr>
                 </thead>
             </table>
@@ -42,4 +41,6 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/hrm/payroll/js/template_attribute/list.js' %}"></script>
+    <script src="{% static 'assets/hrm/payroll/js/template_attribute/common.js' %}"></script>
+    <script src="{% static 'assets/hrm/payroll/js/template_attribute/create.js' %}"></script>
 {% endblock %}

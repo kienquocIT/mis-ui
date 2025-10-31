@@ -5,16 +5,16 @@
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{% trans "Create/Edit Template Attribute " %}</h5>
+                <h5 class="modal-title" id="template_attr_modal_title">{% trans "Create/Edit Template Attribute " %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true" class="icon"><i class="fas fa-times"></i></span>
                 </button>
             </div>
             <div class="modal-body">
                 <form id="frm_template_attribute"
-                        data-url="{% url "ShiftMasterDataListAPI" %}"
-                        data-url-detail="{% url "ShiftMasterDataDetailAPI" "0" %}"
-                        data-url-redirect="{% url "ShiftMasterDataList" %}"
+                        data-url="{% url "PayrollTemplAttrListAPI" %}"
+                        data-url-detail="{% url "PayrollTemplateAttributeDetailAPI" "0" %}"
+                        data-url-redirect="{% url "PayrollTemplAttrList" %}"
                         data-method="POST" >
                     {% csrf_token %}
                     <div class="row">
@@ -42,16 +42,13 @@
                             <label class="form-label" for="template_attr_type">
                                 {% trans 'Attribute Type' %} <span class="text-danger">*</span>
                             </label>
-                            <select class="form-control select2" name="code" id="template_attr_type">
-                                <option value="">{% trans 'Select type...' %}</option>
-                                <option value="currency">{% trans 'Currency' %}</option>
-                                <option value="number">{% trans 'Number' %}</option>
-                                <option value="percentage">{% trans 'Percentage' %}</option>
-                                <option value="days">{% trans 'Days' %}</option>
-                                <option value="hours">{% trans 'Hours' %}</option>
-                                <option value="text">{% trans 'Text' %}</option>
-                                <option value="boolean">{% trans 'Yes/No' %}</option>
-                                <option value="date">{% trans 'Date' %}</option>
+                            <select class="form-select" name="code" id="template_attr_type">
+                                <option value=""></option>
+                                <option value="0">{% trans 'Number' %}</option>
+                                <option value="1">{% trans 'Text' %}</option>
+                                <option value="2">{% trans 'Date' %}</option>
+                                <option value="3">{% trans 'Boolean' %}</option>
+                                <option value="4">{% trans 'Formula' %}</option>
                             </select>
                             <span class="small text-muted">{% trans 'Choose the data type for this attribute' %}</span>
                         </div>
@@ -59,7 +56,7 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <div class="form-check form-check-lg">
-                                    <input type="checkbox" id="mandatory" class="form-check-input">
+                                    <input type="checkbox" id="mandatory" name="mandatory" class="form-check-input">
                                     <label for="customCheck3" class="form-check-label">{% trans 'Mandantory' %}</label>
                                 </div>
                             </div>
@@ -78,7 +75,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                <button type="submit" class="btn btn-primary" form="form-shift">{% trans 'Save' %}</button>
+                <button type="submit" class="btn btn-primary" form="form-shift" id="btn_save_attr">{% trans 'Save' %}</button>
             </div>
         </div>
     </div>

@@ -1,4 +1,12 @@
 $(document).ready(function () {
+    const COMPONENT_TYPE_MAP = {
+        0: 'Number',
+        1: 'Text',
+        2: 'Date',
+        3: 'Boolean',
+        4: 'Formula'
+    };
+
     function loadTemplateAttributeList() {
         let tbl = $('#tbl_template_attr');
         let frm = new SetupFormSubmit(tbl);
@@ -25,44 +33,67 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'w-20',
-                    render: (data, type, row, meta) => {
-                        return row?.['title'] || '';
-                    }
-                },
-                {
                     className: 'w-25',
-                    render: (data, type, row, meta) => {
-                        return row?.['name'] || '';
+                    render: (data, type, row) => {
+                        const title = row?.['component_title'] || '';
+                        return `<a href="javascript:void(0)" 
+                                   class="link-primary underline_hover edit-attr" data-id="${row?.['id']}" data-action="edit"
+                                   data-bs-toggle="modal" data-bs-target="#templateAttributeModal"
+                                   data-id="${row?.id || ''}"
+                                   data-title="${row?.['component_title'] || ''}"
+                                   data-name="${row?.['component_name'] || ''}"
+                                   data-code="${row?.['component_code'] || ''}"
+                                   data-type="${row?.['component_type'] ?? ''}"
+                                   data-mandatory="${row?.['component_mandatory'] || false}"
+                                   data-formula="${row?.['component_formula'] || ''}">${title}
+                                </a>`;
                     }
                 },
                 {
-                    className: 'w-10',
-                    render: (data, type, row, meta) => {
-                        return row?.['code'] || '--';
+                    className: 'w-30',
+                    render: (data, type, row) => {
+                        return row?.['component_name'] || '';
                     }
                 },
                 {
-                    className: 'w-10',
-                    render: (data, type, row, meta) => {
-                        return row?.['attribute_type'] || '--';
+                    className: 'w-15',
+                    render: (data, type, row) => {
+                        const code = row?.['component_code'] || '--';
+                        return `<a href="javascript:void(0)" 
+                                   class="link-primary underline_hover edit-attr" data-id="${row?.['id']}" data-action="edit"
+                                   data-bs-toggle="modal" data-bs-target="#templateAttributeModal"
+                                   data-id="${row?.id || ''}"
+                                   data-title="${row?.['component_title'] || ''}"
+                                   data-name="${row?.['component_name'] || ''}"
+                                   data-code="${row?.['component_code'] || ''}"
+                                   data-type="${row?.['component_type'] ?? ''}"
+                                   data-mandatory="${row?.['component_mandatory'] || false}"
+                                   data-formula="${row?.['component_formula'] || ''}">${code}
+                                </a>`;
                     }
                 },
                 {
-                    className: 'w-20',
-                    render: (data, type, row, meta) => {
-                        return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
+                    className: 'w-15',
+                    render: (data, type, row) => {
+                        let typeValue = row?.['component_type'];
+                        return COMPONENT_TYPE_MAP[typeValue] || '--';
                     }
                 },
                 {
                     className: "w-10 text-right",
-                    render: () => {
+                    render: (data, type, row) => {
                         return `
                             <button type="button" 
-                                    class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover edit-row"
+                                    class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover edit-attr"
                                     data-bs-toggle="modal" 
                                     data-bs-target="#templateAttributeModal"
-                                    data-id="${row?.id}">
+                                    data-id="${row?.id || ''}"
+                                    data-title="${row?.['component_title'] || ''}"
+                                    data-name="${row?.['component_name'] || ''}"
+                                    data-code="${row?.['component_code'] || ''}"
+                                    data-type="${row?.['component_type'] ?? ''}"
+                                    data-mandatory="${row?.['component_mandatory'] || false}"
+                                    data-formula="${row?.['component_formula'] || ''}">
                                 <span class="icon"><i class="far fa-edit text-primary"></i></span>
                             </button>
                             <button type="button" 

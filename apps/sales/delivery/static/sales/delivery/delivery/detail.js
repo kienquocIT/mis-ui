@@ -190,31 +190,6 @@ $(async function () {
                             tableTargetData[idx]['offset_data'] = offset_data;
                             tableTargetData[idx]['tool_data'] = tool_data;
                             tableTargetData[idx]['asset_data'] = asset_data;
-                            // Kiểm tra nếu giao đơn cho thuê cho offset thì tính lại depreciation_data theo $actDate.val()
-                            if (tableTargetData[idx]?.['asset_type'] === 1) {
-                                for (let offsetData of tableTargetData[idx]?.['offset_data'] ? tableTargetData[idx]?.['offset_data'] : []) {
-                                    offsetData['product_depreciation_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
-                                    offsetData['product_lease_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
-                                    offsetData['depreciation_data'] = DepreciationControl.callDepreciation({
-                                        "method": offsetData?.['product_depreciation_method'],
-                                        "months": offsetData?.['product_depreciation_time'],
-                                        "start_date": $actDate.val(),
-                                        "end_date": moment(offsetData?.['product_depreciation_end_date']).format('DD/MM/YYYY'),
-                                        "price": offsetData?.['product_cost'],
-                                        "adjust": offsetData?.['product_depreciation_adjustment'],
-                                    });
-                                }
-                            }
-                            if (tableTargetData[idx]?.['asset_type'] === 2) {
-                                for (let toolData of tableTargetData[idx]?.['tool_data'] ? tableTargetData[idx]?.['tool_data'] : []) {
-                                    toolData['product_lease_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
-                                }
-                            }
-                            if (tableTargetData[idx]?.['asset_type'] === 3) {
-                                for (let assetData of tableTargetData[idx]?.['asset_data'] ? tableTargetData[idx]?.['asset_data'] : []) {
-                                    assetData['product_lease_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
-                                }
-                            }
                             _this.setProdList = tableTargetData;
                             $tableMain.DataTable().row(idx).data(tableTargetData[idx]).draw();
                         }
@@ -1879,6 +1854,27 @@ $(async function () {
                         'depreciation_data': prod?.['depreciation_data'],
                         'order': prod?.['order'],
                     })
+                }
+            }
+            // use actual date replace product_lease_start_date
+            for (let prod of prodSub) {
+                for (let offset of prod?.['offset_data'] ? prod?.['offset_data'] : []) {
+                    offset['product_depreciation_start_date'] = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $actDate.val());
+                    offset['depreciation_data'] = DepreciationControl.callDepreciation({
+                        "method": offset?.['product_depreciation_method'],
+                        "months": offset?.['product_depreciation_time'],
+                        "start_date": $actDate.val(),
+                        "end_date": moment(offset?.['product_depreciation_end_date']).format('DD/MM/YYYY'),
+                        "price": offset?.['product_cost'],
+                        "adjust": offset?.['product_depreciation_adjustment'],
+                    });
+                    offset['product_lease_start_date'] = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $actDate.val());
+                }
+                for (let tool of prod?.['tool_data'] ? prod?.['tool_data'] : []) {
+                    tool['product_lease_start_date'] = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $actDate.val());
+                }
+                for (let asset of prod?.['asset_data'] ? prod?.['asset_data'] : []) {
+                    asset['product_lease_start_date'] = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $actDate.val());
                 }
             }
             if (!prodSub.length && $('#wrap-employee_inherit').attr('data-is_lead').toLowerCase() !== 'true') {

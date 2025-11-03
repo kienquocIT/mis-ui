@@ -182,7 +182,7 @@ $(async function () {
                                 delivery_data = [];
                             }
                         });
-                        if (temp_picked > 0) {
+                        // if (temp_picked > 0) {
                             // lấy hàng từ popup warehouse add vào danh sách product detail
                             let tableTargetData = _this.getProdList;
                             tableTargetData[idx]['picked_quantity'] = temp_picked;
@@ -192,7 +192,7 @@ $(async function () {
                             tableTargetData[idx]['asset_data'] = asset_data;
                             _this.setProdList = tableTargetData;
                             $tableMain.DataTable().row(idx).data(tableTargetData[idx]).draw();
-                        }
+                        // }
                         $scrollLot[0].setAttribute('hidden', 'true');
                         $scrollSerial[0].setAttribute('hidden', 'true');
                         $canvasPW.offcanvas('hide');
@@ -1877,7 +1877,8 @@ $(async function () {
                     asset['product_lease_start_date'] = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $actDate.val());
                 }
             }
-            if (!prodSub.length && $('#wrap-employee_inherit').attr('data-is_lead').toLowerCase() !== 'true') {
+            // if (!prodSub.length && $('#wrap-employee_inherit').attr('data-is_lead').toLowerCase() !== 'true') {
+            if (!prodSub.length) {
                 // ko co and ko fai lead
                 $.fn.notifyB({description: $trans.attr('data-error-done')}, 'failure')
                 return false

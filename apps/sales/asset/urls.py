@@ -1,15 +1,17 @@
 from django.urls import path
 
-from apps.sales.asset.views import FixedAssetList, FixedAssetCreate, FixedAssetDetail, FixedAssetUpdate, \
+from .views import FixedAssetList, FixedAssetCreate, FixedAssetDetail, FixedAssetUpdate, \
     FixedAssetListAPI, FixedAssetDetailAPI, InstrumentToolList, InstrumentToolCreate, InstrumentToolDetail, \
     InstrumentToolUpdate, InstrumentToolListAPI, InstrumentToolDetailAPI, FixedAssetWriteOffList, \
     FixedAssetWriteOffCreate, FixedAssetWriteOffListAPI, FixedAssetWriteOffDetail, FixedAssetWriteOffDetailAPI, \
     FixedAssetWriteOffUpdate, InstrumentToolWriteOffList, InstrumentToolWriteOffCreate, InstrumentToolWriteOffDetail, \
-    InstrumentToolWriteOffUpdate, InstrumentToolWriteOffListAPI, InstrumentToolWriteOffDetailAPI, AssetForLeaseListAPI, \
-    ToolForLeaseListAPI, AssetStatusLeaseListAPI, ToolStatusLeaseListAPI
+    InstrumentToolWriteOffUpdate, InstrumentToolWriteOffListAPI, InstrumentToolWriteOffDetailAPI, \
+    AssetForLeaseListAPI, ToolForLeaseListAPI, AssetStatusLeaseListAPI, ToolStatusLeaseListAPI, \
+    InstrumentToolDDListAPI, FixedAssetListDDAPI
 
 fixed_asset_urlpatterns = [
     path('fixed-asset/list', FixedAssetList.as_view(), name='FixedAssetList'),
+    path('fixed-asset/dd-list', FixedAssetListDDAPI.as_view(), name='FixedAssetListDDAPI'),
     path('fixed-asset/create', FixedAssetCreate.as_view(), name='FixedAssetCreate'),
     path('fixed-asset/detail/<str:pk>', FixedAssetDetail.as_view(), name='FixedAssetDetail'),
     path('fixed-asset/update/<str:pk>', FixedAssetUpdate.as_view(), name='FixedAssetUpdate'),
@@ -29,6 +31,7 @@ instrument_tool_urlpatterns = [
 
     #api
     path('instrument-tool/api/list', InstrumentToolListAPI.as_view(), name='InstrumentToolListAPI'),
+    path('instrument-tool/api/dd-list', InstrumentToolDDListAPI.as_view(), name='InstrumentToolDDListAPI'),
     path('instrument-tool/api/detail/<str:pk>', InstrumentToolDetailAPI.as_view(), name='InstrumentToolDetailAPI'),
     path('instrument-tool-for-lease/api/list', ToolForLeaseListAPI.as_view(), name='ToolForLeaseListAPI'),
     path('instrument-tool-status-lease/api/list', ToolStatusLeaseListAPI.as_view(), name='ToolStatusLeaseListAPI'),

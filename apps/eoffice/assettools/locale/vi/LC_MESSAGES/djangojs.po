@@ -19,7 +19,9 @@ msgstr ""
 
 msgid "Delivered"
 msgstr "Đã giao"
-
 #
 msgid "Not yet"
 msgstr "Chưa giao"
+#
+msgid "Please select product"
+msgstr "Vui lòng chọn sản phẩm"

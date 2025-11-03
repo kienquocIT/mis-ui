@@ -5,195 +5,10 @@
 {% block cssHeader %}
     <link href="{% static 'assets/core/workflow/css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"/>
     <style>
-        /* Modern Dashboard v2 with Enhanced Design */
-        :root {
-            --primary-color: #3b82f6;
-            --secondary-color: #64748b;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --info-color: #06b6d4;
-            --light-color: #f8fafc;
-            --dark-color: #1e293b;
-            --border-radius: 12px;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            --gradient-warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-            --gradient-info: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-        }
-
         #idxPageContent {
-            {#background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);#}
             background-image: url("{% static 'assets/js/home_4.jpg' %}");
             background-repeat: no-repeat;
-            background-position: center;
             background-size: cover;
-            padding: 1rem 0;
-        }
-
-        .container-fluid {
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Enhanced Cards */
-        .card {
-            border: none;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.5)
-        }
-
-        /* KPI Cards */
-        .kpi-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.125rem;
-            margin-bottom: 0;
-            flex-shrink: 0;
-        }
-
-        .kpi-icon.primary {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            color: white;
-        }
-
-        .kpi-icon.success {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-        }
-
-        .kpi-value {
-            font-size: 1.25rem !important;
-            font-weight: 700 !important;
-            margin: 0 !important;
-            line-height: 1.2 !important;
-            display: block !important;
-        }
-
-        .kpi-label {
-            font-size: 0.7rem !important;
-            color: #64748b !important;
-            font-weight: 500 !important;
-            margin: 0 0 0.25rem 0 !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.3px !important;
-            line-height: 1 !important;
-        }
-
-        /* Chart Container Enhancements */
-        .chart-container {
-            position: relative;
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 1rem;
-            margin-bottom: 0.5rem;
-            box-shadow: var(--shadow-sm);
-        }
-
-        /* Ensure proper spacing for chart containers */
-        .chart-container > div {
-            position: relative;
-            overflow: visible !important;
-        }
-
-        .chart-title {
-            font-size: 1.125rem !important;
-            font-weight: 700 !important;
-            color: #1e293b !important;
-            margin: 0 !important;
-            display: flex !important;
-            align-items: center !important;
-            gap: 0.5rem !important;
-        }
-
-        .chart-title i {
-            color: var(--primary-color) !important;
-        }
-
-        /* Section Headers */
-        .section-header {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 1rem 1.25rem;
-            margin-bottom: 1rem;
-            box-shadow: var(--shadow-sm);
-            border-left: 4px solid var(--primary-color);
-        }
-
-        .section-title {
-            font-size: 1.25rem !important;
-            font-weight: 700 !important;
-            color: #1e293b !important;
-            margin: 0 !important;
-            display: flex !important;
-            align-items: center !important;
-            gap: 0.75rem !important;
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8) !important;
-        }
-
-        .section-subtitle {
-            font-size: 0.875rem !important;
-            color: #475569 !important;
-            margin: 0.5rem 0 0 0 !important;
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6) !important;
-        }
-
-        /* Filter Panel */
-        .custom-panel {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid #e2e8f0;
-        }
-
-        /* Responsive Enhancements */
-        @media (max-width: 768px) {
-            .card-body {
-                padding: 1rem;
-            }
-
-            .kpi-value {
-                font-size: 1.5rem;
-            }
-
-            .kpi-icon {
-                width: 32px;
-                height: 32px;
-                font-size: 1rem;
-            }
-
-            .chart-container {
-                padding: 1rem;
-            }
-
-            .section-header {
-                padding: 1rem;
-            }
-        }
-
-        @media (max-width: 576px) {
-            #idxPageContent {
-                padding: 1rem 0;
-            }
-
-            .container-fluid {
-                padding: 0 0.5rem;
-            }
-
-            .kpi-value {
-                font-size: 1.25rem;
-            }
         }
     </style>
 {% endblock %}
@@ -241,50 +56,53 @@
             data-trans-expected="{% trans 'Expected' %}"
             data-trans-reality="{% trans 'Reality' %}"
     ></script>
-    
-    <div class="container-fluid mb-5">
-        <!-- Filter Section -->
-        <div class="row">
-            <div class="col-12 col-md-8">
-                <div class="custom-panel">
-                    <div class="row">
-                        <div class="col-12 col-md-3">
-                            <div class="form-group">
-                                <label for="money-display" class="form-label">{% trans 'Money display' %}</label>
-                                <select class="form-select" id="money-display">
-                                    <option value="0" selected>{% trans 'Million' %}</option>
-                                    <option value="1">{% trans 'Billion' %}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <div class="form-group">
-                                <label for="money-round" class="form-label">{% trans 'Money round' %}</label>
-                                <input id="money-round" type="number" class="form-control" value="2" min="0">
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="form-group">
-                                <label for="period-filter" class="form-label">{% trans 'Fiscal year' %}</label>
-                                <select class="form-select"
-                                        id="period-filter"
-                                        data-url="{% url 'PeriodsConfigListAPI' %}"
-                                        data-method="GET"
-                                ></select>
+
+    <div class="row mb-3">
+        <div class="col-12 col-md-8">
+            <div class="bflow-glass-card">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="bflow-glass-card-60">
+                            <div class="row">
+                                <div class="col-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="money-display"
+                                               class="form-label">{% trans 'Money display' %}</label>
+                                        <select class="form-select" id="money-display">
+                                            <option value="0" selected>{% trans 'Million' %}</option>
+                                            <option value="1">{% trans 'Billion' %}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="money-round" class="form-label">{% trans 'Money round' %}</label>
+                                        <input id="money-round" type="number" class="form-control" value="2" min="0">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="form-group">
+                                        <label for="period-filter" class="form-label">{% trans 'Fiscal year' %}</label>
+                                        <select class="form-select"
+                                                id="period-filter"
+                                                data-url="{% url 'PeriodsConfigListAPI' %}"
+                                                data-method="GET"
+                                        ></select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Total Pipeline & Top Sale Charts -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body p-2">
-                        <!-- Chart Controls -->
-                        <div class="d-flex justify-content-between align-items-center m-2">
+    </div>
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="bflow-glass-card">
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex">
                                 <div class="me-2">
                                     <div class="input-group" style="width: 400px;">
@@ -297,21 +115,26 @@
                                 <div class="me-2">
                                     <div class="input-group">
                                         <span class="input-group-text">{% trans 'Sale number viewed' %}</span>
-                                        <input class="form-control" type="number" id="top-sale-number" min="1" max="20" value="10">
+                                        <input class="form-control" type="number" id="top-sale-number" min="1"
+                                               max="20" value="10">
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Charts -->
-                        <div class="row p-2">
-                            <div class="col-12 col-lg-6">
-                                <div class="chart-container">
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="bflow-glass-card-60">
+                            <div class="row">
+                                <div class="col-12">
                                     <div id="total_pipeline_chart" style="width: 100%; height: 350px;"></div>
                                 </div>
                             </div>
-                            <div class="col-12 col-lg-6">
-                                <div class="chart-container">
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="bflow-glass-card-60">
+                            <div class="row">
+                                <div class="col-12">
                                     <div id="top_sale_chart" style="width: 100%; height: 350px;"></div>
                                 </div>
                             </div>
@@ -320,14 +143,14 @@
                 </div>
             </div>
         </div>
-
-        <!-- Forecast Chart -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body p-2">
+    </div>
+    <div class="row mb-3">
+        <div class="col-12 col-lg-6">
+            <div class="bflow-glass-card">
+                <div class="row">
+                    <div class="col-12 mb-3">
                         <!-- Chart Controls -->
-                        <div class="d-flex justify-content-between align-items-center m-2">
+                        <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex">
                                 <div class="me-2">
                                     <div class="input-group" style="width: 400px;">
@@ -349,17 +172,18 @@
                                 <div class="me-2">
                                     <div class="input-group">
                                         <span class="input-group-text">{% trans 'Winrate threshold' %}</span>
-                                        <input class="form-control" type="number" id="winrate-threshold" step="5" min="0" max="100" value="70">
+                                        <input class="form-control" type="number" id="winrate-threshold"
+                                               step="5" min="0" max="100" value="70">
                                         <span class="input-group-text">%</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Charts -->
-                        <div class="row p-2">
-                            <div class="col-12">
-                                <div class="chart-container">
+                    </div>
+                    <div class="col-12">
+                        <div class="bflow-glass-card-60">
+                            <div class="row">
+                                <div class="col-12">
                                     <div id="forecast_chart" style="width: 100%; height: 350px;"></div>
                                 </div>
                             </div>
@@ -368,14 +192,11 @@
                 </div>
             </div>
         </div>
-
-        <!-- Activity Chart -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body p-2">
-                        <!-- Chart Controls -->
-                        <div class="d-flex justify-content-between align-items-center m-2">
+        <div class="col-12 col-lg-6">
+            <div class="bflow-glass-card">
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex">
                                 <div class="me-2" style="width: 350px;">
                                     <div class="input-group">
@@ -391,16 +212,17 @@
                                 <div class="me-2">
                                     <div class="input-group">
                                         <span class="input-group-text">{% trans 'Customer number viewed' %}</span>
-                                        <input class="form-control" type="number" id="top-customer-number" min="1" max="20" value="10">
+                                        <input class="form-control" type="number" id="top-customer-number"
+                                               min="1" max="20" value="10">
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Charts -->
-                        <div class="row p-2">
-                            <div class="col-12">
-                                <div class="chart-container">
+                    </div>
+                    <div class="col-12">
+                        <div class="bflow-glass-card-60">
+                            <div class="row">
+                                <div class="col-12">
                                     <div id="activity_chart" style="width: 100%; height: 350px;"></div>
                                 </div>
                             </div>

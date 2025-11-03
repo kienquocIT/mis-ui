@@ -20,6 +20,20 @@ class GRLoadDataHandle {
     static $isNoWHEle = $('#is_no_warehouse');
     static transEle = $('#app-trans-factory');
     static urlEle = $('#url-factory');
+    static dataTypeGrPost = [
+        {
+            'id': 3,
+            'title': GRLoadDataHandle.transEle.attr('data-for-production')
+        },
+        {
+            'id': 2,
+            'title': GRLoadDataHandle.transEle.attr('data-for-ia')
+        },
+        {
+            'id': 1,
+            'title': GRLoadDataHandle.transEle.attr('data-for-po')
+        },
+    ];
     static dataTypeGr = [
         {
             'id': 4,
@@ -1073,7 +1087,8 @@ class GRLoadDataHandle {
                         'method': 'GET',
                         'data': {
                             'product_warehouse__product_id': dataStore?.['product_data']?.['id'],
-                            'serial_number': serial_number
+                            'serial_number': serial_number,
+                            'serial_status': 0,
                         },
                         'isDropdown': true,
                     }

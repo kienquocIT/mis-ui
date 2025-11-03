@@ -1,6 +1,7 @@
 .bookmark-item {
     cursor: pointer;
     position: relative;
+    border-radius: 12px;
 }
 
 .bookmark-item-action {
@@ -77,21 +78,11 @@
 
 #my-task-summary-report {
     border: none;
-    border-radius: 12px;
+    border-radius: var(--border-radius);
 }
 
 #my-task-summary-report > p {
     display: none;
-}
-
-.summary-item .summary-title {
-    font-size: 16px;
-    margin-top: 10px;
-}
-
-.summary-item .summary-value {
-    font-size: 42px;
-    font-weight: bold
 }
 
 /* animate increment number */
@@ -120,18 +111,18 @@
     border: 1px solid #c7e2e5;
     margin-bottom: 5px;
     padding: 5px 10px;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
 }
 
 .event-at-item .event-at-head {
     display: flex;
 }
 
-.event-at-head .event-at-title {
-    {#font-weight: bold;}
-    {#flex-basis: 45%;}
-    flex-basis: 60%;
-}
+/*.event-at-head .event-at-title {*/
+/*    {#font-weight: bold;}*/
+/*    {#flex-basis: 45%;}*/
+/*    flex-basis: 60%;*/
+/*}*/
 
 .event-at-item .event-at-head .event-at-date-group-in-title {
     display: inline-block;
@@ -163,7 +154,6 @@
 }
 
 .event-at-btn-all {
-    color: #007d88;
     padding: 0 10px;
 }
 
@@ -175,12 +165,6 @@
     width: 100%;
     text-align: center;
     color: #003eb3;
-}
-
-#event-at-day-selected-date {
-    color: #55717c;
-    padding: 0 5px;
-    font-size: 0.9rem;
 }
 
 .event-item-holiday {
@@ -204,16 +188,16 @@
     z-index: 1054;
     width: 2rem;
     height: 2rem;
-    background-color: #88a328;
+    background-color: #646464;
     color: #fff;
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 0 0 0 10px;
+    border-radius: 0 0 0 12px;
     transition: background-color 1s, opacity 1s, transform 0.5s;
     cursor: pointer;
-    opacity: 0.6;
+    opacity: 0.5;
 }
 #setting-home .icon {
     transition: transform 0.5s;
@@ -224,27 +208,4 @@
 }
 #setting-home:hover .icon {
     transform: rotate(90deg);
-}
-
-/* Enhanced Cards */
-.transparent-card {
-    border: none;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-md);
-    padding: 5px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background: rgba(255, 255, 255, 0.7)
-}
-
-.transparent-main-card {
-    border: none;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-md);
-    padding: 15px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background: rgb(255, 255, 255)
 }

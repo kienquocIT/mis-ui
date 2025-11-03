@@ -62,9 +62,8 @@ $(document).ready(function () {
                         className: 'ellipsis-cell-md w-10',
                         render: (data, type, row) => {
                             if (row?.['system_status'] === 3) {
-                                let gr_state = row?.['created_goods_receipt'] ? `<span class="text-success">${$.fn.gettext('GR completed')} <i class="fa-solid fa-check"></i></span>` : `<span class="text-blue">${$.fn.gettext('GR is pending')}</span>`;
-                                let gis_for_root_state = row?.['created_goods_issue_for_root'] ? `<span class="text-success">${$.fn.gettext('Issued for root product')} <i class="fa-solid fa-check"></i></span>` : `<span class="text-danger">${$.fn.gettext('Waiting issue for root product')}</span>`
-                                return `${gr_state}<br>${row?.['representative_product_modified'] ? gis_for_root_state : ''}`
+                                let gr_state = row?.['created_goods_receipt'] ? `<span class="text-success">${$.fn.gettext('Finished')} <i class="fa-solid fa-check"></i></span>` : `<span class="text-blue">${$.fn.gettext('GR is pending')}</span>`;
+                                return `${gr_state}`
                             }
                             return ''
                         }

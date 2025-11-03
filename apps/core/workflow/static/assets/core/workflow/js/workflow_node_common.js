@@ -85,6 +85,8 @@ class NodeLoadDataHandle {
         {'id': 4, 'title': NodeLoadDataHandle.transEle.attr('data-select-upper-manager')},
     ];
 
+    static $OFEmpCheckedEle = $('#of-employee-checked');
+
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
         let opts = {'allowClear': isClear};
         $ele.empty();
@@ -152,7 +154,6 @@ class NodeLoadDataHandle {
     };
 
     static loadInit() {
-        NodeDataTableHandle.dataTableCollabOutFormEmployee();
         NodeFormulaHandle.loadPropertyMD();
         NodeFormulaHandle.loadFunctionMD();
     };
@@ -281,8 +282,29 @@ class NodeLoadDataHandle {
                         if (data?.['option_collaborator'] === 1) {
                             if (data?.['collab_out_form']?.['employee_list']) {
                                 if (data?.['collab_out_form']?.['employee_list'].length > 0) {
-                                    NodeDataTableHandle.$tableOFEmp.DataTable().destroy();
-                                    NodeDataTableHandle.dataTableCollabOutFormEmployee(data?.['collab_out_form']?.['employee_list']);
+                                    WindowControl.showLoading();
+                                    $.fn.callAjax2({
+                                            'url': NodeLoadDataHandle.$initEmp.attr('data-url'),
+                                            'method': 'GET',
+                                            'data': {'id__in': data?.['collab_out_form']?.['employee_list'].join(',')},
+                                            'isDropdown': true,
+                                        }
+                                    ).then(
+                                        (resp) => {
+                                            let dataRes = $.fn.switcherResp(resp);
+                                            if (dataRes) {
+                                                if (dataRes.hasOwnProperty('employee_list') && Array.isArray(dataRes.employee_list)) {
+                                                    let storeData = {};
+                                                    for (let OFEmpData of dataRes?.['employee_list']) {
+                                                        storeData[OFEmpData?.['id']] = {'data': OFEmpData};
+                                                    }
+                                                    NodeLoadDataHandle.$OFEmpCheckedEle.val(JSON.stringify(storeData));
+                                                    NodeLoadDataHandle.loadOFEmpShow();
+                                                    WindowControl.hideLoading();
+                                                }
+                                            }
+                                        }
+                                    )
                                 }
                             }
                             if (data?.['collab_out_form']?.['is_edit_all_zone']) {
@@ -558,21 +580,58 @@ class NodeLoadDataHandle {
     };
 
     // out form
+    static loadStoreCheckOFEmployee(ele) {
+        let row = ele.closest('tr');
+        let rowIndex = NodeDataTableHandle.$tableOFEmp.DataTable().row(row).index();
+        let $row = NodeDataTableHandle.$tableOFEmp.DataTable().row(rowIndex);
+        let dataRow = $row.data();
+
+        if (dataRow) {
+            if (NodeLoadDataHandle.$OFEmpCheckedEle.val()) {
+                let storeID = JSON.parse(NodeLoadDataHandle.$OFEmpCheckedEle.val());
+                if (typeof storeID === 'object') {
+                    if (ele.checked === true) {
+                        if (!storeID?.[dataRow?.['id']]) {
+                            storeID[dataRow?.['id']] = {
+                                "type": "current",
+                                "data": dataRow,
+                            };
+                        }
+                    }
+                    if (ele.checked === false) {
+                        if (storeID?.[dataRow?.['id']]) {
+                            delete storeID?.[dataRow?.['id']];
+                        }
+                    }
+                    NodeLoadDataHandle.$OFEmpCheckedEle.val(JSON.stringify(storeID));
+                }
+            } else {
+                let dataStore = {};
+                if (ele.checked === true) {
+                    dataStore[dataRow?.['id']] = {
+                        "type": "current",
+                        "data": dataRow,
+                    };
+                }
+                NodeLoadDataHandle.$OFEmpCheckedEle.val(JSON.stringify(dataStore));
+            }
+        }
+        return true;
+    };
+
     static loadOFEmpShow() {
         if (NodeLoadDataHandle.$modalNode[0].querySelector('.out-form-emp-show')) {
             let $ele = $(NodeLoadDataHandle.$modalNode[0].querySelector('.out-form-emp-show'));
             let htmlShow = ``;
-            NodeDataTableHandle.$tableOFEmp.DataTable().rows().every(function () {
-                let row = this.node();
-                if (row.querySelector('.table-row-checkbox:checked')) {
-                    if (row.querySelector('.table-row-checkbox').getAttribute('data-row')) {
-                        let dataRow = JSON.parse(row.querySelector('.table-row-checkbox').getAttribute('data-row'));
-                        htmlShow += `<div class="chip chip-outline-secondary chip-wth-icon bg-white mr-1 mb-1 out-form-emp-show" data-id="${dataRow?.['id']}">
-                                        <span><i class="fas fa-user-circle"></i><span class="chip-text">${dataRow?.['full_name']}</span></span>
+            if (NodeLoadDataHandle.$OFEmpCheckedEle.val()) {
+                let storeID = JSON.parse(NodeLoadDataHandle.$OFEmpCheckedEle.val());
+                for (let key in storeID) {
+                    let dataAdd = storeID[key]?.['data'];
+                    htmlShow += `<div class="chip chip-outline-secondary chip-wth-icon bg-white mr-1 mb-1 out-form-emp-show" data-id="${dataAdd?.['id']}">
+                                        <span><i class="fas fa-user-circle"></i><span class="chip-text">${dataAdd?.['full_name']}</span></span>
                                     </div>`;
-                    }
                 }
-            });
+            }
             $ele.empty().append(htmlShow);
         }
         return true;
@@ -780,8 +839,12 @@ class NodeDataTableHandle {
     static $tableInWF = $('#table-in-workflow');
     static $tableInWFExitCon = $('#table-in-workflow-exit-condition');
 
-    static dataTableCollabOutFormEmployee(dataStore) {
-        NodeDataTableHandle.$tableOFEmp.not('.dataTable').DataTableDefault({
+    static dataTableCollabOutFormEmployee() {
+        if ($.fn.dataTable.isDataTable(NodeDataTableHandle.$tableOFEmp)) {
+            NodeDataTableHandle.$tableOFEmp.DataTable().destroy();
+        }
+        NodeDataTableHandle.$tableOFEmp.DataTableDefault({
+            useDataServer: true,
             ajax: {
                 url: NodeLoadDataHandle.$initEmp.attr('data-url'),
                 type: "GET",
@@ -802,18 +865,11 @@ class NodeDataTableHandle {
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         let checked = '';
-                        for (let eleShow of NodeLoadDataHandle.$modalNode[0].querySelectorAll('.out-form-emp-show')) {
-                            if (eleShow.getAttribute('data-id')) {
-                                if (eleShow.getAttribute('data-id') === row?.['id']) {
-                                    checked = "checked";
-                                    break;
-                                }
-                            }
-                        }
-                        if (dataStore) {
-                            if (Array.isArray(dataStore)) {
-                                if (dataStore.includes(row?.['id'])) {
-                                    checked = "checked";
+                        if (NodeLoadDataHandle.$OFEmpCheckedEle.val()) {
+                            let storeID = JSON.parse(NodeLoadDataHandle.$OFEmpCheckedEle.val());
+                            if (typeof storeID === 'object') {
+                                if (storeID?.[row?.['id']]) {
+                                    checked = 'checked';
                                 }
                             }
                         }
@@ -862,7 +918,6 @@ class NodeDataTableHandle {
             ],
             drawCallback: function () {
                 NodeLoadDataHandle.loadEventCheckbox(NodeDataTableHandle.$tableOFEmp);
-                NodeLoadDataHandle.loadOFEmpShow();
             },
         });
     };

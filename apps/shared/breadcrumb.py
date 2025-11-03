@@ -472,6 +472,13 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     HRM_OVERTIME_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'OvertimeCreate')
     HRM_OVERTIME_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     HRM_OVERTIME_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+    # HRM PAYROLL TEMPLATE
+    HRM_PAYROLL_TEMPLATE_LIST_PAGE = BreadcrumbChildren(_('Payroll template'), 'PayrollTemplateList')
+    HRM_PAYROLL_TEMPLATE_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'PayrollTemplateCreate')
+    HRM_PAYROLL_TEMPLATE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    HRM_PAYROLL_TEMPLATE_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+    # HRM TEMPLATE ATTRIBUTE
+    HRM_TEMPLATE_ATTRIBUTE_LIST_PAGE = BreadcrumbChildren(_('Tempate attribute'), 'PayrollTemplAttrList')
 
     # CONTRACT TEMPLATE
     CONTRACT_TEMPLATE_LIST_PAGE = BreadcrumbChildren(_('Contract template list'), 'ContractTemplateList')
@@ -1323,6 +1330,20 @@ class BreadcrumbView:
     HRM_OVERTIME_CREATE_PAGE = HRM_OVERTIME_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     HRM_OVERTIME_DETAIL_PAGE = HRM_OVERTIME_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     HRM_OVERTIME_UPDATE_PAGE = HRM_OVERTIME_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    # PAYROLL TEMPLATE
+    HRM_PAYROLL_TEMPLATE_LIST_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.HRM_PAYROLL_TEMPLATE_LIST_PAGE
+    ]
+    HRM_PAYROLL_TEMPLATE_CREATE_PAGE = HRM_PAYROLL_TEMPLATE_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    HRM_PAYROLL_TEMPLATE_DETAIL_PAGE = HRM_PAYROLL_TEMPLATE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    HRM_PAYROLL_TEMPLATE_UPDATE_PAGE = HRM_PAYROLL_TEMPLATE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+    # PAYROLL TEMPLATE
+    HRM_TEMPLATE_ATTRIBUTE_LIST_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.HRM_TEMPLATE_ATTRIBUTE_LIST_PAGE
+    ]
 
     # Consulting
     CONSULTING_LIST_PAGE = [

@@ -135,30 +135,25 @@ $(document).ready(function () {
                 progressing_svo += 1
             }
 
-            service_detail_list_html += `<div class="col-12 mb-2">
-                                            <div class="card service-card">
-                                                <div class="card-body p-2">
-                                                    <div class="row">
-                                                        <div class="col-12">
-                                                            <h5 class="fw-bold"><span class="badge badge-dark badge-pill service-code">${item?.['product_data']?.['code'] || ''}</span> <span class="service-name">${item?.['product_data']?.['title'] || ''}</span></h5>
-                                                            <span class="fw-bold text-muted">
-                                                                <span>${$.fn.gettext('Service value')}:</span> <span class="service-value mask-money" data-init-money="${item?.['total_value'] || 0}"></span>
-                                                                <span class="badge badge-light badge-indicator mx-2"></span>
-                                                                <span>${$.fn.gettext('Weight')}:</span> <span class="service-weight">${item?.['service_percent'] || '--'}%</span>
-                                                            </span>
-                                                            <div class="progress progress-bar-rounded my-3" style="min-height: 20px">
-                                                                <div class="progress-bar bg-gradient-primary service-progress-bar" role="progressbar" style="width: ${avg_wo_percent_completed}%;" aria-valuenow="${avg_wo_percent_completed}" aria-valuemin="0" aria-valuemax="100">${avg_wo_percent_completed}%</div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-12">
-                                                            <div class="separator"></div>
-                                                        </div>
-                                                        <div class="col-12">
-                                                            <h6 class="fw-bold text-muted">${$.fn.gettext('Work list')}:</h6>
-                                                            <ul class="advance-list wo-list mt-3">
-                                                                ${wo_contribute_html}
-                                                            </ul>
-                                                        </div>
+            service_detail_list_html += `<div class="col-12 mb-3">
+                                            <div class="bflow-glass-card-80 service-card">
+                                                <div class="row">
+                                                    <div class="col-12 col-md-9 col-lg-9">
+                                                        <h5 class="fw-bold"><span class="badge badge-primary badge-pill service-code">${item?.['product_data']?.['code'] || ''}</span> <span class="service-name text-primary">${item?.['product_data']?.['title'] || ''}</span></h5>
+                                                        <span class="fw-bold text-muted">
+                                                            <span>${$.fn.gettext('Service value')}:</span> <span class="service-value mask-money" data-init-money="${item?.['total_value'] || 0}"></span>
+                                                            <span class="badge badge-light badge-indicator mx-2"></span>
+                                                            <span>${$.fn.gettext('Weight')}:</span> <span class="service-weight">${item?.['service_percent'] || '--'}%</span>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-12 col-md-3 col-lg-3 text-right">
+                                                        <span class="text-primary fw-bold h2">${avg_wo_percent_completed}%</span>
+                                                    </div>
+                                                    <div class="col-12 mt-3">
+                                                        <h6 class="fw-bold text-muted">${$.fn.gettext('Work list')}:</h6>
+                                                        <ul class="advance-list wo-list mt-3">
+                                                            ${wo_contribute_html}
+                                                        </ul>
                                                     </div>
                                                 </div>
                                             </div>
@@ -166,7 +161,7 @@ $(document).ready(function () {
         }
         $('#service-detail-list').html(service_detail_list_html)
         $('#service-order-progress').append(`
-            <div class="progress progress-bar-rounded progress-width-animated" style="min-height: 30px">
+            <div class="progress progress-bar-rounded progress-width-animated" style="min-height: 25px">
                 <div class="progress-bar bg-gradient-success" role="progressbar" aria-valuenow="${avg_svo_detail_percent_completed}" aria-valuemin="0" aria-valuemax="100" style="width: ${avg_svo_detail_percent_completed}%"><span class="progress-tooltip">${avg_svo_detail_percent_completed}%</span></div>
             </div>
         `)

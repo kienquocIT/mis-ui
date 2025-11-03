@@ -1199,8 +1199,20 @@ const ServiceOrder = (function($) {
                     render: (data, type, row) => {
                         const quantity = row.delivered_quantity || 0
                         const balance = row.balance_quantity || 0
+                        let btnLogs = ``;
+                        let $formPut = $('#form-update-service-order');
+                        if ($formPut.length > 0) {
+                            let $transEle = $('#app-trans-factory');
+                            btnLogs = `<button 
+                                        type="button" 
+                                        class="btn btn-icon btn-outline-light btn-sm btn-delivery-log"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="${$transEle.attr('data-delivery-logs')}"
+                                    >
+                                        <span class="icon"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                                    </button>`;
+                        }
                         return `<div class="d-flex justify-content-between align-items-center">
-                                <div class="input-group w-60">
+                                <div class="input-group">
                                     <input
                                         ${!isDelivery ? 'disabled' : ''}
                                         type="number"
@@ -1210,13 +1222,7 @@ const ServiceOrder = (function($) {
                                         max="${balance}"
                                     />
                                 </div>
-                                <button 
-                                    type="button" 
-                                    class="btn btn-icon btn-rounded btn-soft-secondary btn-sm btn-delivery-log"
-                                    data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delivery logs"
-                                >
-                                    <span class="icon"><i class="fa-solid fa-clock-rotate-left"></i></span>
-                                </button>
+                                ${btnLogs}
                                 </div>`;
                     }
                 },
@@ -3299,6 +3305,8 @@ const ServiceOrder = (function($) {
     function handleClickOpenDeliveryLogs() {
         pageElement.modalData.$tableProductContribution.on('click', '.btn-delivery-log', function () {
             WindowControl.showLoading();
+            let $transEle = $('#app-trans-factory');
+            let $urlsEle = $('#script-url');
             let row = this.closest('tr');
             let desModalEle = pageElement.modalData.$modalProductContribution[0].querySelector('.work-order-description');
             let $modalEle = $('#deliveryLogModal');
@@ -3324,10 +3332,13 @@ const ServiceOrder = (function($) {
                                     let workID = $(desModalEle).attr('data-work-id');
                                     $(bodyEle).empty();
                                     for (let dataLog of dataLogs) {
+                                        let linkSO = $urlsEle.attr('data-service-order-detail-url').format_url_with_uuid(dataLog?.['service_order_data']?.['id']);
                                         for (let dataProd of dataLog?.['products']) {
                                             if (dataProd?.['product_data']?.['code'] === dataRow?.['code'] && String(dataProd?.['work_data']?.['order']) === workID) {
-                                                $(bodyEle).append(`<div><b>Phiên bản: </b><span>${dataLog?.['service_order_data']?.['code']}</span></div>
-                                                                    <div><b>SL giao hàng: </b><span>${dataProd?.['delivery_quantity']}</span></div>`);
+                                                $(bodyEle).append(`<div class="bg-light p-2 border rounded-5 mb-2">
+                                                                    <div class="mb-2"><b class="text-primary">${$transEle.attr('data-service-order-version')}: </b><a href="${linkSO}" target="_blank" class="link-primary underline_hover">${dataLog?.['service_order_data']?.['code']}</a></div>
+                                                                    <div class="mb-2"><b class="text-primary">${$transEle.attr('data-delivery-quantity')}: </b><span>${dataProd?.['delivery_quantity']}</span></div>
+                                                                    </div>`);
                                             }
                                         }
                                     }

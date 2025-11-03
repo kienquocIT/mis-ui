@@ -40,7 +40,10 @@ $(function () {
                     $.fn.callAjax2({
                             'url': RecoveryLoadDataHandle.urlEle.attr('data-delivery'),
                             'method': 'GET',
-                            'data': {'order_delivery__lease_order_id': RecoveryLoadDataHandle.$boxLeaseOrder.val()},
+                            'data': {
+                                'order_delivery__lease_order_id': RecoveryLoadDataHandle.$boxLeaseOrder.val(),
+                                'system_status': 3,
+                            },
                         }
                     ).then(
                         (resp) => {

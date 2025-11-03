@@ -143,7 +143,7 @@ function loadBookmarkList() {
                         data-view_name="${item?.['view_name']}"
                         data-customize_url="${item?.['customize_url']}"
                     >
-                        <div class="bookmark-item-body bg-${item.box_style?.['bg_cls']} text-${item.box_style?.['text_cls']} rounded-5 d-15 d-flex flex-column justify-content-center align-items-center overflow-hidden">
+                        <div style="border-radius: 12px;" class="bookmark-item-body bg-${item.box_style?.['bg_cls']} text-${item.box_style?.['text_cls']} d-15 d-flex flex-column justify-content-center align-items-center overflow-hidden">
                             <small class="text-center mb-1">${item.title}</small>
                             <span class="mb-1">
                                 <i class="${item.box_style?.['icon_cls']} fa-lg"></i>
@@ -204,7 +204,7 @@ function loadTabTodo() {
                             stage__runtime?.['app_code'],
                             {'redirect': true},
                         );
-                        return `<span>${row?.['app_code_parsed']}</span><br><a href="${urlData}">${row?.['doc_title'] || "_"}</a>`;
+                        return `<span class="small">${row?.['app_code_parsed']}</span><br><a href="${urlData}">${row?.['doc_title'] || "_"}</a>`;
                     }
                 },
                 {
@@ -282,7 +282,7 @@ function loadTabFollowing() {
                             row?.['app_code'],
                             {'redirect': true},
                         );
-                        return `<span>${row?.['app_code_parsed']}</span><br><a href="${urlData}">${row?.['doc_title'] || "_"}</a>`;
+                        return `<span class="small">${row?.['app_code_parsed']}</span><br><a href="${urlData}">${row?.['doc_title'] || "_"}</a>`;
                     }
                 },
                 {
@@ -359,7 +359,7 @@ function loadTabPined() {
                             runtime?.['app_code'],
                             {'redirect': true},
                         );
-                        return `<span>${runtime?.['app_title']}</span><br><a href="${urlData}">${row?.['title'] || "_"}</a>`;
+                        return `<span class="small">${runtime?.['app_title']}</span><br><a href="${urlData}">${row?.['title'] || "_"}</a>`;
                     }
                 },
                 {

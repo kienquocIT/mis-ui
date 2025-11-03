@@ -126,6 +126,14 @@ $(function () {
 
                     kanban.init(taskList)
                     list.init(list, taskList)
+                    // check task extend for other apps
+                    if (!$empElm[0].closest('#formOpportunityTask')) {
+                        let $tblElm = $('#table_task_list')
+                        if ($tblElm.hasClass('dataTable')) {
+                            $tblElm.DataTable().clear().draw();
+                        }
+                    }
+
                     // Function to wait form create on submit
                     $createBtn.off().on('click', () => initCommon.awaitFormSubmit(kanban, list));
                     let temp = $.extend(true, {}, data)
@@ -600,6 +608,8 @@ $(function () {
             $elm.find('.badge-icon').removeClass('text-success text-warning text-danger')
             $elm.find('.badge-icon').addClass(`text-${priority_list[data.priority]}`)
             $elm.find('.card-title').text(data.title).attr('title', data.title)
+            $elm.find('.card-title').text(data.title).attr('title', data.title)
+            $elm.find('.card-ticket span').text(data.percent_completed)
             if (data?.['assign_to']) {
                 const assign_to = data['assign_to']
                 if (assign_to?.['avatar']) $elm.find('img').attr('src', assign_to?.['avatar'])
@@ -1620,8 +1630,8 @@ $(function () {
                         (req) => {
                             let data = $.fn.switcherResp(req);
                             if (data?.['status'] === 200) {
-                                const taskList = data?.['task_list']
-                                listTask.init(listTask, taskList)
+                                const taskList = data?.['task_list'];
+                                listTask.init(listTask, taskList);
                             }
                         },
                         (err) => {

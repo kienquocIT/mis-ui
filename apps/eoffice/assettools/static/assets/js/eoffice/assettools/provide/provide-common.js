@@ -17,8 +17,8 @@ class ProductsTable {
 
     static init(dataList = []) {
         if ($tbl.hasClass('dataTable')) $tbl.DataTable().clear().rows.add(dataList).draw()
-        else
-            $tbl.DataTableDefault({
+        else{
+            const objTbl = $tbl.DataTableDefault({
                 styleDom: 'hide-foot',
                 data: dataList,
                 ordering: false,
@@ -78,7 +78,7 @@ class ProductsTable {
                         data: 'subtotal',
                         width: '15%',
                         render: (row, type, data, meta) => {
-                            return `<input type="text" class="form-control" data-zone="products" name="subtotal_${meta.row}" readonly value="${row}">`
+                            return `<input type="text" class="form-control mask-money" data-zone="products" name="subtotal_${meta.row}" readonly data-value-format="${row}" value="${row}">`
                         }
                     },
                     {
@@ -100,23 +100,24 @@ class ProductsTable {
                     })
 
                     // load product item
-                    $('[name*="product_"]', row).attr('data-url', $urlElm.attr('data-prod-url'))
-                        .attr('data-keyResp', "instrument_tool_list")
-                        .attr('data-keyText', "title")
-                        .attr('data-keyId', "id")
-                        .initSelect2()
-                        .on('select2:select', function (e) {
-                            const product = e.params.data.data
-                            data.product = product
-                            data.uom = product.product['measure_unit']
-                            data.price = product.product.unit_price
+                    let urls = ''
+                    let keyresp = "instrument_tool_dd_list"
+                    if (data?.product_fixed || (data.product_fixed && data.has_prod)){
+                        urls = $urlElm.attr('data-prod-fixed-url')
+                        keyresp = "fixed_asset_dd_list"
+                    }
+                    else if (data?.product || (!data.product && data.has_prod))
+                        urls = $urlElm.attr('data-prod-url')
+                    else if ((!data?.product_fixed && !data.product) || data.new_prod)
+                        $('[name*="product_"]', row).attr('disabled', true)
+                    if (urls){
+                        $('[name*="product_"]', row).attr('data-url', urls)
+                            .attr('data-keyResp', keyresp)
+                            .attr('data-keyText', "title")
+                            .attr('data-keyId', "id")
+                            .initSelect2()
+                    }
 
-                            $('[name*="uom_"], [name*="price_"]', row).prop('readonly', true)
-
-                            $tbl.DataTable().cell(index, 2).data(product.product['measure_unit']).draw(false)
-                            $tbl.DataTable().cell(index, 4).data(product.product.unit_price).draw(false)
-                            $.fn.initMaskMoney2($('[name*="price_"]', row), 'input')
-                        })
                     // load quantity
                     $('[name*="quantity_"]', row).on('change', function () {
                         let temp = this.value.replace('-', '').replace(/^0+|[a-z]/g, '')
@@ -126,20 +127,20 @@ class ProductsTable {
                     })
 
                     // load price
-                    $.fn.initMaskMoney2($('[name*="price_"]', row), 'input')
                     $('[name*="price_"]', row).on('change', function () {
                         let _price = $.inArray($(this).valCurrency(), ['undefined', undefined, '0']) === -1 ? $(this).valCurrency() : $(this).val()
                         data.price = !isNaN(_price) ? parseInt(_price) : 0
                         ProductsTable.calcSubtotal(data, index)
                     })
 
-                    // init subtotal
-                    $.fn.initMaskMoney2($('[name*="subtotal_"]', row), 'input')
-
                     // delete row
                     $('.btn-remove-row', row).off().on('click', () => {
                         $tbl.DataTable().row(row).remove().draw(false)
                     })
+                },
+                drawCallback: function (row) {
+                    // mask money
+                    $.fn.initMaskMoney2($('input.mask-money', row), 'input');
                 },
                 footerCallback: function () {
                     let api = this.api();
@@ -158,19 +159,53 @@ class ProductsTable {
                 },
             })
 
+            objTbl.on('select2:select', '[name*="product_"]', function(e){
+                const product = e.params.data.data
+                const td = objTbl.cell($(this).closest('td'));
+                let data = objTbl.row(td[0][0].row).data();
+                if ((data?.product_fixed === null && data.has_prod && !data?.product)
+                    || data?.product_fixed && Object.keys(data.product_fixed).length > 0)
+                    data.product_fixed = product
+                else data.product = product
+                data.uom = product?.product?.['measure_unit']
+                data.price = product?.product?.unit_price
+
+                $(`input[name="uom_${td[0][0].row}"], input[name="price_${td[0][0].row}"]`).prop('readonly', true)
+
+                objTbl.cell(td[0][0].row, 2).data(product?.product?.['measure_unit']).draw(false)
+                objTbl.cell(td[0][0].row, 4).data(product?.product?.['unit_price']).draw(false)
+                $.fn.initMaskMoney2($(`[name="price_${td[0][0].row}"]`), 'input')
+            })
+        }
+
+
         const $addNewBtn = $('.add_new_line')
-        $addNewBtn.off().on('click', function () {
-            const newData = {
-                'product': '',
-                'product_remark': '',
-                'uom': '',
-                'quantity': 0,
-                'price': 0,
-                'subtotal': 0
+        $addNewBtn.off().on('click', function (e) {
+            e.stopPropagation()
+            const type = $(this).attr('data-type')
+            if (type){
+                const newData = {
+                    'product': null,
+                    'product_remark': '',
+                    'uom': '',
+                    'quantity': 0,
+                    'price': 0,
+                    'subtotal': 0
+                }
+                if (type === 'crt_prod_fixed'){
+                    newData.product_fixed = null
+                    delete newData.product
+                    newData.has_prod = true
+                }
+                else if (type === 'crt_prod_instrument'){
+                    newData.has_prod = true
+                }
+                else newData.new_prod = true
+                $tbl.DataTable().row.add(newData).draw()
+
+                // hidden after selected
+                $('.dd_toggle_add').dropdown('hide')
             }
-            if ($(this).attr('data-type') === 'crt_prod') newData.has_prod = true
-            else newData.new_prod = true
-            $tbl.DataTable().row.add(newData).draw()
         })
     }
 
@@ -189,10 +224,31 @@ function submitHandleFunc() {
     formData.employee_inherit_id = $EmpElm.val()
     formData.products = ProductsTable.get_data()
     for(let item of formData.products){
-        if (item['product'].hasOwnProperty('id')) item['product'] = item['product']['id']
-        else delete item['product']
+        delete item['tax']
+        if (item['product']){
+            if (item['product'].hasOwnProperty('id')){
+                item['product'] = item['product']['id']
+                delete item['product_fixed']
+            }else{
+                $.fn.notifyB({'description': $.fn.gettext('Please select product')}, 'failure')
+                return false
+            }
+        }
+        else if (item['product_fixed']){
+            if (item['product_fixed'].hasOwnProperty('id')){
+                item['product_fixed'] = item['product_fixed']['id']
+                delete item['product']
+            }else{
+                $.fn.notifyB({'description': $.fn.gettext('Please select product')}, 'failure')
+                return false
+            }
+        }
+        else if (!item['product_fixed'] && !item['product']){
+            delete item['product']
+            delete item['product_fixed']
+        }
     }
-    // if (frm.dataMethod.toLowerCase() === 'put')
+
     let $elmFooter = $('.products_detail_tbl_wrapper .dataTables_scrollFootInner table tfoot tr th')
     formData.total = $elmFooter.find('.total').attr('data-init-money')
     // formData.taxes = $elmFooter.find('.taxes').attr('data-init-money')
@@ -202,15 +258,13 @@ function submitHandleFunc() {
         return false
     }
 
-    formData.attachments = $x.cls.file.get_val(formData.attachments, []),
+    formData.attachments = $x.cls.file.get_val(formData.attachments, [])
     WFRTControl.callWFSubmitForm(frm);
 }
 
 $(document).ready(function () {
-
     // run products table
     ProductsTable.init()
-
     // Date picker
     $('.date-picker').daterangepicker({
         singleDatePicker: true,
@@ -222,7 +276,6 @@ $(document).ready(function () {
         },
         maxYear: parseInt(moment().format('YYYY'), 10),
     })
-
     // init employee
     let $empElm = $('#selectEmployeeInherit')
     $empElm

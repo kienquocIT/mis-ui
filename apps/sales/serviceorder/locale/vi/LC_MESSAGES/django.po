@@ -22,18 +22,6 @@ msgid "Service order detail dashboard"
 msgstr "Dashboard chi tiết đơn dịch vụ"
 
 #
-msgid "TITLE"
-msgstr "TIÊU ĐỀ"
-
-#
-msgid "CUSTOMER"
-msgstr "KHÁCH HÀNG"
-
-#
-msgid "TIME"
-msgstr "THỜI GIAN"
-
-#
 msgid "OVERALL PROGRESS"
 msgstr "TIẾN ĐỘ TỔNG QUAN"
 

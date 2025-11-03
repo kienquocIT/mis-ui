@@ -1,0 +1,91 @@
+{% load i18n %}
+
+<div class="offcanvas offcanvas-end w-65" tabindex="-1" id="offcanvasFormula" aria-labelledby="offcanvasTopLabel">
+    <div class="offcanvas-header">
+        <h5>{% trans 'Edit formula' %}</h5>
+
+    </div>
+    <div class="offcanvas-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-check-inline justify-content-center d-inline-flex">
+                    <input class="form-check-input" type="radio" name="formula_type" id="formula_type_1" checked>
+                    <label class="form-check-label" for="formula_type_1">
+                        {% trans 'Formula' %}
+                    </label>
+                </div>
+                <div class="form-check-inline justify-content-center d-inline-flex">
+                    <input class="form-check-input" type="radio" name="formula_type" id="formula_type_2">
+                    <label class="form-check-label" for="formula_type_2">
+                        {% trans 'Manual' %}
+                    </label>
+                </div>
+            </div>
+            <div class="col-12 mt-4">
+                <div class="form-group">
+                    <label class="form-label" for="input_editor">{% trans 'Editor' %}</label>
+                    <input type="text-blue" id="input_editor" class="form-control" name="editor">
+                    <span class="error-message"></span>
+                    <div class="the-same hidden">
+                        <b>⇔</b>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-4">
+                <div class="card card-wth-line shadow-none">
+                    <div class="card-line card-left bg-blue"></div>
+                    <div class="card-body bg-gray-10">
+                        <h5 class=""><b><i class="fa-solid fa-info"></i></b></h5>
+                        <p>{% trans 'Operation accepted' %}: <i>+,-,*,÷(/)</i></p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-12  mt-4">
+                <ul class="nav nav-line nav-tabs nav-light border-bottom">
+                    <li class="nav-item">
+                        <a href="#property" class="nav-link active" data-bs-toggle="tab">
+                            <span class="nav-link-text">{% trans 'Formula property' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item hidden">
+                        <a href="#function" class="nav-link" data-bs-toggle="tab">
+                            <span class="nav-link-text">{% trans 'Function' %}</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content h-380p">
+                    <div class="tab-pane fade active show" id="property">
+                        <div class="row">
+                            <div class="col-4 property-list list_value_code" id="property_md">
+                                <ul></ul>
+                            </div>
+                            <div class="col-8 property-description" id="property_remark">
+                                <h5></h5>
+                                <p></p>
+                                <b>Code</b><br>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="function">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="offcanvas-footer border-top p-4 text-right">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas" aria-label="Close">
+            <span>{% trans 'Close' %}</span>
+        </button>
+        <button class="btn btn-primary" id="formula-save" type="button">
+            <span>
+                <span class="icon">
+                    <i class="bi bi-clipboard-check"></i>
+                </span>
+                <span>{% trans 'Save' %}</span>
+            </span>
+        </button>
+    </div>
+</div>

@@ -42,8 +42,8 @@ msgid "Select base product"
 msgstr "Chọn sản phẩm ban đầu"
 
 #
-msgid "Current component"
-msgstr "Thành phần hiện tại"
+msgid "Inserted component"
+msgstr "Thành phần ráp vào"
 
 #
 msgid "Insert component"

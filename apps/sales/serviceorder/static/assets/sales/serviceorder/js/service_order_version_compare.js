@@ -17,9 +17,10 @@ const VersionCompareControl = {
      * Initialize version compare control
      */
     init: function () {
-        this.currentServiceOrderId = $.fn.getPkDetail();
+        this.currentServiceOrderId = $.fn.getPkDetail()
         this.setupEventListeners();
         this.addCustomStyles();
+        $.fn.initMaskMoney2()
     },
 
     /**
@@ -121,7 +122,7 @@ const VersionCompareControl = {
                     .nested-item {
                         margin-bottom: 8px;
                         padding: 8px;
-                        background: #f8f9fa;
+                        /*background: #f8f9fa;*/
                         border: 1px solid #e9ecef;
                         border-radius: 3px;
                     }
@@ -140,17 +141,6 @@ const VersionCompareControl = {
                     .version-headers .row > div {
                         padding: 8px;
                     }
-                    .change-badge {
-                        display: inline-block;
-                        padding: 2px 6px;
-                        border-radius: 3px;
-                        font-size: 0.75em;
-                        font-weight: 600;
-                        margin-left: 5px;
-                    }
-                    .change-badge.added { background: #28a745; color: white; }
-                    .change-badge.removed { background: #dc3545; color: white; }
-                    .change-badge.changed { background: #ffc107; color: #000; }
                 </style>
             `;
             $('head').append(styles);
@@ -198,7 +188,7 @@ const VersionCompareControl = {
     loadVersions: function () {
         this.$versionSelect.initSelect2({
             dataParams: {
-                document_root_id: this.currentServiceOrderId,
+                document_root_id: ServiceOrder.pageVariable.documentRootId || this.currentServiceOrderId,
                 exclude_id: this.currentServiceOrderId,
             }
         });
@@ -348,13 +338,10 @@ const VersionCompareControl = {
         switch (tabId) {
             case '#tab-compare-all':
                 html += this.renderBasicInfo();
-                html += this.renderCustomerInfo();
-                html += this.renderFinancialSummary();
-                html += this.renderIndicators();
                 html += this.renderServiceDetails();
-                html += this.renderPaymentData();
-                html += this.renderExpensesData();
                 html += this.renderWorkOrders();
+                html += this.renderExpensesData();
+                html += this.renderPaymentData();
                 break;
             case '#tab-compare-service-detail':
                 html += this.renderServiceDetails();
@@ -375,6 +362,7 @@ const VersionCompareControl = {
 
         html += '</div>';
         $container.append(html);
+        $.fn.initMaskMoney2()
     },
 
     /**
@@ -421,10 +409,11 @@ const VersionCompareControl = {
 
     renderBasicFields: function(snapshot) {
         let html = '<div class="item-container">';
-        html += this.renderInlineField('Code', snapshot.code, 'code');
-        html += this.renderInlineField('Title', snapshot.title, 'title');
-        html += this.renderInlineField('Start Date', snapshot.start_date, 'start_date');
-        html += this.renderInlineField('End Date', snapshot.end_date, 'end_date');
+        html += this.renderInlineField($.fn.gettext('Code'), snapshot.code, 'code');
+        html += this.renderInlineField($.fn.gettext('Title'), snapshot.title, 'title');
+        html += this.renderInlineField($.fn.gettext('Start Date'), this.formatDate(snapshot.start_date), 'start_date');
+        html += this.renderInlineField($.fn.gettext('End Date'), this.formatDate(snapshot.end_date), 'end_date');
+        html += this.renderInlineField($.fn.gettext('Customer'), snapshot.customer_data.name, 'customer_data.name');
         html += '</div>';
         return html;
     },
@@ -552,7 +541,7 @@ const VersionCompareControl = {
             <div class="comparison-wrapper">
                 <div class="row">
                     <div class="col-2 section-label">
-                        Service Detail
+                        ${$.fn.gettext('Service Detail')}
                     </div>
                     <div class="col-10 comparison-content">
                         ${comparisonRows}
@@ -568,12 +557,18 @@ const VersionCompareControl = {
         const changeType = this.getChangeType(basePath);
         let html = '<div class="item-container' + (changeType ? ' diff-' + changeType : '') + '">';
         html += `<div class="item-header">${service.title || 'N/A'} (${service.code || 'N/A'})`;
-        if (changeType) html += `<span class="change-badge ${changeType}">${changeType}</span>`;
         html += '</div>';
-        html += this.renderInlineField('Quantity', service.quantity, `${basePath}.quantity`);
-        html += this.renderInlineField('Price', service.price, `${basePath}.price`);
-        html += this.renderInlineField('Total', service.total_value, `${basePath}.total_value`);
-        html += this.renderInlineField('Payment %', service.service_percent, `${basePath}.service_percent`);
+        html += this.renderInlineField($.fn.gettext('Code'), service.code, `${basePath}.code`);
+        html += this.renderInlineField($.fn.gettext('Title'), service.title, `${basePath}.title`);
+        html += this.renderInlineField($.fn.gettext('Description'), service.description, `${basePath}.description`);
+        html += this.renderInlineField($.fn.gettext('Weight Contribution'), service.service_percent, `${basePath}.service_percent`);
+        html += this.renderInlineField($.fn.gettext('Quantity'), service.quantity, `${basePath}.quantity`);
+        if(service.duration_id){
+            html += this.renderInlineField($.fn.gettext('Duration'), service.duration, `${basePath}.duration`);
+            html += this.renderInlineField($.fn.gettext('Duration Unit'), service.duration_unit_data?.title, `${basePath}.duration_unit_data.title`);
+        }
+        html += this.renderInlineField('Price', service.price, `${basePath}.price`, ['mask-money']);
+        html += this.renderInlineField('Total', service.total_value, `${basePath}.total_value`, ['mask-money']);
         html += '</div>';
         return html;
     },
@@ -621,12 +616,62 @@ const VersionCompareControl = {
         const changeType = this.getChangeType(basePath);
         let html = '<div class="item-container' + (changeType ? ' diff-' + changeType : '') + '">';
         html += `<div class="item-header">Installment ${payment.installment || 'N/A'}`;
-        if (changeType) html += `<span class="change-badge ${changeType}">${changeType}</span>`;
         html += '</div>';
-        html += this.renderInlineField('Due Date', payment.due_date, `${basePath}.due_date`);
-        html += this.renderInlineField('Payment', payment.payment_value, `${basePath}.payment_value`);
-        html += this.renderInlineField('Tax', payment.tax_value, `${basePath}.tax_value`);
-        html += this.renderInlineField('Receivable', payment.receivable_value, `${basePath}.receivable_value`);
+        html += this.renderInlineField('Description', payment.description, `${basePath}.description`);
+        html += this.renderInlineField(
+            'Payment Type',
+            payment.payment_type === 0 ? $.fn.gettext('Advance') : $.fn.gettext('Payment'),
+            `${basePath}.payment_type`
+        );
+        html += this.renderInlineField('Invoice', payment.is_invoice_required, `${basePath}.is_invoice_required`);
+        html += this.renderInlineField('Payment Value', payment.payment_value, `${basePath}.payment_value`, ['mask-money']);
+        html += this.renderInlineField('Tax', payment.tax_value, `${basePath}.tax_value`, ['mask-money']);
+        html += this.renderInlineField('Reconcile Value', payment.reconcile_value, `${basePath}.reconcile_value`, ['mask-money']);
+        html += this.renderInlineField('Receivable Value', payment.receivable_value, `${basePath}.receivable_value`, ['mask-money']);
+        html += this.renderInlineField('Due Date', this.formatDate(payment.due_date), `${basePath}.due_date`);
+
+        //render nested payment detail and reconcile
+        if (payment.payment_detail_data && payment.payment_detail_data.length > 0) {
+            html += '<div class="nested-items">';
+            html += '<strong style="font-size: 0.85em; color: #6c757d;">Payment Details:</strong>';
+            payment.payment_detail_data.forEach((paymentDetail, idx) => {
+                const paymentDetailPath = `${basePath}.payment_detail_data.${idx}`;
+                const paymentChangeType = this.getChangeType(paymentDetailPath);
+                html += '<div class="nested-item' + (paymentChangeType ? ' diff-' + paymentChangeType : '') + '">';
+                html += `<div class="nested-item-title">${paymentDetail.title || 'Payment Detail' + (idx + 1)}`;
+                html += '</div>';
+                if (!payment.is_invoice_required){
+                    html += this.renderInlineField($.fn.gettext('Value %'), paymentDetail.payment_percent, `${paymentDetailPath}.payment_percent`);
+                    html += this.renderInlineField($.fn.gettext('Value'), paymentDetail.payment_value, `${paymentDetailPath}.payment_value`, ['mask-money']);
+                }
+                else {
+                    html += this.renderInlineField($.fn.gettext('Value %'), paymentDetail.payment_percent, `${paymentDetailPath}.payment_percent`);
+                    html += this.renderInlineField($.fn.gettext('Value'), paymentDetail.payment_value, `${paymentDetailPath}.payment_value`, ['mask-money']);
+                    html += this.renderInlineField($.fn.gettext('VAT'), paymentDetail.tax_value, `${paymentDetailPath}.tax_value`, ['mask-money']);
+                    html += this.renderInlineField($.fn.gettext('Reconcile'), paymentDetail.reconcile_value, `${paymentDetailPath}.reconcile_value`, ['mask-money']);
+                    html += this.renderInlineField($.fn.gettext('Receive'), paymentDetail.receivable_value, `${paymentDetailPath}.receivable_value`, ['mask-money']);
+
+                    // render nested reconcile
+                    if (paymentDetail.reconcile_data && paymentDetail.reconcile_data.length > 0) {
+                        html += '<div class="nested-items">';
+                        html += '<strong style="font-size: 0.85em; color: #6c757d;">Payment Reconcile: </strong>';
+                        paymentDetail.reconcile_data.forEach((reconcile, idx) => {
+                            const reconcilePath = `${paymentDetailPath}.reconcile_data.${idx}`;  // ← FIXED
+                            const reconcileChangeType = this.getChangeType(reconcilePath);
+                            html += '<div class="nested-item' + (reconcileChangeType ? ' diff-' + reconcileChangeType : '') + '">';
+                            html += `<div class="nested-item-title">${'Installment ' + (idx + 1)}`;
+                            html += '</div>';
+                            html += this.renderInlineField($.fn.gettext('Value'), reconcile.reconcile_value, `${reconcilePath}.reconcile_value`, ['mask-money']);  // ← Also update this
+                            html += '</div>';
+                        })
+                        html += '</div>';
+                    }
+                }
+                html += '</div>';
+            });
+            html += '</div>';
+        }
+
         html += '</div>';
         return html;
     },
@@ -674,11 +719,20 @@ const VersionCompareControl = {
         const changeType = this.getChangeType(basePath);
         let html = '<div class="item-container' + (changeType ? ' diff-' + changeType : '') + '">';
         html += `<div class="item-header">${expense.title || 'N/A'}`;
-        if (changeType) html += `<span class="change-badge ${changeType}">${changeType}</span>`;
         html += '</div>';
+        html += this.renderInlineField('Title', expense.title, `${basePath}.title`);
         html += this.renderInlineField('Quantity', expense.quantity, `${basePath}.quantity`);
-        html += this.renderInlineField('Price', expense.expense_price, `${basePath}.expense_price`);
-        html += this.renderInlineField('Subtotal', expense.expense_subtotal_price, `${basePath}.expense_subtotal_price`);
+        if (expense.expense_item_data) {
+            html += this.renderInlineField('Expense Item', expense.expense_item_data?.title, `${basePath}.expense_item_data.title`);
+        }
+        if (expense.uom_data) {
+            html += this.renderInlineField('UOM', expense.uom_data?.title, `${basePath}.uom_data.title`);
+        }
+        html += this.renderInlineField('Price', expense.expense_price, `${basePath}.expense_price`, ['mask-money']);
+        if (expense.tax_data) {
+            html += this.renderInlineField('UOM', expense.tax_data?.title, `${basePath}.tax_data.title`);
+        };
+        html += this.renderInlineField('Subtotal', expense.expense_subtotal_price, `${basePath}.expense_subtotal_price`, ['mask-money']);
         html += '</div>';
         return html;
     },
@@ -725,12 +779,14 @@ const VersionCompareControl = {
 
         const changeType = this.getChangeType(basePath);
         let html = '<div class="item-container' + (changeType ? ' diff-' + changeType : '') + '">';
-        html += `<div class="item-header">${workOrder.title || 'N/A'}`;
-        if (changeType) html += `<span class="change-badge ${changeType}">${changeType}</span>`;
+        html += `<div class="item-header">${workOrder.description || 'No data'}`;
         html += '</div>';
-        html += this.renderInlineField('Start', workOrder.start_date, `${basePath}.start_date`);
-        html += this.renderInlineField('End', workOrder.end_date, `${basePath}.end_date`);
-        html += this.renderInlineField('Total', workOrder.total_value, `${basePath}.total_value`);
+        html += this.renderInlineField('Start', this.formatDate(workOrder.start_date), `${basePath}.start_date`);
+        html += this.renderInlineField('End', this.formatDate(workOrder.end_date), `${basePath}.end_date`);
+        html += this.renderInlineField('Is Service Delivery', workOrder.is_delivery_point, `${basePath}.is_delivery_point`);
+        html += this.renderInlineField('Quantity', workOrder.quantity, `${basePath}.quantity`);
+        html += this.renderInlineField('Service Cost', workOrder.unit_cost, `${basePath}.unit_cost`, ['mask-money']);
+        html += this.renderInlineField('Total', workOrder.total_value, `${basePath}.total_value`, ['mask-money']);
 
         // Render nested cost data
         if (workOrder.cost_data && workOrder.cost_data.length > 0) {
@@ -741,14 +797,22 @@ const VersionCompareControl = {
                 const costChangeType = this.getChangeType(costPath);
                 html += '<div class="nested-item' + (costChangeType ? ' diff-' + costChangeType : '') + '">';
                 html += `<div class="nested-item-title">${cost.title || 'Cost ' + (idx + 1)}`;
-                if (costChangeType) html += `<span class="change-badge ${costChangeType}">${costChangeType}</span>`;
                 html += '</div>';
-                html += this.renderInlineField('Qty', cost.quantity, `${costPath}.quantity`);
-                html += this.renderInlineField('Unit Cost', cost.unit_cost, `${costPath}.unit_cost`);
-                html += this.renderInlineField('Total', cost.total_value, `${costPath}.total_value`);
+                html += this.renderInlineField($.fn.gettext('Title'), cost.title, `${costPath}.title`);
+                html += this.renderInlineField($.fn.gettext('Description'), cost.description, `${costPath}.description`);
                 if (cost.expense_data) {
                     html += this.renderInlineField('Expense', cost.expense_data.title, `${costPath}.expense_data.title`);
                 }
+                html += this.renderInlineField($.fn.gettext('Quantity'), cost.quantity, `${costPath}.quantity`);
+                html += this.renderInlineField($.fn.gettext('Unit Cost'), cost.unit_cost, `${costPath}.unit_cost`, ['mask-money']);
+                if (cost.currency_data) {
+                    html += this.renderInlineField('Currency', cost.currency_data.title, `${costPath}.currency_data.title`);
+                }
+                if (cost.tax_data) {
+                    html += this.renderInlineField('Tax', cost.tax_data.title, `${costPath}.tax_data.title`);
+                }
+                html += this.renderInlineField($.fn.gettext('Total'), cost.total_value, `${costPath}.total_value`, ['mask-money']);
+
                 html += '</div>';
             });
             html += '</div>';
@@ -763,12 +827,12 @@ const VersionCompareControl = {
                 const contribChangeType = this.getChangeType(contribPath);
                 html += '<div class="nested-item' + (contribChangeType ? ' diff-' + contribChangeType : '') + '">';
                 html += `<div class="nested-item-title">${contrib.title || 'Product ' + (idx + 1)}`;
-                if (contribChangeType) html += `<span class="change-badge ${contribChangeType}">${contribChangeType}</span>`;
                 html += '</div>';
-                html += this.renderInlineField('Delivered Qty', contrib.delivered_quantity, `${contribPath}.delivered_quantity`);
-                html += this.renderInlineField('Contrib %', contrib.contribution_percent, `${contribPath}.contribution_percent`);
-                html += this.renderInlineField('Unit Cost', contrib.unit_cost, `${contribPath}.unit_cost`);
-                html += this.renderInlineField('Total Cost', contrib.total_cost, `${contribPath}.total_cost`);
+                html += this.renderInlineField('Title', contrib.title, `${contribPath}.title`);
+                html += this.renderInlineField('Contribution', contrib.contribution_percent, `${contribPath}.contribution_percent`);
+                html += this.renderInlineField('Delivered Quantity', contrib.delivered_quantity, `${contribPath}.delivered_quantity`);
+                html += this.renderInlineField('Unit Cost', contrib.unit_cost, `${contribPath}.unit_cost`, ['mask-money']);
+                html += this.renderInlineField('Total Cost', contrib.total_cost, `${contribPath}.total_cost`, ['mask-money']);
                 html += '</div>';
             });
             html += '</div>';
@@ -805,10 +869,17 @@ const VersionCompareControl = {
     /**
      * Render inline field
      */
-    renderInlineField: function(label, value, path) {
+    renderInlineField: function(label, value, path, additionalClasses=[]) {
         const changeType = this.getChangeType(path);
         const diffClass = changeType ? ` diff-${changeType}` : '';
-        return `<span class="field-inline${diffClass}"><strong>${label}:</strong> ${this.formatValue(value)}</span>`;
+        if (additionalClasses.includes('mask-money')) {
+            additionalClasses = additionalClasses.filter(c => c !== 'mask-money');
+            return `<span class="field-inline${diffClass} ${additionalClasses}">
+                        <strong>${label}:</strong>
+                        <span class="mask-money" data-init-money="${this.formatValue(value)}"></span>
+                    </span>`;
+        }
+        return `<span class="field-inline${diffClass} ${additionalClasses}"><strong>${label}:</strong> ${this.formatValue(value)}</span>`;
     },
 
     /**

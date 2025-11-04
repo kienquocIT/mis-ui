@@ -1614,3 +1614,21 @@ table.dataTable tr.dtrg-group th {
         0 4px 14px rgba(0, 0, 0, 0.18);             /* đổ bóng ngoài */
     transition: transform .25s ease, box-shadow .25s ease;
 }
+
+#idxPageContentWrapper {
+    /*background-image: url("/static/assets/js/home_4.jpg");*/
+    /*background-repeat: no-repeat;*/
+    /*background-position: center;*/
+    /*background-size: cover;*/
+    padding: 0.2rem;
+}
+
+/*#idxPageContent {*/
+/*    border-radius: 6px;*/
+/*    border: 3px solid transparent;*/
+/*    box-shadow: var(--shadow-md);*/
+/*    padding: 0.8rem;*/
+/*    position: relative;*/
+/*    transition: transform 0.3s ease, box-shadow 0.3s ease;*/
+/*    background: rgba(255, 255, 255, 1)*/
+/*}*/

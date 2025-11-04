@@ -7,7 +7,7 @@ $(function () {
 
         // Load init
         if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() === 'post') {
-            FormElementControl.loadInitS2(GRLoadDataHandle.typeSelectEle, GRLoadDataHandle.dataTypeGr);
+            FormElementControl.loadInitS2(GRLoadDataHandle.typeSelectEle, GRLoadDataHandle.dataTypeGrPost);
             GRLoadDataHandle.loadCustomAreaByType();
         }
 

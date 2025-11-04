@@ -12334,3 +12334,7 @@ msgstr "Sao chép cấu hình từ sản phẩm"
 #
 msgid "Export to Excel"
 msgstr "Xuất bản thành Excel"
+
+#
+msgid "Delivery logs"
+msgstr "Lịch sử giao hàng"

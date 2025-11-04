@@ -9593,7 +9593,7 @@ class DiagramControl {
             let $modalBlock = $('.idxModalData');
             let urlDiagram = globeDiagramList;
             if ($btnLog.length > 0 && $modalBlock.length > 0) {
-                let htmlBtn = `<button class="btn nav-link" type="button" id="btnDiagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDiagram" aria-controls="offcanvasExample" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-network-wired"></i></span></button>`;
+                let htmlBtn = `<button class="btn nav-link" type="button" id="btnDiagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDiagram" aria-controls="offcanvasExample" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-network-wired text-primary"></i></span></button>`;
                 let htmlCanvas = `<div class="offcanvas offcanvas-end w-95" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
                                     <div class="modal-header">
                                         <h5><b>Diagram</b></h5>

@@ -3870,8 +3870,15 @@ class WFRTControl {
             3: "green-light-4",
             4: "red-light-4",
         }
+        let sttImg = {
+            0: "fa-solid fa-pen",
+            1: "fa-solid fa-spinner",
+            2: "blue-light-4",
+            3: "fa-solid fa-check",
+            4: "fa-solid fa-xmark",
+        }
         if (status || status === 0) {
-            return `<span class="badge text-dark-10 fs-8 bg-${sttBadge[status]}">${sttTxt[status]}</span>`;
+            return `<span class="badge text-dark-10 fs-8 bg-${sttBadge[status]}"><i class="${sttImg[status]} mr-1"></i>${sttTxt[status]}</span>`;
         }
         return ``;
     }
@@ -6782,7 +6789,7 @@ class DocumentControl {
                 }
                 let status_img = {
                     [draft]: "fa-solid fa-pen",
-                    [created]: "fa-solid fa-diagram-project",
+                    [created]: "fa-solid fa-spinner",
                     [added]: "blue-light-4",
                     [approved]: "fa-solid fa-check",
                     [cancel]: "fa-solid fa-xmark",

@@ -4115,13 +4115,10 @@ class LeaseOrderDataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: '10%',
+                    width: '8%',
                     render: (data, type, row) => {
                         let dataZone = "lease_products_data";
                         let readonly = "readonly";
-                        if (row?.['asset_type'] === 1) {
-                            readonly = "";
-                        }
                         return `<input type="text" class="form-control table-row-quantity valid-num" value="${row?.['product_quantity']}" data-zone="${dataZone}" ${readonly} required>`;
                     }
                 },
@@ -4206,7 +4203,7 @@ class LeaseOrderDataTableHandle {
                 },
                 {
                     targets: 9,
-                    width: '11%',
+                    width: '13%',
                     render: (data, type, row) => {
                         let dataZone = "lease_products_data";
                         return `<div class="row subtotal-area">
@@ -4235,7 +4232,6 @@ class LeaseOrderDataTableHandle {
                 let shippingEle = row.querySelector('.table-row-shipping');
                 let assetTypeEle = row.querySelector('.table-row-asset-type');
                 let offsetShowEle = row.querySelector('.table-row-offset-show');
-                let offsetEle = row.querySelector('.table-row-offset');
                 let offsetDataEle = row.querySelector('.table-row-offset-data');
                 let toolDataEle = row.querySelector('.table-row-tool-data');
                 let assetDataEle = row.querySelector('.table-row-asset-data');

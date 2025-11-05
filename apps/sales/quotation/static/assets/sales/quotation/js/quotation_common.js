@@ -2575,7 +2575,6 @@ class QuotationLoadDataHandle {
             FormElementControl.loadInitS2(QuotationLoadDataHandle.contactSelectEle, [data?.['contact_data']], {'account_name_id': QuotationLoadDataHandle.customerSelectEle.val()});
         }
         if (data?.['payment_term_data']) {
-            // FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_term_data']], {}, null, true);
             // load realtime payment data
             WindowControl.showLoading();
             $.fn.callAjax2({
@@ -2590,12 +2589,28 @@ class QuotationLoadDataHandle {
                     if (data) {
                         if (data.hasOwnProperty('payment_terms_list') && Array.isArray(data.payment_terms_list)) {
                             if (data?.['payment_terms_list'].length > 0) {
-                                FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                                if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+                                    if (QuotationLoadDataHandle.paymentSelectEle.val() === data?.['payment_terms_list'][0]?.['id']) {
+                                        FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                                        QuotationLoadDataHandle.loadReInitDataTablePayment();
+                                        QuotationLoadDataHandle.loadReInitDataTableInvoice();
+                                    }
+                                    if (QuotationLoadDataHandle.paymentSelectEle.val() !== data?.['payment_terms_list'][0]?.['id']) {
+                                        FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                                        QuotationLoadDataHandle.loadChangePaymentTerm();
+                                    }
+                                }
+                                if (!QuotationLoadDataHandle.paymentSelectEle.val()) {
+                                    FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                                    QuotationLoadDataHandle.loadReInitDataTablePayment();
+                                    QuotationLoadDataHandle.loadReInitDataTableInvoice();
+                                }
                             }
                             if (data?.['payment_terms_list'].length === 0) {
                                 FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [], {}, null, true);
+                                QuotationLoadDataHandle.loadReInitDataTablePayment();
+                                QuotationLoadDataHandle.loadReInitDataTableInvoice();
                             }
-                            QuotationLoadDataHandle.loadChangePaymentTerm();
                             WindowControl.hideLoading();
                         }
                     }

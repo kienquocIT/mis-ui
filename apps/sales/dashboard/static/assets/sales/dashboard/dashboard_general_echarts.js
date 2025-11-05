@@ -19,6 +19,7 @@ $(document).ready(function () {
     let period_selected_Setting = current_period
     let fiscal_year_Setting = current_period?.['fiscal_year']
     let space_month_Setting = current_period?.['space_month']
+    let CURRENT_GROUP = []
 
     moneyDisplayEle.on('change', function () {
         COMPANY_CURRENT_REVENUE = 0
@@ -300,16 +301,21 @@ $(document).ready(function () {
                 revenueprofit_DF = (results[0] ? results[0] : []).filter(item => {
                     return Check_in_period(new Date(item?.['date_approved']), period_selected_Setting)
                 })
-                if (revenueprofitGroupEle.val()) {
+                let selected_group_list = revenueprofitGroupEle.val() || []
+                if (selected_group_list.length > 0) {
                     if (revenueprofitGroupTypeEle.val() === '0') {
                         revenueprofit_DF = revenueprofit_DF.filter(item => {
-                            return item?.['group_inherit_id'] === revenueprofitGroupEle.val()
+                            return selected_group_list.includes(item?.['group_inherit_id'])
                         })
                     }
                     else {
-                        let selected_group = SelectDDControl.get_data_from_idx(revenueprofitGroupEle, revenueprofitGroupEle.val())
-                        let all_children_group_list = selected_group?.['all_children_group_list'] || []
-                        all_children_group_list.push(revenueprofitGroupEle.val())
+                        let all_children_group_list = []
+                        for (let i=0; i < selected_group_list.length; i++) {
+                            let selected_group = CURRENT_GROUP.find(item => item?.['id'] === selected_group_list[i])
+                            all_children_group_list.push(...selected_group?.['all_children_group_list'] || []);
+                        }
+                        all_children_group_list.push(...selected_group_list)
+                        all_children_group_list = [...new Set(all_children_group_list)];
                         revenueprofit_DF = revenueprofit_DF.filter(item => {
                             return all_children_group_list.includes(item?.['group_inherit_id'])
                         })
@@ -327,7 +333,7 @@ $(document).ready(function () {
 
                 if (parseInt(profit_expected_type) === parseInt(profitTypeEle.val())) {
                     for (let i = 0; i < results[1].length; i++) {
-                        if (!revenueprofitGroupEle.val() || results[1][i]?.['employee_mapped']?.['group']?.['id'] === revenueprofitGroupEle.val()) {
+                        if (selected_group_list.length === 0 || selected_group_list.includes(results[1][i]?.['employee_mapped']?.['group']?.['id'])) {
                             const empMonthTarget = results[1][i]?.['emp_month_target']
                             if (Array.isArray(empMonthTarget)) {
                                 for (let j = 0; j < empMonthTarget.length; j++) {
@@ -507,6 +513,7 @@ $(document).ready(function () {
                 method: 'GET',
             },
             callbackDataResp: function (resp, keyResp) {
+                CURRENT_GROUP.push(...resp.data[keyResp])
                 return resp.data[keyResp]
             },
             data: (data ? data : null),

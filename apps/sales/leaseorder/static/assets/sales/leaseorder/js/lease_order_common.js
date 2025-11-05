@@ -3526,7 +3526,6 @@ class LeaseOrderLoadDataHandle {
             LeaseOrderLoadDataHandle.loadBoxQuotationContact(data?.['contact_data']);
         }
         if (data?.['payment_term_data']) {
-            // FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [data?.['payment_term_data']], {}, null, true);
             // load realtime payment data
             WindowControl.showLoading();
             $.fn.callAjax2({
@@ -3541,10 +3540,27 @@ class LeaseOrderLoadDataHandle {
                     if (data) {
                         if (data.hasOwnProperty('payment_terms_list') && Array.isArray(data.payment_terms_list)) {
                             if (data?.['payment_terms_list'].length > 0) {
-                                FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                                if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
+                                    if (LeaseOrderLoadDataHandle.paymentSelectEle.val() === data?.['payment_terms_list'][0]?.['id']) {
+                                        FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                                        LeaseOrderLoadDataHandle.loadReInitDataTablePayment();
+                                        LeaseOrderLoadDataHandle.loadReInitDataTableInvoice();
+                                    }
+                                    if (LeaseOrderLoadDataHandle.paymentSelectEle.val() !== data?.['payment_terms_list'][0]?.['id']) {
+                                        FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                                        LeaseOrderLoadDataHandle.loadChangePaymentTerm();
+                                    }
+                                }
+                                if (!LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
+                                    FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                                    LeaseOrderLoadDataHandle.loadReInitDataTablePayment();
+                                    LeaseOrderLoadDataHandle.loadReInitDataTableInvoice();
+                                }
                             }
                             if (data?.['payment_terms_list'].length === 0) {
                                 FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [], {}, null, true);
+                                LeaseOrderLoadDataHandle.loadReInitDataTablePayment();
+                                LeaseOrderLoadDataHandle.loadReInitDataTableInvoice();
                             }
                             WindowControl.hideLoading();
                         }
@@ -4115,13 +4131,10 @@ class LeaseOrderDataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: '10%',
+                    width: '8%',
                     render: (data, type, row) => {
                         let dataZone = "lease_products_data";
                         let readonly = "readonly";
-                        if (row?.['asset_type'] === 1) {
-                            readonly = "";
-                        }
                         return `<input type="text" class="form-control table-row-quantity valid-num" value="${row?.['product_quantity']}" data-zone="${dataZone}" ${readonly} required>`;
                     }
                 },
@@ -4206,7 +4219,7 @@ class LeaseOrderDataTableHandle {
                 },
                 {
                     targets: 9,
-                    width: '11%',
+                    width: '13%',
                     render: (data, type, row) => {
                         let dataZone = "lease_products_data";
                         return `<div class="row subtotal-area">
@@ -4235,7 +4248,6 @@ class LeaseOrderDataTableHandle {
                 let shippingEle = row.querySelector('.table-row-shipping');
                 let assetTypeEle = row.querySelector('.table-row-asset-type');
                 let offsetShowEle = row.querySelector('.table-row-offset-show');
-                let offsetEle = row.querySelector('.table-row-offset');
                 let offsetDataEle = row.querySelector('.table-row-offset-data');
                 let toolDataEle = row.querySelector('.table-row-tool-data');
                 let assetDataEle = row.querySelector('.table-row-asset-data');

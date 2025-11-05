@@ -9200,21 +9200,6 @@ class LeaseOrderSubmitHandle {
         // payment stage
         _form.dataForm['lease_payment_stage'] = LeaseOrderSubmitHandle.setupDataPaymentStage();
         _form.dataForm['lease_invoice'] = LeaseOrderSubmitHandle.setupDataInvoice();
-        // validate payment stage submit
-        if (type === 0) {
-            if (_form.dataForm?.['lease_payment_stage'] && _form.dataForm?.['total_product']) {
-                if (_form.dataForm?.['lease_payment_stage'].length > 0) {
-                    let totalPayment = 0;
-                    for (let payment of _form.dataForm['lease_payment_stage']) {
-                        totalPayment += payment?.['value_total'] ? payment?.['value_total'] : 0;
-                    }
-                    if (totalPayment !== _form.dataForm?.['total_product']) {
-                        $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
-                        return false;
-                    }
-                }
-            }
-        }
         // attachment
         if (_form.dataForm.hasOwnProperty('attachment')) {
           _form.dataForm['attachment'] = $x.cls.file.get_val(_form.dataForm?.['attachment'], []);

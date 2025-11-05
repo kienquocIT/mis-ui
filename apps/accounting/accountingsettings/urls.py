@@ -3,7 +3,8 @@ from apps.accounting.accountingsettings.views import (
     ChartOfAccountsList, ChartOfAccountsListAPI,
     DefaultAccountDeterminationList, DefaultAccountDeterminationListAPI, WarehouseAccountDeterminationListAPI,
     ProductTypeAccountDeterminationListAPI, ProductAccountDeterminationListAPI, WarehouseAccountDeterminationDetailAPI,
-    ProductTypeAccountDeterminationDetailAPI, ProductAccountDeterminationDetailAPI, DefaultAccountDeterminationDetailAPI
+    ProductTypeAccountDeterminationDetailAPI, ProductAccountDeterminationDetailAPI,
+    DefaultAccountDeterminationDetailAPI, DimensionDefinitionList
 )
 
 urlpatterns = [
@@ -18,4 +19,9 @@ urlpatterns = [
     path('product-type-account-determination/detail/api/<str:pk>', ProductTypeAccountDeterminationDetailAPI.as_view(), name='ProductTypeAccountDeterminationDetailAPI'),
     path('product-account-determination/list/api', ProductAccountDeterminationListAPI.as_view(), name='ProductAccountDeterminationListAPI'),
     path('product-account-determination/detail/api/<str:pk>', ProductAccountDeterminationDetailAPI.as_view(), name='ProductAccountDeterminationDetailAPI'),
+]
+
+# dimension
+urlpatterns += [
+    path('dimension-definition/list', DimensionDefinitionList.as_view(), name='DimensionDefinitionList'),
 ]

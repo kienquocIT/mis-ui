@@ -972,6 +972,11 @@ class MenusFinancials:
                 name='Default account determination', code='menu_default_account_determination_list', view_name='DefaultAccountDeterminationList',
                 icon='<i class="fas bi bi-journal-text"></i>',
             ),
+            MenuCommon(
+                name='Dimension Definition', code='menu_dimension_definition_list',
+                view_name='DimensionDefinitionList',
+                icon='<i class="fa fa-pen-ruler"></i>',
+            ),
         ],
     )
     ASSET = MenuCommon(

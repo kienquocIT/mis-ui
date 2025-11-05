@@ -151,3 +151,16 @@ class ProductAccountDeterminationDetailAPI(APIView):
     def put(self, request, *args, pk, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_ACCOUNT_DETERMINATION_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return(key_success='detail')
+
+
+class DimensionDefinitionList(View):
+    @mask_view(
+        auth_require=True,
+        template='accountingsettings/dimension_definition/dimension_definition_list.html',
+        breadcrumb='DIMENSION_DEFINITION_LIST_PAGE',
+        menu_active='menu_dimension_definition_list',
+        icon_cls='fa fa-pen-ruler',
+        icon_bg='bg-primary',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK

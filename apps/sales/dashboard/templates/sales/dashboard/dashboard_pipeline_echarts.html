@@ -61,36 +61,29 @@
         <div class="col-12 col-md-8">
             <div class="bflow-glass-card">
                 <div class="row">
-                    <div class="col-12">
-                        <div class="bflow-glass-card-60">
-                            <div class="row">
-                                <div class="col-12 col-md-3">
-                                    <div class="form-group">
-                                        <label for="money-display"
-                                               class="form-label">{% trans 'Money display' %}</label>
-                                        <select class="form-select" id="money-display">
-                                            <option value="0" selected>{% trans 'Million' %}</option>
-                                            <option value="1">{% trans 'Billion' %}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-3">
-                                    <div class="form-group">
-                                        <label for="money-round" class="form-label">{% trans 'Money round' %}</label>
-                                        <input id="money-round" type="number" class="form-control" value="2" min="0">
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <div class="form-group">
-                                        <label for="period-filter" class="form-label">{% trans 'Fiscal year' %}</label>
-                                        <select class="form-select"
-                                                id="period-filter"
-                                                data-url="{% url 'PeriodsConfigListAPI' %}"
-                                                data-method="GET"
-                                        ></select>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="col-12 col-lg-3">
+                        <div class="form-group">
+                            <label for="money-display" class="form-label text-white">{% trans 'Money display' %}</label>
+                            <select class="form-select" id="money-display">
+                                <option value="0" selected>{% trans 'Million' %}</option>
+                                <option value="1">{% trans 'Billion' %}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <div class="form-group">
+                            <label for="money-round" class="form-label text-white">{% trans 'Money round' %}</label>
+                            <input id="money-round" type="number" class="form-control" value="2" min="0">
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="form-group">
+                            <label for="period-filter" class="form-label text-white">{% trans 'Fiscal year' %}</label>
+                            <select class="form-select"
+                                    id="period-filter"
+                                    data-url="{% url 'PeriodsConfigListAPI' %}"
+                                    data-method="GET"
+                            ></select>
                         </div>
                     </div>
                 </div>

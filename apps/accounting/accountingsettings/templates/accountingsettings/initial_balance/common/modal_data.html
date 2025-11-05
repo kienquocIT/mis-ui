@@ -1,3 +1,5 @@
+{% load i18n %}
+
 <!-- Bank Account Modal -->
 <div class="modal fade" id="bank_account_modal" tabindex="-1" role="dialog" aria-labelledby="modal-bank-account">
     <div class="modal-dialog modal-lg" role="document">
@@ -8,14 +10,20 @@
                     <span>&times;</span>
                 </button>
             </div>
-            <div class="modal-body" style="max-height: 70vh; overflow: auto">
+            <div class="modal-body">
                 <div class="nicescroll-bar">
-                    <table class="table nowrap w-100" id="bank_account_table" data-url="{% url 'CurrencyListAPI' %}">
+                    <div class="mb-3">
+                        <strong>{% trans 'Money Type' %}:</strong>
+                        <span id="selected_currency"></span>
+                    </div>
+                    <table class="table nowrap w-100" id="bank_account_table" data-url="{% url 'BankAccountMasterDataListAPI' %}">
                         <thead>
                             <tr class="bg-light">
                                 <th></th>
+                                <th></th>
                                 <th>{% trans 'Account Number' %}</th>
                                 <th>{% trans 'Bank Name' %}</th>
+                                <th>{% trans 'Abbreviation' %}</th>
                             </tr>
                         </thead>
                         <tbody></tbody>

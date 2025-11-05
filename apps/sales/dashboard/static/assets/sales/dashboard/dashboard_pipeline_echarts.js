@@ -175,10 +175,6 @@ $(document).ready(function () {
                 keyId: 'id',
                 keyText: 'title',
             }).on('change', function () {
-                $('#total-pipeline-spinner').prop('hidden', false);
-                $('#top-sale-spinner').prop('hidden', false);
-                $('#forecast-spinner').prop('hidden', false);
-                $('#activity-spinner').prop('hidden', false);
                 if (typeof SelectDDControl !== 'undefined') {
                     period_selected_Setting = SelectDDControl.get_data_from_idx(periodFiscalYearFilterEle, periodFiscalYearFilterEle.val());
                     fiscal_year_Setting = period_selected_Setting ? period_selected_Setting['fiscal_year'] : undefined;
@@ -301,7 +297,6 @@ $(document).ready(function () {
                 stage_list_for_colors
             ));
         }
-        $('#total-pipeline-spinner').prop('hidden', true);
     }
 
     function DrawTopSaleChart(is_init = false) {
@@ -322,7 +317,6 @@ $(document).ready(function () {
                 'y'
             ));
         }
-        $('#top-sale-spinner').prop('hidden', true);
     }
 
     function DrawForecastChart(is_init = false) {
@@ -343,7 +337,6 @@ $(document).ready(function () {
                 'x'
             ));
         }
-        $('#forecast-spinner').prop('hidden', true);
     }
 
     function DrawActivityChart(is_init = false) {
@@ -364,14 +357,10 @@ $(document).ready(function () {
                 'y'
             ));
         }
-        $('#activity-spinner').prop('hidden', true);
     }
 
     function DrawAllChart(is_init = false) {
-        $('#total-pipeline-spinner').prop('hidden', false);
-        $('#top-sale-spinner').prop('hidden', false);
-        $('#forecast-spinner').prop('hidden', false);
-        $('#activity-spinner').prop('hidden', false);
+        WindowControl.showLoading()
 
         // Check if we have callAjax2 function
         if (typeof $.fn.callAjax2 === 'function') {
@@ -400,6 +389,8 @@ $(document).ready(function () {
                         DrawTopSaleChart(is_init);
                         DrawForecastChart(is_init);
                         DrawActivityChart(is_init);
+
+                        WindowControl.hideLoading()
                     });
                 });
         } else {
@@ -410,6 +401,8 @@ $(document).ready(function () {
                 DrawTopSaleChart(is_init);
                 DrawForecastChart(is_init);
                 DrawActivityChart(is_init);
+
+                WindowControl.hideLoading()
             });
         }
     }

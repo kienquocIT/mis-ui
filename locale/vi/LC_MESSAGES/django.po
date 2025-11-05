@@ -10852,42 +10852,6 @@ msgid "Zoom account config here"
 msgstr "Cấu hình tài khoản Zoom tại đây"
 
 #
-msgid "Journal entry"
-msgstr "Bút toán"
-
-#
-msgid "Debit (FC)"
-msgstr "Bên nợ (NT)"
-
-#
-msgid "Credit (FC)"
-msgstr "Bên có (NT)"
-
-#
-msgid "Debit"
-msgstr "Bên nợ"
-
-#
-msgid "Credit"
-msgstr "Bên có"
-
-#
-msgid "Taxable value"
-msgstr "Giá trị chịu thuế"
-
-#
-msgid "Business partner"
-msgstr "Đối tác kinh doanh"
-
-#
-msgid "Transaction code"
-msgstr "Mã GD"
-
-#
-msgid "Transaction name"
-msgstr "Tên giao dịch"
-
-#
 msgid "Create manually"
 msgstr "Tạo thủ công"
 
@@ -12342,3 +12306,11 @@ msgstr "Lịch sử giao hàng"
 #
 msgid "In workflow"
 msgstr "Trong quy trình"
+
+#
+msgid "Single group only"
+msgstr "Chỉ từng phòng ban riêng lẻ"
+
+#
+msgid "Include child groups"
+msgstr "Bao gồm phòng ban con"

@@ -1,5 +1,6 @@
 class loadServiceOrderInfo {
     static transEle = $('#trans-factory');
+    static urlsEle = $('#url-factory');
     static selectedWorkOrders = [];
 
     static $modalDeliveryInfoEle = $('#deliveryInfoModalCenter');
@@ -15,10 +16,10 @@ class loadServiceOrderInfo {
                 scrollY: '70vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
-                fixedColumns: {
-                    leftColumns: 2,
-                    rightColumns: window.innerWidth <= 768 ? 0 : 1
-                },
+                // fixedColumns: {
+                //     leftColumns: 2,
+                //     rightColumns: window.innerWidth <= 768 ? 0 : 1
+                // },
                 ajax: {
                     url: $tb.attr('data-url'),
                     type: 'GET',
@@ -27,13 +28,14 @@ class loadServiceOrderInfo {
                 },
                 columns: [
                     {
-                        className: "w-5",
+                        width: "1%",
                         render: () => {
                             return ""
                         }
                     },
                     {
-                        className: "ellipsis-cell-lg w-5",
+                        className: "ellipsis-cell-lg",
+                        width: "10%",
                         render: (data, type, row) => {
                             const link = $tb.attr('data-url-detail').replace('0', row?.['id']);
                             let target = `.cl-${row?.['id'].replace(/-/g, "")}`;
@@ -56,31 +58,37 @@ class loadServiceOrderInfo {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-25', render: (data, type, row) => {
+                        className: 'ellipsis-cell-lg',
+                        width: "18%",
+                        render: (data, type, row) => {
                             const link = $tb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                         }
                     },
                     {
-                        className: "ellipsis-cell-lg w-25",
+                        className: "ellipsis-cell-lg",
+                        width: "18%",
                         render: (data, type, row) => {
                             return row?.['customer_data']?.['name'] || '';
                         }
                     },
                     {
-                        className: 'ellipsis-cell-sm w-10',
+                        className: 'ellipsis-cell-sm',
+                        width: "15%",
                         render: (data, type, row) => {
                             return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
                         }
                     },
                     {
                         className: 'ellipsis-cell-sm w-10',
+                        width: "10%",
                         render: (data, type, row) => {
                             return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                     {
-                        className: 'text-center w-10',
+                        className: 'text-center',
+                        width: "10%",
                         render: (data, type, row) => {
                             if (!row?.['document_root_id']) {
                                 return ``;
@@ -90,6 +98,7 @@ class loadServiceOrderInfo {
                     },
                     {
                         className: 'text-center w-5',
+                        width: "8%",
                         render: (data, type, row) => {
                             return `<a href="${$tb.attr('data-url-dashboard')}?service_order_id=${row?.['id']}" 
                                          class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm">
@@ -98,7 +107,8 @@ class loadServiceOrderInfo {
                         }
                     },
                     {
-                        className: 'text-center w-5',
+                        className: 'text-center',
+                        width: "8%",
                         render: (data, type, row) => {
                             if (row?.['is_latest_baseline'] === true) {
                                 return `<a href="javascript:void(0);"  
@@ -191,7 +201,7 @@ class loadServiceOrderInfo {
                     }
                 },
             ],
-            rowCallback: function(row, data) {
+            rowCallback: function (row, data) {
                 const $checkbox = $(row).find('.row-checkbox');
 
                 $checkbox.off("change").on("change", function () {
@@ -202,7 +212,43 @@ class loadServiceOrderInfo {
                     } else {
                         loadServiceOrderInfo.selectedWorkOrders = loadServiceOrderInfo.selectedWorkOrders.filter(wo => wo.id !== data.id);
                     }
-                    loadServiceOrderInfo.loadTotalDeliveryProduct();
+                    WindowControl.showLoading();
+                    $.fn.callAjax2({
+                            'url': loadServiceOrderInfo.urlsEle.attr('data-delivery-log-url'),
+                            'method': 'GET',
+                            'data': {'service_order__document_root_id': data?.['service_order']?.['document_root_id']},
+                            'isDropdown': true,
+                        }
+                    ).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                if (data.hasOwnProperty('delivery_work_log') && Array.isArray(data.delivery_work_log)) {
+                                    let dataLogs = data.delivery_work_log;
+                                    for (let workData of loadServiceOrderInfo.selectedWorkOrders) {
+                                        if (!workData.hasOwnProperty('up_to_date')) {
+                                            for (let workProduct of workData?.['product_list'] ? workData?.['product_list'] : []) {
+                                                for (let dataLog of dataLogs) {
+                                                    for (let dataProd of dataLog?.['products']) {
+                                                        if (dataProd?.['product_data']?.['code'] === workProduct?.['code'] && dataProd?.['work_data']?.['order'] === workData?.['order']) {
+                                                            workProduct['delivered_quantity'] = workProduct['delivered_quantity'] - dataProd?.['delivery_quantity'];
+                                                            if (workProduct?.['delivered_quantity'] < 0) {
+                                                                workProduct['delivered_quantity'] = 0;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                            }
+                                        }
+                                        workData['up_to_date'] = true;
+                                    }
+                                    loadServiceOrderInfo.loadTotalDeliveryProduct();
+                                    WindowControl.hideLoading();
+                                }
+                            }
+                        }
+                    )
                 });
             }
         });
@@ -305,41 +351,8 @@ class loadServiceOrderInfo {
 $('document').ready(function () {
     loadServiceOrderInfo.loadServiceOrderList();
 
-    // event when click delivery service button
-    // $(document).on("click", '.open-delivery-modal', function () {
-    //     loadServiceOrderInfo.selectedWorkOrders = [];
-    //     let service_order_row_id = $(this).attr('data-id');
-    //     $('#delivery_work_order_list').find('.row-checkbox').prop('checked', false);
-    //     $('#delivery_work_order_modal').find('#btn_apply_delivery').attr('data-id', service_order_row_id);
-    //     loadServiceOrderInfo.loadDeliveryWorkOrderList(service_order_row_id);
-    //     loadServiceOrderInfo.loadTotalDeliveryProduct();
-    // });
-
     // event when save delivery service button
     loadServiceOrderInfo.$btnDelivery.on("click", function (){
-        // let data_product = loadServiceOrderInfo.combineDeliveryProductData();
-        // data_product['service_order_id'] = $(this).attr('data-id');
-        //
-        // WindowControl.showLoading();
-        // const url = $('#url-factory').attr('data-url-create-delivery-service');
-        // $.fn.callAjax2({
-        //     url: url,
-        //     method: 'POST',
-        //     data: data_product,
-        // }).then(
-        //     (resp) => {
-        //         let data = $.fn.switcherResp(resp);
-        //         if (data?.['status'] === 200) {
-        //             WindowControl.hideLoading();
-        //             $.fn.notifyB({description: data.message}, 'success');
-        //         }
-        //     },
-        //     (errs) => {
-        //         WindowControl.hideLoading();
-        //         $.fn.notifyB({description: errs.data.errors}, 'failure');
-        //     }
-        // )
-        let urlsEle = $('#url-factory');
         let dataDelivery = loadServiceOrderInfo.combineDeliveryProductData();
         let count = 0;
         for (let dataDeli of dataDelivery) {
@@ -350,7 +363,7 @@ $('document').ready(function () {
             return false;
         }
         WindowControl.showLoading();
-        const url = urlsEle.attr('data-create-delivery').replace('1', $(this).attr('data-id'));
+        const url = loadServiceOrderInfo.urlsEle.attr('data-create-delivery').replace('1', $(this).attr('data-id'));
         $.fn.callAjax2({
             url: url,
             method: 'POST',
@@ -361,9 +374,9 @@ $('document').ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data?.['status'] === 200) {
                     const config = data?.config
-                    let url_redirect = urlsEle.attr('data-delivery')
+                    let url_redirect = loadServiceOrderInfo.urlsEle.attr('data-delivery')
                     if (config?.is_picking && !data?.['is_not_picking'])
-                        url_redirect = urlsEle.attr('data-picking')
+                        url_redirect = loadServiceOrderInfo.urlsEle.attr('data-picking')
                     setTimeout(() => {
                         window.location.href = url_redirect
                     }, 1000);

@@ -572,3 +572,7 @@ msgstr "Kho ảo"
 #
 msgid "Use for Equipment Loan"
 msgstr "Dùng cho Mượn hàng"
+
+#
+msgid "Running workflow"
+msgstr "Trong quy trình"

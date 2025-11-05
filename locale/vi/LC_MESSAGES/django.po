@@ -9573,12 +9573,12 @@ msgid "Select required documents"
 msgstr "Chọn tài liệu cho thầu"
 
 #
-msgid "Out form"
-msgstr "Chọn một cộng tác viên theo danh sách"
+msgid "Select collaborator"
+msgstr "Chọn người duyệt"
 
 #
-msgid "In workflow"
-msgstr "Nhiều cộng tác viên cùng thao tác"
+msgid "Auto assign collaborator"
+msgstr "Tự động chuyển người duyệt"
 
 #
 msgid "Configuration"
@@ -12298,3 +12298,11 @@ msgstr "Sao chép cấu hình từ sản phẩm"
 #
 msgid "Export to Excel"
 msgstr "Xuất bản thành Excel"
+
+#
+msgid "Delivery logs"
+msgstr "Lịch sử giao hàng"
+
+#
+msgid "In workflow"
+msgstr "Trong quy trình"

@@ -126,6 +126,14 @@ $(function () {
 
                     kanban.init(taskList)
                     list.init(list, taskList)
+                    // check task extend for other apps
+                    if (!$empElm[0].closest('#formOpportunityTask')) {
+                        let $tblElm = $('#table_task_list')
+                        if ($tblElm.hasClass('dataTable')) {
+                            $tblElm.DataTable().clear().draw();
+                        }
+                    }
+
                     // Function to wait form create on submit
                     $createBtn.off().on('click', () => initCommon.awaitFormSubmit(kanban, list));
                     let temp = $.extend(true, {}, data)
@@ -1622,8 +1630,8 @@ $(function () {
                         (req) => {
                             let data = $.fn.switcherResp(req);
                             if (data?.['status'] === 200) {
-                                const taskList = data?.['task_list']
-                                listTask.init(listTask, taskList)
+                                const taskList = data?.['task_list'];
+                                listTask.init(listTask, taskList);
                             }
                         },
                         (err) => {

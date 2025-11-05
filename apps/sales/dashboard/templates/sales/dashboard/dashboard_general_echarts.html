@@ -151,6 +151,12 @@
                                     </div>
                                 </div>
                                 <div class="me-2">
+                                    <select class="form-select" id="revenue-profit-group-type">
+                                        <option value="0" selected>{% trans 'Single group only' %}</option>
+                                        <option value="1">{% trans 'Include child groups' %}</option>
+                                    </select>
+                                </div>
+                                <div class="me-2">
                                     <select class="form-select" id="revenue-profit-view-type">
                                         <option value="0" selected>{% trans 'Period revenue / profit' %}</option>
                                         <option value="1">{% trans 'Accumulated revenue / profit' %}</option>

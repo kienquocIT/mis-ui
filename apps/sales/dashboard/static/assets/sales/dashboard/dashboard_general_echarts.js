@@ -261,6 +261,8 @@ $(document).ready(function () {
     }
 
     function DrawRevenueProfitChart(is_init=false) {
+        WindowControl.showLoading()
+
         let report_revenue_ajax = $.fn.callAjax2({
             url: scriptUrlEle.attr('data-url-report-revenue-profit'),
             data: {},
@@ -299,9 +301,19 @@ $(document).ready(function () {
                     return Check_in_period(new Date(item?.['date_approved']), period_selected_Setting)
                 })
                 if (revenueprofitGroupEle.val()) {
-                    revenueprofit_DF = revenueprofit_DF.filter(item => {
-                        return item?.['group_inherit_id'] === revenueprofitGroupEle.val()
-                    })
+                    if (revenueprofitGroupTypeEle.val() === '0') {
+                        revenueprofit_DF = revenueprofit_DF.filter(item => {
+                            return item?.['group_inherit_id'] === revenueprofitGroupEle.val()
+                        })
+                    }
+                    else {
+                        let selected_group = SelectDDControl.get_data_from_idx(revenueprofitGroupEle, revenueprofitGroupEle.val())
+                        let all_children_group_list = selected_group?.['all_children_group_list'] || []
+                        all_children_group_list.push(revenueprofitGroupEle.val())
+                        revenueprofit_DF = revenueprofit_DF.filter(item => {
+                            return all_children_group_list.includes(item?.['group_inherit_id'])
+                        })
+                    }
                 }
 
                 revenue_expected_DF = Array(12).fill(0)
@@ -360,6 +372,8 @@ $(document).ready(function () {
                     trans_script.attr('data-trans-month'),
                     trans_script.attr('data-trans-profit'),
                 ))
+
+                WindowControl.hideLoading()
             })
     }
 
@@ -470,6 +484,11 @@ $(document).ready(function () {
     }
 
     $('#reload-revenue-profit-data-btn').on('click', function () {
+        DrawRevenueProfitChart(false)
+    })
+
+    const revenueprofitGroupTypeEle = $('#revenue-profit-group-type')
+    revenueprofitGroupTypeEle.on('change', function () {
         DrawRevenueProfitChart(false)
     })
 
@@ -627,6 +646,8 @@ $(document).ready(function () {
     }
 
     function DrawTopSaleCustomerChart(is_init=false, chart_name=['sale', 'customer']) {
+        WindowControl.showLoading()
+
         let report_top_sale_customer_ajax = $.fn.callAjax2({
             url: scriptUrlEle.attr('data-url-top-sale-customer-list'),
             data: {},
@@ -688,6 +709,8 @@ $(document).ready(function () {
                         ''
                     ))
                 }
+
+                WindowControl.hideLoading()
             })
     }
 
@@ -982,6 +1005,8 @@ $(document).ready(function () {
     }
 
     function DrawTopCategoryProductChart(is_init=false, chart_name=['category', 'product']) {
+        WindowControl.showLoading()
+
         let report_top_category_product_ajax = $.fn.callAjax2({
             url: scriptUrlEle.attr('data-url-top-category-product-list'),
             data: {},
@@ -1043,6 +1068,8 @@ $(document).ready(function () {
                         ''
                     ))
                 }
+
+                WindowControl.hideLoading()
             })
     }
 

@@ -12306,3 +12306,11 @@ msgstr "Lịch sử giao hàng"
 #
 msgid "In workflow"
 msgstr "Trong quy trình"
+
+#
+msgid "Single group only"
+msgstr "Chỉ từng phòng ban riêng lẻ"
+
+#
+msgid "Include child groups"
+msgstr "Bao gồm phòng ban con"

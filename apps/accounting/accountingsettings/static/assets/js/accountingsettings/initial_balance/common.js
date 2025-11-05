@@ -49,6 +49,7 @@ class InitialBalanceElements {
         this.$inputCreditDisplay = $('#inputCreditDisplay');
         this.$inputDetailBtn = $('#inputDetailBtn');
         this.$btnAddCash = $('#btnAddCash');
+        this.$btnAddMoney = $('#add_tab_money');
 
         // TAB 1: Table
         this.$tableMoney = $('#tbl_money');
@@ -251,24 +252,6 @@ const pageElements = new InitialBalanceElements();
 
 
 class InitialBalanceLoadDataHandle {
-
-}
-
-/**
- * Khai báo các hàm chính
- */
-class InitialBalancePageFunction {
-    /**
-     * Initialize opening date picker with auto-calculation
-     */
-    static initOpeningDatePicker() {
-        UsualLoadPageFunction.LoadDate({
-                element: pageElements.$openingDateEle,
-                output_format: 'DD/MM/YYYY',
-                empty: true
-            });
-    }
-
     /**
      * Update fiscal year and accounting period based on opening date
      */
@@ -296,16 +279,32 @@ class InitialBalancePageFunction {
     }
 }
 
+/**
+ * Khai báo các hàm chính
+ */
+class InitialBalancePageFunction {
+    /**
+     * Initialize opening date picker with auto-calculation
+     */
+    static initOpeningDatePicker() {
+        UsualLoadPageFunction.LoadDate({
+            element: pageElements.$openingDateEle,
+            output_format: 'DD/MM/YYYY',
+            empty: true
+        });
+    }
+}
+
 
 class InitialBalanceEventHandler {
     static InitPageEvent() {
         // Listen to date range picker apply event
         pageElements.$openingDateEle.on('apply.daterangepicker', function (ev, picker) {
-            InitialBalancePageFunction.updateFiscalYearAndPeriod();
+            InitialBalanceLoadDataHandle.updateFiscalYearAndPeriod();
         });
         // Backup: Listen to change event
         pageElements.$openingDateEle.on('change', function () {
-            InitialBalancePageFunction.updateFiscalYearAndPeriod();
+            InitialBalanceLoadDataHandle.updateFiscalYearAndPeriod();
         });
     }
 }

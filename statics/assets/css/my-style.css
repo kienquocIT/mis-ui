@@ -1292,18 +1292,11 @@ table.dataTable tr.dtrg-group th {
     max-width: 300px !important;           /* Giới hạn độ rộng nếu cần */
 }
 
-.ellipsis-cell-md {
-    white-space: nowrap !important;        /* Không cho xuống dòng */
-    overflow: hidden !important;           /* Ẩn phần tràn ra */
-    text-overflow: ellipsis !important;    /* Thêm dấu "..." */
-    max-width: 200px !important;           /* Giới hạn độ rộng nếu cần */
-}
-
 .ellipsis-cell-sm {
     white-space: nowrap !important;        /* Không cho xuống dòng */
     overflow: hidden !important;           /* Ẩn phần tràn ra */
     text-overflow: ellipsis !important;    /* Thêm dấu "..." */
-    max-width: 150px !important;           /* Giới hạn độ rộng nếu cần */
+    max-width: 200px !important;           /* Giới hạn độ rộng nếu cần */
 }
 
 .ellipsis-cell-xs {

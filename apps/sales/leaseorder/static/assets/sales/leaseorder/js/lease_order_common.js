@@ -3526,7 +3526,6 @@ class LeaseOrderLoadDataHandle {
             LeaseOrderLoadDataHandle.loadBoxQuotationContact(data?.['contact_data']);
         }
         if (data?.['payment_term_data']) {
-            // FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [data?.['payment_term_data']], {}, null, true);
             // load realtime payment data
             WindowControl.showLoading();
             $.fn.callAjax2({
@@ -3541,10 +3540,27 @@ class LeaseOrderLoadDataHandle {
                     if (data) {
                         if (data.hasOwnProperty('payment_terms_list') && Array.isArray(data.payment_terms_list)) {
                             if (data?.['payment_terms_list'].length > 0) {
-                                FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                                if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
+                                    if (LeaseOrderLoadDataHandle.paymentSelectEle.val() === data?.['payment_terms_list'][0]?.['id']) {
+                                        FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                                        LeaseOrderLoadDataHandle.loadReInitDataTablePayment();
+                                        LeaseOrderLoadDataHandle.loadReInitDataTableInvoice();
+                                    }
+                                    if (LeaseOrderLoadDataHandle.paymentSelectEle.val() !== data?.['payment_terms_list'][0]?.['id']) {
+                                        FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                                        LeaseOrderLoadDataHandle.loadChangePaymentTerm();
+                                    }
+                                }
+                                if (!LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
+                                    FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                                    LeaseOrderLoadDataHandle.loadReInitDataTablePayment();
+                                    LeaseOrderLoadDataHandle.loadReInitDataTableInvoice();
+                                }
                             }
                             if (data?.['payment_terms_list'].length === 0) {
                                 FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [], {}, null, true);
+                                LeaseOrderLoadDataHandle.loadReInitDataTablePayment();
+                                LeaseOrderLoadDataHandle.loadReInitDataTableInvoice();
                             }
                             WindowControl.hideLoading();
                         }

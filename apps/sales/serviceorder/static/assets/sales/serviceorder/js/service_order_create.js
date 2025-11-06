@@ -31,8 +31,9 @@ $(document).ready(async function() {
     }
 
     WFRTControl.setWFInitialData('serviceorder');
-
+    WindowControl.showLoading()
     await ServiceOrderPageHandler.initializeCommonData();
+    WindowControl.hideLoading()
     ServiceOrderPageHandler.initializeComponents(true)
     ServiceOrderPageHandler.registerCommonEventHandlers()
     ServiceOrderPageHandler.setupFormSubmit('#form-create-service-order')

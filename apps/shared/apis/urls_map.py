@@ -1034,6 +1034,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SERVICE_ORDER_DETAIL = StringUrl('serviceorder/detail/{pk}')
     SERVICE_ORDER_DETAIL_DASHBOARD = StringUrl('serviceorder/detail-dashboard/{pk}')
     SO_WORK_ORDER_DETAIL = StringUrl('serviceorder/work-order-detail')
+    SERVICE_ORDER_DIFF = StringUrl('serviceorder/diff/{current_id}/{comparing_id}')
 
     # service-quotation
     SERVICE_QUOTATION_LIST = StringUrl('servicequotation/list')

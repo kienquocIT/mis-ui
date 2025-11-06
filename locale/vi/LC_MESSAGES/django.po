@@ -12320,6 +12320,14 @@ msgid "Include child groups"
 msgstr "Bao gồm phòng ban con"
 
 #
+msgid "Service order version"
+msgstr "Phiên bản đơn dịch vụ"
+
+#
+msgid "Delivery quantity"
+msgstr "SL giao hàng"
+
+#
 msgid "Compare"
 msgstr "So sánh"
 

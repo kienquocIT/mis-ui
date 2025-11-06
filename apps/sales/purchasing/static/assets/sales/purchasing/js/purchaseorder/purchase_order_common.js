@@ -3063,6 +3063,7 @@ class PODataTableHandle {
                 $('#btn-add-payment-stage').on('click', function () {
                     POStoreDataHandle.storeDtbData(3);
                     POLoadDataHandle.loadAddPaymentStage();
+                    POLoadDataHandle.loadReInitDataTablePayment();
                 });
             }
         }
@@ -3324,39 +3325,6 @@ class POValidateHandle {
             }
         }
         return true
-    };
-
-    static validatePOPSValue(ele) {
-        let tablePS = $('#datable-po-payment-stage');
-        let tableProductWrapper = document.getElementById('datable-purchase-order-product-add_wrapper');
-        if (POLoadDataHandle.PRDataEle.val()) {
-            tableProductWrapper = document.getElementById('datable-purchase-order-product-request_wrapper');
-        }
-        if (tableProductWrapper) {
-            let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
-            if (tableProductFt) {
-                let elePretax = tableProductFt.querySelector('.purchase-order-product-pretax-amount-raw');
-                if (elePretax) {
-                    if (elePretax.value) {
-                        let valuePO = parseFloat(elePretax.value);
-                        let totalBT = 0;
-                        tablePS.DataTable().rows().every(function () {
-                            let row = this.node();
-                            let eleValueBT = row.querySelector('.table-row-value-before-tax');
-                            if (eleValueBT) {
-                                totalBT += $(eleValueBT).valCurrency();
-                            }
-                        });
-                        if (totalBT > valuePO) {
-                            $(ele).attr('value', String(0));
-                            $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
-                            return false
-                        }
-                    }
-                }
-            }
-        }
-        return true;
     };
 
 }

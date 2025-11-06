@@ -97,6 +97,10 @@ const ServiceOrder = (function($) {
          * @description Biến lưu dữ liệu cấn trừ
          */
         reconcileData: {},
+
+        documentRootId: null,
+
+        systemStatus: null,
     }
 
     const WORK_ORDER_STATUS = {
@@ -4341,7 +4345,18 @@ const ServiceOrder = (function($) {
                 receivable_value: receivableValue,
                 due_date: currentDueDate,
                 // Include payment detail data if exists
-                payment_detail_data: pageVariable.paymentDetailData?.[rowData.id],
+                payment_detail_data: (() =>{
+                    const paymentData = []
+                    if (pageVariable.paymentDetailData?.[rowData.id]){
+                        pageVariable.paymentDetailData[rowData.id].forEach((paymentDetail, idx) => {
+                            paymentData.push({
+                                ...paymentDetail,
+                                order: idx + 1
+                            })
+                        })
+                    }
+                    return paymentData
+                })(),
                 // Include reconcile data for each payment detail
                 reconcile_data: (() => {
                     const reconcileDetails = []
@@ -4351,8 +4366,9 @@ const ServiceOrder = (function($) {
                                 const reconcileItems = pageVariable.reconcileData[paymentDetail.id]
                                     .filter(item => item.is_selected)
                                 if (reconcileItems.length > 0) {
-                                    reconcileItems.forEach(reconcileItem => {
+                                    reconcileItems.forEach((reconcileItem, idx) => {
                                         reconcileDetails.push({
+                                            order: idx + 1,
                                             payment_detail_id: paymentDetail.id,
                                             service_id: paymentDetail.service_id,
                                             advance_payment_detail_id: reconcileItem.advance_payment_detail_id,
@@ -4482,7 +4498,7 @@ const ServiceOrder = (function($) {
                     ServiceOrder.pageVariable.contributionPackageData[productContribution.id] = JSON.parse(JSON.stringify(packageData))
                 }
             }
-            ServiceOrder.pageVariable.productContributionData[workOrder.id] = JSON.parse(JSON.stringify(productContributionData.reverse()))
+            ServiceOrder.pageVariable.productContributionData[workOrder.id] = JSON.parse(JSON.stringify(productContributionData))
         }
 
         function addUnitCostData(workOrder){
@@ -4512,7 +4528,7 @@ const ServiceOrder = (function($) {
                     is_selected: true
                 })
             }
-            ServiceOrder.pageVariable.reconcileData[paymentDetail.id] = JSON.parse(JSON.stringify(reconcileData.reverse()))
+            ServiceOrder.pageVariable.reconcileData[paymentDetail.id] = JSON.parse(JSON.stringify(reconcileData))
         }
 
         function addPaymentDetailData(payment){
@@ -4525,7 +4541,7 @@ const ServiceOrder = (function($) {
                 })
                 addReconcileData(paymentDetail)
             }
-            ServiceOrder.pageVariable.paymentDetailData[payment.id] = JSON.parse(JSON.stringify(paymentDetailData.reverse()))
+            ServiceOrder.pageVariable.paymentDetailData[payment.id] = JSON.parse(JSON.stringify(paymentDetailData))
         }
 
         for (const payment of paymentData) {

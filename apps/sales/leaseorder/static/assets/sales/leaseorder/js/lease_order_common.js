@@ -3526,7 +3526,6 @@ class LeaseOrderLoadDataHandle {
             LeaseOrderLoadDataHandle.loadBoxQuotationContact(data?.['contact_data']);
         }
         if (data?.['payment_term_data']) {
-            // FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [data?.['payment_term_data']], {}, null, true);
             // load realtime payment data
             WindowControl.showLoading();
             $.fn.callAjax2({
@@ -3541,10 +3540,27 @@ class LeaseOrderLoadDataHandle {
                     if (data) {
                         if (data.hasOwnProperty('payment_terms_list') && Array.isArray(data.payment_terms_list)) {
                             if (data?.['payment_terms_list'].length > 0) {
-                                FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                                if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
+                                    if (LeaseOrderLoadDataHandle.paymentSelectEle.val() === data?.['payment_terms_list'][0]?.['id']) {
+                                        FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                                        LeaseOrderLoadDataHandle.loadReInitDataTablePayment();
+                                        LeaseOrderLoadDataHandle.loadReInitDataTableInvoice();
+                                    }
+                                    if (LeaseOrderLoadDataHandle.paymentSelectEle.val() !== data?.['payment_terms_list'][0]?.['id']) {
+                                        FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                                        LeaseOrderLoadDataHandle.loadChangePaymentTerm();
+                                    }
+                                }
+                                if (!LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
+                                    FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                                    LeaseOrderLoadDataHandle.loadReInitDataTablePayment();
+                                    LeaseOrderLoadDataHandle.loadReInitDataTableInvoice();
+                                }
                             }
                             if (data?.['payment_terms_list'].length === 0) {
                                 FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [], {}, null, true);
+                                LeaseOrderLoadDataHandle.loadReInitDataTablePayment();
+                                LeaseOrderLoadDataHandle.loadReInitDataTableInvoice();
                             }
                             WindowControl.hideLoading();
                         }
@@ -9184,21 +9200,6 @@ class LeaseOrderSubmitHandle {
         // payment stage
         _form.dataForm['lease_payment_stage'] = LeaseOrderSubmitHandle.setupDataPaymentStage();
         _form.dataForm['lease_invoice'] = LeaseOrderSubmitHandle.setupDataInvoice();
-        // validate payment stage submit
-        if (type === 0) {
-            if (_form.dataForm?.['lease_payment_stage'] && _form.dataForm?.['total_product']) {
-                if (_form.dataForm?.['lease_payment_stage'].length > 0) {
-                    let totalPayment = 0;
-                    for (let payment of _form.dataForm['lease_payment_stage']) {
-                        totalPayment += payment?.['value_total'] ? payment?.['value_total'] : 0;
-                    }
-                    if (totalPayment !== _form.dataForm?.['total_product']) {
-                        $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
-                        return false;
-                    }
-                }
-            }
-        }
         // attachment
         if (_form.dataForm.hasOwnProperty('attachment')) {
           _form.dataForm['attachment'] = $x.cls.file.get_val(_form.dataForm?.['attachment'], []);

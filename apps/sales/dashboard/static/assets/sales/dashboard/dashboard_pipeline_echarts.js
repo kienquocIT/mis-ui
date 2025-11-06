@@ -435,12 +435,14 @@ $(document).ready(function () {
     function TotalPipelineChartCfg(labelX, data_list, chart_title, titleX, titleY, indexAxis, stage_list_for_colors) {
         return {
             textStyle: {
+                color: '#000',
                 fontFamily: 'Arial, Helvetica, sans-serif'
             },
             title: {
                 text: chart_title,
                 left: 'center',
                 textStyle: {
+                    color: '#000',
                     fontSize: 14,
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
@@ -492,6 +494,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 35,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -506,6 +509,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 60,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -634,12 +638,14 @@ $(document).ready(function () {
     function TopSaleChartCfg(labelX, data_list, chart_title, titleX, titleY, indexAxis) {
         return {
             textStyle: {
+                color: '#000',
                 fontFamily: 'Arial, Helvetica, sans-serif'
             },
             title: {
                 text: chart_title,
                 left: 'center',
                 textStyle: {
+                    color: '#000',
                     fontSize: 14,
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
@@ -699,6 +705,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 35,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -713,6 +720,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 60,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -865,12 +873,14 @@ $(document).ready(function () {
     function ForecastChartCfg(labelX, data_list, chart_title, titleX, titleY, indexAxis) {
         return {
             textStyle: {
+                color: '#000',
                 fontFamily: 'Arial, Helvetica, sans-serif'
             },
             title: {
                 text: chart_title,
                 left: 'center',
                 textStyle: {
+                    color: '#000',
                     fontSize: 14,
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
@@ -937,6 +947,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 30,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 }
@@ -947,6 +958,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 50,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 }
@@ -1065,12 +1077,14 @@ $(document).ready(function () {
     function ActivityChartCfg(labelX, data_list, chart_title, titleX, titleY, indexAxis) {
         return {
             textStyle: {
+                color: '#000',
                 fontFamily: 'Arial, Helvetica, sans-serif'
             },
             title: {
                 text: chart_title,
                 left: 'center',
                 textStyle: {
+                    color: '#000',
                     fontSize: 14,
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
@@ -1129,6 +1143,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: indexAxis === 'y' ? 35 : 45,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -1150,6 +1165,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: indexAxis === 'y' ? 80 : 50,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },

@@ -151,6 +151,10 @@ $(document).ready(function () {
                     focus: 'series',
                     itemStyle: {shadowBlur: 10, shadowColor: 'rgba(0,0,0,0.3)'}
                 },
+                itemStyle: {
+                    ...s.itemStyle,
+                    borderRadius: [8, 8, 0, 0]
+                },
                 animationDelay: (idx) => idx * 20 + index * 80
             }))
         };

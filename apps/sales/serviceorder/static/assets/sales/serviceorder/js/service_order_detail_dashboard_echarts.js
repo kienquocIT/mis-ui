@@ -136,7 +136,7 @@ $(document).ready(function () {
             }
 
             service_detail_list_html += `<div class="col-12 mb-3">
-                                            <div class="bflow-glass-card-80 service-card">
+                                            <div class="bflow-mirrow-card-80 service-card">
                                                 <div class="row">
                                                     <div class="col-12 col-md-9 col-lg-9">
                                                         <h5 class="fw-bold"><span class="badge badge-primary badge-pill service-code">${item?.['product_data']?.['code'] || ''}</span> <span class="service-name text-primary">${item?.['product_data']?.['title'] || ''}</span></h5>

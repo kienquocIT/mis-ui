@@ -350,7 +350,7 @@ $(document).ready(function () {
                     }
                 }
 
-                if (!is_init) {
+                if (!is_init && revenue_chart && profit_chart) {
                     revenue_chart.dispose();
                     profit_chart.dispose();
                 }
@@ -504,13 +504,16 @@ $(document).ready(function () {
     })
 
     const revenueprofitGroupEle = $('#revenue-profit-group')
-    function LoadRevenueGroup(data) {
-        revenueprofitGroupEle.initSelect2({
+    function LoadRevenueGroup(ele, data) {
+        ele.initSelect2({
             allowClear: true,
             placeholder: trans_script.attr('data-trans-all'),
             ajax: {
-                url: revenueprofitGroupEle.attr('data-url'),
+                url: ele.attr('data-url'),
                 method: 'GET',
+            },
+            templateResult: function (state) {
+                return $(`<span>${state.data?.['title']}</span> <span class="bflow-mirrow-badge">Level ${state.data?.['level'] || ''}</span>`);
             },
             callbackDataResp: function (resp, keyResp) {
                 CURRENT_GROUP.push(...resp.data[keyResp])
@@ -520,10 +523,11 @@ $(document).ready(function () {
             keyResp: 'group_list',
             keyId: 'id',
             keyText: 'title',
-        }).on('change', function () {
-            DrawRevenueProfitChart(false)
         })
     }
+    revenueprofitGroupEle.on('change', function () {
+        DrawRevenueProfitChart(false)
+    })
 
     const profitTypeEle = $('#profit-type')
     profitTypeEle.on('change', function () {
@@ -679,7 +683,7 @@ $(document).ready(function () {
                         return Check_in_period(new Date(item?.['date_approved']), period_selected_Setting)
                     })
 
-                    if (!is_init) {
+                    if (!is_init && topSale_chart) {
                         topSale_chart.dispose();
                     }
                     
@@ -700,7 +704,7 @@ $(document).ready(function () {
                         return Check_in_period(new Date(item?.['date_approved']), period_selected_Setting)
                     })
 
-                    if (!is_init) {
+                    if (!is_init && topCustomer_chart) {
                         topCustomer_chart.dispose();
                     }
                     
@@ -1038,7 +1042,7 @@ $(document).ready(function () {
                         return Check_in_period(new Date(item?.['date_approved']), period_selected_Setting)
                     })
 
-                    if (!is_init) {
+                    if (!is_init && topCategory_chart) {
                         topCategory_chart.dispose();
                     }
                     
@@ -1059,7 +1063,7 @@ $(document).ready(function () {
                         return Check_in_period(new Date(item?.['date_approved']), period_selected_Setting)
                     })
 
-                    if (!is_init) {
+                    if (!is_init && topProduct_chart) {
                         topProduct_chart.dispose();
                     }
                     
@@ -1259,7 +1263,7 @@ $(document).ready(function () {
     });
 
     LoadPeriod(current_period)
-    LoadRevenueGroup()
+    LoadRevenueGroup(revenueprofitGroupEle)
     DrawRevenueProfitChart(true)
     DrawTopSaleCustomerChart(true)
     DrawTopCategoryProductChart(true)

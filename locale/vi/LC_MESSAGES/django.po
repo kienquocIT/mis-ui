@@ -12318,3 +12318,11 @@ msgstr "Chỉ từng phòng ban riêng lẻ"
 #
 msgid "Include child groups"
 msgstr "Bao gồm phòng ban con"
+
+#
+msgid "Service order version"
+msgstr "Phiên bản đơn dịch vụ"
+
+#
+msgid "Delivery quantity"
+msgstr "SL giao hàng"

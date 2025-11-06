@@ -5,33 +5,31 @@
      * **/
 class DropdownBSHandle {
     static init(){
-        $('.info-btn').off().on('click', function () {
-            if ($(this).parents('.dropdown').hasClass('show')) $(this).parents('.dropdown').removeClass('show')
-            else{
-                $(this).parents('.dropdown').addClass('show')
-                let self = window.innerHeight - $(this).offset().top
-                let selfDropdown = $(this).next().innerHeight()
-                if (self < selfDropdown){
-                    const istop = $(this).offset().top - selfDropdown
-                    $(this).parents('.dropdown').find('.dropdown-menu').css(
-                        {"position": "fixed","top": `${istop}px`,"left": `${$(this).offset().left}px`,
-                            "opacity": 1, "display": "block"
-                        }
-                    )
-                }
-                else
-                    $(this).parents('.dropdown').find('.dropdown-menu').css(
-                        {"position": "fixed","top": `${$(this).offset().top + $(this).innerHeight()}px`,
-                            "left": `${$(this).offset().left}px`, "opacity": 1, "display": "block"
-                        }
-                    )
+        $('.info-btn').off().on('click', function (e) {
+            e.stopPropagation()
+            $('.dropdown:has(.info-btn).show').removeClass('show').find('.dropdown-menu').css('display', 'none')
+            $(this).parents('.dropdown').addClass('show')
+            let self = window.innerHeight - $(this).offset().top
+            let selfDropdown = $(this).next().innerHeight()
+            if (self < selfDropdown){
+                const istop = $(this).offset().top - selfDropdown
+                $(this).parents('.dropdown').find('.dropdown-menu').css(
+                    {"position": "fixed","top": `${istop}px`,"left": `${$(this).offset().left}px`,
+                        "opacity": 1, "display": "block"
+                    }
+                )
             }
+            else
+                $(this).parents('.dropdown').find('.dropdown-menu').css(
+                    {"position": "fixed","top": `${$(this).offset().top + $(this).innerHeight()}px`,
+                        "left": `${$(this).offset().left}px`, "opacity": 1, "display": "block"
+                    }
+                )
         });
         $(document).on('click', function (e) {
-            e.stopPropagation()
             let container = $(".dropdown.show"); // Give you class or ID
-            if (!container.is(e.target) && container.has(e.target).length === 0) // ... nor a descendant-child of the container
-            {
+            if (!container.is(e.target) && container.has(e.target).length === 0){
+                e.stopPropagation()
                 container.removeClass('show')
                 container.find('.dropdown-menu').css({"display":"none","opacity":0});
             }

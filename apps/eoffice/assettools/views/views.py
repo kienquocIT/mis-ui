@@ -140,7 +140,7 @@ class AssetProductListByProvideIDAPI(APIView):
         compare_id = {}
         for item in result:
             product_id = item['product'].get('id')
-            if item['delivered'] == item['is_returned']:  # nếu đã trả hết thì ko cộng
+            if (item['subtotal'] - item['delivered'] + item['is_returned']) > 0:  # nếu product này hết số lượng để giao
                 continue
             if product_id:
                 if product_id in compare_id:
@@ -171,4 +171,4 @@ class AssetProductListByProvideIDAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.ASSET_TOOLS_PRODUCT_LIST_BY_PROVIDE).get(
             request.query_params.dict()
         )
-        return resp.auto_return(callback_success=self.get_callback_success)
+        return resp.auto_return(key_success='asset_provide_product_list')

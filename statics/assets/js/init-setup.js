@@ -10213,7 +10213,6 @@ var DataTableAction = {
         ];
         // if (format) keyArg = JSON.parse(format.replace(/'/g, '"'));
         if (format) keyArg = format;
-
         let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$elmTrans.attr('data-more-info')}</h6>`;
         for (let key of keyArg) {
             let isValue = data[key.value] ? data[key.value] : '--'

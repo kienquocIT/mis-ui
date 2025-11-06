@@ -34,7 +34,7 @@ class ListByUserHandle {
                             data: 'product_data',
                             width: '10%',
                             render: (row, index, data) => {
-                                return row?.uom ? row.uom : data?.uom ? data.uom : '--'
+                                return row?.uom ? row.uom?.title : data?.uom ? data.uom?.title : '--'
                             }
                         },
                         {
@@ -127,7 +127,7 @@ class ListByUserHandle {
                     }
                 },
             ],
-            rowCallback: function (row, data, index) {
+            rowCallback: function (row, data) {
                 $(row).on('click', function(){
                     if ($(this).hasClass('selected')) $(this).removeClass('selected');
                     else{
@@ -196,7 +196,7 @@ class ListByAssetHandle{
                     width: '10%',
                     render: (row) => {
                         let txt = '--'
-                        if (row?.['measure_unit']) txt = row['measure_unit']
+                        if (row?.['uom']) txt = row['measure_unit']
                         return txt
                     }
                 },

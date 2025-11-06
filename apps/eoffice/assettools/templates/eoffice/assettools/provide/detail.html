@@ -5,13 +5,7 @@
 {% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
-    <style>
-    {#this is css style for table footer#}
-    @media screen and (max-width: 1024px){
-        .dataTables_scrollFootInner{width: 100%!important;}
-        .dataTables_scrollFootInner > .min-w-1500p{min-width: 100%!important;}
-    }
-    </style>
+    <link href="{% static 'assets/css/eoffice/assettools/provide-detail.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
     <a href="{% url 'AssetToolsProvideRequestEdit' data.pk %}">
@@ -82,7 +76,7 @@
                         <table id="products_detail_tbl" class="table nowrap w-100 mb-5 min-w-1500p">
                             <thead>
                             <tr>
-                                <th>{% trans 'Product' %}</th>
+                                <th>{% trans 'Product' %}<span class="text-primary popover-elm pl-1"><i class="fa-solid fa-circle-info"></i></span></th>
                                 <th>{% trans 'Remarks' %}</th>
                                 <th>{% trans 'UOM' %}</th>
                                 <th>{% trans 'Quantity' %}</th>

@@ -25,3 +25,12 @@ msgstr "Chưa giao"
 #
 msgid "Please select product"
 msgstr "Vui lòng chọn sản phẩm"
+#
+msgid "Info"
+msgstr "Thông tin"
+#
+msgid "Fixed assets"
+msgstr "Tài sản cố định"
+#
+msgid "Instrument Tool"
+msgstr "Công cụ dụng cụ"

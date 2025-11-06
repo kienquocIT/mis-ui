@@ -22,7 +22,7 @@ class ModalProdByEmployeeList {
                     {
                         data: 'product',
                         width: '50%',
-                        render: (row, type, data, meta) => {
+                        render: (row, type, data) => {
                             return row?.title ? row.title : data.product_remark
                         }
                     },
@@ -30,7 +30,7 @@ class ModalProdByEmployeeList {
                         data: 'quantity',
                         width: '15%',
                         className: 'text-center',
-                        render: (row, type, data, meta) => {
+                        render: (row) => {
                             return row
                         }
                     },
@@ -95,6 +95,7 @@ class ModalProdByEmployeeList {
 class AssetReturnProductList {
     static init(data = []) {
         let $table = $('#products_detail_tbl')
+        const urlFact = $('#url-factory')
         if ($table.hasClass('dataTable')) $table.DataTable().clear().rows.add(data).draw()
         else{
             $table.DataTableDefault({
@@ -109,7 +110,7 @@ class AssetReturnProductList {
                     {
                         data: 'product',
                         width: '75%',
-                        render: (row, type, data, meta) => {
+                        render: (row, type, data) => {
                             const $elmTrans = $.fn.transEle;
                             let isFormat = [
                                 {name: $elmTrans.attr('data-title'), value: 'title'},
@@ -117,21 +118,36 @@ class AssetReturnProductList {
                                 {name: 'UoM', value: 'uom'},
                                 {name: 'Available', value: 'available'}
                             ]
-                            const dataCont = DataTableAction.item_view(row, $('#url-factory').attr('data-prod-detail'),
-                                isFormat)
+                            let link = null
+                            let icon = ''
+                            let rowData = {'title': data.product_remark}
+                            let name = data.product_remark
+                            if (data.product_provide_type === 'tool'){
+                                icon = '<i class="fas fa-tools"></i>'
+                                link = urlFact.attr('data-prod-detail')
+                                rowData = row
+                                name = row?.title
+                            }
+                            else if (data.product_provide_type === 'fixed'){
+                                icon = '<i class="fas fa-warehouse"></i>'
+                                link = urlFact.attr('data-fixed-detail')
+                                rowData = data.product_fixed
+                                name = rowData.title
+                            }
+                            const dataCont = DataTableAction.item_view(rowData, link, isFormat)
                             return `<div class="input-group">
                                         <div class="dropdown pointer mr-2" data-dropdown-custom="true">
                                             <i class="fas fa-info-circle text-blue info-btn"></i>
                                             <div class="dropdown-menu w-210p">${dataCont}</div>
                                         </div>
-                                        <p>${row?.title ? row.title : data.product_remark}</p>
+                                        <p>${name} <span style="color: rgb(90, 147, 255)">${icon}</span></p>
                                     </div>`;
                         }
                     },
                     {
                         data: 'return_number',
                         width: '20%',
-                        render: (row, type, data, meta) => {
+                        render: (row) => {
                             return row
                         }
                     },
@@ -150,7 +166,7 @@ class AssetReturnProductList {
                         $table.DataTable().row(row).remove().draw(false)
                     })
                 },
-                drawCallback: (row, data, index) =>{
+                drawCallback: () =>{
                     DropdownBSHandle.init()
                 }
             });
@@ -178,7 +194,6 @@ class AssetReturnProductList {
 }
 
 function submitHandleFunc() {
-    // WindowControl.showLoading();
     let $FormElm = $('#asset_return_form')
     const frm = new SetupFormSubmit($FormElm);
     let formData = frm.dataForm;
@@ -186,7 +201,7 @@ function submitHandleFunc() {
     let temp = $('#products_detail_tbl').DataTable().data().toArray()
     let products = []
     formData.date_return = moment(formData.date_return, 'DD/MM/YYYY').format('YYYY-MM-DD')
-    if (!temp){
+    if (!temp) {
         $.fn.notifyB({description: $('#trans-factory').attr('data-products')}, 'failure');
         return false
     }
@@ -195,12 +210,14 @@ function submitHandleFunc() {
             $.fn.notifyB({description: $('#trans-factory').attr('data-err-02')}, 'failure');
             return false
         }
-        products.push({
+        const temp = {
             'order': item.order,
-            'product': item?.product?.id,
             'product_remark': item.product_remark,
             'return_number': item.return_number
-        })
+        }
+        if (item.product_provide_type === 'fixed') temp['product_fixed'] = item?.product
+        if (item.product_provide_type === 'tool') temp['product'] = item?.product?.id
+        products.push(temp)
     }
     formData.products = products
     formData.attachments = $x.cls.file.get_val(formData.attachments, []);
@@ -228,17 +245,17 @@ $(document).ready(function() {
     const $EmpElm = $('#selectEmployeeInherit')
     const $ElmBtn = $('#add_new_line')
     $EmpElm.initSelect2()
-    $EmpElm.on('select2:select', function (e) {
-        // let isValue = e.params.data.data
+    $EmpElm.on('select2:select', function () {
         $ElmBtn.removeClass('disabled')
     });
 
     // on show modal load asset employee used
-    $('#provide_product_list').on('shown.bs.modal', ()=>{
+    $('#provide_product_list').on('shown.bs.modal', () => {
         $('.wrap-loading').removeClass('hidden')
         const _EmpID = $EmpElm.val()
         ModalProdByEmployeeList.getData(_EmpID)
     })
+
     $('#btn-add').off().on('click', function () {
         const prodSlt = $('#table_provide_product_list').DataTable().rows('.selected').data().toArray(),
             $ReturnTbl = $('#products_detail_tbl')
@@ -265,4 +282,21 @@ $(document).ready(function() {
 
     // init tab asset return list
     AssetReturnProductList.init()
+
+    let $FormElm = $('#asset_return_form')
+    SetupFormSubmit.validate($FormElm, {
+        rules: {
+            title: {
+                required: true,
+            },
+            employee_inherit: {
+                required: true,
+            },
+            products: {
+                required: true,
+            },
+        },
+        errorClass: 'is-invalid cl-red',
+        submitHandler: submitHandleFunc
+    })
 });

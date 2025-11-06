@@ -1,0 +1,27 @@
+@media screen and (max-width: 1024px) {
+    .dataTables_scrollFootInner {
+        width: 100% !important;
+    }
+
+    .dataTables_scrollFootInner > .min-w-1500p {
+        min-width: 100% !important;
+    }
+}
+
+#products_detail_tbl tbody tr td:has(.tags-separate){
+    position: relative;
+}
+.tags-separate{
+    position: absolute;
+    top:1px;
+    right:0;
+    display: flex;
+    color:#fff;
+    background: rgb(90,147,255);
+    border-radius: 25px;
+    width: 25px;
+    height: 25px;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+}

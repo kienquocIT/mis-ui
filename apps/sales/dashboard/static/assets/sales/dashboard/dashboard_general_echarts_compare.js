@@ -5,7 +5,6 @@ $(document).ready(function () {
         success: '#10b981',       // Xanh lá đậm
         success_soft: '#6ee7b7',  // Xanh lá nhạt
     };
-
     
     const scriptUrlEle = $('#script-url')
     const trans_script = $('#trans-script')

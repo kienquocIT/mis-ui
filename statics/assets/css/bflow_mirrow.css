@@ -1,15 +1,15 @@
 :root {
     /* Độ blur của hiệu ứng kính */
-    --mirrow-blur: 4px;
+    --mirrow-blur: 2px;
 
     /* Bo góc */
     --mirrow-radius: 1rem;
     --mirrow-radius-btn: 2rem;
 
     /* Các sắc độ dùng lại */
-    --mirrow-border: rgba(255, 255, 255, 0.2);
+    --mirrow-border: rgba(255, 255, 255, 0.25);
     --mirrow-highlight: rgba(255, 255, 255, 0.05);
-    --mirrow-shadow: rgba(0, 0, 0, 0.2);
+    --mirrow-shadow: rgba(0, 0, 0, 0.25);
 
     /* Mặc định opacity = 0.05 nếu không khai báo */
     --mirrow-opacity: 0.05;

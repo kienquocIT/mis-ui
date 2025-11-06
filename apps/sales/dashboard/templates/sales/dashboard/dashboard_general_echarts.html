@@ -6,14 +6,16 @@
     <link href="{% static 'assets/core/workflow/css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"/>
     <style>
         #idxPageContent {
-            background-image: url("{% static 'assets/js/home_4.jpg' %}");
+            background-image: url("{% static 'assets/js/home_5.jpg' %}");
             background-repeat: no-repeat;
             background-size: cover;
+            background-position: center;     /* Optional: căn giữa ảnh */
         }
         #compare-dashboard-mode-modal .modal-body {
-            background-image: url("{% static 'assets/js/home_4.jpg' %}");
+            background-image: url("{% static 'assets/js/home_5.jpg' %}");
             background-repeat: no-repeat;
             background-size: cover;
+            background-position: center;
         }
         .kpi-icon {
             width: 48px;
@@ -85,7 +87,7 @@
                 <div class="row">
                     <div class="col-12 col-md-4">
                         <div class="form-group">
-                            <label for="money-display" class="form-label text-white">
+                            <label for="money-display" class="form-label">
                                 {% trans 'Money display' %}
                             </label>
                             <select class="form-select" id="money-display">
@@ -96,7 +98,7 @@
                     </div>
                     <div class="col-12 col-md-8">
                         <div class="form-group">
-                            <label for="period-filter" class="form-label text-white">
+                            <label for="period-filter" class="form-label">
                                 {% trans 'Fiscal year' %} ({% trans 'for revenue chart & profit chart' %})
                             </label>
                             <select class="form-select"
@@ -116,8 +118,8 @@
                         <i class="fas fa-chart-line"></i>
                     </div>
                     <div>
-                        <h6 class="text-white">{% trans 'This month revenue' %}</h6>
-                        <span class="text-white kpi-value mask-money fw-bold h4" data-init-money="0" id="current-revenue"></span>
+                        <h6>{% trans 'This month revenue' %}</h6>
+                        <span class="text-blue kpi-value mask-money fw-bold h4" data-init-money="0" id="current-revenue"></span>
                     </div>
                 </div>
             </div>
@@ -129,8 +131,8 @@
                         <i class="fas fa-dollar-sign"></i>
                     </div>
                     <div>
-                        <h6 class="text-white">{% trans 'This month profit' %}</h6>
-                        <span class="text-white kpi-value mask-money fw-bold h4" data-init-money="0" id="current-profit"></span>
+                        <h6>{% trans 'This month profit' %}</h6>
+                        <span class="text-success kpi-value mask-money fw-bold h4" data-init-money="0" id="current-profit"></span>
                     </div>
                 </div>
             </div>
@@ -185,7 +187,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-lg-6">
-                        <div class="bflow-mirrow-card-40">
+                        <div class="bflow-mirrow-card">
                             <div class="row">
                                 <div class="col-12">
                                     <div id="revenue_chart" style="width: 100%; height: 45vh;"></div>
@@ -194,7 +196,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-lg-6">
-                        <div class="bflow-mirrow-card-40">
+                        <div class="bflow-mirrow-card">
                             <div class="row">
                                 <div class="col-12">
                                     <div id="profit_chart" style="width: 100%; height: 45vh;"></div>
@@ -246,7 +248,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-lg-6">
-                        <div class="bflow-mirrow-card-40">
+                        <div class="bflow-mirrow-card">
                             <div class="row">
                                 <div class="col-12">
                                     <div id="topsale_chart" style="width: 100%; height: 40vh;"></div>
@@ -255,7 +257,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-lg-6">
-                        <div class="bflow-mirrow-card-40">
+                        <div class="bflow-mirrow-card">
                             <div class="row">
                                 <div class="col-12">
                                     <div id="topcustomer_chart" style="width: 100%; height: 40vh;"></div>
@@ -308,7 +310,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-lg-6">
-                        <div class="bflow-mirrow-card-40">
+                        <div class="bflow-mirrow-card">
                             <div class="row">
                                 <div class="col-12">
                                     <div id="topcategory_chart" style="width: 100%; height: 40vh;"></div>
@@ -317,7 +319,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-lg-6">
-                        <div class="bflow-mirrow-card-40">
+                        <div class="bflow-mirrow-card">
                             <div class="row">
                                 <div class="col-12">
                                     <div id="topproduct_chart" style="width: 100%; height: 40vh;"></div>
@@ -385,7 +387,7 @@
                                         </div>
                                     </div>
                                     <div class="col-12 col-lg-6">
-                                        <div class="bflow-mirrow-card-40">
+                                        <div class="bflow-mirrow-card">
                                             <div class="row">
                                                 <div class="col-12">
                                                     <div id="revenue_profit_chart_compare_1" style="width: 100%; height: 60vh;"></div>
@@ -394,7 +396,7 @@
                                         </div>
                                     </div>
                                     <div class="col-12 col-lg-6">
-                                        <div class="bflow-mirrow-card-40">
+                                        <div class="bflow-mirrow-card">
                                             <div class="row">
                                                 <div class="col-12">
                                                     <div id="revenue_profit_chart_compare_2" style="width: 100%; height: 60vh;"></div>

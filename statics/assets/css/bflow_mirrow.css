@@ -91,8 +91,8 @@
 
 /* Button */
 .bflow-mirrow-btn {
-    padding: 10px 15px;
-    border: none;
+    padding: 5px 15px;
+    border: 1px solid #9f9f9f;
     border-radius: var(--mirrow-radius-btn);
     background: rgba(255, 255, 255, var(--mirrow-opacity-btn));
     backdrop-filter: blur(var(--mirrow-blur));

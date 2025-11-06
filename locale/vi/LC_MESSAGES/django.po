@@ -10104,6 +10104,10 @@ msgid "Delivery (lease)"
 msgstr "Giao hàng (cho thuê)"
 
 #
+msgid "Delivery (service)"
+msgstr "Giao hàng (dịch vụ)"
+
+#
 msgid "Reconciliation"
 msgstr "Cấn trừ"
 

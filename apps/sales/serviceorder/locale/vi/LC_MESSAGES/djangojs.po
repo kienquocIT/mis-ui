@@ -22,10 +22,6 @@ msgid "Service value"
 msgstr "Giá trị dịch vụ"
 
 #
-msgid "Work list"
-msgstr "Danh sách công việc"
-
-#
 msgid "contribution"
 msgstr "đóng góp"
 

@@ -660,4 +660,9 @@ $(document).ready(function () {
 
     DrawRevenueProfitChartCompare1(true)
     DrawRevenueProfitChartCompare2(true)
+
+    $('#reload-revenue-profit-data-btn-compare').on('click', function () {
+        DrawRevenueProfitChartCompare1(false)
+        DrawRevenueProfitChartCompare2(false)
+    })
 })

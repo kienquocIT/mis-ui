@@ -5,7 +5,6 @@ $(document).ready(function () {
         success: '#10b981',
         danger: '#ef4444',
         warning: '#f59e0b',
-        info: '#3b82f6',
         light: '#f3f4f6',
         dark: '#1f2937'
     }
@@ -243,7 +242,7 @@ $(document).ready(function () {
             series: data_list.map((item, index) => ({
                 ...item,
                 type: 'line',
-                smooth: true,
+                smooth: 0,
                 emphasis: {
                     focus: 'series',
                     blurScope: 'coordinateSystem',
@@ -253,7 +252,7 @@ $(document).ready(function () {
                     }
                 },
                 lineStyle: {
-                    width: 3
+                    width: 2.5
                 },
                 itemStyle: {
                     borderRadius: 0
@@ -458,12 +457,12 @@ $(document).ready(function () {
             {
                 name: trans_script.attr('data-trans-expected'),
                 data: revenue_expected_data,
-                color: CHART_COLORS.primary
+                color: CHART_COLORS.danger
             },
             {
                 name: trans_script.attr('data-trans-reality'),
                 data: revenue_chart_data,
-                color: CHART_COLORS.danger
+                color: CHART_COLORS.primary
             }
         ]
 
@@ -471,7 +470,7 @@ $(document).ready(function () {
             {
                 name: trans_script.attr('data-trans-expected'),
                 data: profit_expected_data,
-                color: CHART_COLORS.info
+                color: CHART_COLORS.warning
             },
             {
                 name: trans_script.attr('data-trans-reality'),
@@ -1191,7 +1190,7 @@ $(document).ready(function () {
         
         let series_data = [{
             data: topX_revenue,
-            color: CHART_COLORS.info
+            color: CHART_COLORS.primary
         }]
 
         return [topX_title, series_data]

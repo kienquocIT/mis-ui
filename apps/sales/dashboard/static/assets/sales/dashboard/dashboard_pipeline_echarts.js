@@ -1294,6 +1294,14 @@ $(document).ready(function () {
                 callbackDataResp: function (resp, keyResp) {
                     return resp.data ? resp.data[keyResp] : [];
                 },
+                templateResult: function (state) {
+                    return $(`<div class="row w-100">
+                    <div class="col-12">
+                        <span>${state.data?.['title']}</span>
+                        <span class="bflow-mirrow-badge">Level ${state.data?.['level'] || ''} ${state.data?.['parent_n']?.['title'] ? `(${$.fn.gettext('Parent')}: ${state.data?.['parent_n']?.['title']})` : ''}</span>
+                    </div>
+                </div>`);
+                },
                 data: (data ? data : null),
                 keyResp: 'group_list',
                 keyId: 'id',
@@ -1313,6 +1321,14 @@ $(document).ready(function () {
                 },
                 callbackDataResp: function (resp, keyResp) {
                     return resp.data ? resp.data[keyResp] : [];
+                },
+                templateResult: function (state) {
+                    return $(`<div class="row w-100">
+                        <div class="col-12">
+                            <span>${state.data?.['title']}</span>
+                            <span class="bflow-mirrow-badge">Level ${state.data?.['level'] || ''} ${state.data?.['parent_n']?.['title'] ? `(${$.fn.gettext('Parent')}: ${state.data?.['parent_n']?.['title']})` : ''}</span>
+                        </div>
+                    </div>`);
                 },
                 data: (data ? data : null),
                 keyResp: 'group_list',

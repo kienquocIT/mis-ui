@@ -98,11 +98,9 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex">
                                 <div class="me-2">
-                                    <div class="input-group" style="width: 400px;">
+                                    <div class="input-group" style="min-width: 600px;">
                                         <span class="input-group-text">{% trans 'Group' %}</span>
-                                        <select class="form-select" id="pipeline-group"
-                                                data-method="GET"
-                                                data-url="{% url 'GroupListAPI' %}"></select>
+                                        <select class="form-select" id="pipeline-group" data-method="GET" data-url="{% url 'GroupListAPI' %}"></select>
                                     </div>
                                 </div>
                                 <div class="me-2">
@@ -137,7 +135,7 @@
             </div>
         </div>
     </div>
-    <div class="row mb-3">
+    <div class="row mb-10">
         <div class="col-12 col-lg-6">
             <div class="bflow-mirrow-card">
                 <div class="row">
@@ -146,11 +144,9 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex">
                                 <div class="me-2">
-                                    <div class="input-group" style="width: 400px;">
+                                    <div class="input-group" style="width: 600px;">
                                         <span class="input-group-text">{% trans 'Group' %}</span>
-                                        <select class="form-select" id="forecast-group"
-                                                data-method="GET"
-                                                data-url="{% url 'GroupListAPI' %}"></select>
+                                        <select class="form-select" id="forecast-group" data-method="GET" data-url="{% url 'GroupListAPI' %}"></select>
                                     </div>
                                 </div>
                                 <div class="me-2">

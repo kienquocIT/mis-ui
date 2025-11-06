@@ -12318,3 +12318,31 @@ msgstr "Chỉ từng phòng ban riêng lẻ"
 #
 msgid "Include child groups"
 msgstr "Bao gồm phòng ban con"
+
+#
+msgid "Compare"
+msgstr "So sánh"
+
+#
+msgid "Compare Revenue & Profit"
+msgstr "So sánh Doanh thu & Lợi nhuận"
+
+#
+msgid "Revenue & Profit chart"
+msgstr "Biểu đồ Doanh thu & Lợi nhuận"
+
+#
+msgid "Expected revenue"
+msgstr "Doanh thu dự kiến"
+
+#
+msgid "Reality revenue"
+msgstr "Doanh thu thực tế"
+
+#
+msgid "Expected profit"
+msgstr "Lợi nhuận dự kiến"
+
+#
+msgid "Reality profit"
+msgstr "Lợi nhuận thực tế"

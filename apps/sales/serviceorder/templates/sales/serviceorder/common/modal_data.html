@@ -15,14 +15,15 @@
                     <button type="button" class="btn btn-xs btn-success" id="btn-reload-currency-rate">
                         {% trans 'Refresh' %}
                     </button>
-                    <table class="table nowrap w-100" id="modal-table-exchange-rate" data-url="{% url 'CurrencyListAPI' %}">
+                    <table class="table nowrap w-100" id="modal-table-exchange-rate"
+                           data-url="{% url 'CurrencyListAPI' %}">
                         <thead>
-                            <tr class="bg-light">
-                                <th></th>
-                                <th>{% trans 'Code' %}</th>
-                                <th>{% trans 'Name' %}</th>
-                                <th>{% trans 'Rate' %}</th>
-                            </tr>
+                        <tr class="bg-light">
+                            <th></th>
+                            <th>{% trans 'Code' %}</th>
+                            <th>{% trans 'Name' %}</th>
+                            <th>{% trans 'Rate' %}</th>
+                        </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
@@ -51,30 +52,33 @@
             <div class="modal-body" style="max-height: 70vh; overflow: auto">
                 <div class="row">
                     <div class="col-12">
-                        <table class="table nowrap w-100" id="modal-table-product" data-url="{% url 'ProductListAPI' %}">
+                        <table class="table nowrap w-100" id="modal-table-product"
+                               data-url="{% url 'ProductListAPI' %}">
                             <thead>
-                                <tr class="bg-secondary-light-5">
-                                    <th style="min-width: 30px"></th>
-                                    <th style="min-width: 30px"></th>
-                                    <th style="min-width: 250px">{% trans 'Product/Service' %}</th>
-                                    <th style="min-width: 250px">{% trans 'Description' %}</th>
-                                </tr>
+                            <tr class="bg-secondary-light-5">
+                                <th style="min-width: 30px"></th>
+                                <th style="min-width: 30px"></th>
+                                <th style="min-width: 250px">{% trans 'Product/Service' %}</th>
+                                <th style="min-width: 250px">{% trans 'Description' %}</th>
+                            </tr>
                             </thead>
-                            <tbody> </tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                <button type="button" id="btn-save-product" class="btn btn-primary" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                <button type="button" id="btn-save-product" class="btn btn-primary"
+                        data-bs-dismiss="modal">{% trans 'Save' %}</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Add Container Modal -->
-<div class="modal fade" id="modal_container" tabindex="-1" role="dialog" aria-labelledby="modal_container" aria-hidden="true">
+<div class="modal fade" id="modal_container" tabindex="-1" role="dialog" aria-labelledby="modal_container"
+     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -103,7 +107,8 @@
                     <div class="col-12">
                         <div class="form-group">
                             <label class="form-label required" for="txt_title">{% trans 'Reference number' %}</label>
-                            <input type="text" class="form-control" name="container_ref_number" id="container_ref_number" required>
+                            <input type="text" class="form-control" name="container_ref_number"
+                                   id="container_ref_number" required>
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
@@ -141,7 +146,8 @@
 </div>
 
 <!-- Add Package Modal -->
-<div class="modal fade" id="modal_package" tabindex="-1" role="dialog" aria-labelledby="modal_package" aria-hidden="true">
+<div class="modal fade" id="modal_package" tabindex="-1" role="dialog" aria-labelledby="modal_package"
+     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -162,7 +168,7 @@
                         <div class="form-group">
                             <label class="form-label" for="package_type">{% trans 'Package type' %}</label>
                             <select class="form-select select2" id="package_type"
-                                    data-url="{% url 'PackageMasterDataListAPI' %}"  name="package_type">
+                                    data-url="{% url 'PackageMasterDataListAPI' %}" name="package_type">
                             </select>
                         </div>
                     </div>
@@ -214,7 +220,8 @@
 </div>
 
 <!-- Work Cost Modal -->
-<div class="modal fade" id="modal-work-order-cost" tabindex="-1" role="dialog" aria-labelledby="modal-work-order-cost" data-bs-backdrop="static">
+<div class="modal fade" id="modal-work-order-cost" tabindex="-1" role="dialog" aria-labelledby="modal-work-order-cost"
+     data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-lg" style="min-width: 95%" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -229,22 +236,22 @@
                         <div class="col-12">
                             <table class="table nowrap w-100" id="modal-table-work-order-cost">
                                 <thead class="bg-secondary-light-5">
-                                        <tr>
-                                            <th style="min-width: 40px"></th>
-                                            <th style="min-width: 40px">{% trans 'Order' %}</th>
-                                            <th style="min-width: 200px">{% trans 'Title' %}</th>
-                                            <th style="min-width: 160px">{% trans 'Description' %}</th>
-                                            <th style="min-width: 160px">{% trans 'Expense Item' %}</th>
-                                            <th style="min-width: 80px">{% trans 'Quantity' %}</th>
-                                            <th style="min-width: 160px">{% trans 'Unit Cost' %}</th>
-                                            <th style="min-width: 80px">{% trans 'Currency' %}</th>
-                                            <th style="min-width: 80px">{% trans 'Tax' %}</th>
-                                            <th style="min-width: 160px">{% trans 'Total Amount' %}</th>
-                                            <th style="min-width: 160px">{% trans 'Total' %}</th>
-                                            <th style="min-width: 80px"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
+                                <tr>
+                                    <th style="min-width: 40px"></th>
+                                    <th style="min-width: 40px">{% trans 'Order' %}</th>
+                                    <th style="min-width: 200px">{% trans 'Title' %}</th>
+                                    <th style="min-width: 160px">{% trans 'Description' %}</th>
+                                    <th style="min-width: 160px">{% trans 'Expense Item' %}</th>
+                                    <th style="min-width: 80px">{% trans 'Quantity' %}</th>
+                                    <th style="min-width: 160px">{% trans 'Unit Cost' %}</th>
+                                    <th style="min-width: 80px">{% trans 'Currency' %}</th>
+                                    <th style="min-width: 80px">{% trans 'Tax' %}</th>
+                                    <th style="min-width: 160px">{% trans 'Total Amount' %}</th>
+                                    <th style="min-width: 160px">{% trans 'Total' %}</th>
+                                    <th style="min-width: 80px"></th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
                             </table>
                         </div>
                     </div>
@@ -264,7 +271,8 @@
 </div>
 
 <!-- Product Contribution Modal -->
-<div class="modal fade" id="modal-product-contribution" tabindex="-1" role="dialog" aria-labelledby="modal-product-contribution" data-bs-backdrop="static">
+<div class="modal fade" id="modal-product-contribution" tabindex="-1" role="dialog"
+     aria-labelledby="modal-product-contribution" data-bs-backdrop="static">
     <div class="modal-dialog modal-xl" role="document" style="min-width: 85%">
         <div class="modal-content">
             <div class="modal-header">
@@ -274,7 +282,8 @@
                 </button>
             </div>
             <div class="modal-body" style="max-height: 70vh; overflow: auto">
-                <b class="text-primary"><i class="fa-solid fa-thumbtack"></i> {% trans "Work" %}: </b><span class="work-order-description"></span>
+                <b class="text-primary"><i class="fa-solid fa-thumbtack"></i> {% trans "Work" %}: </b><span
+                    class="work-order-description"></span>
                 <div class="nicescroll-bar">
                     <table class="table nowrap w-100" id="modal-table-product-contribution">
                         <thead class="bg-secondary-light-5">
@@ -288,7 +297,8 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     {% trans 'Close' %}
                 </button>
-                <button type="button" id="btn-save-product-contribution" class="btn btn-primary" data-bs-dismiss="modal">
+                <button type="button" id="btn-save-product-contribution" class="btn btn-primary"
+                        data-bs-dismiss="modal">
                     {% trans 'Save' %}
                 </button>
             </div>
@@ -297,7 +307,8 @@
 </div>
 
 <!-- Payment Detail Modal -->
-<div class="modal fade" id="modal-payment-detail" tabindex="-1" role="dialog" aria-labelledby="modal-payment-detail" data-bs-backdrop="static">
+<div class="modal fade" id="modal-payment-detail" tabindex="-1" role="dialog" aria-labelledby="modal-payment-detail"
+     data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-lg" style="min-width: 95%" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -316,7 +327,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                <button type="button" id="btn-save-payment" class="btn btn-primary" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                <button type="button" id="btn-save-payment" class="btn btn-primary"
+                        data-bs-dismiss="modal">{% trans 'Save' %}</button>
             </div>
         </div>
     </div>
@@ -357,7 +369,7 @@
 
 <!--Advance Payment Modal -->
 <div class="modal fade" id="modal-payment-reconcile" tabindex="-1" role="dialog"
-        aria-labelledby="modal-payment-reconcile" data-bs-backdrop="static">
+     aria-labelledby="modal-payment-reconcile" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -386,7 +398,7 @@
 
 <!--Select Transportion Modal-->
 <div class="modal fade" id="modal-contribution-package" tabindex="-1" role="dialog"
-        aria-labelledby="modal-contribution-package" data-bs-backdrop="static">
+     aria-labelledby="modal-contribution-package" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -405,7 +417,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                <button type="button" id="btn-save-contribution-package" class="btn btn-primary" data-bs-dismiss="modal">
+                <button type="button" id="btn-save-contribution-package" class="btn btn-primary"
+                        data-bs-dismiss="modal">
                     {% trans 'Save' %}
                 </button>
             </div>
@@ -430,15 +443,16 @@
                     <div class="col-12 col-md-6 col-lg-6 border-right">
                         <div class="row">
                             <div class="col-12">
-                                <table id="delivery_work_order_list" class="table nowrap w-100 mb-5" data-method="GET" data-url="{% url 'SVOWorkOrderDetailAPI' %}">
+                                <table id="delivery_work_order_list" class="table nowrap w-100 mb-5" data-method="GET"
+                                       data-url="{% url 'SVOWorkOrderDetailAPI' %}">
                                     <thead>
-                                        <tr>
-                                            <th style="min-width: 50px"></th>
-                                            <th style="min-width: 50px"></th>
-                                            <th style="min-width: 250px">{% trans "Work" %}</th>
-                                            <th style="min-width: 150px">{% trans "Start Date" %}</th>
-                                            <th style="min-width: 150px">{% trans "End Date" %}</th>
-                                        </tr>
+                                    <tr>
+                                        <th style="min-width: 50px"></th>
+                                        <th style="min-width: 50px"></th>
+                                        <th style="min-width: 250px">{% trans "Work" %}</th>
+                                        <th style="min-width: 150px">{% trans "Start Date" %}</th>
+                                        <th style="min-width: 150px">{% trans "End Date" %}</th>
+                                    </tr>
                                     </thead>
                                 </table>
                             </div>
@@ -449,11 +463,11 @@
                             <div class="col-12">
                                 <table id="total_delivery_product" class="table nowrap w-100 mb-5">
                                     <thead>
-                                        <tr>
-                                            <th style="min-width: 50px"></th>
-                                            <th style="min-width: 250px">{% trans "Product" %}</th>
-                                            <th style="min-width: 150px">{% trans "No. of service delivered" %}</th>
-                                        </tr>
+                                    <tr>
+                                        <th style="min-width: 50px"></th>
+                                        <th style="min-width: 250px">{% trans "Product" %}</th>
+                                        <th style="min-width: 150px">{% trans "No. of service delivered" %}</th>
+                                    </tr>
                                     </thead>
                                 </table>
                             </div>
@@ -480,12 +494,121 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title"><b>{% trans 'Delivery logs' %}</b></h5>
-                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
+                        data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
             </div>
             <div class="modal-body"></div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Version Comparison Offcanvas -->
+<div class="offcanvas offcanvas-end w-100" tabindex="-1" id="versionCompareCanvas"
+     aria-labelledby="versionCompareCanvasLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="versionCompareCanvasLabel"><b>{% trans 'Compare Version' %}</b></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="form-group mb-3">
+            <label for="version-select" class="form-label">{% trans 'Select Version to Compare' %}</label>
+            <select data-url="{% url 'ServiceOrderListAPI' %}" data-method="GET" data-keyResp="service_order_list"
+                    class="form-select select2" id="version-select" name="version_to_compare">
+            </select>
+        </div>
+        <div id="diffSummary" class="alert alert-info mb-3" style="display: none;">
+            <h6 class="alert-heading"><i class="fas fa-chart-bar"></i> Comparison Summary</h6>
+            <div class="row">
+                <div class="col-3">
+                    <div class="text-center">
+                        <div class="h4 mb-0 text-primary" id="totalChanges">0</div>
+                        <small class="text-muted">Total Changes</small>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="text-center">
+                        <div class="h4 mb-0 text-warning" id="valuesChanged">0</div>
+                        <small class="text-muted">Values Changed</small>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="text-center">
+                        <div class="h4 mb-0 text-success" id="itemsAdded">0</div>
+                        <small class="text-muted">Items Added</small>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="text-center">
+                        <div class="h4 mb-0 text-danger" id="itemsRemoved">0</div>
+                        <small class="text-muted">Items Removed</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-12">
+                <!-- tabs navigation -->
+                <ul class="nav nav-pills-bfl" id="version-compare-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab-compare-all">
+                            <span class="nav-link-text">{% trans 'All' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab-compare-service-detail">
+                            <span class="nav-link-text">{% trans 'Service Detail' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab-compare-work-order">
+                            <span class="nav-link-text">{% trans 'Work' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab-compare-expense">
+                            <span class="nav-link-text">{% trans 'Expense' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab-compare-payment">
+                            <span class="nav-link-text">{% trans 'Payment' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab-compare-attachment">
+                            <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                        </a>
+                    </li>
+                </ul>
+                <!-- tabs content -->
+                <div class="tab-content" id="version-compare-tabs-content">
+                    <div class="tab-pane fade show active" id="tab-compare-all">
+                        <div id="compare-all-content"></div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-compare-service-detail">
+                        <div id="compare-service-detail-content"></div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-compare-work-order">
+                        <div id="compare-work-order-content"></div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-compare-expense">
+                        <div id="compare-expense-content"></div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-compare-payment">
+                        <div id="compare-payment-content"></div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-compare-attachment">
+                        <div id="compare-attachment-content"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="diffContainer" style="display: none;">
+
+            <!-- Content will be dynamically inserted here -->
         </div>
     </div>
 </div>

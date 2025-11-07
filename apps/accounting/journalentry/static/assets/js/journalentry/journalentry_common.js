@@ -5,11 +5,12 @@ class JEPageElements {
     constructor() {
         this.$trans_script = $('#trans-script')
         this.$url_script = $('#url-script')
+        this.$je_state = $('#je-state')
         this.$ori_trans = $('#ori-trans')
         this.$transaction_code = $('#transaction-code')
-        this.$transaction_name = $('#transaction-name')
         this.$je_posting_date = $('#je-posting-date')
         this.$je_doc_date = $('#je-doc-date')
+        this.$je_des = $('#je-des')
         this.$journal_entry_table = $('#journal-entry-table')
     }
 }
@@ -17,15 +18,13 @@ const pageElements = new JEPageElements()
 
 class JELoadPage {
     static LoadJETable(datalist=[]) {
-        let has_fc_value = false
-        let has_lc_value = false
         pageElements.$journal_entry_table.DataTableDefault({
             styleDom: 'hide-foot',
             useDataServer: false,
             rowIdx: true,
             reloadCurrency: true,
             scrollY: '50vh',
-            scrollX: '100vh',
+            scrollX: true,
             scrollCollapse: true,
             paging: false,
             data: datalist,
@@ -35,75 +34,80 @@ class JELoadPage {
                     render: () => {
                         return ``;
                     }
-                }, {
+                },
+                {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<span class="text-muted fw-bold">${row?.['account_data']?.['acc_code']}</span>`
+                        return `
+                            <span class="text-muted fw-bold h5">${row?.['account_data']?.['acc_code']}</span><br>
+                            <span class="text-muted">${row?.['account_data']?.['foreign_acc_name']}</span>
+                        `
                     }
-                }, {
-                    className: 'w-15',
+                },
+                {
+                    className: 'w-10',
                     render: (data, type, row) => {
-                        return `<h6 class="text-muted">${row?.['account_data']?.['acc_name']}</h6><h6 class="text-primary small">${row?.['account_data']?.['foreign_acc_name']}</h6>`
+                        return `<span class="text-muted">${row?.['account_data']?.['acc_name']}</span>`
                     }
-                }, {
-                    className: 'text-right w-10',
+                },
+                {
+                    className: 'text-right w-15',
                     render: (data, type, row) => {
                         if (!row?.['is_fc'] && row?.['debit'] !== 0) {
-                            has_lc_value = true
                             return `<span class="text-primary mask-money" data-init-money="${row?.['debit']}"></span>`;
                         }
                         return ``;
                     }
-                }, {
-                    className: 'text-right w-10',
+                },
+                {
+                    className: 'text-right w-15',
                     render: (data, type, row) => {
                         if (!row?.['is_fc'] && row?.['credit'] !== 0) {
-                            has_lc_value = true
                             return `<span class="text-primary mask-money" data-init-money="${row?.['credit']}"></span>`;
                         }
                         return ``;
                     }
-                }, {
-                    className: 'text-right w-10',
-                    render: (data, type, row) => {
-                        if (row?.['is_fc'] && row?.['debit'] !== 0) {
-                            has_fc_value = true
-                            return `<span class="text-primary mask-money" data-init-money="${row?.['debit']}"></span>`;
-                        }
-                        return ``;
-                    }
-                }, {
-                    className: 'text-right w-10',
-                    render: (data, type, row) => {
-                        if (row?.['is_fc'] && row?.['credit'] !== 0) {
-                            has_fc_value = true
-                            return `<span class="text-primary mask-money" data-init-money="${row?.['credit']}"></span>`;
-                        }
-                        return ``;
-                    }
-                }, {
-                    className: 'text-right w-10',
+                },
+                {
+                    className: 'text-right w-15',
                     render: (data, type, row) => {
                         if (row?.['taxable_value'] !== 0) {
                             return `<span class="text-muted mask-money" data-init-money="${row?.['taxable_value']}"></span>`;
                         }
                         return ''
                     }
-                }, {
+                },
+                {
                     className: 'w-15',
                     render: (data, type, row) => {
                         return `<span>${row?.['business_partner_data']?.['name'] || ''}</span>`;
                     }
-                }
+                },
+                {
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        let dimension_html = ``
+                        for (let i=0; i < row?.['dimensions']?.length; i++) {
+                            let item = row?.['dimensions'][i]
+                            if (Object.keys(item).length > 0) {
+                                dimension_html += `<h5><span class="badge badge-pill badge-outline badge-soft-blue mr-1" title="${item?.['name']}">${item?.['code']}</span></h5>
+                                                    <h5><span class="badge badge-pill badge-outline badge-soft-warning">100%</span></h5><br>`;
+                            }
+                        }
+                        return `<div class="d-flex">${dimension_html}</div>`;
+                    }
+                },
             ],
             initComplete: function(settings, json) {
-                if (!has_fc_value) {
-                    this.api().column(5).visible(false);
-                    this.api().column(6).visible(false);
-                }
-                if (!has_lc_value) {
-                    this.api().column(3).visible(false);
-                    this.api().column(4).visible(false);
+                let wrapper$ = pageElements.$journal_entry_table.closest('.dataTables_wrapper');
+                const headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+                const textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+                headerToolbar$.prepend(textFilter$);
+                if (textFilter$.length > 0) {
+                    textFilter$.css('display', 'flex');
+                    textFilter$.append(
+                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="h5 text-primary fw-bold">📊 ${$.fn.gettext('Journal lines')}</span>`)
+                    )
                 }
             }
         });
@@ -123,28 +127,47 @@ class JEHandle {
                     data = data['journal_entry_detail'];
                     $x.fn.renderCodeBreadcrumb(data);
 
-                    pageElements.$ori_trans.val(data?.['original_transaction']).trigger('change')
+                    console.log(data)
+
+                    pageElements.$je_state.attr(
+                        'class',
+                        [
+                            'badge badge-pill badge-outline badge-soft-secondary',
+                            'badge badge-pill badge-outline badge-soft-success',
+                            'badge badge-pill badge-outline badge-soft-orange'
+                        ][data?.['je_state']]
+                    ).text(
+                        [
+                            $.fn.gettext('Draft'),
+                            $.fn.gettext('Posted'),
+                            $.fn.gettext('Reversed')
+                        ][data?.['je_state']]
+                    )
+                    pageElements.$ori_trans.val(data?.['original_transaction_parsed'])
                     pageElements.$transaction_code.val(data?.['je_transaction_data']?.['code'])
-                    pageElements.$transaction_name.val(data?.['je_transaction_data']?.['title'])
                     pageElements.$je_posting_date.val(moment(data?.['je_posting_date'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     pageElements.$je_doc_date.val(moment(data?.['je_document_date'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
+                    pageElements.$je_des.val(data?.['je_transaction_data']?.['title'])
 
-                    const je_items_sum = {};
-                    (data?.['je_items'] || []).forEach(item => {
+                    const je_lines_sum = {};
+                    (data?.['je_lines'] || []).forEach(item => {
                         const accId = item?.['account_data']?.['id'];
                         if (!accId) return;
 
-                        if (!je_items_sum[accId]) {
-                            je_items_sum[accId] = { ...item };
-                            je_items_sum[accId]['debit'] = 0;
-                            je_items_sum[accId]['credit'] = 0;
+                        if (!je_lines_sum[accId]) {
+                            je_lines_sum[accId] = { ...item };
+                            je_lines_sum[accId]['debit'] = 0;
+                            je_lines_sum[accId]['credit'] = 0;
                         }
 
-                        je_items_sum[accId]['debit'] += item?.['debit'] || 0;
-                        je_items_sum[accId]['credit'] += item?.['credit'] || 0;
+                        je_lines_sum[accId]['debit'] += item?.['debit'] || 0;
+                        je_lines_sum[accId]['credit'] += item?.['credit'] || 0;
                     });
 
-                    JELoadPage.LoadJETable(Object.values(je_items_sum) || [])
+                    JELoadPage.LoadJETable(Object.values(je_lines_sum) || [])
+
+                    $('#total-debit').attr('data-init-money', data?.['total_debit'] || 0)
+                    $('#total-credit').attr('data-init-money', data?.['total_credit'] || 0)
 
                     UsualLoadPageFunction.DisablePage(option==='detail')
                 }

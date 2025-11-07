@@ -34,7 +34,7 @@
 {% block dataHiddenGroup %}
     <input type="text" id="url-factory"
            data-currency="{% url 'CurrencyListAPI' %}"
-    >
+           data-fiscal-year="{% url "PeriodsConfigListAPI" %}">
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

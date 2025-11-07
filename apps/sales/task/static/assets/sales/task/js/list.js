@@ -482,7 +482,7 @@ $(function () {
                 let date = moment(newData.end_date, 'YYYY-MM-DD hh:mm:ss').format('YYYY/MM/DD')
                 childHTML.find('.task-deadline').text(date)
                 const assign_to = newData.employee_inherit || newData?.['assign_to']
-                if (Object.keys(assign_to).length > 0) {
+                if (assign_to && Object.keys(assign_to).length > 0) {
                     if (assign_to?.['avatar']) childHTML.find('img').attr('src', assign_to?.['avatar'])
                     else {
                         // let avClass = 'avatar-xs avatar-' + $x.fn.randomColor() 'light'
@@ -522,7 +522,7 @@ $(function () {
                     );
                     childHTML.append($HTMLGroup)
                 }
-                if (Object.keys(newData?.opportunity).length > 0){
+                if (newData?.opportunity && Object.keys(newData?.opportunity).length > 0){
                     childHTML.find('.card-body').append('<span class="float-right active-sales" data-bs-toggle="tooltip"'
                         + 'title="'+newData.opportunity.code +' - '+ newData.opportunity.title+'"><i class="fas far fa-lightbulb"></i></span>')
                 }

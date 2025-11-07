@@ -715,7 +715,7 @@ $(document).ready(function () {
     const $ModalTermForm = $('#modal-add-table form');
 
 
-    function PaymentTermsList() {
+    function PaymentTermsList(dataParams = {}) {
         // init dataTable
         let $tables = $('#datatable-payment-terms');
         $tables.DataTableDefault({
@@ -723,6 +723,7 @@ $(document).ready(function () {
             enableVisibleColumns: false,
             ajax: {
                 url: $tables.attr('data-url'),
+                data: dataParams,
                 dataSrc: "data.payment_terms_list",
             },
             searching: false,
@@ -777,6 +778,9 @@ $(document).ready(function () {
                 {
                     className: 'text-right',
                     render: (data, type, row) => {
+                        // if (row?.['is_delete'] === true) {
+                        //     return DTBControl.addCommonAction({}, row);
+                        // }
                         return `<div class="actions-btn">
                                 <a class="btn btn-icon btn-flush-danger btn-rounded flush-soft-hover delete-btn" title="Delete" href="#" data-id="${row?.['id']}" data-action="delete">
                                    <span class="btn-icon-wrap">
@@ -790,7 +794,33 @@ $(document).ready(function () {
                     width: '10%',
                 }
             ],
+            drawCallback: function () {
+                // dtbHDCustom();
+            },
         });
+    }
+
+    function dtbHDCustom() {
+        let $table = $('#datatable-payment-terms');
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        if (headerToolbar$.length > 0) {
+            if (!$('#btn-recycle-bin').length) {
+                let $group = $(`<div class="btn-filter">
+                                        <button type="button" class="btn btn-light btn-sm ml-1" id="btn-recycle-bin">
+                                            <span><span class="icon"><i class="fas fa-recycle"></i></span><span>Recycle bin</span></span>
+                                        </button>
+                                    </div>`);
+                headerToolbar$.append($group);
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn-recycle-bin').on('click', function () {
+                    if ($.fn.dataTable.isDataTable($table)) {
+                        $table.DataTable().destroy();
+                    }
+                    PaymentTermsList({'is_delete': true});
+                });
+            }
+        }
     }
 
     function UnitTypeChange() {

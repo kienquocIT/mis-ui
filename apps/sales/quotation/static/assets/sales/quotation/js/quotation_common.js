@@ -8032,22 +8032,6 @@ class QuotationSubmitHandle {
         if (is_sale_order === true) {
             _form.dataForm['sale_order_payment_stage'] = QuotationSubmitHandle.setupDataPaymentStage();
             _form.dataForm['sale_order_invoice'] = QuotationSubmitHandle.setupDataInvoice();
-            // validate payment stage submit
-            if (type === 0) {
-                if (_form.dataForm?.['sale_order_payment_stage'] && _form.dataForm?.['total_product']) {
-                    if (_form.dataForm?.['sale_order_payment_stage'].length > 0) {
-                        let totalPayment = 0;
-                        for (let payment of _form.dataForm['sale_order_payment_stage']) {
-                            totalPayment += payment?.['value_total'] ? payment?.['value_total'] : 0;
-                        }
-                        if (totalPayment !== _form.dataForm?.['total_product']) {
-                            $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
-                            return false;
-                        }
-                    }
-                }
-            }
-
         }
         // attachment
         if (_form.dataForm.hasOwnProperty('attachment')) {

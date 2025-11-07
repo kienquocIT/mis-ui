@@ -1,22 +1,12 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Chart of accounts' %}{% endblock %}
+{% block title %}{% trans 'Chart of account' %}{% endblock %}
 {% block cssHeader %}
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-{#    <a href="{% url "AdvancePaymentCreate" %}">#}
-{#        <button class="btn btn-outline-primary" type="button">#}
-{#            <span>#}
-{#                <span>{% trans 'Add' %}</span>#}
-{#                <span class="icon">#}
-{#                    <i class="fa-solid fa-plus"></i>#}
-{#                </span>#}
-{#            </span>#}
-{#        </button>#}
-{#    </a>#}
 {% endblock %}
 {% block pageContent %}
     <script id="trans-script"
@@ -27,10 +17,10 @@
     ></script>
     <div class="row">
         <div class="col-12 col-md-3 col-lg-3">
-            {% include 'accountingsettings/chart_of_accounts/common/tab_menu.html' %}
+            {% include 'accountingsettings/chart_of_account/common/tab_menu.html' %}
         </div>
         <div class="col-12 col-md-9 col-lg-9">
-            {% include 'accountingsettings/chart_of_accounts/common/tab_table.html' %}
+            {% include 'accountingsettings/chart_of_account/common/tab_table.html' %}
         </div>
     </div>
     <div class="row mt-5">
@@ -60,8 +50,8 @@
     </div>
 {% endblock %}
 {% block modalData %}
-    {% include 'accountingsettings/chart_of_accounts/common/modals.html' %}
+    {% include 'accountingsettings/chart_of_account/common/modals.html' %}
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'assets/js/accountingsettings/chartofaccounts/chartofaccounts.js' %}"></script>
+    <script src="{% static 'assets/js/accountingsettings/chart_of_account/chart_of_account.js' %}"></script>
 {% endblock %}

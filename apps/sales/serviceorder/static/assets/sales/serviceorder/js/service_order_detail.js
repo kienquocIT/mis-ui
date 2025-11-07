@@ -25,14 +25,16 @@ $(document).ready(async function() {
             IndicatorControl.$canvas.offcanvas('show');
         });
     }
-
+    WindowControl.showLoading()
     await ServiceOrderPageHandler.initializeCommonData();
     await ServiceOrderPageHandler.loadServiceOrderData($('#form-detail-service-order').attr('data-url'), true);
+    WindowControl.hideLoading()
     UsualLoadPageFunction.DisablePage(true, [
         '.btn-close', '.modal-header button', '#view-dashboard',
         '#btn-open-exchange-modal', '.btn-list-task',
         '.btn-open-service-delivery', '.btn-open-work-order-cost',
-        '.btn-open-contribution-package', '.btn-open-product-attribute'
+        '.btn-open-contribution-package', '.btn-open-product-attribute', '#version-select', '.btn-open-payment-detail',
+        '.btn-open-reconcile'
     ]);
     handleDetailEvents()
     handleClickIndicator()

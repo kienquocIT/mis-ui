@@ -21,21 +21,59 @@
 {% block pageContent %}
     <div class="row">
         <div class="col-12">
+            <div class="row">
+                <div class="col-12 col-md-3 col-lg-3">
+                    <div class="bflow-mirrow-card">
+                        <div class="text-center">
+                            <span id="summarize-total-je" class="text-blue fw-bold h3"></span><br>
+                            <h5 class="text-muted mt-3">{% trans 'Total journal entry' %}</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3 col-lg-3">
+                    <div class="bflow-mirrow-card">
+                        <div class="text-center">
+                            <span id="summarize-total-debit" class="text-blue mask-money fw-bold h3"></span><br>
+                            <h5 class="text-muted mt-3">{% trans 'Total debit' %}</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3 col-lg-3">
+                    <div class="bflow-mirrow-card">
+                        <div class="text-center">
+                            <span id="summarize-total-credit" class="text-blue mask-money fw-bold h3"></span><br>
+                            <h5 class="text-muted mt-3">{% trans 'Total credit' %}</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3 col-lg-3">
+                    <div class="bflow-mirrow-card">
+                        <div class="text-center">
+                            <span id="summarize-total-source-type" class="text-blue fw-bold h3"></span>
+                            <h5 class="text-muted mt-3">{% trans 'Total source type' %}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 mt-5">
             <table class="table nowrap w-100"
                    id="je-table-list"
                    data-method="GET"
                    data-url="{% url 'JournalEntryListAPI' %}"
                    data-url-detail="{% url 'JournalEntryDetail' '0' %}"
+                   data-url-summarize="{% url 'JournalEntrySummarizeAPI' %}"
             >
                 <thead>
                 <tr>
                     <th style="min-width: 50px"></th>
-                    <th style="min-width: 100px">{% trans "Code" %}</th>
+                    <th style="min-width: 150px">{% trans "Code" %}</th>
                     <th style="min-width: 150px">{% trans 'Original transaction' %}</th>
-                    <th style="min-width: 150px">{% trans 'Transaction code' %}</th>
-                    <th style="min-width: 150px">{% trans 'Employee created' %}</th>
-                    <th style="min-width: 150px">{% trans 'Date created' %}</th>
-                    <th style="min-width: 150px">{% trans 'Type' %}</th>
+                    <th style="min-width: 200px">{% trans 'Employee created' %}</th>
+                    <th style="min-width: 200px">{% trans 'Date created' %}</th>
+                    <th style="min-width: 300px">{% trans 'Total debit' %} - {% trans 'Total credit' %}</th>
+                    <th style="min-width: 150px">{% trans 'State' %}</th>
+                    <th style="min-width: 150px">{% trans 'System status' %}</th>
                 </tr>
                 </thead>
                 <tbody></tbody>

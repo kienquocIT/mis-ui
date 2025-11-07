@@ -59,7 +59,7 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-md w-10',
+                        className: 'ellipsis-cell-sm w-10',
                         render: (data, type, row) => {
                             if (row?.['system_status'] === 3) {
                                 let gr_state = row?.['created_goods_receipt'] ? `<span class="text-success">${$.fn.gettext('Finished')} <i class="fa-solid fa-check"></i></span>` : `<span class="text-blue">${$.fn.gettext('GR is pending')}</span>`;

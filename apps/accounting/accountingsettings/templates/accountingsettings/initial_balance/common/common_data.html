@@ -8,26 +8,25 @@
                 <div class="row">
                     <div class="col-md-4 col-lg-4">
                         <div class="form-group">
-                            <label class="form-label required" for="openingDate">{% trans 'Opening Date' %}</label>
+                            <label class="form-label" for="accountingPeriod">{% trans 'Accounting Period' %}</label>
+                            <select id="accountingPeriod" class="form-select select2"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label" for="openingDate">{% trans 'Opening Balance Date' %}</label>
                             <div class="input-group mb-3">
                                 <span class="input-affix-wrapper">
                                     <span class="input-prefix">📅</span>
-                                    <input type="text" name="opening_date" class="form-control" autocomplete="off" id="openingDate" required>
+                                    <input type="text" name="opening_date" class="form-control" autocomplete="off" id="openingDate" disabled>
                                 </span>
                             </div>
-                            <small class="text-muted">{% trans 'Usually the first day of the fiscal year' %}</small>
                         </div>
                     </div>
                     <div class="col-md-4 col-lg-4">
                         <div class="form-group">
                             <label class="form-label" for="fiscalYear">{% trans 'Fiscal Year' %}</label>
                             <input class="form-control" type="text" id="fiscalYear" disabled>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-lg-4">
-                        <div class="form-group">
-                            <label class="form-label" for="accountingPeriod">{% trans 'Accounting Period' %}</label>
-                            <input type="text" id="accountingPeriod" class="form-control" disabled>
                         </div>
                     </div>
                 </div>

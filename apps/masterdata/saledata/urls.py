@@ -127,11 +127,11 @@ urlpatterns = [
         'masterdata/periodsconfig/api/<str:pk>', PeriodsConfigDetailAPI.as_view(),
         name='PeriodsConfigDetailAPI'
     ),
-      path(
+    path(
           'masterdata/accounting_policies', AccountingPoliciesList.as_view(),
           name='AccountingPoliciesList'
       ),
-      path(
+    path(
           'masterdata/accounting_policies/api', AccountingPoliciesListAPI.as_view(),
           name='AccountingPoliciesListAPI'
       ),

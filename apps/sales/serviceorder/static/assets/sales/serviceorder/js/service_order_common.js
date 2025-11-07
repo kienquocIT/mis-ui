@@ -3226,6 +3226,11 @@ const ServiceOrder = (function($) {
             const rowData = table.row($row).data()
 
             const unitCost = parseFloat($input.attr('value')) || 0
+
+            //auto check row
+            if (unitCost > 0){
+                $row.find('input[name="select-pc"]').prop('checked', true)
+            }
             const deliveredQuantity = rowData.delivered_quantity || 0
             const totalCost = unitCost * deliveredQuantity
 
@@ -3245,6 +3250,11 @@ const ServiceOrder = (function($) {
             const deliveredQuantity = parseFloat($input.val()) || 0
             const unitCost = rowData.unit_cost || 0
             const totalCost = unitCost * deliveredQuantity
+
+            //auto check row
+            if (deliveredQuantity > 0){
+                $row.find('input[name="select-pc"]').prop('checked', true)
+            }
 
             rowData.delivered_quantity = deliveredQuantity
             rowData.total_cost = totalCost
@@ -3432,6 +3442,12 @@ const ServiceOrder = (function($) {
 
     function handleChangeProductContributionPercentage(){
         pageElement.modalData.$tableProductContribution.on('input change', '.pc-contribution', function(e) {
+            const $ele = $(e.currentTarget)
+            const $row = $ele.closest('tr')
+            // auto check row
+            if ($ele.val() > 0){
+                $row.find('input[name="select-pc"]').prop('checked', true)
+            }
             updateRemainingContributionDisplay()
         })
     }

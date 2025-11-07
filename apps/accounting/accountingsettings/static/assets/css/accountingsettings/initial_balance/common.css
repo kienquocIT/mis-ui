@@ -1,0 +1,40 @@
+/* Initial Balance - Common Styles */
+
+/* Widget Container - Balance Summary (Right Sidebar) */
+.balance-summary-widget-container {
+    position: fixed;
+    top: 65px;
+    right: 0;
+    width: 320px;
+    height: calc(100vh - 65px);
+    background-color: #f1f3f5;
+    padding: 15px;
+    z-index: 100;
+}
+
+.balance-summary-card {
+    top: 15px;
+}
+
+/* Balance Summary Items */
+.balance-summary-item {
+    font-size: 13px;
+}
+
+.balance-summary-value {
+    font-family: 'Courier New', monospace;
+}
+
+/* Total Balance Row */
+.balance-total-row {
+    border-top: 2px solid #2c3e50;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+/* Responsive - Only show widget on desktop */
+@media (min-width: 768px) {
+    .main-content-with-widget {
+        padding-right: 350px !important;
+    }
+}

@@ -4,7 +4,7 @@ from apps.accounting.accountingsettings.views import (
     AccountDeterminationList, AccountDeterminationListAPI, WarehouseAccountDeterminationListAPI,
     ProductTypeAccountDeterminationListAPI, ProductAccountDeterminationListAPI, WarehouseAccountDeterminationDetailAPI,
     ProductTypeAccountDeterminationDetailAPI, ProductAccountDeterminationDetailAPI, AccountDeterminationDetailAPI,
-    DimensionDefinitionList, DimensionDefinitionListAPI,
+    InitialBalanceList, InitialBalanceListAPI, DimensionDefinitionList, DimensionDefinitionListAPI,
     DimensionDefinitionDetailAPI, DimensionValueList, DimensionDefinitionWithValueAPI, DimensionValueListAPI,
     DimensionValueDetailAPI
 )
@@ -25,6 +25,10 @@ urlpatterns = [
 ] + [
     path('product-account-determination/list/api', ProductAccountDeterminationListAPI.as_view(), name='ProductAccountDeterminationListAPI'),
     path('product-account-determination/detail/api/<str:pk>', ProductAccountDeterminationDetailAPI.as_view(), name='ProductAccountDeterminationDetailAPI'),
+    # initial balance
+] + [
+    path('initial_balance/list', InitialBalanceList.as_view(), name='InitialBalanceList'),
+    path('initial_balance/list/api', InitialBalanceListAPI.as_view(), name='InitialBalanceListAPI'),
 ]
 
 # dimension

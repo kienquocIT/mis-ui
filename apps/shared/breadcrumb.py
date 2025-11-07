@@ -489,7 +489,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Accounting
     CHART_OF_ACCOUNTS_LIST_PAGE = BreadcrumbChildren(_('Chart of account'), 'ChartOfAccountsList')
     ACCOUNT_DETERMINATION_LIST_PAGE = BreadcrumbChildren(_('Account determination'),
-                                                                'DefaultAccountDeterminationList')
+                                                                 'AccountDeterminationList')
+    INITIAL_BALANCE_LIST_PAGE = BreadcrumbChildren(_('Opening Balance Setup'), 'InitialBalanceList')
     DIMENSION_DEFINITION_LIST_PAGE = BreadcrumbChildren(_('Dimension definition'), 'DimensionDefinitionList')
     DIMENSION_VALUE_LIST_PAGE = BreadcrumbChildren(_('Dimension value'), 'DimensionValueList')
 
@@ -1567,4 +1568,8 @@ class BreadcrumbView:
 
     PAYROLL_CONFIG_PAGE = [
         BreadcrumbItem.PAYROLL_CONFIG_PAGE
+    ]
+
+    INITIAL_BALANCE_LIST_PAGE = [
+        BreadcrumbItem.INITIAL_BALANCE_LIST_PAGE
     ]

@@ -1049,3 +1049,5 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # HRM - Payroll
     PAYROLL_CONFIG = StringUrl('hrm/payroll/payrollconfig/config')
     PAYROLL_ATTRIBUTE = StringUrl('hrm/payroll/payrollattribute/list')
+
+    INITIAL_BALANCE_LIST = StringUrl('accounting-setting/initial-balance/list')

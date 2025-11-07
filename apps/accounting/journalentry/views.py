@@ -54,7 +54,6 @@ class JournalEntryListAPI(APIView):
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.JOURNAL_ENTRY_LIST).get(params)
-        print(resp.result)
         return resp.auto_return(key_success='journal_entry_list')
 
 

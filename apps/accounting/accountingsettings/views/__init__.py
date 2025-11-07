@@ -3,4 +3,5 @@ from .account_determination import *
 from .product_account_determination import *
 from .product_type_account_determination import *
 from .warehouse_account_determination import *
+from .initial_balance import *
 from .dimension import *

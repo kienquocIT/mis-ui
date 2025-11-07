@@ -368,6 +368,7 @@ class ServiceOrderPageHandler {
         ServiceOrder.initServiceDetailDataTable(data.service_detail_data);
         ServiceOrder.loadServiceDetailRelatedData(data.service_detail_data);
         ServiceOrder.loadServiceDetailSummaryValue();
+        ServiceOrder.loadWorkOrderDetailSummaryValue();
 
         // Work
         const workOrderData = data.work_order_data.map(wo => ({

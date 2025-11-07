@@ -48,6 +48,9 @@ const ServiceOrder = (function($) {
         workOrder:{
             $table: $('#table-work-order'),
             $btnAddNonItem: $('#btn-add-non-item'),
+            $pretaxValue: $('#work-order-pretax-value'),
+            $taxValue: $('#work-order-taxes-value'),
+            $totalValue: $('#work-order-total-value'),
         },
         payment: {
             $table: $('#table-payment'),
@@ -284,6 +287,75 @@ const ServiceOrder = (function($) {
 
         // Reinitialize money formatting
         $.fn.initMaskMoney2()
+    }
+
+    function loadWorkOrderDetailSummaryValue(){
+        const table = pageElement.workOrder.$table.DataTable();
+        let pretaxTotal = 0;
+        let taxTotal = 0;
+        let grandTotal = 0;
+
+        // Calculate totals from all work order rows
+        table.rows().every(function() {
+            const rowData = this.data();
+            const quantity = rowData.quantity || 0;
+            const workOrderId = rowData.id;
+
+            // Get the cost breakdown for this work order
+            const costDataList = pageVariable.workOrderCostData[workOrderId] || [];
+
+            let rowPretaxTotal = 0;
+            let rowTaxTotal = 0;
+
+            // Calculate totals from cost breakdown
+            costDataList.forEach(costItem => {
+                const costQuantity = costItem.quantity || 0;
+                const unitCost = costItem.unit_cost || 0;
+                const subtotal = costQuantity * unitCost;
+
+                // Get tax rate
+                let taxRate = 0;
+                if (costItem.tax_id && pageVariable.taxList) {
+                    const taxData = pageVariable.taxList.find(tax => tax.id === costItem.tax_id);
+                    taxRate = taxData ? (taxData.rate || 0) / 100 : 0;
+                }
+
+                const taxAmount = subtotal * taxRate;
+                const total = subtotal + taxAmount;
+
+                // Apply currency exchange rate if needed
+                let exchangeRate = 1;
+                if (costItem.currency_id && pageVariable.currencyList) {
+                    const currencyData = pageVariable.currencyList.find(currency => currency.id === costItem.currency_id);
+                    exchangeRate = currencyData ? (currencyData.rate || 1) : 1;
+                }
+
+                // Add to row totals (in base currency)
+                rowPretaxTotal += subtotal * exchangeRate;
+                rowTaxTotal += taxAmount * exchangeRate;
+            });
+
+            // Multiply by work order quantity
+            const finalPretaxTotal = rowPretaxTotal * quantity;
+            const finalTaxTotal = rowTaxTotal * quantity;
+
+            // Add to grand totals
+            pretaxTotal += finalPretaxTotal;
+            taxTotal += finalTaxTotal;
+            grandTotal += finalPretaxTotal + finalTaxTotal;
+        });
+
+        // Update the summary fields if they exist
+        // You'll need to add these elements to your HTML if they don't exist
+        if (pageElement.workOrder.$pretaxValue) {
+            pageElement.workOrder.$pretaxValue.attr('value', pretaxTotal);
+        }
+        if (pageElement.workOrder.$taxValue) {
+            pageElement.workOrder.$taxValue.attr('value', taxTotal);
+        }
+        if (pageElement.workOrder.$totalValue) {
+            pageElement.workOrder.$totalValue.attr('value', grandTotal);
+        }
     }
 
 // --------------------LOAD DATA---------------------
@@ -2733,6 +2805,7 @@ const ServiceOrder = (function($) {
             rowData.total_value = totalData.total_value
             rowData.exchanged_total_value = totalData.exchanged_total_value
             table.row($row).data(rowData).draw(false)
+            loadWorkOrderDetailSummaryValue()
         })
         pageElement.workOrder.$table.on('change', '.work-order-description', function (e) {
             const $ele = $(e.currentTarget)
@@ -2934,6 +3007,8 @@ const ServiceOrder = (function($) {
             workOrderRowData.unit_cost = totalAmount
             workOrderRowData.total_value = totalAmount * workOrderRowData.quantity
             pageElement.workOrder.$table.DataTable().row(workOrderRow).data(workOrderRowData).draw(false)
+
+            loadWorkOrderDetailSummaryValue()
         })
     }
 
@@ -4919,6 +4994,8 @@ const ServiceOrder = (function($) {
                     cleanupWorkOrderRelatedData(workOrderId);
                 }
             });
+
+            loadWorkOrderDetailSummaryValue()
         });
     }
 
@@ -4992,6 +5069,8 @@ const ServiceOrder = (function($) {
 
             // Simply remove the row from the table without saving
             table.row($row).remove().draw(false)
+
+            loadWorkOrderDetailSummaryValue()
         });
     }
 
@@ -5260,6 +5339,7 @@ const ServiceOrder = (function($) {
         handleChangeServicePrice,
         handleChangeServiceDescription,
         loadServiceDetailSummaryValue,
+        loadWorkOrderDetailSummaryValue,
         handleChangeServicePercentage,
 
         handleChangeWorkOrderDetail,

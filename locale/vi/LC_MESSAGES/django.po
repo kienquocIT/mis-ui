@@ -10644,10 +10644,6 @@ msgid "Chart of account"
 msgstr "Danh sách tài khoản"
 
 #
-msgid "Account determination"
-msgstr "Xác định TK kế toán mặc định"
-
-#
 msgid "Trading account type"
 msgstr "Loại tài khoản giao dịch"
 

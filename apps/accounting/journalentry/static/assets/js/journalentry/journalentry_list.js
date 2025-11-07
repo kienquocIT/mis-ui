@@ -59,13 +59,15 @@ $(document).ready(function() {
                         }
                     },
                     {
-                        className: 'text-center w-20',
+                        className: 'w-20',
                         render: (data, type, row) => {
-                            return `<span class="mask-money" data-init-money="${row?.['total_debit'] || 0}"></span> - <span class="mask-money" data-init-money="${row?.['total_credit'] || 0}"></span>`;
+                            let total_debit = parseFloat(row?.['total_debit'] || 0)
+                            let total_credit = parseFloat(row?.['total_credit'] || 0)
+                            return `<span class="mask-money" data-init-money="${total_debit}"></span> - <span class="mask-money" data-init-money="${total_credit}"></span>`;
                         }
                     },
                     {
-                        className: 'text-center w-10',
+                        className: 'w-10',
                         render: (data, type, row) => {
                             let total_debit = parseFloat(row?.['total_debit'] || 0)
                             let total_credit = parseFloat(row?.['total_credit'] || 0)

@@ -71,7 +71,7 @@ $(document).ready(function() {
                         render: (data, type, row) => {
                             let total_debit = parseFloat(row?.['total_debit'] || 0)
                             let total_credit = parseFloat(row?.['total_credit'] || 0)
-                            return total_debit === total_credit ? `<span class="text-success h6">${$.fn.gettext('Balanced')}</span>` : `<span class="text-danger h6">${$.fn.gettext('Not balanced')}</span>`;
+                            return total_debit === total_credit ? `<span class="text-success h6">${$.fn.gettext('Balanced')}</span>` : `<span class="text-danger h6">${$.fn.gettext('Imbalance')}</span>`;
                         }
                     },
                     {

@@ -20,8 +20,12 @@
           data-url="{% url 'InitialBalanceListAPI' %}"
           data-url-redirect="{% url 'InitialBalanceList' %}">
         {% csrf_token %}
-        {% include 'accountingsettings/initial_balance/common/common_data.html' %}
-        {% include 'accountingsettings/initial_balance/common/tab_data.html' %}
+        <div class="row">
+            <div class="col-12">
+                {% include 'accountingsettings/initial_balance/common/common_data.html' %}
+                {% include 'accountingsettings/initial_balance/common/tab_data.html' %}
+            </div>
+        </div>
     </form>
 {% endblock %}
 {% block modalData %}

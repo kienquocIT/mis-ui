@@ -54,6 +54,10 @@ msgid "Balanced"
 msgstr "Đã cân bằng"
 
 #
+msgid "Imbalance"
+msgstr "Chưa cân bằng"
+
+#
 msgid "Dimensions"
 msgstr "Các chiều phân tích"
 

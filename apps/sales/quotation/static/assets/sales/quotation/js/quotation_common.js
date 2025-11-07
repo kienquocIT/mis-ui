@@ -2824,7 +2824,7 @@ class QuotationLoadDataHandle {
     };
 
     static loadTableDisabled(table) {
-        if (['get'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+        if (table.length > 0 && ['get'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
             for (let ele of table[0].querySelectorAll('.table-row-item')) {
                 ele.setAttribute('readonly', 'true');
             }

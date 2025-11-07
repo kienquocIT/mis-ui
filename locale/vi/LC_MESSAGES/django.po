@@ -10640,11 +10640,11 @@ msgid "Accounting setting"
 msgstr "Thiết lập kế toán"
 
 #
-msgid "Chart of accounts"
+msgid "Chart of account"
 msgstr "Danh sách tài khoản"
 
 #
-msgid "Default account determination"
+msgid "Account determination"
 msgstr "Xác định TK kế toán mặc định"
 
 #

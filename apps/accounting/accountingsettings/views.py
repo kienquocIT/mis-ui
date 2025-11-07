@@ -9,7 +9,7 @@ class ChartOfAccountsList(View):
 
     @mask_view(
         auth_require=True,
-        template='accountingsettings/chart_of_accounts/chart_of_accounts_list.html',
+        template='accountingsettings/chart_of_account/chart_of_account_list.html',
         breadcrumb='CHART_OF_ACCOUNTS_LIST_PAGE',
         menu_active='menu_chart_of_accounts_list',
         icon_cls='fas fa-list-alt',
@@ -43,13 +43,13 @@ class ChartOfAccountsListAPI(APIView):
     #     return resp.auto_return()
 
 
-class DefaultAccountDeterminationList(View):
+class AccountDeterminationList(View):
 
     @mask_view(
         auth_require=True,
-        template='accountingsettings/default_account_determination/default_account_determination.html',
-        breadcrumb='DEFAULT_ACCOUNT_DETERMINATION_LIST_PAGE',
-        menu_active='menu_DEFAULT_ACCOUNT_DETERMINATION_LIST',
+        template='accountingsettings/account_determination/account_determination.html',
+        breadcrumb='ACCOUNT_DETERMINATION_LIST_PAGE',
+        menu_active='menu_account_determination_list',
         icon_cls='fas bi bi-journal-text',
         icon_bg='bg-primary',
     )
@@ -57,7 +57,7 @@ class DefaultAccountDeterminationList(View):
         return {}, status.HTTP_200_OK
 
 
-class DefaultAccountDeterminationListAPI(APIView):
+class AccountDeterminationListAPI(APIView):
     permission_classes = [IsAuthenticated]  # noqa
 
     @mask_view(
@@ -66,19 +66,19 @@ class DefaultAccountDeterminationListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.DEFAULT_ACCOUNT_DETERMINATION_LIST).get(params)
-        return resp.auto_return(key_success='default_account_determination_list')
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_DETERMINATION_LIST).get(params)
+        return resp.auto_return(key_success='account_determination_list')
 
 
-class DefaultAccountDeterminationDetailAPI(APIView):
+class AccountDeterminationDetailAPI(APIView):
     @mask_view(
         login_require=True,
         auth_require=True,
         is_api=True,
     )
     def put(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DEFAULT_ACCOUNT_DETERMINATION_DETAIL.fill_key(pk=pk)).put(request.data)
-        return resp.auto_return(key_success='detail')
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_DETERMINATION_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='account_determination_detail')
 
 
 class WarehouseAccountDeterminationListAPI(APIView):

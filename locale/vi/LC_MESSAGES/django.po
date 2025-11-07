@@ -6006,7 +6006,7 @@ msgstr "Bán hàng online"
 
 #
 msgid "Please complete associations data"
-msgstr "Vui lòng hoàn thành dữ liệu liên kết trạm"
+msgstr "Vui lòng hoàn thành các liên kết trạm"
 
 #
 msgid "Stage"
@@ -12326,3 +12326,7 @@ msgstr "Phiên bản đơn dịch vụ"
 #
 msgid "Delivery quantity"
 msgstr "SL giao hàng"
+
+#
+msgid "Node initial is required"
+msgstr "Trạm khởi tạo là bắt buộc"

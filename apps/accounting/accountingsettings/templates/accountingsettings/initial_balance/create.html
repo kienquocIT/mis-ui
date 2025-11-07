@@ -28,11 +28,15 @@
      {% include 'accountingsettings/initial_balance/common/modal_data.html' %}
 {% endblock %}
 {% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+           data-currency="{% url 'CurrencyListAPI' %}"
+    >
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static "assets/js/accountingsettings/initial_balance/common.js" %}"></script>
     <script src="{% static "assets/js/accountingsettings/initial_balance/tab_data/tab_money.js" %}"></script>
+    <script src="{% static "assets/js/accountingsettings/initial_balance/tab_data/tab_merchandise.js" %}"></script>
     <script src="{% static "assets/js/accountingsettings/initial_balance/create.js" %}"></script>
 {% endblock %}

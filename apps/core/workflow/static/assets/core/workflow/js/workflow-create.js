@@ -104,9 +104,10 @@ $(function () {
             if (_form.dataForm.hasOwnProperty('node') && _form.dataForm.hasOwnProperty('association')) {
                 let initial_order = null;
                 let approved_order = null;
-                let completed_order = null;
+                // let completed_order = null;
                 let checkHasInitial = false;
-                let checkApprovedToComplete = false;
+                let checkHasApproved = false;
+                // let checkApprovedToComplete = false;
                 for (let node of _form.dataForm?.['node']) {
                     if (node?.['code_node_system'] === 'initial') {
                         initial_order = node?.['order'];
@@ -114,12 +115,12 @@ $(function () {
                     if (node?.['code_node_system'] === 'approved') {
                         approved_order = node?.['order'];
                     }
-                    if (node?.['code_node_system'] === 'completed') {
-                        completed_order = node?.['order'];
-                    }
+                    // if (node?.['code_node_system'] === 'completed') {
+                    //     completed_order = node?.['order'];
+                    // }
                 }
                 for (let assoc of _form.dataForm?.['association']) {
-                    if (assoc?.['node_in'] === initial_order || assoc?.['node_out'] === initial_order) {
+                    if (assoc?.['node_in'] === initial_order) {
                         checkHasInitial = true;
                         break;
                     }
@@ -129,15 +130,19 @@ $(function () {
                     return false;
                 }
                 for (let assoc of _form.dataForm?.['association']) {
-                    if (assoc?.['node_in'] === approved_order && assoc?.['node_out'] === completed_order) {
-                        checkApprovedToComplete = true;
+                    if (assoc?.['node_out'] === approved_order && assoc?.['node_in'] !== initial_order) {
+                        checkHasApproved = true;
                         break;
                     }
                 }
-                if (checkApprovedToComplete === false) {
-                    $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-association')}, 'failure');
+                if (checkHasApproved === false) {
+                    $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-require-node-approved')}, 'failure');
                     return false;
                 }
+                // if (checkApprovedToComplete === false) {
+                //     $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-association')}, 'failure');
+                //     return false;
+                // }
             }
             let submitFields = [
                 'title',

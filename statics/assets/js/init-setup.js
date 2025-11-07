@@ -3644,8 +3644,8 @@ class WFRTControl {
             if (btnCancel.length <= 0 && btnEnableCR.length <= 0) {
                 let buttons = ``;
                 if (type === 'all') {
-                    buttons = `<button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnEnableCR" data-value="1">${$.fn.transEle.attr('data-change-request')}</button>
-                                <button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnCancel" data-value="2">${$.fn.transEle.attr('data-cancel')}</button>`;
+                    buttons = `<button type="button" class="btn btn-primary btn-wf-after-finish" id="btnEnableCR" data-value="1">${$.fn.transEle.attr('data-change-request')}</button>
+                                <button type="button" class="btn btn-danger btn-wf-after-finish" id="btnCancel" data-value="2">${$.fn.transEle.attr('data-cancel')}</button>`;
                 }
                 if (type === 'change') {
                     buttons = `<button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnEnableCR" data-value="1">${$.fn.transEle.attr('data-change-request')}</button>`;

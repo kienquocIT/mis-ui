@@ -972,21 +972,21 @@ class MenusFinancials:
                 name='Account determination', code='menu_account_determination_list', view_name='AccountDeterminationList',
                 icon='<i class="fas bi bi-journal-text"></i>',
             ),
-            MenuCommon(
-                name='Initial balance', code='menu_initial_balance',
-                view_name='InitialBalanceList',
-                icon='<i class="fas fa-chart-bar"></i>',
-            ),
-            MenuCommon(
-                name='Dimension Definition', code='menu_dimension_definition_list',
-                view_name='DimensionDefinitionList',
-                icon='<i class="fa fa-pen-ruler"></i>',
-            ),
-            MenuCommon(
-                name='Dimension Value', code='menu_dimension_value_list',
-                view_name='DimensionValueList',
-                icon='<i class="fa fa-table"></i>',
-            ),
+            # MenuCommon(
+            #     name='Initial balance', code='menu_initial_balance',
+            #     view_name='InitialBalanceList',
+            #     icon='<i class="fas fa-chart-bar"></i>',
+            # ),
+            # MenuCommon(
+            #     name='Dimension Definition', code='menu_dimension_definition_list',
+            #     view_name='DimensionDefinitionList',
+            #     icon='<i class="fa fa-pen-ruler"></i>',
+            # ),
+            # MenuCommon(
+            #     name='Dimension Value', code='menu_dimension_value_list',
+            #     view_name='DimensionValueList',
+            #     icon='<i class="fa fa-table"></i>',
+            # ),
         ],
     )
     ASSET = MenuCommon(

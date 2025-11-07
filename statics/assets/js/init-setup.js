@@ -6779,7 +6779,7 @@ class DocumentControl {
                 $breadcrumbCode.html(
                     `
                     <span class="${clsState}"></span>
-                    <b class="fs-7 text-primary" id="documentCode" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${code}</b>
+                    <b class="fs-6 text-primary" id="documentCode" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${code}</b>
                 `
                 ).removeClass('hidden');
             }

@@ -965,11 +965,11 @@ class MenusFinancials:
         name='Accounting setting', code='', view_name='', icon='<i class="fas fa-cog"></i>',
         child=[
             MenuCommon(
-                name='Chart of accounts', code='menu_chart_of_accounts_list', view_name='ChartOfAccountsList',
+                name='Chart of account', code='menu_chart_of_accounts_list', view_name='ChartOfAccountsList',
                 icon='<i class="fas fa-list-alt"></i>',
             ),
             MenuCommon(
-                name='Default account determination', code='menu_default_account_determination_list', view_name='DefaultAccountDeterminationList',
+                name='Account determination', code='menu_account_determination_list', view_name='AccountDeterminationList',
                 icon='<i class="fas bi bi-journal-text"></i>',
             ),
             MenuCommon(

@@ -924,6 +924,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
         'accounting-setting/product-type-account-determination/detail/{pk}')
     PRODUCT_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/product-account-determination/list')
     PRODUCT_ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/product-account-determination/detail/{pk}')
+    DIMENSION_DEFINITION_LIST = StringUrl('accounting-setting/dimension-definition/list')
+    DIMENSION_DEFINITION_DETAIL = StringUrl('accounting-setting/dimension-definition/detail/{pk}')
+    DIMENSION_DEFINITION_WITH_VALUES = StringUrl('accounting-setting/dimension-definition-values/{pk}')
+    DIMENSION_VALUE_LIST = StringUrl('accounting-setting/dimension-value/list')
+    DIMENSION_VALUE_DETAIL = StringUrl('accounting-setting/dimension-value/detail/{pk}')
 
     JOURNAL_ENTRY_LIST = StringUrl('journal-entry/list')
     JOURNAL_ENTRY_DETAIL = StringUrl('journal-entry/detail/{pk}')

@@ -491,6 +491,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     DEFAULT_ACCOUNT_DETERMINATION_LIST_PAGE = BreadcrumbChildren(_('Default account determination'),
                                                                  'DefaultAccountDeterminationList')
     DIMENSION_DEFINITION_LIST_PAGE = BreadcrumbChildren(_('Dimension definition'), 'DimensionDefinitionList')
+    DIMENSION_VALUE_LIST_PAGE = BreadcrumbChildren(_('Dimension value'), 'DimensionValueList')
 
     # Journal entry
     JOURNAL_ENTRY_LIST_PAGE = BreadcrumbChildren(_('Journal entry'), 'JournalEntryList')
@@ -1428,6 +1429,9 @@ class BreadcrumbView:
     ]
     DIMENSION_DEFINITION_LIST_PAGE = [
         BreadcrumbItem.DIMENSION_DEFINITION_LIST_PAGE
+    ]
+    DIMENSION_VALUE_LIST_PAGE = [
+        BreadcrumbItem.DIMENSION_VALUE_LIST_PAGE
     ]
 
     JOURNAL_ENTRY_LIST_PAGE = [BreadcrumbItem.JOURNAL_ENTRY_LIST_PAGE]

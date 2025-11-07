@@ -4,7 +4,9 @@ from apps.accounting.accountingsettings.views import (
     DefaultAccountDeterminationList, DefaultAccountDeterminationListAPI, WarehouseAccountDeterminationListAPI,
     ProductTypeAccountDeterminationListAPI, ProductAccountDeterminationListAPI, WarehouseAccountDeterminationDetailAPI,
     ProductTypeAccountDeterminationDetailAPI, ProductAccountDeterminationDetailAPI,
-    DefaultAccountDeterminationDetailAPI, DimensionDefinitionList
+    DefaultAccountDeterminationDetailAPI, DimensionDefinitionList, DimensionDefinitionListAPI,
+    DimensionDefinitionDetailAPI, DimensionValueList, DimensionDefinitionWithValueAPI, DimensionValueListAPI,
+    DimensionValueDetailAPI
 )
 
 urlpatterns = [
@@ -23,5 +25,14 @@ urlpatterns = [
 
 # dimension
 urlpatterns += [
+    # view url
     path('dimension-definition/list', DimensionDefinitionList.as_view(), name='DimensionDefinitionList'),
+    path('dimension-value/list', DimensionValueList.as_view(), name='DimensionValueList'),
+
+    # api url
+    path('dimension-definition/list/api', DimensionDefinitionListAPI.as_view(), name='DimensionDefinitionListAPI'),
+    path('dimension-definition/detail/api/<str:pk>', DimensionDefinitionDetailAPI.as_view(), name='DimensionDefinitionDetailAPI'),
+    path('dimension-definition-values/api/<str:pk>', DimensionDefinitionWithValueAPI.as_view(), name='DimensionDefinitionWithValueAPI'),
+    path('dimension-value/list/api', DimensionValueListAPI.as_view(), name='DimensionValueListAPI'),
+    path('dimension-value/detail/api/<str:pk>', DimensionValueDetailAPI.as_view(), name='DimensionValueDetailAPI'),
 ]

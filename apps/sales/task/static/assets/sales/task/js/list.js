@@ -522,10 +522,10 @@ $(function () {
                     );
                     childHTML.append($HTMLGroup)
                 }
-                if (newData?.opportunity && Object.keys(newData?.opportunity).length > 0){
+                if (newData?.opportunity && Object.keys(newData?.opportunity).length > 0)
                     childHTML.find('.card-body').append('<span class="float-right active-sales" data-bs-toggle="tooltip"'
                         + 'title="'+newData.opportunity.code +' - '+ newData.opportunity.title+'"><i class="fas far fa-lightbulb"></i></span>')
-                }
+
                 if (newData?.['service_order'] && Object.keys(newData?.['service_order']).length > 0){
                     const serviceOrder = newData.service_order
                     childHTML.find('.card-body').append('<span class="float-right is-so" data-bs-toggle="tooltip" '
@@ -1081,7 +1081,7 @@ $(function () {
             let dataCurrent = cls.getTaskList
             dataCurrent[index] = data
             cls.setTaskList = dataCurrent
-            tbl.DataTable().row(index).data(data).draw(true)
+            tbl.DataTable().row(index).data(data).draw()
         }
     }
 

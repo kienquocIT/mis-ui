@@ -578,5 +578,5 @@ msgid "Running workflow"
 msgstr "Trong quy trình"
 
 #
-msgid "Compare dashboard mode"
-msgstr "Chế độ so sánh dashboard"
+msgid "Parent"
+msgstr "Cấp trên"

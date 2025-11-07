@@ -1,14 +1,15 @@
 :root {
     /* Độ blur của hiệu ứng kính */
-    --mirrow-blur: 4px;
+    --mirrow-blur: 2px;
 
     /* Bo góc */
     --mirrow-radius: 1rem;
+    --mirrow-radius-btn: 2rem;
 
     /* Các sắc độ dùng lại */
-    --mirrow-border: rgba(255, 255, 255, 0.2);
+    --mirrow-border: rgba(255, 255, 255, 0.25);
     --mirrow-highlight: rgba(255, 255, 255, 0.05);
-    --mirrow-shadow: rgba(0, 0, 0, 0.2);
+    --mirrow-shadow: rgba(0, 0, 0, 0.25);
 
     /* Mặc định opacity = 0.05 nếu không khai báo */
     --mirrow-opacity: 0.05;
@@ -90,16 +91,19 @@
 
 /* Button */
 .bflow-mirrow-btn {
-    padding: 10px 15px;
-    border: none;
-    border-radius: var(--mirrow-radius);
+    padding: 5px 15px;
+    border: 1px solid #9f9f9f;
+    border-radius: var(--mirrow-radius-btn);
     background: rgba(255, 255, 255, var(--mirrow-opacity-btn));
     backdrop-filter: blur(var(--mirrow-blur));
     -webkit-backdrop-filter: blur(var(--mirrow-blur));
     cursor: pointer;
+    vertical-align: middle;
+    display: inline-block;
+    text-align: center;
 
     box-shadow:
-        inset 0 0 0 1px var(--mirrow-border),
+        inset 0 0 0 1px var(--mirrow-radius-btn),
         inset 0 6px 18px var(--mirrow-highlight),
         0 4px 22px var(--mirrow-shadow);
 
@@ -108,7 +112,7 @@
 
 /* Hover / Active */
 .bflow-mirrow-btn:hover {
-    --mirrow-opacity-btn: 0.40;
+    --mirrow-opacity-btn: 0.60;
 }
 
 .bflow-mirrow-btn:active {
@@ -117,16 +121,19 @@
 
 /* Badge */
 .bflow-mirrow-badge {
-    padding: 5px 10px;
-    border: none;
-    border-radius: var(--mirrow-radius);
+    padding: 0px 10px;
+    border: 1px solid #dfdfdf;
+    border-radius: var(--mirrow-radius-btn);
     background: rgba(255, 255, 255, var(--mirrow-opacity-btn));
     backdrop-filter: blur(var(--mirrow-blur));
     -webkit-backdrop-filter: blur(var(--mirrow-blur));
     font-size: smaller;
+    vertical-align: middle;
+    display: inline-block;
+    text-align: center;
 
     box-shadow:
-        inset 0 0 0 1px var(--mirrow-border),
+        inset 0 0 0 1px var(--mirrow-radius-btn),
         inset 0 6px 18px var(--mirrow-highlight),
         0 4px 22px var(--mirrow-shadow);
 

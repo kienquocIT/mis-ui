@@ -1,11 +1,10 @@
 $(document).ready(function () {
     const CHART_COLORS = {
-        primary: '#6366f1',
+        primary: '#3b82f6',
         secondary: '#8b5cf6',
         success: '#10b981',
         danger: '#ef4444',
         warning: '#f59e0b',
-        info: '#3b82f6',
         light: '#f3f4f6',
         dark: '#1f2937'
     }
@@ -129,13 +128,15 @@ $(document).ready(function () {
     function RevenueProfitChartCfg(labelX, data_list, chart_title='', titleX='', titleY='') {
         return {
             textStyle: {
-                fontFamily: 'Arial, Helvetica, sans-serif'
+                fontFamily: 'Arial, Helvetica, sans-serif',
+                color: '#000'
             },
             title: {
                 text: chart_title,
                 left: 'center',
                 textStyle: {
                     fontSize: 14,
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 }
@@ -205,6 +206,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 35,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -219,6 +221,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 60,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -239,7 +242,7 @@ $(document).ready(function () {
             series: data_list.map((item, index) => ({
                 ...item,
                 type: 'line',
-                smooth: true,
+                smooth: 0,
                 emphasis: {
                     focus: 'series',
                     blurScope: 'coordinateSystem',
@@ -249,7 +252,7 @@ $(document).ready(function () {
                     }
                 },
                 lineStyle: {
-                    width: 3
+                    width: 2.5
                 },
                 itemStyle: {
                     borderRadius: 0
@@ -454,12 +457,12 @@ $(document).ready(function () {
             {
                 name: trans_script.attr('data-trans-expected'),
                 data: revenue_expected_data,
-                itemStyle: { color: CHART_COLORS.primary }
+                color: CHART_COLORS.danger
             },
             {
                 name: trans_script.attr('data-trans-reality'),
                 data: revenue_chart_data,
-                itemStyle: { color: CHART_COLORS.danger }
+                color: CHART_COLORS.primary
             }
         ]
 
@@ -467,12 +470,12 @@ $(document).ready(function () {
             {
                 name: trans_script.attr('data-trans-expected'),
                 data: profit_expected_data,
-                itemStyle: { color: CHART_COLORS.info }
+                color: CHART_COLORS.warning
             },
             {
                 name: trans_script.attr('data-trans-reality'),
                 data: profit_chart_data,
-                itemStyle: { color: CHART_COLORS.success }
+                color: CHART_COLORS.success
             }
         ]
 
@@ -487,6 +490,33 @@ $(document).ready(function () {
         }
 
         return [revenue_series_data, profit_series_data]
+    }
+
+    function LoadRevenueGroup(ele, data) {
+        ele.initSelect2({
+            allowClear: true,
+            placeholder: trans_script.attr('data-trans-all'),
+            ajax: {
+                url: ele.attr('data-url'),
+                method: 'GET',
+            },
+            templateResult: function (state) {
+                return $(`<div class="row w-100">
+                    <div class="col-12">
+                        <span>${state.data?.['title']}</span>
+                        <span class="bflow-mirrow-badge">Level ${state.data?.['level'] || ''} ${state.data?.['parent_n']?.['title'] ? `(${$.fn.gettext('Parent')}: ${state.data?.['parent_n']?.['title']})` : ''}</span>
+                    </div>
+                </div>`);
+            },
+            callbackDataResp: function (resp, keyResp) {
+                CURRENT_GROUP.push(...resp.data[keyResp])
+                return resp.data[keyResp]
+            },
+            data: (data ? data : null),
+            keyResp: 'group_list',
+            keyId: 'id',
+            keyText: 'title',
+        })
     }
 
     $('#reload-revenue-profit-data-btn').on('click', function () {
@@ -504,27 +534,6 @@ $(document).ready(function () {
     })
 
     const revenueprofitGroupEle = $('#revenue-profit-group')
-    function LoadRevenueGroup(ele, data) {
-        ele.initSelect2({
-            allowClear: true,
-            placeholder: trans_script.attr('data-trans-all'),
-            ajax: {
-                url: ele.attr('data-url'),
-                method: 'GET',
-            },
-            templateResult: function (state) {
-                return $(`<span>${state.data?.['title']}</span> <span class="bflow-mirrow-badge">Level ${state.data?.['level'] || ''}</span>`);
-            },
-            callbackDataResp: function (resp, keyResp) {
-                CURRENT_GROUP.push(...resp.data[keyResp])
-                return resp.data[keyResp]
-            },
-            data: (data ? data : null),
-            keyResp: 'group_list',
-            keyId: 'id',
-            keyText: 'title',
-        })
-    }
     revenueprofitGroupEle.on('change', function () {
         DrawRevenueProfitChart(false)
     })
@@ -537,12 +546,14 @@ $(document).ready(function () {
     function TopSaleCustomerChartCfg(labelX, data_list, chart_title='', titleX='', titleY='') {
         return {
             textStyle: {
+                color: '#000',
                 fontFamily: 'Arial, Helvetica, sans-serif'
             },
             title: {
                 text: chart_title,
                 left: 'center',
                 textStyle: {
+                    color: '#000',
                     fontSize: 14,
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
@@ -591,6 +602,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 35,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -606,6 +618,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 60,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -896,12 +909,14 @@ $(document).ready(function () {
     function TopCategoryProductChartCfg(labelX, data_list, chart_title='', titleX='', titleY='') {
         return {
             textStyle: {
+                color: '#000',
                 fontFamily: 'Arial, Helvetica, sans-serif'
             },
             title: {
                 text: chart_title,
                 left: 'center',
                 textStyle: {
+                    color: '#000',
                     fontSize: 14,
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
@@ -950,6 +965,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 35,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -965,6 +981,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 60,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -1173,7 +1190,7 @@ $(document).ready(function () {
         
         let series_data = [{
             data: topX_revenue,
-            color: CHART_COLORS.info
+            color: CHART_COLORS.primary
         }]
 
         return [topX_title, series_data]

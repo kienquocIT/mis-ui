@@ -20,12 +20,7 @@
           data-url="{% url 'InitialBalanceListAPI' %}"
           data-url-redirect="{% url 'InitialBalanceList' %}">
         {% csrf_token %}
-        <div class="row">
-            <div class="col-12">
-                {% include 'accountingsettings/initial_balance/common/common_data.html' %}
-                {% include 'accountingsettings/initial_balance/common/tab_data.html' %}
-            </div>
-        </div>
+        {% include 'accountingsettings/initial_balance/common/common_data.html' %}
     </form>
 {% endblock %}
 {% block modalData %}
@@ -33,8 +28,9 @@
 {% endblock %}
 {% block dataHiddenGroup %}
     <input type="text" id="url-factory"
-           data-currency="{% url 'CurrencyListAPI' %}"
-           data-fiscal-year="{% url "PeriodsConfigListAPI" %}">
+           data-url-currency="{% url 'CurrencyListAPI' %}"
+           data-url-accounting-account="{% url 'ChartOfAccountsListAPI' %}"
+    >
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

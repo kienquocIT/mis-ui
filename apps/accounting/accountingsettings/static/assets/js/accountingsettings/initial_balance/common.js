@@ -12,38 +12,8 @@ class InitialBalanceElements {
         this.$urlFactory = $('#url-factory');
     }
 }
-
 const pageElements = new InitialBalanceElements();
 
-
-class InitialBalanceLoadDataHandle {
-    static loadCurrencyData({element, data=null}) {
-        element.initSelect2({
-            allow_clear: true,
-            ajax: {
-                url: pageElements.$urlFactory.attr('data-currency'),
-                method: 'GET'
-            },
-            data: (data ? data : null),
-            keyResp: 'currency_list',
-            keyId: 'id',
-            keyText: 'title',
-        });
-    }
-
-    static loadFiscalYear(fiscalYearData) {
-        pageElements.$accountingPeriodEle.initSelect2({
-            ajax: {
-                url: pageElements.$urlFactory.attr('data-fiscal-year'),
-                method: 'GET'
-            },
-            data: (fiscalYearData ? fiscalYearData : null),
-            keyResp: 'periods_list',
-            keyId: 'id',
-            keyText: 'title',
-        });
-    }
-}
 
 /**
  * Khai báo các hàm chính
@@ -56,13 +26,11 @@ class InitialBalancePageFunction {
 class InitialBalanceEventHandler {
     static InitPageEvent() {
         // event for automating field fiscal year
-        pageElements.$accountingPeriodEle.on('select2:select', function(e) {
-            const period = e.params?.data?.data;
-            if (period) {
-                pageElements.$fiscalYearEle.val(period?.fiscal_year || '');
-                let fiscalStartDate = period.start_date ? moment(period.start_date).format('DD/MM/YYYY') : '';
-                pageElements.$openingDateEle.val(fiscalStartDate);
-            }
+        pageElements.$accountingPeriodEle.on('change', function() {
+            let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
+            pageElements.$fiscalYearEle.val(selected?.['fiscal_year'] || '');
+            let fiscalStartDate = selected?.['start_date'] ? moment(selected?.['start_date']).format('DD/MM/YYYY') : '';
+            pageElements.$openingDateEle.val(fiscalStartDate);
         })
     }
 }

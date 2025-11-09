@@ -2,7 +2,7 @@
 
 <!-- Bank Account Modal -->
 <div class="modal fade" id="bank_account_modal" tabindex="-1" role="dialog" aria-labelledby="modal-bank-account">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-lg" style="min-width: 70%" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{% trans "Select Bank Account" %}</h5>
@@ -11,24 +11,18 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="nicescroll-bar">
-                    <div class="mb-3">
-                        <strong>{% trans 'Money Type' %}:</strong>
-                        <span id="selected_currency"></span>
-                    </div>
-                    <table class="table nowrap w-100" id="bank_account_table" data-url="{% url 'BankAccountMasterDataListAPI' %}">
-                        <thead>
-                            <tr class="bg-light">
-                                <th></th>
-                                <th></th>
-                                <th>{% trans 'Account Number' %}</th>
-                                <th>{% trans 'Bank Name' %}</th>
-                                <th>{% trans 'Abbreviation' %}</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
+                <table class="table nowrap w-100" id="bank_account_table" data-url="{% url 'BankAccountMasterDataListAPI' %}">
+                    <thead>
+                        <tr class="bg-light">
+                            <th></th>
+                            <th></th>
+                            <th>{% trans 'Account Number' %}</th>
+                            <th>{% trans 'Bank Name' %}</th>
+                            <th>{% trans 'Abbreviation' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>

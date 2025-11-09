@@ -7,10 +7,14 @@ class TabMoneyElements {
         this.$btnSaveBankAccount = $('#btn_save_bank_account');
     }
 }
-
 const tabMoneyElements = new TabMoneyElements();
-let currentMoneyRow = null;    // save row is selected
 
+class TabMoneyVariables {
+    constructor() {
+        this.currentMoneyRow = null
+    }
+}
+const tabMoneyVariables = new TabMoneyVariables();
 
 /**
  * Các hàm load page và hàm hỗ trợ
@@ -36,10 +40,10 @@ class TabMoneyFunction {
                 {
                     className: "w-10",
                     render: (data, type, row) => {
-                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 row-money-type">
+                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select row-money-type">
                             <option value=""></option>
-                            <option value="1">🏦 ${$.fn.gettext('Bank Deposit')}</option>
-                            <option value="2">💵 ${$.fn.gettext('Cash')}</option>
+                            <option value="1">${$.fn.gettext('Bank Deposit')}</option>
+                            <option value="2">${$.fn.gettext('Cash')}</option>
                         </select>`;
                     }
                 },
@@ -52,46 +56,48 @@ class TabMoneyFunction {
                 {
                     className: "w-10",
                     render: (data, type, row) => {
-                        return `<input ${option === 'detail' ? 'disabled' : ''} type="text" class="form-control row-account-code">`;
+                        return `<select class="form-select select2 row-account-code"></select>`;
                     }
                 },
                 {
                     className: "w-10",
                     render: (data, type, row) => {
-                        return `<input ${option === 'detail' ? 'disabled' : ''} type="text" class="form-control row-account-name">`;
+                        return `<span class="row-fk-account-name"></span><br><span class="row-account-name"></span>`;
                     }
                 },
                 {
                     className: "w-10",
                     render: (data, type, row) => {
-                        return `<input ${option === 'detail' ? 'disabled' : ''} class="form-control mask-money row-amount">`;
+                        return `<input ${option === 'detail' ? 'disabled' : ''} class="form-control mask-money row-amount" value="0">`;
                     }
                 },
                 {
                     className: "w-10",
                     render: (data, type, row) => {
-                        return `<input ${option === 'detail' ? 'disabled' : ''} class="form-control mask-money row-exchange-rate" readonly>`;
+                        return `<input ${option === 'detail' ? 'disabled' : ''} class="form-control mask-money row-exchange-amount" value="0" readonly>`;
                     }
                 },
                 {
                     className: "w-10",
                     render: (data, type, row) => {
-                        return `<input class="form-control mask-money row-debit" readonly>`;
+                        return `<input class="form-control mask-money row-debit" value="0" readonly>`;
                     }
                 },
                 {
                     className: "w-10",
                     render: (data, type, row) => {
-                        return `<input class="form-control mask-money row-credit" readonly>`;
+                        return `<input class="form-control mask-money row-credit" value="0" readonly>`;
                     }
                 },
                 {
                     className: "w-10 text-center",
                     render: (data, type, row) => {
-                        return `<button ${option === 'detail' ? 'disabled' : ''}
-                                   type="button" class="btn btn-primary btn-sm btn-detail-modal disabled">
+                        return `<button ${option === 'detail' ? 'disabled' : ''} type="button" class="bflow-mirrow-btn btn-detail-modal" disabled
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#bank_account_modal">
                                    <i class="fas fa-info"></i>
-                              </button>`;
+                                </button>
+                                <script class="bank-info-script"></script>`;
                     }
                 },
                 {
@@ -104,15 +110,6 @@ class TabMoneyFunction {
                     }
                 },
             ],
-            drawCallback: function() {
-                tabMoneyElements.$tableMoney.find('tbody tr').each(function (index, ele) {
-                    const currencyData = data[index]?.currency;
-                    InitialBalanceLoadDataHandle.loadCurrencyData({
-                        element: $(ele).find('.row-currency'),
-                        data: currencyData ? currencyData : null
-                    });
-                });
-            }
         });
     }
 
@@ -132,57 +129,54 @@ class TabMoneyFunction {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5 text-center',
-                    render: (data, type, row, meta) => meta.row + 1
-                },
-                {
-                    className: 'wrap-text w-10',
+                    className: 'w-5',
                     render: (data, type, row) => {
-                        return `<input type="checkbox" class="bank-account-checkbox" style="transform: scale(1.5); cursor: pointer;"
-                                data-account-id="${row?.id || ''}" 
-                                data-account-number="${row?.bank_account_number || ''}">`;
+                        return ``;
                     }
                 },
                 {
-                    className: 'w-25',
+                    className: 'w-10',
                     render: (data, type, row) => {
-                        return `<span>${row?.['bank_account_number'] || '-'}</span>`;
+                        return `<div class="form-check"><input type="radio" name="bank-account-checkbox" class="form-check-input bank-account-checkbox"
+                                    data-bank-id="${row?.['id'] || ''}" 
+                                    data-bank-number="${row?.['bank_account_number'] || ''}"
+                                    data-bank-abbreviation="${row?.['bank_mapped_data']?.['bank_abbreviation'] || ''}"
+                                ></div>`;
                     }
                 },
                 {
-                    className: 'w-40',
+                    className: 'w-15',
                     render: (data, type, row) => {
-                        return `<span>${row?.['bank_mapped_data']?.['bank_name'] || '-'}</span>`;
+                        return `<span>${row?.['bank_account_number'] || ''}</span>`;
                     }
                 },
                 {
-                    className: 'w-20 text-center',
+                    className: 'w-60',
                     render: (data, type, row) => {
-                        return `<span>${row?.['bank_mapped_data']?.['bank_abbreviation'] || '-'}</span>`;
+                        return `<span>${row?.['bank_mapped_data']?.['bank_name'] || ''}</span>`;
+                    }
+                },
+                {
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['bank_mapped_data']?.['bank_abbreviation'] || ''}</span>`;
                     }
                 }
             ]
         });
     }
 
-    static updateDebitValue($row = null) {
-        const $rows = $row ? $row : tabMoneyElements.$tableMoney.find('tbody tr');
+    static updateDebitValue($row) {
+        const $row_currency = $row.find('.row-currency');
+        const $row_amount = $row.find('.row-amount');
+        const $exchange_amount = $row.find('.row-exchange-amount');
+        const amount = parseFloat($row_amount.attr('value') || 0);
+        const exchange = parseFloat($exchange_amount.attr('value') || 0);
 
-        $rows.each(function () {
-            const $exchangeInput = $(this).find('.row-exchange-rate');
-
-            // get values
-            const amount = parseFloat($(this).find('.row-amount').attr('value') || 0);
-            const exchange = parseFloat($exchangeInput.attr('value') || 0);
-
-            // check if exchange rate is disabled/readonly
-            const exchangeIsDisabled = $exchangeInput.prop('readonly') === true
-                || $exchangeInput.prop('disabled') === true
-                || $exchangeInput.hasClass('disabled');
-
-            const debitValue = exchangeIsDisabled ? amount : exchange;
-            $(this).find('.row-debit').attr('value', debitValue);
-        });
+        let currency_selected = SelectDDControl.get_data_from_idx($row_currency, $row_currency.val())
+        const isVND = currency_selected?.['abbreviation'] === 'VND'
+        const debitValue = isVND ? amount : exchange;
+        $row.find('.row-debit').attr('value', debitValue);
 
         $.fn.initMaskMoney2();
     }
@@ -196,6 +190,16 @@ class TabMoneyEventHandler {
         // event when click button add
         tabMoneyElements.$btnAddMoney.on('click', function() {
             UsualLoadPageFunction.AddTableRow(tabMoneyElements.$tableMoney);
+            let row_added = tabMoneyElements.$tableMoney.find('tbody tr:last-child')
+            UsualLoadPageFunction.LoadCurrency({
+                element: row_added.find('.row-currency'),
+                data_url: pageElements.$urlFactory.attr('data-url-currency')
+            });
+            UsualLoadPageAccountingFunction.LoadAccountingAccount({
+                element: row_added.find('.row-account-code'),
+                data_url: pageElements.$urlFactory.attr('data-url-accounting-account'),
+                data_params: {'acc_type': 1}
+            })
         });
 
         // event for deleting row
@@ -208,56 +212,37 @@ class TabMoneyEventHandler {
 
         // event for opening detail modal
         tabMoneyElements.$tableMoney.on('click', '.btn-detail-modal', function() {
-            currentMoneyRow = $(this).closest('tr');
-            tabMoneyElements.$modalBankAccount.modal('show');
+            tabMoneyVariables.currentMoneyRow = $(this).closest('tr');
             TabMoneyFunction.loadBankAccountList();
         });
 
         // event only allow bank account detail when choose bank type
         tabMoneyElements.$tableMoney.on('change', '.row-money-type', function() {
-            const selectedValue = $(this).val();
-            const $detailButton = $(this).closest('tr').find('.btn-detail-modal');
-
-            if (selectedValue === '2') {
-                $detailButton.prop('disabled', true).addClass('disabled');
-            } else if (selectedValue === '1') {
-                $detailButton.prop('disabled', false).removeClass('disabled');
-            } else {
-                $detailButton.prop('disabled', true).addClass('disabled');
-            }
+            $(this).closest('tr').find('.btn-detail-modal').prop('disabled', $(this).val() !== '1');
         });
 
         // disable exchange rate for VND, enable for other currencies
         tabMoneyElements.$tableMoney.on('change', '.row-currency', function() {
             const $row = $(this).closest('tr');
-            const selectedValue = $(this).val();
-            const selectedText = $(this).find('option:selected').text().trim().toUpperCase();
-            const $exchangeRateInput = $row.find('.row-exchange-rate');
-
-            const isVND = selectedText.includes('VND') || selectedText.includes('VIỆT NAM') || selectedText.includes('VIET NAM');
-
-            if (isVND) {
-                $exchangeRateInput.prop('readonly', true).addClass('disabled').val(''); // clear the value
-            } else if (selectedValue) {
-                $exchangeRateInput.prop('readonly', false).removeClass('disabled');
-            } else {
-                $exchangeRateInput.prop('readonly', true).addClass('disabled').val(''); // disable if no currency
-            }
+            const $exchange_amount = $row.find('.row-exchange-amount');
+            let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
+            const isVND = selected?.['abbreviation'] === 'VND'
+            $exchange_amount.prop('readonly', isVND).attr('value', 0);
 
             // update debit value after currency change
             TabMoneyFunction.updateDebitValue($row);
         });
 
-        // event allow selecting one checkbox
-        tabMoneyElements.$tableBankAccount.on('change', '.bank-account-checkbox', function() {
-            if ($(this).is(':checked')) {
-                tabMoneyElements.$tableBankAccount.find('.bank-account-checkbox').not(this).prop('checked', false); // remove all checkbox
-            }
+        tabMoneyElements.$tableMoney.on('change', '.row-account-code', function() {
+            let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
+            $(this).closest('tr').find('.row-fk-account-name').text(selected?.['foreign_acc_name'] || '')
+            $(this).closest('tr').find('.row-account-name').text(`(${selected?.['acc_name'] || ''})`)
         });
 
         // calculate debit based on amount and exchange rate
-        tabMoneyElements.$tableMoney.on('change', '.row-amount, .row-exchange-rate', function() {
-            TabMoneyFunction.updateDebitValue($(this).closest('tr'));
+        tabMoneyElements.$tableMoney.on('change', '.row-amount, .row-exchange-amount', function() {
+            const $row = $(this).closest('tr');
+            TabMoneyFunction.updateDebitValue($row);
         });
 
         // event for button save in bank account modal
@@ -265,33 +250,18 @@ class TabMoneyEventHandler {
             // find selected row
             const selectedCheckbox = tabMoneyElements.$tableBankAccount.find('.bank-account-checkbox:checked');
             if (selectedCheckbox.length !== 0) {
-                const rowIndex = selectedCheckbox.closest('tr').index();
-                const table = tabMoneyElements.$tableBankAccount.DataTable();
-                const rowData = table.row(rowIndex).data();
-
-                // get selected row info
-                const accountNumber = rowData?.bank_account_number || '-';
-                const abbreviation = rowData?.bank_mapped_data?.bank_abbreviation || '-';
-
-                if (currentMoneyRow) {
-                    const detailCell = currentMoneyRow.find('td:eq(9)');
-                    detailCell.html(`
-                       <div class="text-center">
-                            <div class="bank-info-selected">
-                                <i class="fas fa-check-circle text-success"></i>
-                                <strong class="d-block">${abbreviation}</strong>
-                                <small class="text-muted d-block">${accountNumber}</small>
-                            </div>
-                            <a href="javascript:void(0)" class="btn-detail-modal text-primary" 
-                               style="font-size: 0.875rem; text-decoration: underline;">
-                                <i class="fas fa-sync-alt"></i> ${$.fn.gettext('Change')}
-                            </a>
-                       </div>
-                    `);
-                }
-                // reset
-                currentMoneyRow = null;
-                selectedCheckbox.prop('checked', false);
+                tabMoneyVariables.currentMoneyRow.find('.bank-info-script').text(selectedCheckbox.attr('data-bank-id') || '')
+                let bank_number = selectedCheckbox.attr('data-bank-number') || ''
+                let bank_abbreviation = selectedCheckbox.attr('data-bank-abbreviation') || ''
+                let btn_detail_modal = tabMoneyVariables.currentMoneyRow.find('.btn-detail-modal')
+                btn_detail_modal.html(`
+                   <span class="fw-bold mr-1">${bank_abbreviation}</span><span>(${bank_number})</span>
+                `)
+            }
+            else {
+                tabMoneyVariables.currentMoneyRow.find('.bank-info-script').text('')
+                let btn_detail_modal = tabMoneyVariables.currentMoneyRow.find('.btn-detail-modal')
+                btn_detail_modal.html(`<i class="fas fa-info"></i>`)
             }
         });
     }

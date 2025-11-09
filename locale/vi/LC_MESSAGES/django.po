@@ -12355,3 +12355,7 @@ msgstr "Lợi nhuận thực tế"
 #
 msgid "Node initial is required"
 msgstr "Trạm khởi tạo là bắt buộc"
+
+#
+msgid "Node approved is required"
+msgstr "Trạm chấp thuận là bắt buộc"

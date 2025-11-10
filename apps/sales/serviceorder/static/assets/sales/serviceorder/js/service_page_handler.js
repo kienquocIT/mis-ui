@@ -382,6 +382,7 @@ class ServiceOrderPageHandler {
             ServiceOrder.initQuotationWorkOrderDataTable(workOrderData);
         }
         ServiceOrder.loadWorkOrderRelatedData(workOrderData);
+        ServiceOrder.loadWorkOrderDetailSummaryValue();
 
         // Payment
         const paymentData = data.payment_data.map(payment => ({

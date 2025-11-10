@@ -143,18 +143,45 @@
                                 <tbody></tbody>
                             </table>
                         {% endif %}
-                        <div class="dropdown mt-2">
-                            <button aria-expanded="false" data-bs-toggle="dropdown" type="button" class="btn btn-sm btn-primary dropdown-toggle">
-                                <i class="fas fa-plus-circle"></i>
-                                {% trans 'Add' %}
-                            </button>
-                            <div class="dropdown-menu dropdown-bordered">
-                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal-product">
-                                    <span>{% trans 'Add item' %}</span>
-                                </a>
-                                <a class="dropdown-item" href="#" id="btn-add-non-item">
-                                    <span>{% trans 'Add non-item' %}</span>
-                                </a>
+                        <div class="row">
+                            <div class="col-12 col-lg-7">
+                                <div class="dropdown mt-2">
+                                    <button aria-expanded="false" data-bs-toggle="dropdown" type="button" class="btn btn-sm btn-primary dropdown-toggle">
+                                        <i class="fas fa-plus-circle"></i>
+                                        {% trans 'Add' %}
+                                    </button>
+                                    <div class="dropdown-menu dropdown-bordered">
+                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal-product">
+                                            <span>{% trans 'Add item' %}</span>
+                                        </a>
+                                        <a class="dropdown-item" href="#" id="btn-add-non-item">
+                                            <span>{% trans 'Add non-item' %}</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-5 mt-3 text-right">
+                                <div class="row">
+                                    <label for="work-order-pretax-value" class="col-4 col-form-label text-primary">{% trans 'Pretax Amount' %}</label>
+                                    <div class="col-8">
+                                        <input disabled id="work-order-pretax-value" value="0"
+                                               class="text-primary form-control form-control-line mask-money zone-readonly mb-1">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label for="work-order-taxes-value" class="col-4 col-form-label text-primary">{% trans 'Taxes' %}</label>
+                                    <div class="col-8">
+                                        <input disabled id="work-order-taxes-value" value="0"
+                                               class="text-primary form-control form-control-line mask-money zone-readonly mb-1">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label for="work-order-total-value" class="col-4 col-form-label text-primary">{% trans 'TOTAL' %}</label>
+                                    <div class="col-8">
+                                        <input disabled id="work-order-total-value" value="0"
+                                               class="text-primary form-control form-control-line mask-money zone-readonly mb-1">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

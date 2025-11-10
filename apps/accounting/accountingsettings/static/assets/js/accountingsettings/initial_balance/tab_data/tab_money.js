@@ -124,7 +124,7 @@ class TabMoneyFunction {
                 url: tabMoneyElements.$tableBankAccount.attr('data-url'),
                 method: 'GET',
                 dataSrc: function (resp) {
-                    return resp.data['bank_account_list'] || []
+                    return resp.data['bank_account_list'] || [];
                 }
             },
             columns: [
@@ -190,7 +190,7 @@ class TabMoneyEventHandler {
         // event when click button add
         tabMoneyElements.$btnAddMoney.on('click', function() {
             UsualLoadPageFunction.AddTableRow(tabMoneyElements.$tableMoney);
-            let row_added = tabMoneyElements.$tableMoney.find('tbody tr:last-child')
+            let row_added = tabMoneyElements.$tableMoney.find('tbody tr:last-child');
             UsualLoadPageFunction.LoadCurrency({
                 element: row_added.find('.row-currency'),
                 data_url: pageElements.$urlFactory.attr('data-url-currency')

@@ -20,3 +20,11 @@ msgstr ""
 #
 msgid "Journal lines"
 msgstr "Dòng bút toán"
+
+#
+msgid "Balanced"
+msgstr "Đã cân bằng"
+
+#
+msgid "Imbalance"
+msgstr "Chưa cân bằng"

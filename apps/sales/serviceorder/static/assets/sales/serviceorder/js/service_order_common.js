@@ -624,13 +624,13 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    className: 'w-10',
+                    className: 'w-10 text-right',
                     render: (data, type, row) => {
                         return `<input type="text" class="form-control mask-money service-detail-price" value="${row?.['price'] || 0}">`
                     }
                 },
                 {
-                    className: 'w-10',
+                    className: 'w-10 text-right',
                     render: (data, type, row) => {
                         const taxListUrl = pageElement.$urlScript.attr('data-tax-list-url')
                         return `<div class="input-group">
@@ -640,7 +640,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    className: 'w-10',
+                    className: 'w-10 text-right',
                     render: (data, type, row) => {
                         return `<span class="mask-money service-detail-total" data-init-money="${row?.['total_value'] || 0}"></span>`
                     }

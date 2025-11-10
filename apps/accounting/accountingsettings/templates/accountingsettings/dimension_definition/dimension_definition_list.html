@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Dimension Definition' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal-add-dimension">
+        <span>
+            <span>{% trans 'Add' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-plus"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <table id="datatable-dimension" class="table nowrap w-100 table-hover">
+        <thead>
+            <tr>
+                <th class="w-10">{% trans 'Display Order' %}</th>
+                <th class="w-30">{% trans 'Dimension Code' %}</th>
+                <th class="w-50">{% trans 'Dimension Name' %}</th>
+                <th class="w-10">{% trans 'Action' %}</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+{% endblock %}
+{% block modalData %}
+    <div class="modal fade" id="modal-add-dimension" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">{% trans 'Add Dimension' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-add-dimension" data-url="{% url "DimensionDefinitionListAPI" %}" data-method="POST">
+                        <div class="mb-3">
+                            <label for="dimension-code" class="form-label required">{% trans 'Dimension Code' %}</label>
+                            <input required type="text" class="form-control" id="dimension-code" name="code"
+                                   placeholder="e.g., CAMPAIGN"
+                                   style="text-transform: uppercase;">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="dimension-name" class="form-label required">{% trans 'Dimension Name' %}</label>
+                            <input required type="text" class="form-control" id="dimension-name" name="title"
+                                   placeholder="e.g., Chiến dịch Marketing">
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-dimension" form="form-add-dimension">
+                        <span>{% trans 'Save Dimension' %}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-update-dimension" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">{% trans 'Update Dimension' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-update-dimension" data-base-url="{% url "DimensionDefinitionDetailAPI" 0%}" data-method="PUT">
+                        <div class="mb-3">
+                            <label for="dimension-code-update" class="form-label required">{% trans 'Dimension Code' %}</label>
+                            <input readonly required type="text" class="form-control required" id="dimension-code-update" name="code"
+                                   style="text-transform: uppercase;">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="dimension-name-update" class="form-label required">{% trans 'Dimension Name' %}</label>
+                            <input required type="text" class="form-control required" id="dimension-name-update" name="title"
+                                   placeholder="e.g., Chiến dịch Marketing">
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                    <button type="submit" class="btn btn-primary" id="btn-update-dimension" form="form-update-dimension">
+                        <span>{% trans 'Save Dimension' %}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/accountingsettings/dimension_definition/dimension_definition.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% load i18n %}
+
+<!-- Bank Account Modal -->
+<div class="modal fade" id="bank_account_modal" tabindex="-1" role="dialog" aria-labelledby="modal-bank-account">
+    <div class="modal-dialog modal-lg" style="min-width: 70%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Select Bank Account" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table nowrap w-100" id="bank_account_table" data-url="{% url 'BankAccountMasterDataListAPI' %}">
+                    <thead>
+                        <tr class="bg-light">
+                            <th></th>
+                            <th></th>
+                            <th>{% trans 'Account Number' %}</th>
+                            <th>{% trans 'Bank Name' %}</th>
+                            <th>{% trans 'Abbreviation' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" id="btn_save_bank_account" class="btn btn-primary" data-bs-dismiss="modal">
+                    {% trans 'Save' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Materials / Supplies Modal -->
+<div class="modal fade" id="merchandise_detail_modal" tabindex="-1" role="dialog" aria-labelledby="modal-merchandise-detail">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Materials / Supplies Detail" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="nicescroll-bar">
+                    <div class="row mb-3">
+                        <div class="col-md-6 col-lg-6">
+                            <label class="form-label required">{% trans "Product" %}</label>
+                            <div class="d-flex gap-2">
+                                <input type="text" class="form-control" id="product_input"
+                                       placeholder="Click to select product..." required readonly>
+                                <button type="button" class="btn btn-primary" id="btn_select_product">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                            <label class="form-label required">{% trans "Warehouse" %}</label>
+                            <select class="form-select" id="warehouse_select">
+                                <option value="">-- {% trans "Chọn Kho" %} --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6 col-lg-6">
+                            <label class="form-label required">{% trans "Quantity" %}</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="quantity_input" name="quantity_input" step="1" min="0">
+                            </div>
+                            <small class="text-muted">{% trans "When selecting Serial Number, the amount must be 1" %}</small>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                            <label class="form-label required">{% trans "Amount (VND)" %}</label>
+                            <input type="text" class="form-control mask-money" id="amount_input" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6 col-lg-6">
+                            <label class="form-label">{% trans "LOT Number" %}</label>
+                            <input type="text" class="form-control" id="lot_number_input" placeholder="VD: LOT-2024-001">
+                            <small class="text-muted">{% trans "Blank if not available" %}</small>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                            <label class="form-label">{% trans "Serial Number" %}</label>
+                            <input type="text" class="form-control" id="serial_number_input" placeholder="VD: SN123456789">
+                            <small class="text-muted">{% trans "Blank if not available" %}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" id="btn_save_material_detail" class="btn btn-primary" data-bs-dismiss="modal">
+                    {% trans 'Save' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

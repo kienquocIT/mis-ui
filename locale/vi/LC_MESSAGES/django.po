@@ -9979,6 +9979,7 @@ msgstr "Khoản thanh toán"
 #
 msgid "Total payment ratio must be 100%"
 msgstr "Tổng tỉ lệ thanh toán phải đủ 100%"
+
 #
 msgid "Account payable"
 msgstr "Các khoản phải trả"
@@ -10640,12 +10641,8 @@ msgid "Accounting setting"
 msgstr "Thiết lập kế toán"
 
 #
-msgid "Chart of accounts"
+msgid "Chart of account"
 msgstr "Danh sách tài khoản"
-
-#
-msgid "Default account determination"
-msgstr "Xác định TK kế toán mặc định"
 
 #
 msgid "Trading account type"

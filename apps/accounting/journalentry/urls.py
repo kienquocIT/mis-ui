@@ -10,5 +10,5 @@ urlpatterns = [
     path('detail/<str:pk>', JournalEntryDetail.as_view(), name='JournalEntryDetail'),
     path('list/api', JournalEntryListAPI.as_view(), name='JournalEntryListAPI'),
     path('detail/api/<str:pk>', JournalEntryDetailAPI.as_view(), name='JournalEntryDetailAPI'),
-    path('get_je_summarize', JournalEntrySummarizeAPI.as_view(), name='JournalEntrySummarizeAPI'),
+    path('get-je-summarize/api', JournalEntrySummarizeAPI.as_view(), name='JournalEntrySummarizeAPI'),
 ]

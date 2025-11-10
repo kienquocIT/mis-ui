@@ -580,3 +580,7 @@ msgstr "Trong quy trình"
 #
 msgid "Parent"
 msgstr "Cấp trên"
+
+#
+msgid "Fiscal year"
+msgstr "Năm tài chính"

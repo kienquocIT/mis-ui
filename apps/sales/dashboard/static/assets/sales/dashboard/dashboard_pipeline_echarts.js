@@ -1314,7 +1314,7 @@ $(document).ready(function () {
                     return $(`<div class="row w-100">
                     <div class="col-12">
                         <span>${state.data?.['title']}</span>
-                        <span class="bflow-mirrow-badge">Level ${state.data?.['level'] || ''} ${state.data?.['parent_n']?.['title'] ? `(${$.fn.gettext('Parent')}: ${state.data?.['parent_n']?.['title']})` : ''}</span>
+                        <span class="bflow-mirrow-badge-sm">Level ${state.data?.['level'] || ''} ${state.data?.['parent_n']?.['title'] ? `(${$.fn.gettext('Parent')}: ${state.data?.['parent_n']?.['title']})` : ''}</span>
                     </div>
                 </div>`);
                 },
@@ -1342,7 +1342,7 @@ $(document).ready(function () {
                     return $(`<div class="row w-100">
                         <div class="col-12">
                             <span>${state.data?.['title']}</span>
-                            <span class="bflow-mirrow-badge">Level ${state.data?.['level'] || ''} ${state.data?.['parent_n']?.['title'] ? `(${$.fn.gettext('Parent')}: ${state.data?.['parent_n']?.['title']})` : ''}</span>
+                            <span class="bflow-mirrow-badge-sm">Level ${state.data?.['level'] || ''} ${state.data?.['parent_n']?.['title'] ? `(${$.fn.gettext('Parent')}: ${state.data?.['parent_n']?.['title']})` : ''}</span>
                         </div>
                     </div>`);
                 },

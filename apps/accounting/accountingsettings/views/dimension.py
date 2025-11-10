@@ -129,13 +129,32 @@ class DimensionSyncConfigList(View):
         auth_require=True,
         template='accountingsettings/dimension_sync_config/dimension_sync_config.html',
         breadcrumb='DIMENSION_VALUE_LIST_PAGE',
-        menu_active='menu_dimension_value_list',
+        menu_active='menu_dimension_sync_config_list',
         icon_cls='fa fa-table',
         icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
+class DimensionSyncConfigListAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.DIMENSION_SYNC_CONFIG_LIST).get(params)
+        return resp.auto_return(key_success='dimension_sync_config_list')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.DIMENSION_SYNC_CONFIG_LIST).post(request.data)
+        return resp.auto_return()
 
 class DimensionSyncConfigApplicationListAPI(APIView):
     permission_classes = [IsAuthenticated]

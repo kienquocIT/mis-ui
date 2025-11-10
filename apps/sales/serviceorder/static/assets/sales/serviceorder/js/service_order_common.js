@@ -631,7 +631,11 @@ const ServiceOrder = (function($) {
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-blue">${row?.['tax_code']}</span>`
+                        const taxListUrl = pageElement.$urlScript.attr('data-tax-list-url')
+                        return `<div class="input-group">
+                                    <select class="select2 form-select service-tax-select" data-url="${taxListUrl}" data-keyResp="tax_list">
+                                    </select>
+                                </div>`
                     }
                 },
                 {
@@ -657,6 +661,10 @@ const ServiceOrder = (function($) {
                 const $row = $(row)
                 const durationId = data.duration_id
                 $row.find('.service-duration-select').attr('data-duration-id', durationId)
+
+
+                const taxId = data.tax_data?.id
+                $row.find('.service-tax-select').attr('data-tax-id', taxId)
             },
             drawCallback: function(settings) {
                 const $table = $(this)
@@ -679,6 +687,23 @@ const ServiceOrder = (function($) {
                         initSelect($(this), {
                             dataParams: {'group__code': 'Time', 'group__is_default': true}
                         })
+                    }
+                })
+
+                const $taxSelects = $(this).find('.service-tax-select')
+                $taxSelects.each(function () {
+                    const taxId = $(this).attr('data-tax-id')
+                    const taxData = pageVariable.taxList.find(tax => tax.id === taxId)
+
+                    if(taxData) {
+                        initSelect($(this), {
+                            data: {
+                                id: taxId,
+                                title: taxData.title,
+                            }
+                        })
+                    } else {
+                        initSelect($(this))
                     }
                 })
             }
@@ -2064,7 +2089,130 @@ const ServiceOrder = (function($) {
             rowData.duration_id = durationId
         })
 
-        // Add this handler inside handleChangeServiceDetail function
+        // Add tax change handler
+        pageElement.serviceDetail.$table.on('change', '.service-tax-select', function(e){
+            function updatePaymentRowAfterTaxChange(paymentId) {
+                const paymentTable = pageElement.payment.$table.DataTable()
+                const $paymentRow = pageElement.payment.$table.find(`[data-payment-row-id="${paymentId}"]`)
+
+                if ($paymentRow.length > 0) {
+                    const paymentDetails = pageVariable.paymentDetailData[paymentId] || []
+                    const rowData = paymentTable.row($paymentRow).data()
+
+                    let totalPaymentValue = 0
+                    let totalTaxValue = 0
+                    let totalReconcileValue = 0
+                    let totalReceivableValue = 0
+
+                    // Recalculate totals from all selected payment details
+                    paymentDetails.forEach(detail => {
+                        if (detail.is_selected) {
+                            totalPaymentValue += detail.payment_value || 0
+                            totalTaxValue += detail.tax_value || 0
+                            totalReconcileValue += detail.reconcile_value || 0
+                            totalReceivableValue += detail.receivable_value || 0
+                        }
+                    })
+
+                    // Update row data
+                    rowData.payment_value = totalPaymentValue
+                    rowData.tax_value = totalTaxValue
+                    rowData.reconcile_value = totalReconcileValue
+                    rowData.receivable_value = totalReceivableValue
+
+                    // Update UI elements
+                    $paymentRow.find('.payment-value').attr('data-init-money', totalPaymentValue)
+                    $paymentRow.find('.payment-tax').attr('data-init-money', totalTaxValue)
+                    $paymentRow.find('.payment-reconcile').attr('data-init-money', totalReconcileValue)
+                    $paymentRow.find('.payment-receivable-value').attr('data-init-money', totalReceivableValue)
+
+                    $.fn.initMaskMoney2()
+                }
+            }
+
+            const $select = $(e.currentTarget)
+            const $row = $select.closest('tr')
+            const taxId = $select.val()
+
+            const tableServiceDetail = pageElement.serviceDetail.$table.DataTable()
+            const rowData = tableServiceDetail.row($row).data()
+            const serviceId = rowData.id
+
+            // Find the tax object
+            const taxData = pageVariable.taxList ? pageVariable.taxList.find(item => item.id === taxId) : null
+
+            // Update the row data
+            rowData.tax_data = taxData || {}
+            rowData.tax_code = taxData?.code || ''
+
+            // Recalculate totals with new tax
+            const quantity = rowData.quantity || 1
+            const duration = rowData.duration || 1
+            const price = parseFloat(rowData.price) || 0
+            const attrTotalCost = rowData.attributes_total_cost || 0
+            const taxRate = (taxData?.rate || 0) / 100
+
+            const subtotal = quantity * price * duration + attrTotalCost
+            const taxAmount = subtotal * taxRate
+
+            rowData.sub_total_value = subtotal
+            rowData.total_value = subtotal + taxAmount
+
+            // Update the total display
+            const $totalMoney = $row.find('.service-detail-total')
+            $totalMoney.attr('data-init-money', subtotal + taxAmount)
+
+            // Update payment details that have invoice requirement
+            const paymentTable = pageElement.payment.$table.DataTable()
+            paymentTable.rows().every(function() {
+                const paymentRowData = this.data()
+                const paymentId = paymentRowData.id
+                const isInvoiceRequired = paymentRowData.is_invoice_required
+
+                // Only process payments with invoice requirement
+                if (isInvoiceRequired && pageVariable.paymentDetailData[paymentId]) {
+                    const paymentDetails = pageVariable.paymentDetailData[paymentId]
+                    let needsUpdate = false
+
+                    pageVariable.paymentDetailData[paymentId] = paymentDetails.map(detail => {
+                        if (detail.service_id === serviceId) {
+                            // Only update if this detail has tax_data (invoice-based payment)
+                            if (detail.tax_data !== undefined) {
+                                needsUpdate = true
+
+                                // Update tax data
+                                detail.tax_data = taxData || {}
+
+                                // Recalculate tax value based on payment value
+                                const paymentValue = detail.payment_value || 0
+                                const newTaxRate = (taxData?.rate || 0) / 100
+                                const newTaxValue = paymentValue * newTaxRate
+
+                                // Update tax and receivable values
+                                detail.tax_value = newTaxValue
+
+                                // Recalculate receivable value: payment + tax - reconcile
+                                const reconcileValue = detail.reconcile_value || 0
+                                detail.receivable_value = paymentValue + newTaxValue - reconcileValue
+                            }
+                        }
+                        return detail
+                    })
+
+                    // Update payment row totals if any detail was updated
+                    if (needsUpdate) {
+                        updatePaymentRowAfterTaxChange(paymentId)
+                    }
+                }
+            })
+
+            // Reinitialize money formatting
+            $.fn.initMaskMoney2()
+
+            // Update summary values
+            loadServiceDetailSummaryValue()
+        })
+
         $(document).on('productAttributeUpdate', function (e, data) {
             // data contains: rowIndex, rowData, attributes, totalCost, table
 

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Default account determination' %}{% endblock %}
+{% block title %}{% trans 'Account determination' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
@@ -17,13 +17,13 @@
     <div class="row">
         <div class="col-12">
             <table class="table nowrap w-100"
-                   id="default-account-determination-table"
+                   id="account-determination-table"
                    data-method="GET"
                    data-trans-change-confirm="{% trans 'Confirm this change?' %}"
                    data-trans-change-noti="{% trans 'This action can not be undo!' %}"
                    data-chart-of-account-url="{% url 'ChartOfAccountsListAPI' %}"
-                   data-url-detail="{% url 'DefaultAccountDeterminationDetailAPI' pk=0 %}"
-                   data-url="{% url 'DefaultAccountDeterminationListAPI' %}">
+                   data-url-detail="{% url 'AccountDeterminationDetailAPI' pk=0 %}"
+                   data-url="{% url 'AccountDeterminationListAPI' %}">
                 <thead class="bg-secondary-light-5">
                 <tr>
                     <th></th>
@@ -43,5 +43,5 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
-    <script src="{% static 'assets/js/accountingsettings/default_account_determination/default_account_determination.js' %}"></script>
+    <script src="{% static 'assets/js/accountingsettings/account_determination/account_determination.js' %}"></script>
 {% endblock %}

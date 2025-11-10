@@ -915,8 +915,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     INSTRUMENT_TOOL_FOR_LEASE_LIST = StringUrl('asset/instrument-tool-for-lease/list')
     INSTRUMENT_TOOL_STATUS_LEASE_LIST = StringUrl('asset/instrument-tool-status-lease/list')
 
-    DEFAULT_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/default-account-determination/list')
-    DEFAULT_ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/default-account-determination/detail/{pk}')
+    ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/account-determination/list')
+    ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/account-determination/detail/{pk}')
     WAREHOUSE_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/warehouse-account-determination/list')
     WAREHOUSE_ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/warehouse-account-determination/detail/{pk}')
     PRODUCT_TYPE_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/product-type-account-determination/list')
@@ -924,10 +924,15 @@ class ApiURL:  # pylint: disable=too-few-public-methods
         'accounting-setting/product-type-account-determination/detail/{pk}')
     PRODUCT_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/product-account-determination/list')
     PRODUCT_ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/product-account-determination/detail/{pk}')
+    DIMENSION_DEFINITION_LIST = StringUrl('accounting-setting/dimension-definition/list')
+    DIMENSION_DEFINITION_DETAIL = StringUrl('accounting-setting/dimension-definition/detail/{pk}')
+    DIMENSION_DEFINITION_WITH_VALUES = StringUrl('accounting-setting/dimension-definition-values/{pk}')
+    DIMENSION_VALUE_LIST = StringUrl('accounting-setting/dimension-value/list')
+    DIMENSION_VALUE_DETAIL = StringUrl('accounting-setting/dimension-value/detail/{pk}')
 
     JOURNAL_ENTRY_LIST = StringUrl('journal-entry/list')
     JOURNAL_ENTRY_DETAIL = StringUrl('journal-entry/detail/{pk}')
-    JOURNAL_ENTRY_SUMMARIZE = StringUrl('journal-entry/get_je_summarize')
+    JOURNAL_ENTRY_SUMMARIZE = StringUrl('journal-entry/get-je-summarize')
 
     # asset/ fixed asset write off
     FIXED_ASSET_WRITE_OFF_LIST = StringUrl('asset/fixed-asset-writeoff/list')
@@ -1044,3 +1049,5 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # HRM - Payroll
     PAYROLL_CONFIG = StringUrl('hrm/payroll/payrollconfig/config')
     PAYROLL_ATTRIBUTE = StringUrl('hrm/payroll/payrollattribute/list')
+
+    INITIAL_BALANCE_LIST = StringUrl('accounting-setting/initial-balance/list')

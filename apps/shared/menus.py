@@ -965,12 +965,27 @@ class MenusFinancials:
         name='Accounting setting', code='', view_name='', icon='<i class="fas fa-cog"></i>',
         child=[
             MenuCommon(
-                name='Chart of accounts', code='menu_chart_of_accounts_list', view_name='ChartOfAccountsList',
+                name='Chart of account', code='menu_chart_of_accounts_list', view_name='ChartOfAccountsList',
                 icon='<i class="fas fa-list-alt"></i>',
             ),
             MenuCommon(
-                name='Default account determination', code='menu_default_account_determination_list', view_name='DefaultAccountDeterminationList',
+                name='Account determination', code='menu_account_determination_list', view_name='AccountDeterminationList',
                 icon='<i class="fas bi bi-journal-text"></i>',
+            ),
+            MenuCommon(
+                name='Initial balance', code='menu_initial_balance',
+                view_name='InitialBalanceList',
+                icon='<i class="fas fa-chart-bar"></i>',
+            ),
+            MenuCommon(
+                name='Dimension Definition', code='menu_dimension_definition_list',
+                view_name='DimensionDefinitionList',
+                icon='<i class="fa fa-pen-ruler"></i>',
+            ),
+            MenuCommon(
+                name='Dimension Value', code='menu_dimension_value_list',
+                view_name='DimensionValueList',
+                icon='<i class="fa fa-table"></i>',
             ),
         ],
     )

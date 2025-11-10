@@ -182,8 +182,8 @@ msgid "Progress"
 msgstr "Tiến độ"
 
 #
-msgid "View dashboard"
-msgstr "Xem Dashboard"
+msgid "Service order Dashboard"
+msgstr "Dashboard Đơn dịch vụ"
 
 #
 msgid "Contribution of Product/Service"

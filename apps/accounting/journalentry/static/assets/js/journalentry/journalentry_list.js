@@ -37,13 +37,13 @@ $(document).ready(function() {
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             let je_state_class = ['badge badge-pill badge-outline badge-soft-secondary', 'badge badge-pill badge-outline badge-soft-success', 'badge badge-pill badge-outline badge-soft-orange'][data?.['je_state']]
-                            return `<div class="d-flex"><a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a><h5><span class="ml-1 ${je_state_class}">${data?.['je_state_parsed']}</span></h5></div>`;
+                            return `<div class="d-flex"><a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a><h5><span class="ml-1 badge-sm ${je_state_class}">${data?.['je_state_parsed']}</span></h5></div>`;
                         }
                     },
                     {
                         className: 'w-20',
                         render: (data, type, row) => {
-                            return `<span class="mr-1">${row?.['original_transaction_parsed']}</span><span class="fw-bold">${(row?.['je_transaction_data'] || {})?.['code'] || ''}</span>`
+                            return `<span class="mr-1">${row?.['original_transaction_parsed']}</span><span class="fw-bold bflow-mirrow-badge-sm">${(row?.['je_transaction_data'] || {})?.['code'] || ''}</span>`
                         }
                     },
                     {
@@ -59,15 +59,19 @@ $(document).ready(function() {
                         }
                     },
                     {
-                        className: 'text-center w-15',
+                        className: 'w-20',
                         render: (data, type, row) => {
-                            return `<span class="mask-money" data-init-money="${row?.['total_debit'] || 0}"></span>`;
+                            let total_debit = parseFloat(row?.['total_debit'] || 0)
+                            let total_credit = parseFloat(row?.['total_credit'] || 0)
+                            return `<span class="mask-money" data-init-money="${total_debit}"></span> - <span class="mask-money" data-init-money="${total_credit}"></span>`;
                         }
                     },
                     {
-                        className: 'text-center w-15',
+                        className: 'w-10',
                         render: (data, type, row) => {
-                            return `<span class="mask-money" data-init-money="${row?.['total_credit'] || 0}"></span>`;
+                            let total_debit = parseFloat(row?.['total_debit'] || 0)
+                            let total_credit = parseFloat(row?.['total_credit'] || 0)
+                            return total_debit === total_credit ? `<span class="text-success h6">${$.fn.gettext('Balanced')}</span>` : `<span class="text-danger h6">${$.fn.gettext('Imbalance')}</span>`;
                         }
                     },
                     {

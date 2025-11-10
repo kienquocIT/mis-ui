@@ -126,6 +126,7 @@ class ProductModifiedListAPI(APIView):
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_MODIFIED_LIST).get(params)
+        print(len(resp.result))
         return resp.auto_return(key_success='product_modified_list')
 
 

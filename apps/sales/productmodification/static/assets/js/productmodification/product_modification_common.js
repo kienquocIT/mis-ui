@@ -132,6 +132,7 @@ class ProductModificationPageFunction {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
+                        console.log(resp.data['product_modified_list'])
                         return resp.data['product_modified_list'] ? resp.data['product_modified_list'] : [];
                     }
                     return [];

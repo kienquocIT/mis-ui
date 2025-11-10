@@ -932,7 +932,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     JOURNAL_ENTRY_LIST = StringUrl('journal-entry/list')
     JOURNAL_ENTRY_DETAIL = StringUrl('journal-entry/detail/{pk}')
-    JOURNAL_ENTRY_SUMMARIZE = StringUrl('journal-entry/get_je_summarize')
+    JOURNAL_ENTRY_SUMMARIZE = StringUrl('journal-entry/get-je-summarize')
 
     # asset/ fixed asset write off
     FIXED_ASSET_WRITE_OFF_LIST = StringUrl('asset/fixed-asset-writeoff/list')

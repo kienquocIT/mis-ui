@@ -127,10 +127,10 @@ $(document).ready(function () {
             }
 
             avg_svo_detail_percent_completed += avg_wo_percent_completed * item?.['service_percent'] / 100
-            if (avg_svo_detail_percent_completed === 0) {
+            if (avg_wo_percent_completed === 0) {
                 waiting_svo += 1
             }
-            else if (avg_svo_detail_percent_completed === 100) {
+            else if (avg_wo_percent_completed === 100) {
                 completed_svo += 1
             }
             else {

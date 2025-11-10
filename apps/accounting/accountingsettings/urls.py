@@ -6,7 +6,7 @@ from apps.accounting.accountingsettings.views import (
     ProductTypeAccountDeterminationDetailAPI, ProductAccountDeterminationDetailAPI, AccountDeterminationDetailAPI,
     InitialBalanceList, InitialBalanceListAPI, DimensionDefinitionList, DimensionDefinitionListAPI,
     DimensionDefinitionDetailAPI, DimensionValueList, DimensionDefinitionWithValueAPI, DimensionValueListAPI,
-    DimensionValueDetailAPI
+    DimensionValueDetailAPI, DimensionSyncConfigApplicationListAPI
 )
 
 urlpatterns = [
@@ -43,4 +43,5 @@ urlpatterns += [
     path('dimension-definition-values/api/<str:pk>', DimensionDefinitionWithValueAPI.as_view(), name='DimensionDefinitionWithValueAPI'),
     path('dimension-value/list/api', DimensionValueListAPI.as_view(), name='DimensionValueListAPI'),
     path('dimension-value/detail/api/<str:pk>', DimensionValueDetailAPI.as_view(), name='DimensionValueDetailAPI'),
+    path('dimension-sync-config/application-list', DimensionSyncConfigApplicationListAPI.as_view(), name='DimensionSyncConfigApplicationListAPI')
 ]

@@ -377,10 +377,10 @@ class MenusCRM:
                 name='Sale quotation', code='menu_quotation_list', view_name='QuotationList',
                 icon='<i class="fas fa-file-invoice-dollar"></i>',
             ),
-            MenuCommon(
-                name='Service quotation', code='menu_service_quotation_list', view_name='ServiceQuotationList',
-                icon='<i class="fas fa-file-invoice-dollar"></i>',
-            )
+            # MenuCommon(
+            #     name='Service quotation', code='menu_service_quotation_list', view_name='ServiceQuotationList',
+            #     icon='<i class="fas fa-file-invoice-dollar"></i>',
+            # )
         ],
     )
     BIDDING = MenuCommon(
@@ -941,8 +941,8 @@ class MenusHRM:
             ),
             MenuCommon(
                 name='Template attribute', code='menu_template_attribute_list',
-                view_name='PayrollTemplAttrList', icon='<i class="fa-solid fa-gears"></i>',
-            )
+                view_name='PayrollTemplAttrList', icon='<i class="fas fa-users-cog"></i>',
+            ),
         ]
     )
 
@@ -952,7 +952,8 @@ class MenusPartnerCenter:
         name='Home', code='id_menu_partner_center_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
     LISTS = MenuCommon(
-        name='Lists', code='menu_partner_center_lists', view_name='ListList', icon='<i class="fas fa-solid fa-search"></i>',
+        name='Lists', code='menu_partner_center_lists', view_name='ListList',
+        icon='<i class="fas fa-solid fa-search"></i>',
     )
 
 

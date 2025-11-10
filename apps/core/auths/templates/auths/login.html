@@ -24,7 +24,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
     {% compress css %}
         <!-- CSS -->
-        <link href="{% static 'assets/css/my-style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/loading-spinner.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/notify.css' %}" rel="stylesheet" type="text/css">
@@ -72,87 +71,89 @@
                                 data-url-select-tenant="{% url 'AuthLoginSelectTenant' %}"
                                 data-url-2fa="{% url 'TwoFAVerifyView' %}"
                         >
-                            <div class="bflow-glass-card">
-                                <div class="text-center my-5 overflow-hidden">
-                                    <a class="navbar-brand me-0" href="https://www.bflow.vn">
-                                        <img class="brand-img d-inline-block"
-                                             src="{% static 'assets/images/brand/bflow-by-mts/png/bflow-by-mts-original.png' %}"
-                                             alt="brand"
-                                             style="width: 50%; object-fit: cover;"
-                                        >
-                                    </a>
-                                </div>
-{#                                    <div class="w-100 mb-4">#}
-{#                                        <h4 class="text-center">{% trans 'Login' %}</h4>#}
-{#                                    </div>#}
-                                <div class="row gx-3">
-                                    <div class="form-group">
-                                        <div class="form-label-group d-none">
-                                            <label class="form-label" for="inp-tenant-code">Tenant</label>
-                                        </div>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fa-solid fa-globe"></i>    </span>
-                                            <label for="inp-username"></label>
-                                            <input
-                                                type="text"
-                                                class="form-control"
-                                                name="tenant_code"
-                                                id="inp-tenant-code"
-                                                placeholder="{% trans 'Tenant' %}"
-                                                tabindex="1"
-                                                required
-                                            />
-                                        </div>
+                            <div class="card card-border bg-light">
+                                <div class="card-body">
+                                    <div class="text-center my-5 overflow-hidden">
+                                        <a class="navbar-brand me-0" href="https://www.bflow.vn">
+                                            <img class="brand-img d-inline-block"
+                                                 src="{% static 'assets/images/brand/bflow-by-mts/png/bflow-by-mts-original.png' %}"
+                                                 alt="brand"
+                                                 style="width: 50%; object-fit: cover;"
+                                            >
+                                        </a>
                                     </div>
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fa fa-user"></i></span>
-                                            <label for="inp-username"></label>
-                                            <input
+    {#                                    <div class="w-100 mb-4">#}
+    {#                                        <h4 class="text-center">{% trans 'Login' %}</h4>#}
+    {#                                    </div>#}
+                                    <div class="row gx-3">
+                                        <div class="form-group">
+                                            <div class="form-label-group d-none">
+                                                <label class="form-label" for="inp-tenant-code">Tenant</label>
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fa-solid fa-globe"></i>    </span>
+                                                <label for="inp-username"></label>
+                                                <input
                                                     type="text"
                                                     class="form-control"
-                                                    name="username"
-                                                    id="inp-username"
-{#                                                        placeholder="{% trans 'Username' %}"#}
-                                                    placeholder="{% trans 'Username or email' %}"
+                                                    name="tenant_code"
+                                                    id="inp-tenant-code"
+                                                    placeholder="{% trans 'Tenant' %}"
                                                     tabindex="1"
                                                     required
-                                                    autofocus
-                                            >
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fa fa-user"></i></span>
+                                                <label for="inp-username"></label>
+                                                <input
+                                                        type="text"
+                                                        class="form-control"
+                                                        name="username"
+                                                        id="inp-username"
+    {#                                                        placeholder="{% trans 'Username' %}"#}
+                                                        placeholder="{% trans 'Username or email' %}"
+                                                        tabindex="1"
+                                                        required
+                                                        autofocus
+                                                >
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="input-group position-relative">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-lock"></i>
+                                                </span>
+                                                <span class="position-absolute" style="z-index: 99999; cursor: pointer; right: 12px; top: 8px;" id="btn-show-passwd">
+                                                    <i class="fa-solid fa-eye"></i>
+                                                    <i class="fa-solid fa-eye-slash d-none"></i>
+                                                </span>
+                                                <label for="inp-password"></label>
+                                                <input type="password" class="form-control" name="password" id="inp-password" placeholder="{% trans 'Password' %}" tabindex="2" required>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <div class="input-group position-relative">
-                                            <span class="input-group-text">
-                                                <i class="fa fa-lock"></i>
-                                            </span>
-                                            <span class="position-absolute" style="z-index: 99999; cursor: pointer; right: 12px; top: 8px;" id="btn-show-passwd">
-                                                <i class="fa-solid fa-eye"></i>
-                                                <i class="fa-solid fa-eye-slash d-none"></i>
-                                            </span>
-                                            <label for="inp-password"></label>
-                                            <input type="password" class="form-control" name="password" id="inp-password" placeholder="{% trans 'Password' %}" tabindex="2" required>
-                                        </div>
+                                    <div class="form-check form-check-sm mb-3">
+                                        <input
+                                                name="remember"
+                                                type="checkbox" class="form-check-input" id="logged_in"
+                                                checked tabindex="3"
+                                        >
+                                        <label
+                                                class="form-check-label text-muted fs-7"
+                                                for="logged_in"
+                                        >{% trans 'Keep me logged in' %}</label>
                                     </div>
-                                </div>
-                                <div class="form-check form-check-sm mb-3">
-                                    <input
-                                            name="remember"
-                                            type="checkbox" class="form-check-input" id="logged_in"
-                                            checked tabindex="3"
-                                    >
-                                    <label
-                                            class="form-check-label text-muted fs-7"
-                                            for="logged_in"
-                                    >{% trans 'Keep me logged in' %}</label>
-                                </div>
-                                <div id="recapcha" class="mt-1 mb-1"></div>
-                                <button type="submit" class="btn btn-primary btn-uppercase btn-block mb-3" tabindex="4">{% trans 'Login' %}</button>
-                                <div class="d-flex justify-content-between align-items-center mb-0">
-                                    <small class="flex-item">
-                                        <a href="https://www.bflow.vn/#trial-form">{% trans 'Sign Up' %}</a>
-                                    </small>
-                                    <small class="flex-item"><a href="{% url 'ForgotPasswordView' %}">{% trans 'Forgot Password ?' %}</a></small>
+                                    <div id="recapcha" class="mt-1 mb-1"></div>
+                                    <button type="submit" class="btn btn-primary btn-uppercase btn-block mb-3" tabindex="4">{% trans 'Login' %}</button>
+                                    <div class="d-flex justify-content-between align-items-center mb-0">
+                                        <small class="flex-item">
+                                            <a href="https://www.bflow.vn/#trial-form">{% trans 'Sign Up' %}</a>
+                                        </small>
+                                        <small class="flex-item"><a href="{% url 'ForgotPasswordView' %}">{% trans 'Forgot Password ?' %}</a></small>
+                                    </div>
                                 </div>
                             </div>
                         </form>

@@ -25,53 +25,58 @@
             <i class="fa-solid fa-gear"></i>
         </span>
     </div>
-    <div class="row mb-5" style="display: none;">
+    <div class="row" style="display: none;">
         <div class="col-12 mb-3">
-            <h1 class="fw-bold text-white" style="opacity: 0.9;" id="employee-current-fullname"></h1>
-            <h6 class="fw-bold text-white" style="opacity: 0.9;" id="employee-current-company"></h6>
+            <h1 class="fw-bold text-white" id="employee-current-fullname"></h1>
+            <h6 class="fw-bold text-white" id="employee-current-company"></h6>
         </div>
         <div class="col-12 col-md-12 col-lg-9">
             <div class="row" id="my-task-summary-report" data-url="{% url 'MyTaskSummaryReport' %}">
                 <!-- Active Task -->
                 <div class="col-12 col-md-6 col-lg-3 mb-3">
-                    <div class="bflow-glass-card">
-                        <div class="summary-item" data-item="actives">
-                            <div class="text-center">
-                                <span style="font-size: 48px" class="text-white summary-value fw-bold"></span><br>
-                                <span style="font-size: 18px" class="text-white summary-title mt-1">{% trans 'Active Tasks' %}</span>
+                    <div class="bflow-mirrow-card-20">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="summary-item" data-item="actives">
+                                    <div class="text-center">
+                                        <h1 class="text-white summary-value fw-bold"></h1>
+                                        <h5 class="text-white summary-title">{% trans 'Active Tasks' %}</h5>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
                 <!-- Overdue -->
                 <div class="col-12 col-md-6 col-lg-3 mb-3">
-                    <div class="bflow-glass-card">
+                    <div class="bflow-mirrow-card-20">
                         <div class="summary-item" data-item="overdue">
                             <div class="text-center">
-                                <span style="font-size: 48px" class="text-white summary-value fw-bold"></span><br>
-                                <span style="font-size: 18px" class="text-white summary-title mt-1">{% trans 'Overdue Tasks' %}</span>
+                                <h1 class="text-white summary-value fw-bold"></h1>
+                                <h5 class="text-white summary-title">{% trans 'Overdue Tasks' %}</h5>
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- Upcoming Today -->
                 <div class="col-12 col-md-6 col-lg-3 mb-3">
-                    <div class="bflow-glass-card">
+                    <div class="bflow-mirrow-card-20">
                         <div class="summary-item" data-item="upcoming_today">
                             <div class="text-center">
-                                <span style="font-size: 48px" class="text-white summary-value fw-bold"></span><br>
-                                <span style="font-size: 18px" class="text-white summary-title mt-1">{% trans 'Upcoming Today' %}</span>
+                                <h1 class="text-white summary-value fw-bold"></h1>
+                                <h5 class="text-white summary-title">{% trans 'Upcoming Today' %}</h5>
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- Upcoming 3 Days -->
                 <div class="col-12 col-md-6 col-lg-3 mb-3">
-                    <div class="bflow-glass-card">
+                    <div class="bflow-mirrow-card-20">
                         <div class="summary-item" data-item="upcoming_soon">
                             <div class="text-center">
-                                <span style="font-size: 48px" class="text-white summary-value fw-bold"></span><br>
-                                <span style="font-size: 18px" class="text-white summary-title mt-1">{% trans 'Upcoming 3 Days' %}</span>
+                                <h1 class="text-white summary-value fw-bold"></h1>
+                                <h5 class="text-white summary-title">{% trans 'Upcoming 3 Days' %}</h5>
                             </div>
                         </div>
                     </div>
@@ -82,8 +87,8 @@
                 </p>
             </div>
             <div class="row">
-                <div class="col-12 mb-3">
-                    <div class="bflow-glass-card-100 w-100">
+                <div class="col-12">
+                    <div class="bflow-mirrow-card-100 w-100">
                         <div id="task-list-group">
                             <ul class="nav nav-pills-bfl">
                                 <li class="nav-item">
@@ -207,12 +212,10 @@
         <div class="col-12 col-md-12 col-lg-3">
             <div class="row calendar-group">
                 <div class="col-12 mb-3">
-                    <div class="bflow-glass-card">
-                        <div id="calendar" class="w-100"></div>
-                    </div>
+                    <div id="calendar" class="w-100"></div>
                 </div>
                 <div class="col-12 mb-3">
-                    <div class="bflow-glass-card">
+                    <div class="bflow-mirrow-card-20">
                         <div class="w-100">
                             <div class="d-flex">
                                 <div id="event-at-day-selected-date" data-text-today="{% trans 'Today' %}" data-bs-toggle="tooltip"
@@ -271,8 +274,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12 mb-3">
-                    <div class="bflow-glass-card">
+                <div class="col-12">
+                    <div class="bflow-mirrow-card-20">
                         <div class="w-100 bookmark-group">
                             <h6>{% trans 'Bookmarks' %}</h6>
                             <div id="boxBookmarkDisplay" data-url="{% url 'BookMarkListAPI' %}" data-url-delete="{% url 'BookMarkDetailAPI' pk=1 %}">
@@ -521,12 +524,10 @@
                 })
                 function activeReportShow() {
                     const canvasTaskSummaryReport$ = $('#my-task-summary-report');
-                    const eleNewToday$ = canvasTaskSummaryReport$.find('.summary-item[data-item="new_today"] .summary-value');
-                    const eleStartToday$ = canvasTaskSummaryReport$.find('.summary-item[data-item="start_today"] .summary-value');
+                    const eleActives$ = canvasTaskSummaryReport$.find('.summary-item[data-item="actives"] .summary-value');
                     const eleOverdue$ = canvasTaskSummaryReport$.find('.summary-item[data-item="overdue"] .summary-value');
                     const eleUpcomingToday$ = canvasTaskSummaryReport$.find('.summary-item[data-item="upcoming_today"] .summary-value');
                     const eleUpcomingSoon$ = canvasTaskSummaryReport$.find('.summary-item[data-item="upcoming_soon"] .summary-value');
-                    const eleActives$ = canvasTaskSummaryReport$.find('.summary-item[data-item="actives"] .summary-value');
 
                     $.fn.callAjax2({
                         url: canvasTaskSummaryReport$.attr('data-url'),
@@ -539,12 +540,10 @@
                                     const summaryDatas = respData?.['my_task_summary_report'] || {};
                                     if (summaryDatas?.['state'] === 'READY') {
                                         const data = summaryDatas?.['data'] || {};
-                                        eleNewToday$.css('--num', data?.['today_created'] || 0);
-                                        eleStartToday$.css('--num', data?.['start_today'] || 0)
-                                        eleOverdue$.css('--num', data?.['overdue'] || 0);
-                                        eleUpcomingToday$.css('--num', data?.['upcoming_today'] || 0);
-                                        eleUpcomingSoon$.css('--num', data?.['upcoming_soon'] || 0);
                                         eleActives$.css('--num', data?.['actives'] || 0);
+                                        eleOverdue$.css('--num', data?.['overdue'] || 0);
+                                        eleUpcomingSoon$.css('--num', data?.['upcoming_soon'] || 0);
+                                        eleUpcomingToday$.css('--num', data?.['upcoming_today'] || 0);
                                     } else {
                                         canvasTaskSummaryReport$.addClass('collecting');
                                     }

@@ -3644,8 +3644,8 @@ class WFRTControl {
             if (btnCancel.length <= 0 && btnEnableCR.length <= 0) {
                 let buttons = ``;
                 if (type === 'all') {
-                    buttons = `<button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnEnableCR" data-value="1">${$.fn.transEle.attr('data-change-request')}</button>
-                                <button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnCancel" data-value="2">${$.fn.transEle.attr('data-cancel')}</button>`;
+                    buttons = `<button type="button" class="btn btn-primary btn-wf-after-finish" id="btnEnableCR" data-value="1">${$.fn.transEle.attr('data-change-request')}</button>
+                                <button type="button" class="btn btn-danger btn-wf-after-finish" id="btnCancel" data-value="2">${$.fn.transEle.attr('data-cancel')}</button>`;
                 }
                 if (type === 'change') {
                     buttons = `<button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnEnableCR" data-value="1">${$.fn.transEle.attr('data-change-request')}</button>`;
@@ -3858,7 +3858,7 @@ class WFRTControl {
         }
         let sttTxt = {
             0: $.fn.transEle.attr('data-draft'),
-            1: $.fn.transEle.attr('data-created'),
+            1: $.fn.transEle.attr('data-in-workflow'),
             2: $.fn.transEle.attr('data-added'),
             3: $.fn.transEle.attr('data-approved'),
             4: $.fn.transEle.attr('data-cancel'),
@@ -3870,8 +3870,15 @@ class WFRTControl {
             3: "green-light-4",
             4: "red-light-4",
         }
+        let sttImg = {
+            0: "fa-solid fa-pen",
+            1: "fa-solid fa-spinner",
+            2: "blue-light-4",
+            3: "fa-solid fa-check",
+            4: "fa-solid fa-xmark",
+        }
         if (status || status === 0) {
-            return `<span class="badge text-dark-10 fs-8 bg-${sttBadge[status]}">${sttTxt[status]}</span>`;
+            return `<span class="badge text-dark-10 fs-8 bg-${sttBadge[status]}"><i class="${sttImg[status]} mr-1"></i>${sttTxt[status]}</span>`;
         }
         return ``;
     }
@@ -3886,7 +3893,7 @@ class WFRTControl {
     static getDataDDSystemStatus() {
         return [
             {'id': 0, 'title': $.fn.transEle.attr('data-draft')},
-            {'id': 1, 'title': $.fn.transEle.attr('data-created')},
+            {'id': 1, 'title': $.fn.transEle.attr('data-in-workflow')},
             {'id': 2, 'title': $.fn.transEle.attr('data-added')},
             {'id': 3, 'title': $.fn.transEle.attr('data-approved')},
             {'id': 4, 'title': $.fn.transEle.attr('data-cancel')},
@@ -5522,6 +5529,18 @@ class DTBControl {
     }
 
     static addCommonAction(urls, data) {
+        if (data?.['is_delete'] === true) {
+            return `<div id="commonActions">
+                        <button type="button" class="btn btn-primary action-restore">
+                            <span>
+                                <span class="icon">
+                                    <i class="fa-solid fa-recycle"></i>
+                                </span>
+                                <span>Restore</span>
+                            </span>
+                        </button>
+                    </div>`;
+        }
         let link = urls?.['data-edit'].format_url_with_uuid(data?.['id']);
         let disabled = '';
         if ([2, 3].includes(data?.['system_status'])) {
@@ -5529,10 +5548,7 @@ class DTBControl {
         }
         let bodyBase = `<a class="dropdown-item ${disabled}" href="${link}"><i class="dropdown-icon far fa-edit"></i><span>${$.fn.transEle.attr('data-edit')}</span></a>
                         <a class="dropdown-item action-delete hidden" href="#" data-id="${data?.['id']}"><i class="dropdown-icon far fa-trash-alt"></i><span>${$.fn.transEle.attr('data-delete')}</span></a>`;
-        if (data?.['is_delete'] === true) {
-            bodyBase = `<a class="dropdown-item action-delete" href="#" data-id="${data?.['id']}"><i class="dropdown-icon far fa-trash-alt"></i><span>Restore</span></a>`;
-        }
-        return `<div class="dropdown">
+        return `<div class="dropdown" id="commonActions">
                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
                     <div role="menu" class="dropdown-menu dropdown-menu-actions">
                         ${bodyBase}
@@ -6763,13 +6779,13 @@ class DocumentControl {
                 $breadcrumbCode.html(
                     `
                     <span class="${clsState}"></span>
-                    <b class="fs-7 text-primary" id="documentCode" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${code}</b>
+                    <b class="fs-6 text-primary" id="documentCode" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${code}</b>
                 `
                 ).removeClass('hidden');
             }
             if (system_status || system_status === 0) {
                 let draft = $.fn.transEle.attr('data-msg-draft');
-                let created = $.fn.transEle.attr('data-created');
+                let created = $.fn.transEle.attr('data-in-workflow');
                 let added = $.fn.transEle.attr('data-added');
                 let approved = $.fn.transEle.attr('data-approved');
                 let cancel = $.fn.transEle.attr('data-cancel');
@@ -6779,6 +6795,13 @@ class DocumentControl {
                     [added]: "blue-light-4",
                     [approved]: "green-light-4",
                     [cancel]: "red-light-4",
+                }
+                let status_img = {
+                    [draft]: "fa-solid fa-pen",
+                    [created]: "fa-solid fa-spinner",
+                    [added]: "blue-light-4",
+                    [approved]: "fa-solid fa-check",
+                    [cancel]: "fa-solid fa-xmark",
                 }
                 let dataStatus = system_status;
                 let dataInheritID = employee_inherit?.['id'];
@@ -6792,7 +6815,7 @@ class DocumentControl {
                     ).removeClass('hidden');
                 } else {
                     $breadcrumbCode.append(
-                        `<span class="badge text-dark-10 fs-8 bg-${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-status-cr="" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${system_status}</span>`
+                        `<span class="badge text-dark-10 fs-8 bg-${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-status-cr="" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}"><i class="${status_img[system_status]} mr-1"></i>${system_status}</span>`
                     ).removeClass('hidden');
                 }
                 if (detailData?.['system_auto_create']) {
@@ -9593,7 +9616,7 @@ class DiagramControl {
             let $modalBlock = $('.idxModalData');
             let urlDiagram = globeDiagramList;
             if ($btnLog.length > 0 && $modalBlock.length > 0) {
-                let htmlBtn = `<button class="btn nav-link" type="button" id="btnDiagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDiagram" aria-controls="offcanvasExample" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-network-wired"></i></span></button>`;
+                let htmlBtn = `<button class="btn nav-link" type="button" id="btnDiagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDiagram" aria-controls="offcanvasExample" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-network-wired text-primary"></i></span></button>`;
                 let htmlCanvas = `<div class="offcanvas offcanvas-end w-95" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
                                     <div class="modal-header">
                                         <h5><b>Diagram</b></h5>

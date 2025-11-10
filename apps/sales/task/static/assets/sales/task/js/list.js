@@ -126,6 +126,14 @@ $(function () {
 
                     kanban.init(taskList)
                     list.init(list, taskList)
+                    // check task extend for other apps
+                    if (!$empElm[0].closest('#formOpportunityTask')) {
+                        let $tblElm = $('#table_task_list')
+                        if ($tblElm.hasClass('dataTable')) {
+                            $tblElm.DataTable().clear().draw();
+                        }
+                    }
+
                     // Function to wait form create on submit
                     $createBtn.off().on('click', () => initCommon.awaitFormSubmit(kanban, list));
                     let temp = $.extend(true, {}, data)
@@ -474,7 +482,7 @@ $(function () {
                 let date = moment(newData.end_date, 'YYYY-MM-DD hh:mm:ss').format('YYYY/MM/DD')
                 childHTML.find('.task-deadline').text(date)
                 const assign_to = newData.employee_inherit || newData?.['assign_to']
-                if (Object.keys(assign_to).length > 0) {
+                if (assign_to && Object.keys(assign_to).length > 0) {
                     if (assign_to?.['avatar']) childHTML.find('img').attr('src', assign_to?.['avatar'])
                     else {
                         // let avClass = 'avatar-xs avatar-' + $x.fn.randomColor() 'light'
@@ -514,10 +522,10 @@ $(function () {
                     );
                     childHTML.append($HTMLGroup)
                 }
-                if (Object.keys(newData?.opportunity).length > 0){
+                if (newData?.opportunity && Object.keys(newData?.opportunity).length > 0)
                     childHTML.find('.card-body').append('<span class="float-right active-sales" data-bs-toggle="tooltip"'
                         + 'title="'+newData.opportunity.code +' - '+ newData.opportunity.title+'"><i class="fas far fa-lightbulb"></i></span>')
-                }
+
                 if (newData?.['service_order'] && Object.keys(newData?.['service_order']).length > 0){
                     const serviceOrder = newData.service_order
                     childHTML.find('.card-body').append('<span class="float-right is-so" data-bs-toggle="tooltip" '
@@ -1073,7 +1081,7 @@ $(function () {
             let dataCurrent = cls.getTaskList
             dataCurrent[index] = data
             cls.setTaskList = dataCurrent
-            tbl.DataTable().row(index).data(data).draw(true)
+            tbl.DataTable().row(index).data(data).draw()
         }
     }
 
@@ -1622,8 +1630,8 @@ $(function () {
                         (req) => {
                             let data = $.fn.switcherResp(req);
                             if (data?.['status'] === 200) {
-                                const taskList = data?.['task_list']
-                                listTask.init(listTask, taskList)
+                                const taskList = data?.['task_list'];
+                                listTask.init(listTask, taskList);
                             }
                         },
                         (err) => {

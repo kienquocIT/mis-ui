@@ -54,6 +54,7 @@ class JournalEntryListAPI(APIView):
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.JOURNAL_ENTRY_LIST).get(params)
+        print(resp.result)
         return resp.auto_return(key_success='journal_entry_list')
 
 
@@ -67,3 +68,15 @@ class JournalEntryDetailAPI(APIView):
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.JOURNAL_ENTRY_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='journal_entry_detail')
+
+
+class JournalEntrySummarizeAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.JOURNAL_ENTRY_SUMMARIZE).get()
+        return resp.auto_return(key_success='journal_entry_summarize')

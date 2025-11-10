@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Template Attribute list' %}
+{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+
+{% block pageAction %}
+    <a href="#" data-bs-toggle="modal" data-bs-target="#templateAttributeModal">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon"><i class="fa-solid fa-plus"></i></span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <div class="row">
+        <div class="col-12">
+            <table class="table nowrap w-100" data-method="GET" id="tbl_template_attr"
+                    data-url="{% url 'PayrollTemplAttrListAPI' %}">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>{% trans 'Title' %}</th>
+                        <th>{% trans 'Name' %}</th>
+                        <th>{% trans 'Code' %}</th>
+                        <th>{% trans 'Attribute Type' %}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block modalData %}
+    {% include 'hrm/payroll/template_attribute/template_attribute_modal.html' %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/hrm/payroll/js/template_attribute/list.js' %}"></script>
+    <script src="{% static 'assets/hrm/payroll/js/template_attribute/common.js' %}"></script>
+    <script src="{% static 'assets/hrm/payroll/js/template_attribute/create.js' %}"></script>
+{% endblock %}

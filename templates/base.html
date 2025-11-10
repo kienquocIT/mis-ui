@@ -53,11 +53,19 @@
         <link href="{% static 'vendors/dropify/dist/css/dropify.min.css' %}" rel="stylesheet" type="text/css">
     {% endcompress %}
 
-    <link rel="stylesheet" href="{% static 'assets/fonts/inter/Inter-VariableFont_slnt,wght.ttf' %}">
+{#    <link rel="stylesheet" href="{% static 'assets/fonts/inter/Inter-VariableFont_slnt,wght.ttf' %}">#}
+    <link rel="stylesheet" href="{% static 'assets/fonts/inter/be_vietnam_pro.css' %}">
+    <style>
+        * {
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+    </style>
+
     {% compress css %}
         <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/loading-spinner.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/my-style.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'assets/css/bflow_mirrow.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/notify.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/plugins/drawer.css' %}" rel="stylesheet" type="text/css">
         <link
@@ -252,7 +260,7 @@
                                                     data-url-current-wf="{% url 'WorkflowCurrentOfAppListAPI' %}"
                                                     data-url-app-emp-config="{% url 'AppEmpConfigListAPI' %}"
                                             >
-                                                <span class="icon"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                                                <span class="icon"><i class="fa-solid fa-clock-rotate-left text-primary"></i></span>
                                             </button>
                                         </div>
                                     </div>
@@ -335,7 +343,7 @@
                                 </div>
 								<div class="hk-sidebar-togglable"></div>
 							</header>
-							<div class="contact-body p-1">
+							<div class="contact-body" id="idxPageContentWrapper">
 								<div id="idxPageContent">
                                     {% block pageContent %}
                                     {% endblock %}

@@ -6,9 +6,10 @@
     <link href="{% static 'assets/core/workflow/css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"/>
     <style>
         #idxPageContent {
-            background-image: url("{% static 'assets/js/home_4.jpg' %}");
+            background-image: url("{% static 'assets/js/home_5.jpg' %}");
             background-repeat: no-repeat;
             background-size: cover;
+            background-position: center;
         }
     </style>
 {% endblock %}
@@ -59,38 +60,31 @@
 
     <div class="row mb-3">
         <div class="col-12 col-md-8">
-            <div class="bflow-glass-card">
+            <div class="bflow-mirrow-card">
                 <div class="row">
-                    <div class="col-12">
-                        <div class="bflow-glass-card-60">
-                            <div class="row">
-                                <div class="col-12 col-md-3">
-                                    <div class="form-group">
-                                        <label for="money-display"
-                                               class="form-label">{% trans 'Money display' %}</label>
-                                        <select class="form-select" id="money-display">
-                                            <option value="0" selected>{% trans 'Million' %}</option>
-                                            <option value="1">{% trans 'Billion' %}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-3">
-                                    <div class="form-group">
-                                        <label for="money-round" class="form-label">{% trans 'Money round' %}</label>
-                                        <input id="money-round" type="number" class="form-control" value="2" min="0">
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <div class="form-group">
-                                        <label for="period-filter" class="form-label">{% trans 'Fiscal year' %}</label>
-                                        <select class="form-select"
-                                                id="period-filter"
-                                                data-url="{% url 'PeriodsConfigListAPI' %}"
-                                                data-method="GET"
-                                        ></select>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="col-12 col-lg-3">
+                        <div class="form-group">
+                            <label for="money-display" class="form-label">{% trans 'Money display' %}</label>
+                            <select class="form-select" id="money-display">
+                                <option value="0" selected>{% trans 'Million' %}</option>
+                                <option value="1">{% trans 'Billion' %}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <div class="form-group">
+                            <label for="money-round" class="form-label">{% trans 'Money round' %}</label>
+                            <input id="money-round" type="number" class="form-control" value="2" min="0">
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="form-group">
+                            <label for="period-filter" class="form-label">{% trans 'Fiscal year' %}</label>
+                            <select class="form-select"
+                                    id="period-filter"
+                                    data-url="{% url 'PeriodsConfigListAPI' %}"
+                                    data-method="GET"
+                            ></select>
                         </div>
                     </div>
                 </div>
@@ -99,17 +93,15 @@
     </div>
     <div class="row mb-3">
         <div class="col-12">
-            <div class="bflow-glass-card">
+            <div class="bflow-mirrow-card">
                 <div class="row">
                     <div class="col-12 mb-3">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex">
                                 <div class="me-2">
-                                    <div class="input-group" style="width: 400px;">
+                                    <div class="input-group" style="min-width: 600px;">
                                         <span class="input-group-text">{% trans 'Group' %}</span>
-                                        <select class="form-select" id="pipeline-group"
-                                                data-method="GET"
-                                                data-url="{% url 'GroupListAPI' %}"></select>
+                                        <select class="form-select" id="pipeline-group" data-method="GET" data-url="{% url 'GroupListAPI' %}"></select>
                                     </div>
                                 </div>
                                 <div class="me-2">
@@ -123,7 +115,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-lg-6">
-                        <div class="bflow-glass-card-60">
+                        <div class="bflow-mirrow-card">
                             <div class="row">
                                 <div class="col-12">
                                     <div id="total_pipeline_chart" style="width: 100%; height: 350px;"></div>
@@ -132,7 +124,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-lg-6">
-                        <div class="bflow-glass-card-60">
+                        <div class="bflow-mirrow-card">
                             <div class="row">
                                 <div class="col-12">
                                     <div id="top_sale_chart" style="width: 100%; height: 350px;"></div>
@@ -145,19 +137,17 @@
         </div>
     </div>
     <div class="row mb-3">
-        <div class="col-12 col-lg-6">
-            <div class="bflow-glass-card">
+        <div class="col-12 col-lg-8">
+            <div class="bflow-mirrow-card">
                 <div class="row">
                     <div class="col-12 mb-3">
                         <!-- Chart Controls -->
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex">
                                 <div class="me-2">
-                                    <div class="input-group" style="width: 400px;">
+                                    <div class="input-group" style="width: 600px;">
                                         <span class="input-group-text">{% trans 'Group' %}</span>
-                                        <select class="form-select" id="forecast-group"
-                                                data-method="GET"
-                                                data-url="{% url 'GroupListAPI' %}"></select>
+                                        <select class="form-select" id="forecast-group" data-method="GET" data-url="{% url 'GroupListAPI' %}"></select>
                                     </div>
                                 </div>
                                 <div class="me-2">
@@ -181,7 +171,7 @@
                         </div>
                     </div>
                     <div class="col-12">
-                        <div class="bflow-glass-card-60">
+                        <div class="bflow-mirrow-card">
                             <div class="row">
                                 <div class="col-12">
                                     <div id="forecast_chart" style="width: 100%; height: 350px;"></div>
@@ -192,8 +182,10 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-lg-6">
-            <div class="bflow-glass-card">
+    </div>
+    <div class="row mb-10">
+        <div class="col-12 col-lg-8">
+            <div class="bflow-mirrow-card">
                 <div class="row">
                     <div class="col-12 mb-3">
                         <div class="d-flex justify-content-between align-items-center">
@@ -220,7 +212,7 @@
                         </div>
                     </div>
                     <div class="col-12">
-                        <div class="bflow-glass-card-60">
+                        <div class="bflow-mirrow-card">
                             <div class="row">
                                 <div class="col-12">
                                     <div id="activity_chart" style="width: 100%; height: 350px;"></div>

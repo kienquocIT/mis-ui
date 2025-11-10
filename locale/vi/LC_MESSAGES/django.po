@@ -6006,7 +6006,7 @@ msgstr "Bán hàng online"
 
 #
 msgid "Please complete associations data"
-msgstr "Vui lòng hoàn thành dữ liệu liên kết trạm"
+msgstr "Vui lòng hoàn thành các liên kết trạm"
 
 #
 msgid "Stage"
@@ -10104,6 +10104,10 @@ msgid "Delivery (lease)"
 msgstr "Giao hàng (cho thuê)"
 
 #
+msgid "Delivery (service)"
+msgstr "Giao hàng (dịch vụ)"
+
+#
 msgid "Reconciliation"
 msgstr "Cấn trừ"
 
@@ -10850,42 +10854,6 @@ msgstr "Cuộc họp trên Zoom chưa thể tạo vì bạn chưa cấu hình t�
 #
 msgid "Zoom account config here"
 msgstr "Cấu hình tài khoản Zoom tại đây"
-
-#
-msgid "Journal entry"
-msgstr "Bút toán"
-
-#
-msgid "Debit (FC)"
-msgstr "Bên nợ (NT)"
-
-#
-msgid "Credit (FC)"
-msgstr "Bên có (NT)"
-
-#
-msgid "Debit"
-msgstr "Bên nợ"
-
-#
-msgid "Credit"
-msgstr "Bên có"
-
-#
-msgid "Taxable value"
-msgstr "Giá trị chịu thuế"
-
-#
-msgid "Business partner"
-msgstr "Đối tác kinh doanh"
-
-#
-msgid "Transaction code"
-msgstr "Mã GD"
-
-#
-msgid "Transaction name"
-msgstr "Tên giao dịch"
 
 #
 msgid "Create manually"
@@ -12342,3 +12310,55 @@ msgstr "Lịch sử giao hàng"
 #
 msgid "In workflow"
 msgstr "Trong quy trình"
+
+#
+msgid "Single group only"
+msgstr "Chỉ từng phòng ban riêng lẻ"
+
+#
+msgid "Include child groups"
+msgstr "Bao gồm phòng ban con"
+
+#
+msgid "Service order version"
+msgstr "Phiên bản đơn dịch vụ"
+
+#
+msgid "Delivery quantity"
+msgstr "SL giao hàng"
+
+#
+msgid "Compare"
+msgstr "So sánh"
+
+#
+msgid "Compare Revenue & Profit"
+msgstr "So sánh Doanh thu & Lợi nhuận"
+
+#
+msgid "Revenue & Profit chart"
+msgstr "Biểu đồ Doanh thu & Lợi nhuận"
+
+#
+msgid "Expected revenue"
+msgstr "Doanh thu dự kiến"
+
+#
+msgid "Reality revenue"
+msgstr "Doanh thu thực tế"
+
+#
+msgid "Expected profit"
+msgstr "Lợi nhuận dự kiến"
+
+#
+msgid "Reality profit"
+msgstr "Lợi nhuận thực tế"
+
+#
+msgid "Node initial is required"
+msgstr "Trạm khởi tạo là bắt buộc"
+
+#
+msgid "Node approved is required"
+msgstr "Trạm chấp thuận là bắt buộc"

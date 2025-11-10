@@ -5,27 +5,29 @@
 {% block cssHeader %}
     <style>
         #idxPageContent {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-image: url("{% static 'assets/js/home_5.jpg' %}");
+            background-repeat: no-repeat;
             background-size: cover;
+            background-position: center;
         }
     </style>
 {% endblock %}
 {% block pageContent %}
     <div class="row">
         <div class="d-flex flex-wrap justify-content-center align-items-center">
-            <div class="col-12 col-md-4 col-lg-4">
-                <div class="bflow-glass-card">
+            <div class="col-12 col-md-6 col-lg-6 mt-5">
+                <div class="bflow-mirrow-card">
                     <a href="{% url 'DashboardGeneralList' %}">
-                        <h1 class="text-white fw-bold">{% trans 'General' %}</h1>
-                        <h5 class="text-white mt-3">{% trans 'Overview of revenue, profit and key performance indicators' %}</h5>
+                        <h1 class="fw-bold">{% trans 'General' %}</h1>
+                        <h5 class="text-muted mt-3">{% trans 'Overview of revenue, profit and key performance indicators' %}</h5>
                     </a>
                 </div>
             </div>
-            <div class="col-12 col-md-4 col-lg-4">
-                <div class="bflow-glass-card">
+            <div class="col-12 col-md-6 col-lg-6 mt-5">
+                <div class="bflow-mirrow-card">
                     <a href="{% url 'DashboardPipelineList' %}">
-                        <h1 class="text-white fw-bold">{% trans 'Pipeline' %}</h1>
-                        <h5 class="text-white mt-3">{% trans 'Sales pipeline analysis, conversion rates and deal tracking' %}</h5>
+                        <h1 class="fw-bold">{% trans 'Pipeline' %}</h1>
+                        <h5 class="text-muted mt-3">{% trans 'Sales pipeline analysis, conversion rates and deal tracking' %}</h5>
                     </a>
                 </div>
             </div>

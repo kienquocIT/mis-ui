@@ -3644,8 +3644,8 @@ class WFRTControl {
             if (btnCancel.length <= 0 && btnEnableCR.length <= 0) {
                 let buttons = ``;
                 if (type === 'all') {
-                    buttons = `<button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnEnableCR" data-value="1">${$.fn.transEle.attr('data-change-request')}</button>
-                                <button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnCancel" data-value="2">${$.fn.transEle.attr('data-cancel')}</button>`;
+                    buttons = `<button type="button" class="btn btn-primary btn-wf-after-finish" id="btnEnableCR" data-value="1">${$.fn.transEle.attr('data-change-request')}</button>
+                                <button type="button" class="btn btn-danger btn-wf-after-finish" id="btnCancel" data-value="2">${$.fn.transEle.attr('data-cancel')}</button>`;
                 }
                 if (type === 'change') {
                     buttons = `<button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnEnableCR" data-value="1">${$.fn.transEle.attr('data-change-request')}</button>`;
@@ -6779,7 +6779,7 @@ class DocumentControl {
                 $breadcrumbCode.html(
                     `
                     <span class="${clsState}"></span>
-                    <b class="fs-7 text-primary" id="documentCode" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${code}</b>
+                    <b class="fs-6 text-primary" id="documentCode" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${code}</b>
                 `
                 ).removeClass('hidden');
             }

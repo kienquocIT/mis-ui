@@ -940,6 +940,9 @@ $(document).ready(function () {
                                     if (activity?.['trans_title'] === 'Delivery (lease)') {
                                         bg_out = 'text-danger dlvr-lease'
                                     }
+                                    if (activity?.['trans_title'] === 'Delivery (service)') {
+                                        bg_out = 'text-danger dlvr-service'
+                                    }
                                     if (activity?.['trans_title'] === 'Goods receipt (IA)') {
                                         bg_in = 'text-green'
                                     }
@@ -962,6 +965,7 @@ $(document).ready(function () {
                                         'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
                                         'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
                                         'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
+                                        'Delivery (service)': trans_script.attr('data-trans-dlvr-service'),
                                         'Goods issue': trans_script.attr('data-trans-gis'),
                                         'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                     }
@@ -1023,6 +1027,9 @@ $(document).ready(function () {
                                     if (activity?.['trans_title'] === 'Delivery (lease)') {
                                         bg_out = 'text-danger dlvr-lease'
                                     }
+                                    if (activity?.['trans_title'] === 'Delivery (service)') {
+                                        bg_out = 'text-danger dlvr-service'
+                                    }
                                     if (activity?.['trans_title'] === 'Goods receipt (IA)') {
                                         bg_in = 'text-green'
                                     }
@@ -1045,6 +1052,7 @@ $(document).ready(function () {
                                         'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
                                         'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
                                         'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
+                                        'Delivery (service)': trans_script.attr('data-trans-dlvr-service'),
                                         'Goods issue': trans_script.attr('data-trans-gis'),
                                         'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                     }
@@ -1118,6 +1126,9 @@ $(document).ready(function () {
                                     if (activity?.['trans_title'] === 'Delivery (lease)') {
                                         bg_out = 'text-danger dlvr-lease'
                                     }
+                                    if (activity?.['trans_title'] === 'Delivery (service)') {
+                                        bg_out = 'text-danger dlvr-service'
+                                    }
                                     if (activity?.['trans_title'] === 'Goods receipt (IA)') {
                                         bg_in = 'text-green'
                                     }
@@ -1140,6 +1151,7 @@ $(document).ready(function () {
                                         'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
                                         'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
                                         'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
+                                        'Delivery (service)': trans_script.attr('data-trans-dlvr-service'),
                                         'Goods issue': trans_script.attr('data-trans-gis'),
                                         'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                     }
@@ -1200,6 +1212,9 @@ $(document).ready(function () {
                                         if (activity?.['trans_title'] === 'Delivery (lease)') {
                                             bg_out = 'text-danger dlvr-lease'
                                         }
+                                        if (activity?.['trans_title'] === 'Delivery (service)') {
+                                            bg_out = 'text-danger dlvr-service'
+                                        }
                                         if (activity?.['trans_title'] === 'Goods receipt (IA)') {
                                             bg_in = 'text-green'
                                         }
@@ -1222,6 +1237,7 @@ $(document).ready(function () {
                                             'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
                                             'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
                                             'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
+                                            'Delivery (service)': trans_script.attr('data-trans-dlvr-service'),
                                             'Goods issue': trans_script.attr('data-trans-gis'),
                                             'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                         }
@@ -1579,6 +1595,9 @@ $(document).ready(function () {
                                         if (activity?.['trans_title'] === 'Delivery (lease)') {
                                             bg_out = 'text-danger dlvr-lease'
                                         }
+                                        if (activity?.['trans_title'] === 'Delivery (service)') {
+                                            bg_out = 'text-danger dlvr-service'
+                                        }
                                         if (activity?.['trans_title'] === 'Goods receipt (IA)') {
                                             bg_in = 'text-green'
                                         }
@@ -1601,6 +1620,7 @@ $(document).ready(function () {
                                             'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
                                             'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
                                             'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
+                                            'Delivery (service)': trans_script.attr('data-trans-dlvr-service'),
                                             'Goods issue': trans_script.attr('data-trans-gis'),
                                             'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                         }
@@ -1662,6 +1682,9 @@ $(document).ready(function () {
                                         if (activity?.['trans_title'] === 'Delivery (lease)') {
                                             bg_out = 'text-danger dlvr-lease'
                                         }
+                                        if (activity?.['trans_title'] === 'Delivery (service)') {
+                                            bg_out = 'text-danger dlvr-service'
+                                        }
                                         if (activity?.['trans_title'] === 'Goods receipt (IA)') {
                                             bg_in = 'text-green'
                                         }
@@ -1684,6 +1707,7 @@ $(document).ready(function () {
                                             'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
                                             'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
                                             'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
+                                            'Delivery (service)': trans_script.attr('data-trans-dlvr-service'),
                                             'Goods issue': trans_script.attr('data-trans-gis'),
                                             'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                         }
@@ -1757,6 +1781,9 @@ $(document).ready(function () {
                                         if (activity?.['trans_title'] === 'Delivery (lease)') {
                                             bg_out = 'text-danger dlvr-lease'
                                         }
+                                        if (activity?.['trans_title'] === 'Delivery (service)') {
+                                            bg_out = 'text-danger dlvr-service'
+                                        }
                                         if (activity?.['trans_title'] === 'Goods receipt (IA)') {
                                             bg_in = 'text-green'
                                         }
@@ -1779,6 +1806,7 @@ $(document).ready(function () {
                                                 'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
                                                 'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
                                                 'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
+                                                'Delivery (service)': trans_script.attr('data-trans-dlvr-service'),
                                                 'Goods issue': trans_script.attr('data-trans-gis'),
                                                 'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                             }
@@ -1839,6 +1867,9 @@ $(document).ready(function () {
                                             if (activity?.['trans_title'] === 'Delivery (lease)') {
                                                 bg_out = 'text-danger dlvr-lease'
                                             }
+                                            if (activity?.['trans_title'] === 'Delivery (service)') {
+                                                bg_out = 'text-danger dlvr-service'
+                                            }
                                             if (activity?.['trans_title'] === 'Goods receipt (IA)') {
                                                 bg_in = 'text-green'
                                             }
@@ -1861,6 +1892,7 @@ $(document).ready(function () {
                                                 'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
                                                 'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
                                                 'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
+                                                'Delivery (service)': trans_script.attr('data-trans-dlvr-service'),
                                                 'Goods issue': trans_script.attr('data-trans-gis'),
                                                 'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                             }

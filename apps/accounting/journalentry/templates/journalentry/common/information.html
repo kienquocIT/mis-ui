@@ -1,59 +1,47 @@
 {% load i18n %}
 
 <div class="row">
-    <div class="col-12 col-md-9 col-lg-9">
-        <div class="row">
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label required" for="ori-trans">{% trans "Original transaction" %}</label>
-                    <select disabled required class="form-select select2" id="ori-trans">
-                        <option value="0">{% trans 'Delivery' %}</option>
-                        <option value="1">{% trans 'AR invoice' %}</option>
-                        <option value="2">{% trans 'Cash inflow' %}</option>
-                        <option value="3">{% trans 'Goods receipt' %}</option>
-                        <option value="4">{% trans 'AP invoice' %}</option>
-                        <option value="5">{% trans 'Cash outflow' %}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label required" for="transaction-code">{% trans "Transaction code" %}</label>
-                    <input required readonly disabled class="form-control" id="transaction-code">
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label required" for="transaction-name">{% trans "Transaction name" %}</label>
-                    <input required readonly disabled class="form-control" id="transaction-name">
-                </div>
+    <div class="col-12 text-right">
+        <h4><span id="je-state"></span></h4>
+    </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label class="form-label required" for="ori-trans">{% trans "Original transaction" %}</label>
+            <input id="ori-trans" class="form-control" readonly>
+        </div>
+    </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label class="form-label required" for="transaction-code">{% trans "Transaction code" %}</label>
+            <input required readonly disabled class="form-control" id="transaction-code">
+        </div>
+    </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label class="form-label required" for="je-posting-date">{% trans "Posting date" %}</label>
+            <div class="input-group mb-3">
+                <span class="input-affix-wrapper">
+                    <span class="input-prefix">📅</span>
+                    <input required class="form-control" id="je-posting-date">
+                </span>
             </div>
         </div>
     </div>
     <div class="col-12 col-md-3 col-lg-3">
-        <div class="row">
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label required" for="je-posting-date">{% trans "Posting date" %}</label>
-                    <div class="input-group mb-3">
-                        <span class="input-affix-wrapper">
-                            <span class="input-prefix">📅</span>
-                            <input required class="form-control" id="je-posting-date">
-                        </span>
-                    </div>
-                </div>
+        <div class="form-group">
+            <label class="form-label required" for="je-doc-date">{% trans "Document date" %}</label>
+            <div class="input-group mb-3">
+                <span class="input-affix-wrapper">
+                    <span class="input-prefix">📅</span>
+                    <input required class="form-control" id="je-doc-date">
+                </span>
             </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label required" for="je-doc-date">{% trans "Document date" %}</label>
-                    <div class="input-group mb-3">
-                        <span class="input-affix-wrapper">
-                            <span class="input-prefix">📅</span>
-                            <input required class="form-control" id="je-doc-date">
-                        </span>
-                    </div>
-                </div>
-            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="form-group">
+            <label class="form-label required" for="je-des">{% trans "Description" %}</label>
+            <textarea id="je-des" class="form-control"></textarea>
         </div>
     </div>
 </div>

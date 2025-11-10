@@ -927,6 +927,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     JOURNAL_ENTRY_LIST = StringUrl('journal-entry/list')
     JOURNAL_ENTRY_DETAIL = StringUrl('journal-entry/detail/{pk}')
+    JOURNAL_ENTRY_SUMMARIZE = StringUrl('journal-entry/get_je_summarize')
 
     # asset/ fixed asset write off
     FIXED_ASSET_WRITE_OFF_LIST = StringUrl('asset/fixed-asset-writeoff/list')
@@ -1033,6 +1034,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SERVICE_ORDER_DETAIL = StringUrl('serviceorder/detail/{pk}')
     SERVICE_ORDER_DETAIL_DASHBOARD = StringUrl('serviceorder/detail-dashboard/{pk}')
     SO_WORK_ORDER_DETAIL = StringUrl('serviceorder/work-order-detail')
+    SERVICE_ORDER_DIFF = StringUrl('serviceorder/diff/{current_id}/{comparing_id}')
 
     # service-quotation
     SERVICE_QUOTATION_LIST = StringUrl('servicequotation/list')

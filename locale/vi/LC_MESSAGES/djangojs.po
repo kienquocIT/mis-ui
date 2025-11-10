@@ -576,3 +576,7 @@ msgstr "Dùng cho Mượn hàng"
 #
 msgid "Running workflow"
 msgstr "Trong quy trình"
+
+#
+msgid "Parent"
+msgstr "Cấp trên"

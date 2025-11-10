@@ -368,7 +368,6 @@ class ServiceOrderPageHandler {
         ServiceOrder.initServiceDetailDataTable(data.service_detail_data);
         ServiceOrder.loadServiceDetailRelatedData(data.service_detail_data);
         ServiceOrder.loadServiceDetailSummaryValue();
-        ServiceOrder.loadWorkOrderDetailSummaryValue();
 
         // Work
         const workOrderData = data.work_order_data.map(wo => ({
@@ -383,6 +382,7 @@ class ServiceOrderPageHandler {
             ServiceOrder.initQuotationWorkOrderDataTable(workOrderData);
         }
         ServiceOrder.loadWorkOrderRelatedData(workOrderData);
+        ServiceOrder.loadWorkOrderDetailSummaryValue();
 
         // Payment
         const paymentData = data.payment_data.map(payment => ({

@@ -1227,7 +1227,7 @@ class UsualLoadPageFunction {
 }
 
 /**
- * Các hàm load page và hàm hỗ trợ thường dùng
+ * Các hàm load page và hàm hỗ trợ thường dùng (cho Kế toán)
  */
 class UsualLoadPageAccountingFunction {
     /**

@@ -33,13 +33,11 @@
                 </div>
                 <div class="modal-body">
                     <form id="form-add-config" data-url="{% url "DimensionSyncConfigListAPI" %}" data-method="POST">
-                        <!-- Section 1: Dimension Info -->
                         <div class="mb-5">
                             <h6 class="text-uppercase text-primary fw-semibold mb-3 fs-7">
                                 <i class="bi bi-info-circle me-2"></i>
                                 {% trans 'Dimension Information' %}
                             </h6>
-                            <div class="separator separator-light mb-4"></div>
 
                             <div class="row gx-3">
                                 <div class="col-md-6 mb-3">
@@ -57,13 +55,15 @@
                         <div class="mb-5">
                             <h6 class="text-uppercase text-success fw-semibold mb-3 fs-7">
                                 <i class="bi bi-table me-2"></i>
-                                Master Table Configuration
+                                {% trans 'Master Table Configuration' %}
                             </h6>
-                            <div class="separator separator-light mb-4"></div>
 
                             <div class="mb-3">
                                 <label for="related_app" class="form-label required">{% trans 'Source Table' %}</label>
-                                <select class="form-select" id="related_app" required></select>
+                                <select required class="form-select select2" id="related_app" data-url="{% url 'DimensionSyncConfigApplicationListAPI'%}"
+
+                                >
+                                </select>
                                 <div class="form-text">{% trans 'Select the master data table to sync from' %}</div>
                             </div>
                         </div>
@@ -93,35 +93,6 @@
                                 <label class="form-check-label" for="sync_on_delete">
                                     {% trans 'Sync on delete' %}
                                 </label>
-                            </div>
-                        </div>
-
-                        <!-- Section 4: Initial Sync -->
-                        <div class="mb-4">
-                            <h6 class="text-uppercase text-info fw-semibold mb-3 fs-7">
-                                <i class="bi bi-database-fill-check me-2"></i>
-                                Initial Data Import
-                            </h6>
-                            <div class="separator separator-light mb-4"></div>
-
-                            <div class="alert alert-warning mb-3">
-                                <div class="d-flex">
-                                    <i class="bi bi-exclamation-triangle-fill me-3 fs-5"></i>
-                                    <div>
-                                        <strong>Important:</strong> If the master table already contains data, you need to perform an initial sync to import existing records as dimension values.
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
-                                <div>
-                                    <div class="fw-semibold mb-1">Import Existing Records</div>
-                                    <div class="text-muted fs-8">This will create dimension values for all existing master data records</div>
-                                </div>
-                                <button type="button" class="btn btn-primary" id="initialSyncBtn">
-                                    <i class="bi bi-download me-1"></i>
-                                    Run Initial Sync
-                                </button>
                             </div>
                         </div>
                     </form>

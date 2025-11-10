@@ -27,8 +27,8 @@ urlpatterns = [
     path('product-account-determination/detail/api/<str:pk>', ProductAccountDeterminationDetailAPI.as_view(), name='ProductAccountDeterminationDetailAPI'),
     # initial balance
 ] + [
-    path('initial_balance/list', InitialBalanceList.as_view(), name='InitialBalanceList'),
-    path('initial_balance/list/api', InitialBalanceListAPI.as_view(), name='InitialBalanceListAPI'),
+    path('initial-balance/list', InitialBalanceList.as_view(), name='InitialBalanceList'),
+    path('initial-balance/list/api', InitialBalanceListAPI.as_view(), name='InitialBalanceListAPI'),
 ]
 
 # dimension

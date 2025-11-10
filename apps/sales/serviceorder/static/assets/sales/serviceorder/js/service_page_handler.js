@@ -74,6 +74,7 @@ class ServiceOrderPageHandler {
     // Hàm tạo events chung cho trang create và update
     static registerCommonEventHandlers() {
         ServiceOrder.handleSaveProduct();
+        ServiceOrder.handleCheckProduct();
         ServiceOrder.handleSaveExchangeRate();
         ServiceOrder.handleOpportunityChange();
         ServiceOrder.adjustTableSizeWhenChangeTab();

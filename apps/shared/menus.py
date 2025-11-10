@@ -377,10 +377,10 @@ class MenusCRM:
                 name='Sale quotation', code='menu_quotation_list', view_name='QuotationList',
                 icon='<i class="fas fa-file-invoice-dollar"></i>',
             ),
-            MenuCommon(
-                name='Service quotation', code='menu_service_quotation_list', view_name='ServiceQuotationList',
-                icon='<i class="fas fa-file-invoice-dollar"></i>',
-            )
+            # MenuCommon(
+            #     name='Service quotation', code='menu_service_quotation_list', view_name='ServiceQuotationList',
+            #     icon='<i class="fas fa-file-invoice-dollar"></i>',
+            # )
         ],
     )
     BIDDING = MenuCommon(

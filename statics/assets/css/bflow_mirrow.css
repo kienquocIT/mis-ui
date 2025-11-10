@@ -14,7 +14,8 @@
 
     /* Mặc định opacity = 0.05 nếu không khai báo */
     --mirrow-opacity: 0.05;
-    --mirrow-opacity-btn: 0.20;
+    --mirrow-opacity-btn: 0.4;
+    --mirrow-opacity-badge: 0.4;
 }
 
 /* Base style chung cho Card */
@@ -166,7 +167,7 @@
 .bflow-mirrow-badge-sm {
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: var(--mirrow-radius-badge);
-    background: rgba(255, 255, 255, var(--mirrow-opacity-btn));
+    background: rgba(255, 255, 255, var(--mirrow-opacity-badge));
     backdrop-filter: blur(var(--mirrow-blur));
     -webkit-backdrop-filter: blur(var(--mirrow-blur));
 

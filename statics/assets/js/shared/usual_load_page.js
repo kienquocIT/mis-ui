@@ -822,6 +822,9 @@ class UsualLoadPageFunction {
                 }
                 return res
             },
+            templateResult: function (state) {
+                return $(`<span class="fw-bold">${state.data?.['title']}</span><br><span class="small mr-1">${$.fn.gettext('Fiscal year')}: ${state.data?.['fiscal_year'] || ''}</span><span class="small">(${state.data?.['start_date'] ? moment(state.data?.['start_date']).format('DD/MM/YYYY') : ''} - ${state.data?.['end_date'] ? moment(state.data?.['end_date']).format('DD/MM/YYYY') : ''})</span>`);
+            },
             data: (data ? data : null),
             keyResp: 'periods_list',
             keyId: 'id',

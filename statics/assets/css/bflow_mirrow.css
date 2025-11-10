@@ -90,17 +90,18 @@
 .bflow-mirrow-card-100   { --mirrow-opacity: 1; }
 
 /* Button */
-.bflow-mirrow-btn {
-    padding: 5px 15px;
+.bflow-mirrow-btn,
+.bflow-mirrow-btn-lg,
+.bflow-mirrow-btn-sm {
     border: 1px solid #9f9f9f;
     border-radius: var(--mirrow-radius-btn);
     background: rgba(255, 255, 255, var(--mirrow-opacity-btn));
     backdrop-filter: blur(var(--mirrow-blur));
     -webkit-backdrop-filter: blur(var(--mirrow-blur));
     cursor: pointer;
-    vertical-align: middle;
     display: inline-block;
     text-align: center;
+    vertical-align: middle;
 
     box-shadow:
         inset 0 0 0 1px var(--mirrow-radius-btn),
@@ -110,27 +111,56 @@
     transition: transform .25s ease, box-shadow .25s ease;
 }
 
-/* Hover / Active */
-.bflow-mirrow-btn:hover {
-    --mirrow-opacity-btn: 0.60;
+.bflow-mirrow-btn:hover,
+.bflow-mirrow-btn-lg:hover,
+.bflow-mirrow-btn-sm:hover {
+    transform: translateY(-1px);
+    box-shadow:
+        inset 0 0 0 1px var(--mirrow-radius-btn),
+        inset 0 6px 24px var(--mirrow-highlight),
+        0 6px 28px var(--mirrow-shadow);
 }
 
-.bflow-mirrow-btn:active {
-    --mirrow-opacity-btn: 0.20;
+.bflow-mirrow-btn:active,
+.bflow-mirrow-btn-lg:active,
+.bflow-mirrow-btn-sm:active {
+    transform: scale(0.96);
+    box-shadow:
+        inset 0 0 0 1px var(--mirrow-radius-btn),
+        inset 0 3px 12px var(--mirrow-highlight),
+        0 2px 14px var(--mirrow-shadow);
+}
+
+.bflow-mirrow-btn {
+    padding: 5px 15px;
+    font-size: inherit;
+}
+
+.bflow-mirrow-btn-lg {
+    padding: 8px 22px;
+    font-size: 1.15rem;
+    font-weight: 500;
+}
+
+.bflow-mirrow-btn-sm {
+    padding: 3px 10px;
+    font-size: 0.85rem;
 }
 
 /* Badge */
-.bflow-mirrow-badge {
-    padding: 0px 10px;
+.bflow-mirrow-badge,
+.bflow-mirrow-badge-lg,
+.bflow-mirrow-badge-sm {
     border: 1px solid #dfdfdf;
     border-radius: var(--mirrow-radius-btn);
     background: rgba(255, 255, 255, var(--mirrow-opacity-btn));
     backdrop-filter: blur(var(--mirrow-blur));
     -webkit-backdrop-filter: blur(var(--mirrow-blur));
-    font-size: smaller;
-    vertical-align: middle;
+
     display: inline-block;
     text-align: center;
+    vertical-align: middle;
+    cursor: default; /* badge thường không phải button */
 
     box-shadow:
         inset 0 0 0 1px var(--mirrow-radius-btn),
@@ -138,4 +168,20 @@
         0 4px 22px var(--mirrow-shadow);
 
     transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.bflow-mirrow-badge {
+    padding: 0px 10px;
+    font-size: 0.95rem;
+}
+
+.bflow-mirrow-badge-lg {
+    padding: 2px 14px;
+    font-size: 1.15rem;
+    font-weight: 500;
+}
+
+.bflow-mirrow-badge-sm {
+    padding: 0px 8px;
+    font-size: 0.8rem;
 }

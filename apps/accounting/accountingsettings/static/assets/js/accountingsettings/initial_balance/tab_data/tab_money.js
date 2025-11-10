@@ -92,7 +92,7 @@ class TabMoneyFunction {
                 {
                     className: "w-10 text-center",
                     render: (data, type, row) => {
-                        return `<button ${option === 'detail' ? 'disabled' : ''} type="button" class="bflow-mirrow-btn btn-detail-modal" disabled
+                        return `<button ${option === 'detail' ? 'disabled' : ''} type="button" class="bflow-mirrow-badge btn-detail-modal" disabled
                                         data-bs-toggle="modal"
                                         data-bs-target="#bank_account_modal">
                                    <i class="fas fa-info"></i>

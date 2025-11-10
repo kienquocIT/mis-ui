@@ -1,10 +1,11 @@
 $(document).ready(function () {
-    InitialBalancePageFunction.initOpeningDatePicker();
-
+    UsualLoadPageFunction.LoadPeriod({
+        element: pageElements.$accountingPeriodEle,
+        data_url: pageElements.$accountingPeriodEle.attr('data-url')
+    });
     InitialBalanceEventHandler.InitPageEvent();
-    TabMoneyEventHandler.InitPageEvent();
-    TabMerchandiseEventHandler.InitPageEvent();
 
+    // Tab Money
+    TabMoneyEventHandler.InitPageEvent();
     TabMoneyFunction.initMoneyTable();
-    TabMerchandiseFunction.initMerchandiseTable();
 });

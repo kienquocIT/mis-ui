@@ -26,5 +26,5 @@ msgid "Balanced"
 msgstr "Đã cân bằng"
 
 #
-msgid "Not balanced"
-msgstr "Không cân bằng"
+msgid "Imbalance"
+msgstr "Chưa cân bằng"

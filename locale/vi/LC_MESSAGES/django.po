@@ -9979,6 +9979,7 @@ msgstr "Khoản thanh toán"
 #
 msgid "Total payment ratio must be 100%"
 msgstr "Tổng tỉ lệ thanh toán phải đủ 100%"
+
 #
 msgid "Account payable"
 msgstr "Các khoản phải trả"

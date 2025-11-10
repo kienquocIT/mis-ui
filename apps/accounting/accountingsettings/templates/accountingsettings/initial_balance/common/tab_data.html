@@ -17,17 +17,17 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_receivable" role="tab" aria-selected="false">
-                    <span class="nav-link-text">{% trans 'Accounts Receivable' %}</span>
+                    <span class="nav-link-text">{% trans 'Account Receivable' %}</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#tab_supplier_payables" role="tab" aria-selected="false">
-                    <span class="nav-link-text">{% trans 'Supplier Payables' %}</span>
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_supplier_payable" role="tab" aria-selected="false">
+                    <span class="nav-link-text">{% trans 'Supplier Payable' %}</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#tab_employee_payables" role="tab" aria-selected="false">
-                    <span class="nav-link-text">{% trans 'Employee Payables' %}</span>
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_employee_payable" role="tab" aria-selected="false">
+                    <span class="nav-link-text">{% trans 'Employee Payable' %}</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -56,15 +56,15 @@
                             <thead class="bg-secondary-light-5">
                                 <tr>
                                     <th style="min-width: 50px"></th>
-                                    <th style="min-width: 100px">{% trans 'Money Type' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Currency' %}</th>
-                                    <th style="min-width: 150px">{% trans 'Account Code' %}</th>
-                                    <th style="min-width: 250px">{% trans 'Account Name' %}</th>
-                                    <th style="min-width: 150px">{% trans 'Amount' %}</th>
-                                    <th style="min-width: 150px">{% trans 'VND Exchange' %}</th>
-                                    <th style="min-width: 150px">{% trans 'Debit' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Credit' %}</th>
-                                    <th style="min-width: 150px">{% trans 'Detail' %}</th>
+                                    <th style="min-width: 150px">{% trans 'Type' %}</th>
+                                    <th style="min-width: 200px">{% trans 'Currency' %}</th>
+                                    <th style="min-width: 250px">{% trans 'Account' %}</th>
+                                    <th style="min-width: 300px">{% trans 'Description' %}</th>
+                                    <th style="min-width: 200px">{% trans 'Value' %}</th>
+                                    <th style="min-width: 200px">{% trans 'VND Exchange' %}</th>
+                                    <th style="min-width: 200px">{% trans 'Debit' %}</th>
+                                    <th style="min-width: 200px">{% trans 'Credit' %}</th>
+                                    <th style="min-width: 200px">{% trans 'Detail' %}</th>
                                     <th style="min-width: 100px">{% trans 'Action' %}</th>
                                 </tr>
                             </thead>
@@ -90,9 +90,9 @@
                                     <th style="min-width: 50px"></th>
                                     <th style="min-width: 100px">{% trans 'Materials / Supplies' %}</th>
                                     <th style="min-width: 100px">{% trans 'Detail' %}</th>
-                                    <th style="min-width: 150px">{% trans 'Account Code' %}</th>
-                                    <th style="min-width: 250px">{% trans 'Account Name' %}</th>
-                                    <th style="min-width: 150px">{% trans 'Amount' %}</th>
+                                    <th style="min-width: 250px">{% trans 'Account' %}</th>
+                                    <th style="min-width: 300px">{% trans 'Description' %}</th>
+                                    <th style="min-width: 150px">{% trans 'Value' %}</th>
                                     <th style="min-width: 150px">{% trans 'Debit' %}</th>
                                     <th style="min-width: 100px">{% trans 'Credit' %}</th>
                                     <th style="min-width: 100px">{% trans 'Action' %}</th>
@@ -110,16 +110,42 @@
                     </div>
                 </div>
             </div>
-            <!-- TAB 3: Accounts Receivable - TODO: Implement -->
+            <!-- TAB 3: Account Receivable -->
             <div class="tab-pane fade" id="tab_receivable">
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table nowrap w-100" id="tbl_account_receivable">
+                            <thead class="bg-secondary-light-5">
+                                <tr>
+                                    <th style="min-width: 50px"></th>
+                                    <th style="min-width: 100px">{% trans 'Customer' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Detail' %}</th>
+                                    <th style="min-width: 250px">{% trans 'Account' %}</th>
+                                    <th style="min-width: 300px">{% trans 'Description' %}</th>
+                                    <th style="min-width: 150px">{% trans 'Value' %}</th>
+                                    <th style="min-width: 150px">{% trans 'Debit' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Credit' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Action' %}</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <button class="btn btn-primary mt-4" type="button" id="add_tab_account_receivable" aria-expanded="false">
+                            <i class="fas fa-plus-circle me-2"></i>{% trans 'Add' %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- TAB 4: Supplier Payable - TODO: Implement -->
+            <div class="tab-pane fade" id="tab_supplier_payable">
                 <!-- To be implemented -->
             </div>
-            <!-- TAB 4: Supplier Payables - TODO: Implement -->
-            <div class="tab-pane fade" id="tab_supplier_payables">
-                <!-- To be implemented -->
-            </div>
-            <!-- TAB 5: Employee Payables - TODO: Implement -->
-            <div class="tab-pane fade" id="tab_employee_payables">
+            <!-- TAB 5: Employee Payable - TODO: Implement -->
+            <div class="tab-pane fade" id="tab_employee_payable">
                 <!-- To be implemented -->
             </div>
             <!-- TAB 6: Fixed Assets - TODO: Implement -->

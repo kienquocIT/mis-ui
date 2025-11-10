@@ -21,7 +21,6 @@
           data-url-redirect="{% url 'InitialBalanceList' %}">
         {% csrf_token %}
         {% include 'accountingsettings/initial_balance/common/common_data.html' %}
-        {% include 'accountingsettings/initial_balance/common/tab_data.html' %}
     </form>
 {% endblock %}
 {% block modalData %}
@@ -29,7 +28,8 @@
 {% endblock %}
 {% block dataHiddenGroup %}
     <input type="text" id="url-factory"
-           data-currency="{% url 'CurrencyListAPI' %}"
+           data-url-currency="{% url 'CurrencyListAPI' %}"
+           data-url-accounting-account="{% url 'ChartOfAccountsListAPI' %}"
     >
 {% endblock %}
 {% block jsFooter %}

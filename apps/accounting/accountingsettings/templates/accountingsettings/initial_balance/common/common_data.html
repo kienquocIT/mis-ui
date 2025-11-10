@@ -1,46 +1,41 @@
 {% load static i18n %}
-<!-- Main Content -->
+
 <div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <h1 class="h3 mb-4 font-weight-bold text-dark">{% trans 'Initial Balance Setup' %}</h1>
-                <div class="row">
-                    <div class="col-md-4 col-lg-4">
-                        <div class="form-group">
-                            <label class="form-label required" for="openingDate">{% trans 'Opening Date' %}</label>
-                            <div class="input-group mb-3">
-                                <span class="input-affix-wrapper">
-                                    <span class="input-prefix">📅</span>
-                                    <input type="text" name="opening_date" class="form-control" autocomplete="off" id="openingDate" required>
-                                </span>
-                            </div>
-                            <small class="text-muted">{% trans 'Usually the first day of the fiscal year' %}</small>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-lg-4">
-                        <div class="form-group">
-                            <label class="form-label" for="fiscalYear">{% trans 'Fiscal Year' %}</label>
-                            <input class="form-control" type="text" id="fiscalYear" disabled>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-lg-4">
-                        <div class="form-group">
-                            <label class="form-label" for="accountingPeriod">{% trans 'Accounting Period' %}</label>
-                            <input type="text" id="accountingPeriod" class="form-control" disabled>
-                        </div>
-                    </div>
+    <div class="col-12 col-md-9 col-lg-9">
+        <div class="row">
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label" for="accountingPeriod">{% trans 'Accounting Period' %}</label>
+                    <select id="accountingPeriod" class="form-select select2" data-url="{% url "PeriodsConfigListAPI" %}"></select>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label class="form-label" for="description">{% trans 'Description' %} ({% trans 'Optional' %})</label>
-                            <textarea name="remark" class="form-control" id="textarea_remark" rows="4"
-                            placeholder="{% trans 'E.g.: Opening balance for 2024, or Balance transferred from old system...' %}"></textarea>
-                        </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label" for="fiscalYear">{% trans 'Fiscal year' %}</label>
+                    <input class="form-control" type="text" id="fiscalYear" readonly>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label" for="openingDate">{% trans 'Start Date' %}</label>
+                    <div class="input-group mb-3">
+                        <span class="input-affix-wrapper">
+                            <span class="input-prefix">📅</span>
+                            <input type="text" name="opening_date" class="form-control" autocomplete="off" id="openingDate" readonly>
+                        </span>
                     </div>
                 </div>
             </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label" for="description">{% trans 'Description' %}</label>
+                    <textarea name="remark" class="form-control" id="description"></textarea>
+                </div>
+            </div>
         </div>
+        {% include 'accountingsettings/initial_balance/common/tab_data.html' %}
+    </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        {% include 'accountingsettings/initial_balance/common/balance_summary.html' %}
     </div>
 </div>

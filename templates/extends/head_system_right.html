@@ -1,7 +1,7 @@
 {% load static i18n person_utils %}
 
 <div class="d-inline-block">
-    <button class="btn btn-icon dropdown-toggle no-caret btn-rounded btn-flush-dark flush-soft-hover mr-2" role="button" data-bs-display="static" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"
+    <button class="btn btn-icon dropdown-toggle no-caret btn-rounded btn-flush-dark flush-soft-hover mr-3" role="button" data-bs-display="static" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"
             id="notifyDropdownData" data-url="{% url 'MyNotifyAllAPI' %}" data-method="GET">
         {{ base.app_name_translate|json_script:'app_name_translate' }}
         <span id="idxNotifyBell"
@@ -12,11 +12,11 @@
               data-bs-original-title="{% trans 'Notifications' %}"
         >
             <span class="position-relative">
-                <div class="avatar avatar-icon avatar-xxs avatar-rounded">
+                <div class="avatar avatar-icon avatar-rounded">
                     <span class="initial-wrap">
                         <i class="fa-regular fa-bell fa-sm my-bell" id="idxNotifyBellIcon"></i>
                     </span>
-                    <span class="badge badge-warning badge-sm position-top-end-overflow-1" id="my-notify-count"></span>
+                    <span class="badge badge-orange badge-sm position-top-end-overflow-1" id="my-notify-count"></span>
                 </div>
             </span>
         </span>

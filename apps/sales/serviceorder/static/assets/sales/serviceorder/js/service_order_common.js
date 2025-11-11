@@ -2616,7 +2616,7 @@ const ServiceOrder = (function($) {
                                 resetDetail.tax_value = 0
                                 resetDetail.issued_value = 0
                                 resetDetail.balance_value = subtotal
-                                resetDetail.reconcile_value = 0
+                                resetDetail.reconcile_value = detail.payment_value || 0
                                 resetDetail.receivable_value = 0
                             }
                             else {

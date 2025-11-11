@@ -55,9 +55,9 @@ $(document).ready(function () {
                                     <i class="fa-regular fa-circle-question"></i>
                                 </a>
                                 <div class="dropdown-menu bflow-mirrow-card-80 p-3" style="min-width: 200px;">
-                                    <h5 class="fw-bold">Tài khoản 156</h5>
-                                    <h6>Goods</h6>
-                                    <h6>Hàng hóa</h6>
+                                    <h5 class="row-account-code fw-bold">Tài khoản 156</h5>
+                                    <h6 class="row-fk-account-name">Goods</h6>
+                                    <h6 class="row-account-name">Hàng hóa</h6>
                                 </div>
                             </span>
                         </div>`;
@@ -66,11 +66,32 @@ $(document).ready(function () {
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return row?.['product']?.['valuation_method'] !== 2 ? `<span class="balance-value mask-money" data-init-money="${row?.['value']}"></span>` : '--';
+                        let value = 0
+                        if (row?.['product']?.['valuation_method'] !== 2) {
+                            value = row?.['value'] || 0
+                        }
+                        else {
+                            for (let i=0; i < (row?.['data_sn'] || []).length; i++) {
+                                value += Number(row?.['data_sn'][i]?.['specific_value'] || 0)
+                            }
+                        }
+                        return `<span class="balance-value mask-money" data-init-money="${value}"></span>`;
                     }
                 },
                 {
-                    className: 'w-20',
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        return '--';
+                    }
+                },
+                {
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        return `<span class="balance-quantity mr-1">${row?.['quantity']}</span><span class="uom-title">${row?.['uom']?.['title']}</span>`;
+                    }
+                },
+                {
+                    className: 'w-15',
                     render: (data, type, row) => {
                         let dot = [
                             '<span class="badge bg-blue badge-indicator"></span>',
@@ -91,14 +112,6 @@ $(document).ready(function () {
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<span>${[
-                            $.fn.gettext('None'), $.fn.gettext('Batch/Lot'), $.fn.gettext('Serial number')
-                        ][row?.['product']?.['general_traceability_method']]}</span>`;
-                    }
-                },
-                {
-                    className: 'w-10',
-                    render: (data, type, row) => {
                         return `<span data-wh-id="${row?.['warehouse']?.['id']}" class="badge badge-sm badge-light balance-wh">
                                     ${row?.['warehouse']?.['code']}
                                 </span><br>
@@ -106,9 +119,11 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'w-10 text-right',
+                    className: 'w-10',
                     render: (data, type, row) => {
-                        return `<span class="balance-quantity mr-1">${row?.['quantity']}</span><span class="uom-title">${row?.['uom']?.['title']}</span>`;
+                        return `<span>${[
+                            $.fn.gettext('None'), $.fn.gettext('Batch/Lot'), $.fn.gettext('Serial number')
+                        ][row?.['product']?.['general_traceability_method']]}</span>`;
                     }
                 },
                 {

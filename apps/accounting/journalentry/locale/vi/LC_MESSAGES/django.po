@@ -31,11 +31,11 @@ msgstr "Bút toán"
 
 #
 msgid "Debit"
-msgstr "Bên nợ"
+msgstr "Nợ"
 
 #
 msgid "Credit"
-msgstr "Bên có"
+msgstr "Có"
 
 #
 msgid "Taxable value"

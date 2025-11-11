@@ -524,12 +524,10 @@
                 })
                 function activeReportShow() {
                     const canvasTaskSummaryReport$ = $('#my-task-summary-report');
-                    const eleNewToday$ = canvasTaskSummaryReport$.find('.summary-item[data-item="new_today"] .summary-value');
-                    const eleStartToday$ = canvasTaskSummaryReport$.find('.summary-item[data-item="start_today"] .summary-value');
+                    const eleActives$ = canvasTaskSummaryReport$.find('.summary-item[data-item="actives"] .summary-value');
                     const eleOverdue$ = canvasTaskSummaryReport$.find('.summary-item[data-item="overdue"] .summary-value');
                     const eleUpcomingToday$ = canvasTaskSummaryReport$.find('.summary-item[data-item="upcoming_today"] .summary-value');
                     const eleUpcomingSoon$ = canvasTaskSummaryReport$.find('.summary-item[data-item="upcoming_soon"] .summary-value');
-                    const eleActives$ = canvasTaskSummaryReport$.find('.summary-item[data-item="actives"] .summary-value');
 
                     $.fn.callAjax2({
                         url: canvasTaskSummaryReport$.attr('data-url'),
@@ -542,12 +540,10 @@
                                     const summaryDatas = respData?.['my_task_summary_report'] || {};
                                     if (summaryDatas?.['state'] === 'READY') {
                                         const data = summaryDatas?.['data'] || {};
-                                        eleNewToday$.css('--num', data?.['today_created'] || 0);
-                                        eleStartToday$.css('--num', data?.['start_today'] || 0)
-                                        eleOverdue$.css('--num', data?.['overdue'] || 0);
-                                        eleUpcomingToday$.css('--num', data?.['upcoming_today'] || 0);
-                                        eleUpcomingSoon$.css('--num', data?.['upcoming_soon'] || 0);
                                         eleActives$.css('--num', data?.['actives'] || 0);
+                                        eleOverdue$.css('--num', data?.['overdue'] || 0);
+                                        eleUpcomingSoon$.css('--num', data?.['upcoming_soon'] || 0);
+                                        eleUpcomingToday$.css('--num', data?.['upcoming_today'] || 0);
                                     } else {
                                         canvasTaskSummaryReport$.addClass('collecting');
                                     }

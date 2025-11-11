@@ -59,6 +59,7 @@ const ServiceOrder = (function($) {
     }
 
     const pageVariable = {
+        tempSelectedProducts: [],
         currencyList: null,
         taxList: null,
         uomList: null,
@@ -1944,18 +1945,35 @@ const ServiceOrder = (function($) {
 
 // --------------------HANDLE EVENTS---------------------
 
-    function handleSaveProduct() {
-        pageElement.modalData.$btnSaveProduct.on('click', function (e) {
-            // Get all checked products from modal table
-            const checkedProducts = [];
-            pageElement.modalData.$tableProduct.find('input[name="select-product"]:checked').each(function () {
-                const $row = $(this).closest('tr');
-                const rowData = pageElement.modalData.$tableProduct.DataTable().row($row).data();
+    function handleCheckProduct(){
+        pageElement.modalData.$tableProduct.on('change', 'input[name="select-product"]', function () {
+            const $checkbox = $(this);
+            const productId = $checkbox.data('product-id');
+            const rowData = pageElement.modalData.$tableProduct.DataTable().row($checkbox.closest('tr')).data();
 
-                if (rowData) {
-                    checkedProducts.push(transformProductData(rowData, $(this).data('product-id')));
+            if ($checkbox.is(':checked')) {
+                if (!pageVariable.tempSelectedProducts.some(p => p.product_id === productId)) {
+                    pageVariable.tempSelectedProducts.push(transformProductData(rowData, productId));
+                }
+            } else {
+                pageVariable.tempSelectedProducts = pageVariable.tempSelectedProducts.filter(p => p.product_id !== productId);
+            }
+        });
+        pageElement.modalData.$tableProduct.on('draw.dt', function () {
+            pageElement.modalData.$tableProduct.find('input[name="select-product"]').each(function () {
+                const $checkbox = $(this);
+                const productId = $checkbox.data('product-id');
+
+                if (pageVariable.tempSelectedProducts.some(p => p.product_id === productId)) {
+                    $checkbox.prop('checked', true);
                 }
             });
+        });
+    }
+
+    function handleSaveProduct() {
+        pageElement.modalData.$btnSaveProduct.on('click', function (e) {
+            const checkedProducts = [...pageVariable.tempSelectedProducts];
 
             // Add checked products to service detail table
             if (checkedProducts.length > 0) {
@@ -1971,10 +1989,14 @@ const ServiceOrder = (function($) {
                     const newData = [...currentData, ...checkedProducts]
                     table.clear().rows.add(newData).draw(false)
                 }
-                // Clear selections
                 pageElement.modalData.$tableProduct.find('input[name="select-product"]').prop('checked', false)
             }
         })
+
+        $('#modal-product').on('hidden.bs.modal', function () {
+            pageVariable.tempSelectedProducts = [];
+        });
+
     }
 
     function handleSaveExchangeRate(){
@@ -2594,7 +2616,7 @@ const ServiceOrder = (function($) {
                                 resetDetail.tax_value = 0
                                 resetDetail.issued_value = 0
                                 resetDetail.balance_value = subtotal
-                                resetDetail.reconcile_value = 0
+                                resetDetail.reconcile_value = detail.payment_value || 0
                                 resetDetail.receivable_value = 0
                             }
                             else {
@@ -5478,6 +5500,7 @@ const ServiceOrder = (function($) {
         initPaymentDataTable,
         initAttachment,
 
+        handleCheckProduct,
         handleSaveProduct,
         handleSaveExchangeRate,
         handleOpportunityChange,

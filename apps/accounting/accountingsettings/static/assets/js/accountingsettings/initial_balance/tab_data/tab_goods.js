@@ -22,7 +22,7 @@ $(document).ready(function () {
             useDataServer: true,
             reloadCurrency: true,
             scrollCollapse: true,
-            scrollY: '65vh',
+            scrollY: '70vh',
             scrollX: true,
             ajax: {
                 url: frm.dataUrl,
@@ -54,7 +54,7 @@ $(document).ready(function () {
                                 <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fa-regular fa-circle-question"></i>
                                 </a>
-                                <div class="dropdown-menu bflow-mirrow-card-60 p-3" style="min-width: 200px;">
+                                <div class="dropdown-menu bflow-mirrow-card-80 p-3" style="min-width: 200px;">
                                     <h5 class="fw-bold">Tài khoản 156</h5>
                                     <h6>Goods</h6>
                                     <h6>Hàng hóa</h6>

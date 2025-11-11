@@ -1,0 +1,40 @@
+{% load i18n %}
+
+{{ data.data.period_setup_sw_start_using_time | json_script:"period_setup_sw_start_using_time" }}
+
+<script id="trans-script"
+        data-trans-vm="{% trans 'Valuation method' %}"
+        data-trans-we="{% trans 'Weighted average' %}"
+        data-trans-fifo="{% trans 'FIFO' %}"
+        data-trans-si="{% trans 'Specific identification' %}"
+        data-trans-notify-clear="{% trans 'This action can not be undo!' %}"
+        data-trans-warning="{% trans 'Consider carefully when clear balance init. The system will delete this balance init after checking that the data preservation conditions are satisfied.' %}"
+></script>
+
+<div class="row">
+    <div class="col-12">
+        <table class="table nowrap w-100" id="table-balance-product"
+               data-method="GET"
+               data-url="{% url 'BalanceInitListAPI' %}"
+        >
+            <thead class="bg-secondary-light-5">
+                <tr>
+                    <th style="min-width: 50px">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#modal-add-balance">
+                            <button type="button" class="btn bflow-mirrow-btn" title="{% trans 'Add new row' %}">
+                                <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                            </button>
+                        </a>
+                    </th>
+                    <th style="min-width: 250px">{% trans 'Product' %}</th>
+                    <th style="min-width: 150px">{% trans 'Traceability method' %}</th>
+                    <th style="min-width: 150px">{% trans 'Warehouse' %}</th>
+                    <th style="min-width: 150px">{% trans 'Quantity' %} ({% trans "According to inventory UOM" %})</th>
+                    <th style="min-width: 200px">{% trans 'Pretax value' %}</th>
+                    <th style="min-width: 50px"></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>

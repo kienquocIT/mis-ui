@@ -1,6 +1,7 @@
 $(document).ready(function () {
     const period_setup_sw_start_using_time = $('#period_setup_sw_start_using_time').text();
     const form_balance_Ele = $('#form-balance')
+    const $modal_add_balance_ele = $('#modal-add-balance')
     const selectWH_Ele = $('#select-wh')
     const prd_Ele = $('#select-prd')
     const prd_uom_Ele = $('#prd-uom')
@@ -37,7 +38,7 @@ $(document).ready(function () {
             },
             columns: [
                 {
-                    className: 'w-5',
+                    className: 'w-5 text-center',
                     render: (data, type, row) => {
                         return ``;
                     }
@@ -52,10 +53,10 @@ $(document).ready(function () {
                         ][parseInt(row?.['product']?.['valuation_method'])]
                         return `
                             ${dot}
-                            <span data-item-id="${row?.['product']?.['id']}" class="badge badge-sm badge-soft-primary balance-product">
+                            <span data-item-id="${row?.['product']?.['id']}" class="badge badge-sm badge-light balance-product">
                                 ${row?.['product']?.['code']}
                             </span><br>
-                            <span class="text-primary fw-bold">${row?.['product']?.['title']}</span>
+                            <span>${row?.['product']?.['title']}</span>
                             <script class="script-lot">${JSON.stringify(row?.['data_lot'] || '[]')}</script>
                             <script class="script-sn">${JSON.stringify(row?.['data_sn'] || '[]')}</script>
                         `;
@@ -64,7 +65,7 @@ $(document).ready(function () {
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<span class="text-primary">${[
+                        return `<span>${[
                             $.fn.gettext('None'), $.fn.gettext('Batch/Lot'), $.fn.gettext('Serial number')
                         ][row?.['product']?.['general_traceability_method']]}</span>`;
                     }
@@ -72,21 +73,22 @@ $(document).ready(function () {
                 {
                     className: 'w-15',
                     render: (data, type, row) => {
-                        return `<span data-wh-id="${row?.['warehouse']?.['id']}"
-                                      class="badge badge-sm badge-soft-primary balance-wh mr-1">${row?.['warehouse']?.['code']}</span>
-                                <span class="text-primary">${row?.['warehouse']?.['title']}</span>`;
+                        return `<span data-wh-id="${row?.['warehouse']?.['id']}" class="badge badge-sm badge-light balance-wh">
+                                    ${row?.['warehouse']?.['code']}
+                                </span><br>
+                                <span>${row?.['warehouse']?.['title']}</span>`;
                     }
                 },
                 {
                     className: 'w-15 text-right',
                     render: (data, type, row) => {
-                        return `<span class="balance-quantity text-primary mr-1">${row?.['quantity']}</span><span class="text-primary uom-title">${row?.['uom']?.['title']}</span>`;
+                        return `<span class="balance-quantity mr-1">${row?.['quantity']}</span><span class="uom-title">${row?.['uom']?.['title']}</span>`;
                     }
                 },
                 {
                     className: 'w-15 text-right',
                     render: (data, type, row) => {
-                        return row?.['product']?.['valuation_method'] !== 2 ? `<span class="balance-value text-primary mask-money" data-init-money="${row?.['value']}"></span>` : '--';
+                        return row?.['product']?.['valuation_method'] !== 2 ? `<span class="balance-value mask-money" data-init-money="${row?.['value']}"></span>` : '--';
                     }
                 },
                 {
@@ -374,15 +376,19 @@ $(document).ready(function () {
                                 let data = $.fn.switcherResp(resp);
                                 if (data) {
                                     $.fn.notifyB({description: "Successfully"}, 'success')
-                                    setTimeout(() => {
-                                        window.location.replace(form_balance_Ele.attr('data-url-redirect'));
-                                        location.reload.bind(location);
-                                    }, 1000);
+                                    setTimeout(
+                                        () => {
+                                            LoadBalanceInitTable()
+                                            WindowControl.hideLoading();
+                                        },
+                                        1000
+                                    )
                                 }
                             },
                             (errs) => {
                                 setTimeout(
                                     () => {
+                                        LoadBalanceInitTable()
                                         WindowControl.hideLoading();
                                     },
                                     1000
@@ -564,10 +570,14 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyB({description: "Successfully"}, 'success')
-                            setTimeout(() => {
-                                window.location.replace($(this).attr('data-url-redirect'));
-                                location.reload.bind(location);
-                            }, 1000);
+                            setTimeout(
+                                () => {
+                                    $modal_add_balance_ele.modal('hide')
+                                    LoadBalanceInitTable()
+                                    WindowControl.hideLoading();
+                                },
+                                1000
+                            )
                         }
                     },
                     (errs) => {
@@ -616,3 +626,26 @@ $(document).ready(function () {
         }
     })
 });
+
+class TabGoodsElements {
+    constructor() {
+
+    }
+}
+const tabGoodsElements = new TabGoodsElements();
+
+/**
+ * Các hàm load page và hàm hỗ trợ
+ */
+class TabGoodsFunction {
+
+}
+
+/**
+ * Khai báo các Event
+ */
+class TabGoodsEventHandler {
+    static InitPageEvent() {
+
+    }
+}

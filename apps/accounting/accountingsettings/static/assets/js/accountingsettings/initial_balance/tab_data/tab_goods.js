@@ -44,7 +44,33 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'w-25',
+                    className: "w-20",
+                    render: (data, type, row) => {
+                        return `<div class="input-group">
+                            <select class="form-select select2 row-account-code" disabled>
+                                <option selected>156</option>
+                            </select>
+                            <span class="input-group-text p-0">
+                                <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-regular fa-circle-question"></i>
+                                </a>
+                                <div class="dropdown-menu bflow-mirrow-card-60 p-3" style="min-width: 200px;">
+                                    <h5 class="fw-bold">Tài khoản 156</h5>
+                                    <h6>Goods</h6>
+                                    <h6>Hàng hóa</h6>
+                                </div>
+                            </span>
+                        </div>`;
+                    }
+                },
+                {
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        return row?.['product']?.['valuation_method'] !== 2 ? `<span class="balance-value mask-money" data-init-money="${row?.['value']}"></span>` : '--';
+                    }
+                },
+                {
+                    className: 'w-20',
                     render: (data, type, row) => {
                         let dot = [
                             '<span class="badge bg-blue badge-indicator"></span>',
@@ -71,7 +97,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'w-15',
+                    className: 'w-10',
                     render: (data, type, row) => {
                         return `<span data-wh-id="${row?.['warehouse']?.['id']}" class="badge badge-sm badge-light balance-wh">
                                     ${row?.['warehouse']?.['code']}
@@ -80,15 +106,9 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'w-15 text-right',
+                    className: 'w-10 text-right',
                     render: (data, type, row) => {
                         return `<span class="balance-quantity mr-1">${row?.['quantity']}</span><span class="uom-title">${row?.['uom']?.['title']}</span>`;
-                    }
-                },
-                {
-                    className: 'w-15 text-right',
-                    render: (data, type, row) => {
-                        return row?.['product']?.['valuation_method'] !== 2 ? `<span class="balance-value mask-money" data-init-money="${row?.['value']}"></span>` : '--';
                     }
                 },
                 {

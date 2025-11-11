@@ -972,11 +972,11 @@ class MenusFinancials:
                 name='Account determination', code='menu_account_determination_list', view_name='AccountDeterminationList',
                 icon='<i class="fas bi bi-journal-text"></i>',
             ),
-            # MenuCommon(
-            #     name='Initial balance', code='menu_initial_balance',
-            #     view_name='InitialBalanceList',
-            #     icon='<i class="fas fa-chart-bar"></i>',
-            # ),
+            MenuCommon(
+                name='Initial balance', code='menu_initial_balance',
+                view_name='InitialBalanceList',
+                icon='<i class="fas fa-chart-bar"></i>',
+            ),
             # MenuCommon(
             #     name='Dimension Definition', code='menu_dimension_definition_list',
             #     view_name='DimensionDefinitionList',

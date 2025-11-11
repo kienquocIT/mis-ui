@@ -151,66 +151,66 @@ html, body {
 }
 
 /* Head system right */
-#notify-bell-list {
-    width: 100%;
-    height: 100vh;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1055;
-}
+/*#notify-bell-list {*/
+/*    width: 100%;*/
+/*    height: 100vh;*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    left: 0;*/
+/*    z-index: 1055;*/
+/*}*/
 
-#notify-bell-list .notify-bell-content-group {
-    margin-top: var(--blog-header-height);
-    background-color: rgba(216, 216, 216, 0.5);
-    height: 100%;
-}
+/*#notify-bell-list .notify-bell-content-group {*/
+/*    margin-top: var(--blog-header-height);*/
+/*    background-color: rgba(216, 216, 216, 0.5);*/
+/*    height: 100%;*/
+/*}*/
 
 #notify-bell-item-base,
 #notify-bell-item-sub-base {
     display: none;
 }
 
-#notify-bell-list .notify-bell-content {
-    margin-top: 5px;
-    margin-right: 5px;
-    margin-left: auto;
-    width: 100%;
-    min-width: 200px;
-    max-height: calc(100vh - 50px - 5px - 10px);
-    background-color: #fff;
-    border-radius: 5px;
-}
+/*#notify-bell-list .notify-bell-content {*/
+/*    margin-top: 5px;*/
+/*    margin-right: 5px;*/
+/*    margin-left: auto;*/
+/*    width: 100%;*/
+/*    min-width: 200px;*/
+/*    max-height: calc(100vh - 50px - 5px - 10px);*/
+/*    background-color: #fff;*/
+/*    border-radius: 5px;*/
+/*}*/
 
-@media screen and (max-width: 576px) {
-    #notify-bell-list .notify-bell-content {
-        width: 98%;
-        max-width: unset;
-    }
+/*@media screen and (max-width: 576px) {*/
+/*    #notify-bell-list .notify-bell-content {*/
+/*        width: 98%;*/
+/*        max-width: unset;*/
+/*    }*/
 
-    .notify-bell-item .item-image {
-        width: 50px;
-        height: 50px;
-    }
-}
+/*    .notify-bell-item .item-image {*/
+/*        width: 50px;*/
+/*        height: 50px;*/
+/*    }*/
+/*}*/
 
 @media screen and (min-width: 577px) {
-    #notify-bell-list .notify-bell-content {
-        width: 100%;
-        max-width: 400px;
-    }
+    /*#notify-bell-list .notify-bell-content {*/
+    /*    width: 100%;*/
+    /*    max-width: 400px;*/
+    /*}*/
 
-    .notify-bell-item .item-image {
-        width: 70px;
-        height: 70px;
-    }
+    /*.notify-bell-item .item-image {*/
+    /*    width: 70px;*/
+    /*    height: 70px;*/
+    /*}*/
 }
 
 #notify-bell-list .notify-bell-list-head {
-    background-color: #007d88;
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 5px 5px 0 0;
+    /*background-color: #007d88;*/
+    /*color: #fff;*/
+    /*padding: 5px 10px;*/
+    /*border-radius: 5px 5px 0 0;*/
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -223,31 +223,8 @@ html, body {
 
 }
 
-#notify-bell-list .notify-bell-list-foot {
-    padding: 5px 10px;
-    border-top: 1px solid #f5f5f5;
-    text-align: center;
-}
-
-#notify-bell-list .notify-bell-list-foot a:hover {
-    color: #0a53be;
-}
-
-.notify-bell-item {
-    padding: 5px 10px;
-}
-
-.notify-bell-item-sub {
-    background-color: #c7e2e5;
-    color: #00646d;
-    font-weight: bold;
-    padding-top: 1px;
-    padding-bottom: 1px;
-    font-size: 0.825rem;
-}
-
 .notify-bell-item:not(.notify-bell-item-sub):hover {
-    background-color: rgba(153, 203, 207, 0.1);
+    transform: scale(1.02);
 }
 
 .notify-bell-item .item-group {
@@ -256,9 +233,11 @@ html, body {
 }
 
 .notify-bell-item .item-image {
-    flex: 0 0 auto;
-    margin-right: 10px;
-    position: relative;
+    position: absolute;
+    top: 10px;
+    right: 40px;
+    width: 0.5rem;
+    height: 0.5rem;
 }
 
 .notify-bell-item .item-data {
@@ -285,14 +264,14 @@ html, body {
     object-fit: contain;
 }
 
-.notify-bell-item .item-image .item-image-unread {
+.notify-bell-item .item-image-unread {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 1rem;
-    height: 1rem;
+    top: 20px;
+    right: 15px;
+    width: 0.5rem;
+    height: 0.5rem;
     border-radius: 100%;
-    background-color: #faad14;
+    background-color: #007d88;
     display: none;
 }
 
@@ -314,8 +293,8 @@ html, body {
 
 .notify-bell-item .item-image .item-image-sub-icon {
     position: absolute;
-    bottom: 0;
-    right: 0;
+    /*bottom: 5px;*/
+    /*right: 5px;*/
     height: 1.5rem;
     width: 1.5rem;
     border-radius: 100%;
@@ -330,52 +309,23 @@ html, body {
     margin-top: 0.1rem;
 }
 
-.notify-bell-item .item-data .item-data-app {
-    font-size: 0.824rem;
-    background-color: #007d88;
-    color: #fff;
-    padding: 5px;
-    border-radius: 5px;
-    margin-right: 5px;
-}
-
-.notify-bell-item .item-data .item-data-app {
-    font-size: 0.824rem;
-}
-
 .notify-bell-item .item-data button icon i {
     margin-top: 1px;
 }
 
 #notify-bell-list .notify-bell-load-more {
-    display: none;
-    justify-content: center;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    background-color: #ebf5f5;
+    padding: 5px 10px;
+    border-top: 1px solid #f5f5f5;
+    text-align: center;
 }
 
-.notify-bell-load-more.active {
-    display: flex !important;
-}
-
-.notify-bell-load-more:hover {
-    cursor: pointer;
-}
-
-.notify-bell-load-more:hover i {
-    transition: 0.2s;
-    animation: NotifyLoadMore 1s linear infinite;
+#notify-bell-list .notify-bell-list-foot {
+    text-align: center;
 }
 
 .notify-mention-person {
     color: #007d88;
     font-weight: bold;
-}
-
-
-.notify-item-img {
-    border-radius: 50%;
 }
 
 .img-filter-opacity-25 {

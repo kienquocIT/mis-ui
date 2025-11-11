@@ -726,8 +726,8 @@ td.text-truncate, th.text-truncate {
 }
 
 .position-top-end-overflow-1 {
-  top: 12% !important;
-  right: 16% !important;
+  top: 30% !important;
+  right: 25% !important;
   -webkit-transform: translate(50%, -50%) !important;
   -moz-transform: translate(50%, -50%) !important;
   -ms-transform: translate(50%, -50%) !important;

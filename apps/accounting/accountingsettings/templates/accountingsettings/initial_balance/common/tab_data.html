@@ -11,8 +11,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#tab_merchandise" role="tab"  aria-selected="false">
-                    <span class="nav-link-text">{% trans 'Merchandise' %}</span>
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_goods" role="tab"  aria-selected="false">
+                    <span class="nav-link-text">{% trans 'Goods' %}</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -50,94 +50,15 @@
         <div class="tab-content" id="initialBalanceTabContent">
             <!-- TAB 1: Cash/Money -->
             <div class="tab-pane fade show active" id="tab_money">
-                <div class="row">
-                    <div class="col-12">
-                        <table class="table nowrap w-100" id="tbl_money">
-                            <thead class="bg-secondary-light-5">
-                                <tr>
-                                    <th style="min-width: 50px"></th>
-                                    <th style="min-width: 150px">{% trans 'Type' %}</th>
-                                    <th style="min-width: 200px">{% trans 'Currency' %}</th>
-                                    <th style="min-width: 250px">{% trans 'Account' %}</th>
-                                    <th style="min-width: 300px">{% trans 'Description' %}</th>
-                                    <th style="min-width: 200px">{% trans 'Value' %}</th>
-                                    <th style="min-width: 200px">{% trans 'VND Exchange' %}</th>
-                                    <th style="min-width: 200px">{% trans 'Debit' %}</th>
-                                    <th style="min-width: 200px">{% trans 'Credit' %}</th>
-                                    <th style="min-width: 200px">{% trans 'Detail' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Action' %}</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <button class="btn btn-primary mt-4" type="button" id="add_tab_money" aria-expanded="false">
-                            <i class="fas fa-plus-circle me-2"></i>{% trans 'Add' %}
-                        </button>
-                    </div>
-                </div>
+                {% include 'accountingsettings/initial_balance/common/tab_detail/tab_cash.html' %}
             </div>
-            <!-- TAB 2: Merchandise -->
-            <div class="tab-pane fade" id="tab_merchandise">
-                <div class="row">
-                    <div class="col-12">
-                        <table class="table nowrap w-100" id="tbl_merchandise">
-                            <thead class="bg-secondary-light-5">
-                                <tr>
-                                    <th style="min-width: 50px"></th>
-                                    <th style="min-width: 100px">{% trans 'Materials / Supplies' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Detail' %}</th>
-                                    <th style="min-width: 250px">{% trans 'Account' %}</th>
-                                    <th style="min-width: 300px">{% trans 'Description' %}</th>
-                                    <th style="min-width: 150px">{% trans 'Value' %}</th>
-                                    <th style="min-width: 150px">{% trans 'Debit' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Credit' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Action' %}</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <button class="btn btn-primary mt-4" type="button" id="add_tab_merchandise" aria-expanded="false">
-                            <i class="fas fa-plus-circle me-2"></i>{% trans 'Add' %}
-                        </button>
-                    </div>
-                </div>
+            <!-- TAB 2: Goods -->
+            <div class="tab-pane fade" id="tab_goods">
+                {% include 'accountingsettings/initial_balance/common/tab_detail/tab_goods.html' %}
             </div>
             <!-- TAB 3: Account Receivable -->
             <div class="tab-pane fade" id="tab_receivable">
-                <div class="row">
-                    <div class="col-12">
-                        <table class="table nowrap w-100" id="tbl_account_receivable">
-                            <thead class="bg-secondary-light-5">
-                                <tr>
-                                    <th style="min-width: 50px"></th>
-                                    <th style="min-width: 300px">{% trans 'Customer' %}</th>
-                                    <th style="min-width: 300px">{% trans 'Detail' %}</th>
-                                    <th style="min-width: 200px">{% trans 'Account Code' %}</th>
-                                    <th style="min-width: 250px">{% trans 'Account Name' %}</th>
-                                    <th style="min-width: 200px">{% trans 'Debit' %}</th>
-                                    <th style="min-width: 200px">{% trans 'Credit' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Action' %}</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <button class="btn btn-primary mt-4" type="button" id="add_tab_account_receivable" aria-expanded="false">
-                            <i class="fas fa-plus-circle me-2"></i>{% trans 'Add' %}
-                        </button>
-                    </div>
-                </div>
+                {% include 'accountingsettings/initial_balance/common/tab_detail/tab_receivable.html' %}
             </div>
             <!-- TAB 4: Supplier Payable - TODO: Implement -->
             <div class="tab-pane fade" id="tab_supplier_payable">

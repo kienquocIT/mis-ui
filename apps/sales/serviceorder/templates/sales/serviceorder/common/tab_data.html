@@ -52,7 +52,7 @@
                             <thead class="bg-secondary-light-5">
                                 <tr>
                                     <th style="min-width: 50px"></th>
-                                    <th style="min-width: 250px">{% trans 'Name' %}</th>
+                                    <th style="min-width: 300px">{% trans 'Name' %}</th>
                                     <th style="min-width: 250px">{% trans 'Description' %}</th>
                                     <th style="min-width: 150px">{% trans 'Weight contribution' %}</th>
                                     <th style="min-width: 100px">{% trans 'Quantity' %}</th>
@@ -60,9 +60,9 @@
                                     <th style="min-width: 100px">{% trans 'Duration' %}</th>
                                     <th style="min-width: 100px">{% trans 'Duration Unit' %}</th>
                                     <th style="min-width: 120px">{% trans 'Attribute' %}</th>
-                                    <th style="min-width: 150px">{% trans 'Price' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Tax' %}</th>
-                                    <th style="min-width: 150px">{% trans 'Total amount' %}</th>
+                                    <th style="min-width: 200px">{% trans 'Price' %}</th>
+                                    <th style="min-width: 150px">{% trans 'Tax' %}</th>
+                                    <th style="min-width: 200px">{% trans 'Total amount' %}</th>
                                     <th style="min-width: 50px"></th>
                                 </tr>
                             </thead>
@@ -143,18 +143,45 @@
                                 <tbody></tbody>
                             </table>
                         {% endif %}
-                        <div class="dropdown mt-2">
-                            <button aria-expanded="false" data-bs-toggle="dropdown" type="button" class="btn btn-sm btn-primary dropdown-toggle">
-                                <i class="fas fa-plus-circle"></i>
-                                {% trans 'Add' %}
-                            </button>
-                            <div class="dropdown-menu dropdown-bordered">
-                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal-product">
-                                    <span>{% trans 'Add item' %}</span>
-                                </a>
-                                <a class="dropdown-item" href="#" id="btn-add-non-item">
-                                    <span>{% trans 'Add non-item' %}</span>
-                                </a>
+                        <div class="row">
+                            <div class="col-12 col-lg-7">
+                                <div class="dropdown mt-2">
+                                    <button aria-expanded="false" data-bs-toggle="dropdown" type="button" class="btn btn-sm btn-primary dropdown-toggle">
+                                        <i class="fas fa-plus-circle"></i>
+                                        {% trans 'Add' %}
+                                    </button>
+                                    <div class="dropdown-menu dropdown-bordered">
+                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal-product">
+                                            <span>{% trans 'Add item' %}</span>
+                                        </a>
+                                        <a class="dropdown-item" href="#" id="btn-add-non-item">
+                                            <span>{% trans 'Add non-item' %}</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-5 mt-3 text-right">
+                                <div class="row">
+                                    <label for="work-order-pretax-value" class="col-4 col-form-label text-primary">{% trans 'Pretax Amount' %}</label>
+                                    <div class="col-8">
+                                        <input disabled id="work-order-pretax-value" value="0"
+                                               class="text-primary form-control form-control-line mask-money zone-readonly mb-1">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label for="work-order-taxes-value" class="col-4 col-form-label text-primary">{% trans 'Taxes' %}</label>
+                                    <div class="col-8">
+                                        <input disabled id="work-order-taxes-value" value="0"
+                                               class="text-primary form-control form-control-line mask-money zone-readonly mb-1">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label for="work-order-total-value" class="col-4 col-form-label text-primary">{% trans 'TOTAL' %}</label>
+                                    <div class="col-8">
+                                        <input disabled id="work-order-total-value" value="0"
+                                               class="text-primary form-control form-control-line mask-money zone-readonly mb-1">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -23,13 +23,13 @@ class TabMoneyFunction {
     static initMoneyTable(data = [], option = 'create') {
         tabMoneyElements.$tableMoney.DataTable().destroy();
         tabMoneyElements.$tableMoney.DataTableDefault({
-            data: data,
-            styleDom: 'hide-foot',
             rowIdx: true,
-            scrollX: true,
-            scrollY: '70vh',
-            scrollCollapse: true,
+            useDataServer: false,
             reloadCurrency: true,
+            scrollCollapse: true,
+            scrollY: '70vh',
+            scrollX: true,
+            data: data,
             columns: [
                 {
                     className: "w-5",
@@ -54,15 +54,21 @@ class TabMoneyFunction {
                     }
                 },
                 {
-                    className: "w-10",
+                    className: "w-20",
                     render: (data, type, row) => {
-                        return `<select class="form-select select2 row-account-code"></select>`;
-                    }
-                },
-                {
-                    className: "w-10",
-                    render: (data, type, row) => {
-                        return `<span class="row-fk-account-name"></span><br><span class="row-account-name"></span>`;
+                        return `<div class="input-group">
+                            <select class="form-select select2 row-account"></select>
+                            <span class="input-group-text p-0">
+                                <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-regular fa-circle-question"></i>
+                                </a>
+                                <div class="dropdown-menu bflow-mirrow-card-80 p-3" style="min-width: 200px;">
+                                    <h5 class="row-account-code fw-bold"></h5>
+                                    <h6 class="row-fk-account-name"></h6>
+                                    <h6 class="row-account-name"></h6>
+                                </div>
+                            </span>
+                        </div>`;
                     }
                 },
                 {
@@ -196,9 +202,9 @@ class TabMoneyEventHandler {
                 data_url: pageElements.$urlFactory.attr('data-url-currency')
             });
             UsualLoadPageAccountingFunction.LoadAccountingAccount({
-                element: row_added.find('.row-account-code'),
+                element: row_added.find('.row-account'),
                 data_url: pageElements.$urlFactory.attr('data-url-accounting-account'),
-                data_params: {'acc_type': 1}
+                data_params: {'acc_type': 1, 'is_account': true}
             })
         });
 
@@ -233,8 +239,9 @@ class TabMoneyEventHandler {
             TabMoneyFunction.updateDebitValue($row);
         });
 
-        tabMoneyElements.$tableMoney.on('change', '.row-account-code', function() {
+        tabMoneyElements.$tableMoney.on('change', '.row-account', function() {
             let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
+            $(this).closest('tr').find('.row-account-code').text(selected?.['acc_code'] || '')
             $(this).closest('tr').find('.row-fk-account-name').text(selected?.['foreign_acc_name'] || '')
             $(this).closest('tr').find('.row-account-name').text(`(${selected?.['acc_name'] || ''})`)
         });

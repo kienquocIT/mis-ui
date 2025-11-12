@@ -1,6 +1,7 @@
 $(document).ready(function () {
     const period_setup_sw_start_using_time = $('#period_setup_sw_start_using_time').text();
     const form_balance_Ele = $('#form-balance')
+    const $modal_add_balance_ele = $('#modal-add-balance')
     const selectWH_Ele = $('#select-wh')
     const prd_Ele = $('#select-prd')
     const prd_uom_Ele = $('#prd-uom')
@@ -21,7 +22,7 @@ $(document).ready(function () {
             useDataServer: true,
             reloadCurrency: true,
             scrollCollapse: true,
-            scrollY: '65vh',
+            scrollY: '70vh',
             scrollX: true,
             ajax: {
                 url: frm.dataUrl,
@@ -37,13 +38,60 @@ $(document).ready(function () {
             },
             columns: [
                 {
-                    className: 'w-5',
+                    className: 'w-5 text-center',
                     render: (data, type, row) => {
                         return ``;
                     }
                 },
                 {
-                    className: 'w-25',
+                    className: "w-20",
+                    render: (data, type, row) => {
+                        return `<div class="input-group">
+                            <select class="form-select select2 row-account-code" disabled>
+                                <option selected>156</option>
+                            </select>
+                            <span class="input-group-text p-0">
+                                <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-regular fa-circle-question"></i>
+                                </a>
+                                <div class="dropdown-menu bflow-mirrow-card-80 p-3" style="min-width: 200px;">
+                                    <h5 class="row-account-code fw-bold">Tài khoản 156</h5>
+                                    <h6 class="row-fk-account-name">Goods</h6>
+                                    <h6 class="row-account-name">Hàng hóa</h6>
+                                </div>
+                            </span>
+                        </div>`;
+                    }
+                },
+                {
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        let value = 0
+                        if (row?.['product']?.['valuation_method'] !== 2) {
+                            value = row?.['value'] || 0
+                        }
+                        else {
+                            for (let i=0; i < (row?.['data_sn'] || []).length; i++) {
+                                value += Number(row?.['data_sn'][i]?.['specific_value'] || 0)
+                            }
+                        }
+                        return `<span class="balance-value mask-money" data-init-money="${value}"></span>`;
+                    }
+                },
+                {
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        return '--';
+                    }
+                },
+                {
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        return `<span class="balance-quantity mr-1">${row?.['quantity']}</span><span class="uom-title">${row?.['uom']?.['title']}</span>`;
+                    }
+                },
+                {
+                    className: 'w-15',
                     render: (data, type, row) => {
                         let dot = [
                             '<span class="badge bg-blue badge-indicator"></span>',
@@ -52,10 +100,10 @@ $(document).ready(function () {
                         ][parseInt(row?.['product']?.['valuation_method'])]
                         return `
                             ${dot}
-                            <span data-item-id="${row?.['product']?.['id']}" class="badge badge-sm badge-soft-primary balance-product">
+                            <span data-item-id="${row?.['product']?.['id']}" class="badge badge-sm badge-light balance-product">
                                 ${row?.['product']?.['code']}
                             </span><br>
-                            <span class="text-primary fw-bold">${row?.['product']?.['title']}</span>
+                            <span>${row?.['product']?.['title']}</span>
                             <script class="script-lot">${JSON.stringify(row?.['data_lot'] || '[]')}</script>
                             <script class="script-sn">${JSON.stringify(row?.['data_sn'] || '[]')}</script>
                         `;
@@ -64,29 +112,18 @@ $(document).ready(function () {
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<span class="text-primary">${[
+                        return `<span data-wh-id="${row?.['warehouse']?.['id']}" class="badge badge-sm badge-light balance-wh">
+                                    ${row?.['warehouse']?.['code']}
+                                </span><br>
+                                <span>${row?.['warehouse']?.['title']}</span>`;
+                    }
+                },
+                {
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        return `<span>${[
                             $.fn.gettext('None'), $.fn.gettext('Batch/Lot'), $.fn.gettext('Serial number')
                         ][row?.['product']?.['general_traceability_method']]}</span>`;
-                    }
-                },
-                {
-                    className: 'w-15',
-                    render: (data, type, row) => {
-                        return `<span data-wh-id="${row?.['warehouse']?.['id']}"
-                                      class="badge badge-sm badge-soft-primary balance-wh mr-1">${row?.['warehouse']?.['code']}</span>
-                                <span class="text-primary">${row?.['warehouse']?.['title']}</span>`;
-                    }
-                },
-                {
-                    className: 'w-15 text-right',
-                    render: (data, type, row) => {
-                        return `<span class="balance-quantity text-primary mr-1">${row?.['quantity']}</span><span class="text-primary uom-title">${row?.['uom']?.['title']}</span>`;
-                    }
-                },
-                {
-                    className: 'w-15 text-right',
-                    render: (data, type, row) => {
-                        return row?.['product']?.['valuation_method'] !== 2 ? `<span class="balance-value text-primary mask-money" data-init-money="${row?.['value']}"></span>` : '--';
                     }
                 },
                 {
@@ -374,15 +411,19 @@ $(document).ready(function () {
                                 let data = $.fn.switcherResp(resp);
                                 if (data) {
                                     $.fn.notifyB({description: "Successfully"}, 'success')
-                                    setTimeout(() => {
-                                        window.location.replace(form_balance_Ele.attr('data-url-redirect'));
-                                        location.reload.bind(location);
-                                    }, 1000);
+                                    setTimeout(
+                                        () => {
+                                            LoadBalanceInitTable()
+                                            WindowControl.hideLoading();
+                                        },
+                                        1000
+                                    )
                                 }
                             },
                             (errs) => {
                                 setTimeout(
                                     () => {
+                                        LoadBalanceInitTable()
                                         WindowControl.hideLoading();
                                     },
                                     1000
@@ -564,10 +605,14 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyB({description: "Successfully"}, 'success')
-                            setTimeout(() => {
-                                window.location.replace($(this).attr('data-url-redirect'));
-                                location.reload.bind(location);
-                            }, 1000);
+                            setTimeout(
+                                () => {
+                                    $modal_add_balance_ele.modal('hide')
+                                    LoadBalanceInitTable()
+                                    WindowControl.hideLoading();
+                                },
+                                1000
+                            )
                         }
                     },
                     (errs) => {
@@ -616,3 +661,26 @@ $(document).ready(function () {
         }
     })
 });
+
+class TabGoodsElements {
+    constructor() {
+
+    }
+}
+const tabGoodsElements = new TabGoodsElements();
+
+/**
+ * Các hàm load page và hàm hỗ trợ
+ */
+class TabGoodsFunction {
+
+}
+
+/**
+ * Khai báo các Event
+ */
+class TabGoodsEventHandler {
+    static InitPageEvent() {
+
+    }
+}

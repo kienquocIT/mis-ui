@@ -246,13 +246,13 @@ class TabAccountReceivableEventHandler {
                 const invoiceNumber = tabAccountReceivableElements.$txtInvoiceNumber.val();
                 const invoiceValue = tabAccountReceivableElements.$unpaidAmountEle.attr('value') || 0;
 
-                $currentRow.find('.row-detail-account-receivable').val(`HĐ: ${invoiceNumber} - ${invoiceValue} (VND)`);
+                $currentRow.find('.row-detail-account-receivable').val(`HÐ: ${invoiceNumber} - ${invoiceValue} (VND)`);
                 $currentRow.find('.row-account-receivable-debit').attr('value', invoiceValue);
                 $currentRow.find('.row-account-receivable-credit').attr('value', 0);
             } else if (tabAccountReceivableElements.$prepaymentForm.is(':visible')) {
                 // prepayment form is open
                 const advancePaymentValue = tabAccountReceivableElements.$advancePayment.attr('value') || 0;
-                $currentRow.find('.row-detail-account-receivable').val(`Ứng trước: ${advancePaymentValue}`);
+                $currentRow.find('.row-detail-account-receivable').val(`?ng tru?c: ${advancePaymentValue}`);
 
                 // set advance payment value to amount and credit fields
                 $currentRow.find('.row-account-receivable-debit').attr('value', 0);

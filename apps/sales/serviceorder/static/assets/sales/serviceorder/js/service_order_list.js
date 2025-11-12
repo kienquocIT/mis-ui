@@ -16,10 +16,10 @@ class loadServiceOrderInfo {
                 scrollY: '70vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
-                // fixedColumns: {
-                //     leftColumns: 2,
-                //     rightColumns: window.innerWidth <= 768 ? 0 : 1
-                // },
+                fixedColumns: {
+                    leftColumns: 2,
+                    rightColumns: window.innerWidth <= 768 ? 0 : 1
+                },
                 ajax: {
                     url: $tb.attr('data-url'),
                     type: 'GET',
@@ -28,14 +28,13 @@ class loadServiceOrderInfo {
                 },
                 columns: [
                     {
-                        width: "1%",
+                        className: "w-5",
                         render: () => {
                             return ""
                         }
                     },
                     {
-                        className: "ellipsis-cell-lg",
-                        width: "10%",
+                        className: 'ellipsis-cell-sm w-10',
                         render: (data, type, row) => {
                             const link = $tb.attr('data-url-detail').replace('0', row?.['id']);
                             let target = `.cl-${row?.['id'].replace(/-/g, "")}`;
@@ -58,68 +57,60 @@ class loadServiceOrderInfo {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg',
-                        width: "18%",
+                        className: 'ellipsis-cell-lg w-20',
                         render: (data, type, row) => {
                             const link = $tb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                         }
                     },
                     {
-                        className: "ellipsis-cell-lg",
-                        width: "18%",
+                        className: 'ellipsis-cell-lg w-20',
                         render: (data, type, row) => {
                             return row?.['customer_data']?.['name'] || '';
                         }
                     },
                     {
-                        className: 'ellipsis-cell-sm',
-                        width: "15%",
+                        className: 'ellipsis-cell-sm w-15',
                         render: (data, type, row) => {
                             return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
                         }
                     },
                     {
-                        className: 'ellipsis-cell-sm w-10',
-                        width: "10%",
+                        className: 'ellipsis-cell-sm w-15',
                         render: (data, type, row) => {
                             return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                     {
-                        className: 'text-center',
-                        width: "10%",
+                        className: 'w-10 text-center',
                         render: (data, type, row) => {
                             if (!row?.['document_root_id']) {
-                                return ``;
+                                return `--`;
                             }
                             return WFRTControl.displayRuntimeStatus(row?.['system_status']);
                         }
                     },
                     {
-                        className: 'text-center w-5',
-                        width: "8%",
+                        className: 'w-5 text-center',
                         render: (data, type, row) => {
-                            return `<a href="${$tb.attr('data-url-dashboard')}?service_order_id=${row?.['id']}" 
-                                         class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm">
+                            let dashboard_btn = ''
+                            let delivery_btn = ''
+                            if (!row?.['document_root_id']) {
+                                dashboard_btn = `<a href="${$tb.attr('data-url-dashboard')}?service_order_id=${row?.['id']}" 
+                                         class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm mr-1">
                                         <span class="icon"> <i class="bi bi-clipboard-data"></i></span>
-                                      </a>`;
-                        }
-                    },
-                    {
-                        className: 'text-center',
-                        width: "8%",
-                        render: (data, type, row) => {
+                                      </a>`
+                            }
                             if (row?.['is_latest_baseline'] === true) {
-                                return `<a href="javascript:void(0);"  
+                                delivery_btn = `<a href="javascript:void(0);"  
                                         class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm delivery-info"
                                         data-id="${row?.['id']}">
                                         <span class="icon"><i class="fas fa-truck"></i></span>
                                       </a>`;
                             }
-                            return ``;
+                            return `${dashboard_btn}${delivery_btn}`;
                         }
-                    }
+                    },
                 ],
                 rowCallback: (row, data) => {
                     $(row).on('click', '.delivery-info', function () {

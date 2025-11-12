@@ -30,10 +30,10 @@ class ServiceOrderPageHandler {
 
     // Hàm set total fields
     static setTotalFields(formInstance) {
+        // total product
         const $pretaxPrdEle = $('#service-detail-pretax-value');
         const $taxPrdEle = $('#service-detail-taxes-value');
         const $totalPrdEle = $('#service-detail-total-value');
-
         if ($pretaxPrdEle.length > 0 && $taxPrdEle.length > 0 && $totalPrdEle.length > 0) {
             if ($pretaxPrdEle.valCurrency()) {
                 formInstance.dataForm['total_product_pretax_amount'] = parseFloat($pretaxPrdEle.valCurrency());
@@ -46,6 +46,15 @@ class ServiceOrderPageHandler {
                 formInstance.dataForm['total_product'] = parseFloat($totalPrdEle.valCurrency());
             }
         }
+        // total cost
+        let total_cost = 0;
+        for (let woData of formInstance.dataForm?.['work_order_data'] ? formInstance.dataForm?.['work_order_data'] : []) {
+            for (let pcData of woData?.['product_contribution'] ? woData?.['product_contribution'] : []) {
+                total_cost += pcData?.['total_cost'] ? pcData?.['total_cost'] : 0;
+            }
+        }
+        formInstance.dataForm['total_cost_pretax_amount'] = total_cost;
+        formInstance.dataForm['total_cost'] = total_cost;
     }
 
     // Hàm set indicator
@@ -74,6 +83,7 @@ class ServiceOrderPageHandler {
     // Hàm tạo events chung cho trang create và update
     static registerCommonEventHandlers() {
         ServiceOrder.handleSaveProduct();
+        ServiceOrder.handleCheckProduct();
         ServiceOrder.handleSaveExchangeRate();
         ServiceOrder.handleOpportunityChange();
         ServiceOrder.adjustTableSizeWhenChangeTab();
@@ -382,6 +392,7 @@ class ServiceOrderPageHandler {
             ServiceOrder.initQuotationWorkOrderDataTable(workOrderData);
         }
         ServiceOrder.loadWorkOrderRelatedData(workOrderData);
+        ServiceOrder.loadWorkOrderDetailSummaryValue();
 
         // Payment
         const paymentData = data.payment_data.map(payment => ({

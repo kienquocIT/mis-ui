@@ -1227,7 +1227,7 @@ class UsualLoadPageFunction {
 }
 
 /**
- * Các hàm load page và hàm hỗ trợ thường dùng
+ * Các hàm load page và hàm hỗ trợ thường dùng (cho Kế toán)
  */
 class UsualLoadPageAccountingFunction {
     /**
@@ -1256,7 +1256,7 @@ class UsualLoadPageAccountingFunction {
                 method: 'GET',
             },
             templateResult: function (state) {
-                return $(`<span class="fw-bold">${state.data?.['acc_code']}</span><br><span class="small">${state.data?.['foreign_acc_name'] || ''}</span><br><span class="small">(${state.data?.['acc_name'] || ''})</span>`);
+                return $(`<span class="fw-bold">${state.data?.['acc_code']}</span><br><span class="small">${state.data?.['foreign_acc_name'] || ''}</span><br><span class="small">${state.data?.['acc_name'] || ''}</span>`);
             },
             data: (data ? data : null),
             keyResp: 'chart_of_accounts_list',

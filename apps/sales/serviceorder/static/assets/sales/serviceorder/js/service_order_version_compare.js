@@ -190,7 +190,23 @@ const VersionCompareControl = {
             dataParams: {
                 document_root_id: ServiceOrder.pageVariable.documentRootId || this.currentServiceOrderId,
                 exclude_id: this.currentServiceOrderId,
-            }
+            },
+            templateResult: function (state) {
+                if (state.data){
+                    const title = state.data?.title || ''
+                    const code = state.data?.code || ''
+                    return $(`<span>${title} - ${code}</span>`);
+                }
+                return state.text
+            },
+            templateSelection: function (state) {
+                if (state.data){
+                    const title = state.data?.title || ''
+                    const code = state.data?.code || ''
+                    return $(`<span>${title} - ${code}</span>`);
+                }
+                return state.text
+            },
         });
     },
 

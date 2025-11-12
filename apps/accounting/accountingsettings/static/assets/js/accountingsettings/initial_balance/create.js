@@ -32,4 +32,8 @@ $(document).ready(function () {
     // Tab Supplier Payable
     TabSupplierPayableFunction.initSupplierPayableTable();
     TabSupplierPayableEventHandler.InitPageEvent();
+
+    // Tab Employee Payable
+    TabEmployeePayableFunction.initEmployeePayableTable();
+    TabEmployeePayableEventHandler.InitPageEvent();
 });

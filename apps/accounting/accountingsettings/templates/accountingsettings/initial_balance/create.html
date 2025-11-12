@@ -28,6 +28,7 @@
      {% include 'accountingsettings/initial_balance/common/modal_detail/tab_goods.html' %}
      {% include 'accountingsettings/initial_balance/common/modal_detail/tab_account_receivable.html' %}
      {% include 'accountingsettings/initial_balance/common/modal_detail/tab_supplier_payable.html' %}
+     {% include 'accountingsettings/initial_balance/common/modal_detail/tab_employee_payable.html' %}
 {% endblock %}
 {% block dataHiddenGroup %}
     <input type="text" id="url-factory"
@@ -44,5 +45,6 @@
     <script src="{% static "assets/js/accountingsettings/initial_balance/tab_data/tab_goods.js" %}"></script>
     <script src="{% static "assets/js/accountingsettings/initial_balance/tab_data/tab_account_receivable.js" %}"></script>
     <script src="{% static "assets/js/accountingsettings/initial_balance/tab_data/tab_supplier_payable.js" %}"></script>
+    <script src="{% static "assets/js/accountingsettings/initial_balance/tab_data/tab_employee_payable.js" %}"></script>
     <script src="{% static "assets/js/accountingsettings/initial_balance/create.js" %}"></script>
 {% endblock %}

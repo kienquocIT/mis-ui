@@ -134,7 +134,7 @@ class TabAccountReceivableFunction {
             },
             columns: [
                 {
-                    className: 'w-10',
+                    className: 'w-5',
                     render: (data, type, row) => {
                         return ``;
                     }
@@ -157,7 +157,7 @@ class TabAccountReceivableFunction {
                     }
                 },
                 {
-                    className: 'w-50',
+                    className: 'w-55',
                     render: (data, type, row) => {
                         return`<span>${row?.['name'] || ''}</span>`;
                     }
@@ -251,7 +251,7 @@ class TabAccountReceivableEventHandler {
             } else if (tabAccountReceivableElements.$prepaymentForm.is(':visible')) {
                 // prepayment form is open
                 const advancePaymentValue = tabAccountReceivableElements.$advancePayment.attr('value') || 0;
-                $currentRow.find('.row-detail-account-receivable').val(`Ứng trước: ${advancePaymentValue}`);
+                $currentRow.find('.row-detail-account-receivable').val(`Pre-payment: ${advancePaymentValue}`);
 
                 // set advance payment value to amount and credit fields
                 $currentRow.find('.row-account-receivable-debit').attr('value', 0);

@@ -12,6 +12,14 @@ $(document).ready(function () {
         element: tabAccountReceivableElements.$expectedPaymentDate,
         empty: true
     });
+    UsualLoadPageFunction.LoadDate({
+        element: tabSupplierPayableElements.$supplierInvoiceDate,
+        empty: true
+    });
+    UsualLoadPageFunction.LoadDate({
+        element: tabSupplierPayableElements.$expectedSupplierPaymentDate,
+        empty: true
+    });
 
     // Tab Money
     TabMoneyEventHandler.InitPageEvent();
@@ -20,4 +28,8 @@ $(document).ready(function () {
     // Tab Account Receivable
     TabAccountReceivableFunction.initAccountReceivableTable();
     TabAccountReceivableEventHandler.InitPageEvent();
+
+    // Tab Supplier Payable
+    TabSupplierPayableFunction.initSupplierPayableTable();
+    TabSupplierPayableEventHandler.InitPageEvent();
 });

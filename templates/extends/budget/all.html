@@ -1,0 +1,34 @@
+{% load i18n string_utils %}
+
+{% random_str 10 True as id_modal %}
+
+<div class="row">
+    <table
+            id="tbl_budget_extend"
+            class="table nowrap min-w-1280p w-100 mb-5"
+    >
+        <thead>
+        <tr class="bg-light">
+            <th>#</th>
+            <th>{% trans 'Dimension' %} 1</th>
+            <th>{% trans 'Value' %} 1</th>
+            <th>{% trans 'Dimension' %} 2</th>
+            <th>{% trans 'Value' %} 2</th>
+            <th>{% trans 'Budget' %}</th>
+            <th>{% trans 'Consumed' %}</th>
+            <th>{% trans 'Available' %}</th>
+            <th>{% trans 'Advance' %}</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+<input
+        type="text" class="hidden"
+        id="budget_url_factory"
+        data-md-dimension="{% url 'ProductForSaleListAPI' %}"
+        data-md-dimension-value="{% url 'ProductForSaleListAPI' %}"
+>

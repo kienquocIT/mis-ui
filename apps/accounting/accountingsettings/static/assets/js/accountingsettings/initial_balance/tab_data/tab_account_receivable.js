@@ -142,7 +142,6 @@ class TabAccountReceivableFunction {
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        let a = 0;
                         return `<div class="form-check">
                                     <input type="radio" name="customer-checkbox" class="form-check-input customer-checkbox"
                                         data-customer-id="${row?.['id'] || ''}" 
@@ -252,7 +251,7 @@ class TabAccountReceivableEventHandler {
             } else if (tabAccountReceivableElements.$prepaymentForm.is(':visible')) {
                 // prepayment form is open
                 const advancePaymentValue = tabAccountReceivableElements.$advancePayment.attr('value') || 0;
-                $currentRow.find('.row-detail-account-receivable').val(`?ng tru?c: ${advancePaymentValue}`);
+                $currentRow.find('.row-detail-account-receivable').val(`Ứng trước: ${advancePaymentValue}`);
 
                 // set advance payment value to amount and credit fields
                 $currentRow.find('.row-account-receivable-debit').attr('value', 0);

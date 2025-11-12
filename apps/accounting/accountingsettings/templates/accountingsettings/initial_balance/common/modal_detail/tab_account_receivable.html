@@ -1,0 +1,118 @@
+{% load i18n %}
+
+<!-- Customer Modal -->
+<div class="modal fade" id="customer-modal" tabindex="-1" role="dialog" aria-labelledby="modal-customer">
+    <div class="modal-dialog modal-lg" style="min-width: 70%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Select Customer" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table nowrap w-100" id="customer_table" data-url="{% url 'CustomerListAPI' %}">
+                    <thead>
+                        <tr class="bg-light">
+                            <th></th>
+                            <th></th>
+                            <th>{% trans 'Code' %}</th>
+                            <th>{% trans 'Customer Name' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+           <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" id="btn_save_customer" class="btn btn-primary" data-bs-dismiss="modal">
+                    {% trans 'Save' %}
+                </button>
+           </div>
+        </div>
+    </div>
+</div>
+
+<!-- Account Receivable modal -->
+<div class="modal fade" id="account_receivable_modal" tabindex="-1" role="dialog" aria-labelledby="modal-account-receivable">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Receivable Detail" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-check form-check-lg">
+                            <input type="checkbox" id="prepaymentCheckbox" class="form-check-input">
+                            <label for="customCheck3" class="form-check-label">
+                                {% trans 'Prepaid customer (Prepayment - No Invoice)' %}
+                                <small class="d-block text-muted mt-1">
+                                    {% trans 'Check here if the customer pays in advance without an invoice yet' %}
+                                </small>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div id="invoiceForm" class="mt-5">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="txt_invoice_number">{% trans 'Invoice number' %}</label>
+                                <input type="text" class="form-control" name="txt_invoice_number" id="txt_invoice_number"
+                                       placeholder="VD: INV-2004-001" required>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="unpaid_amount">{% trans 'Unpaid Amount (VND)' %}</label>
+                                <input class="form-control mask-money" id="unpaid_amount" name="unpaid_amount" required>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="invoice_day">{% trans 'Invoice Date' %}</label>
+                                <div class="input-group mb-3">
+                                    <span class="input-affix-wrapper">
+                                        <span class="input-prefix">📅</span>
+                                        <input class="form-control" type="text" name="invoice_day" autocomplete="off" id="invoice_day" required>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="expected_payment">{% trans 'Expected Payment Date' %}</label>
+                                <div class="input-group mb-3">
+                                    <span class="input-affix-wrapper">
+                                        <span class="input-prefix">📅</span>
+                                        <input class="form-control" type="text" name="expected_payment" autocomplete="off" id="expected_payment" required>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="prepaymentForm" class="mt-5">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label required" for="advance_payment">{% trans 'Advanced Payment (VND)' %}</label>
+                                <input class="form-control mask-money" id="advance_payment" name="advance_payment" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" id="btn_save_account_receivable" class="btn btn-primary" data-bs-dismiss="modal">
+                    {% trans 'Save' %}
+                </button>
+           </div>
+        </div>
+    </div>
+</div>

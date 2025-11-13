@@ -106,7 +106,7 @@
                             <button class="btn btn-outline-primary" type="button" id="add_new_line"
                             data-bs-toggle="modal" data-bs-target="#provide_product_list" data-zone="products">
                                 <span>
-                                    <span>{% trans 'Edit items' %}</span>
+                                    <span>{% trans 'Add' %}</span>
                                     <span class="icon">
                                         <i class="fa-regular fa-plus"></i>
                                     </span>
@@ -135,6 +135,7 @@
     <input type="text" id="url-factory"
            data-provide_detail-url="{% url 'AssetProductListByProvideIDAPI'%}"
            data-prod-detail="{% url 'InstrumentToolDetail' 1%}"
+           data-fixed-detail="{% url 'FixedAssetDetail' 1%}"
     >
     <input type="text" id="trans-factory"
            data-uom="{% trans 'UOM' %}"

@@ -10,6 +10,7 @@ $(document).ready(function(){
         (resp) => {
             let data = $.fn.switcherResp(resp)
             $x.fn.renderCodeBreadcrumb(data);
+            $.fn.compareStatusShowPageAction(data)
             $('#titleInput').val(data.title)
             $('#dateCreatedInput').val($x.fn.reformatData(data.date_return, 'YYYY-MM-DD', 'DD/MM/YYYY'))
             $('#remarkInput').val(data.remark)
@@ -23,6 +24,7 @@ $(document).ready(function(){
             }
 
             const $elmTrans = $.fn.transEle, $elmCrtTrans = $('#trans-factory');
+            const urlFact = $('#url-factory')
             $tblElm.DataTableDefault({
                 data: data.products,
                 ordering: false,
@@ -34,28 +36,43 @@ $(document).ready(function(){
                     {
                         data: 'product',
                         width: '75%',
-                        render: (row, type, data, meta) => {
+                        render: (row, type, data) => {
                             let isFormat = [
                                 {name: $elmTrans.attr('data-title'), value: 'title'},
                                 {name: $elmTrans.attr('data-code'), value: 'code'},
                                 {name: $elmCrtTrans.attr('data-uom'), value: 'uom'},
                                 {name: $elmCrtTrans.attr('data-available'), value: 'available'}
                             ]
-                            const dataCont = DataTableAction.item_view(row, $('#url-factory').attr('data-prod-detail'),
-                                isFormat)
+                            let link = ''
+                            let name = data.product_remark
+                            let icon = ''
+                            let rowData = {'title' : data.product_remark}
+                            if (data.product_provide_type === 'tool'){
+                                link = urlFact.attr('data-prod-detail')
+                                icon = '<i class="fas fa-tools"></i>'
+                                name = row.title
+                                rowData = row
+                            }
+                            else if (data.product_provide_type === 'fixed'){
+                                link = urlFact.attr('data-fixed-detail')
+                                name = data?.product_fixed?.title
+                                icon = '<i class="fas fa-warehouse"></i>'
+                                rowData = data?.product_fixed
+                            }
+                            const dataCont = DataTableAction.item_view(rowData, link, isFormat)
                             return `<div class="input-group">
                                         <div class="dropdown pointer mr-2" data-dropdown-custom="true">
                                             <i class="fas fa-info-circle text-blue info-btn"></i>
                                             <div class="dropdown-menu w-210p">${dataCont}</div>
                                         </div>
-                                        <p>${row?.title ? row.title : data.product_remark}</p>
+                                        <p>${name} <span style="color: rgb(90, 147, 255)">${icon}</span></p>
                                     </div>`;
                         }
                     },
                     {
                         data: 'return_number',
                         width: '20%',
-                        render: (row, type, data, meta) => {
+                        render: (row) => {
                             return row
                         }
                     },
@@ -67,7 +84,7 @@ $(document).ready(function(){
                         }
                     }
                 ],
-                drawCallback: (row, data, index) =>{
+                drawCallback: () =>{
                     DropdownBSHandle.init()
                 }
             })

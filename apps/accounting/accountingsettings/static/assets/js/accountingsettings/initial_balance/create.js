@@ -36,4 +36,8 @@ $(document).ready(function () {
     // Tab Employee Payable
     TabEmployeePayableFunction.initEmployeePayableTable();
     TabEmployeePayableEventHandler.InitPageEvent();
+
+    // Tab Account
+    TabAccountFunction.initAccountTable();
+    TabAccountEventHandler.InitPageEvent();
 });

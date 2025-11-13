@@ -1,5 +1,6 @@
 $(document).ready(function(){
     // get detail request info
+    WFRTControl.setWFInitialData('assettoolsdelivery');
     $.fn.callAjax2({
         'url': $('#url-factory').attr('data-detail-url'),
         'method': 'GET',
@@ -7,6 +8,7 @@ $(document).ready(function(){
         (resp) => {
             let data = $.fn.switcherResp(resp)
             $x.fn.renderCodeBreadcrumb(data);
+            $.fn.compareStatusShowPageAction(data);
             $('#titleInput').val(data.title)
             $('#dateCreatedInput').val($x.fn.reformatData(data.date_created, 'YYYY-MM-DD', 'DD/MM/YYYY'))
             $('#remarkInput').val(data.remark)
@@ -32,7 +34,7 @@ $(document).ready(function(){
                 FileUtils.init($(`[name="attachments"]`).siblings('button'), fileDetail);
             }
 
-            DeliveryTableHandle.init({...data.products, selected: true})
+            DeliveryTableHandle.init(data.products)
             if (data.system_status >= 2) $('#idxRealAction').remove()
 
             // load attachments
@@ -42,7 +44,7 @@ $(document).ready(function(){
                 enable_edit: false,
                 data: data.attachments,
             })
-            WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
+            WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
         },
         (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
     )

@@ -14,8 +14,7 @@ class DeliveryTableHandle {
             const prodSlt = $('#table_provide_product_list').DataTable().rows('.selected').data().toArray()
             let dataList = []
             for (let item of prodSlt){
-                dataList.push({
-                    product: item['product'],
+                const temp = {
                     product_remark: item.product_remark,
                     product_available: item.product_available,
                     order: item?.['order'],
@@ -23,8 +22,12 @@ class DeliveryTableHandle {
                     delivered_number: item?.['delivered'],
                     done: 0,
                     date_delivered: moment().format('YYYY-MM-DD'),
-                    uom: item.uom
-                })
+                    uom: item?.uom,
+                    product_provide_type: item?.product_provide_type
+                }
+                if (item?.product_provide_type === 'tool') temp['product'] = item['product']
+                if (item?.product_provide_type === 'fixed') temp['product_fixed'] = item['product']
+                dataList.push(temp)
             }
             if (dataList.length > 0) $table.DataTable().rows.add(dataList).draw()
         })
@@ -32,7 +35,10 @@ class DeliveryTableHandle {
 
     static initDataTable(dataList){
         const $table = $('#products_detail_tbl')
-        if ($table.hasClass('dataTable')) $table.DataTable().clear().rows.add(dataList).draw()
+        const $urlFact = $('#url-factory')
+        if ($table.hasClass('dataTable')){
+            $table.DataTable().rows.add(dataList).draw()
+        }
         else {
             $table.DataTableDefault({
                 data: dataList,
@@ -45,7 +51,7 @@ class DeliveryTableHandle {
                     {
                         data: 'product',
                         width: '35%',
-                        render: (row, type, data, meta) => {
+                        render: (row, type, data) => {
                             const $elmTrans = $.fn.transEle, $localTrans = $('#trans-factory');
                             let isFormat = [
                                 {name: $elmTrans.attr('data-title'), value: 'title'},
@@ -53,30 +59,45 @@ class DeliveryTableHandle {
                                 {name: $localTrans.attr('data-uom'), value: 'uom'},
                                 {name: $localTrans.attr('data-avail'), value: 'available'}
                             ]
-                            row.uom = data.uom
-                            row.available = data.product_available
-                            const dataCont = DataTableAction.item_view(row, $('#url-factory').attr('data-prod-detail'),
-                                isFormat)
-                            return `<div class="input-group title_prod">
-                                        <div class="dropdown pointer mr-2">
-                                            <i class="fas fa-info-circle text-blue info-btn"></i>
-                                            <div class="dropdown-menu w-210p">${dataCont}</div>
-                                        </div>
-                                        <p>${row?.title ? row.title : data?.product_remark}</p>
-                                    </div>`;
+                            let prod = {title: data.product_remark}
+                            let title = data.product_remark
+                            let icon = ''
+                            let link = null
+                            if (data?.['product_provide_type'] === 'fixed'){
+                                prod = data.product_fixed
+                                icon = '<i class="fas fa-warehouse"></i>'
+                                title = prod.title
+                                link = $urlFact.attr('data-fixed-detail')
+
+                            }
+                            if (data?.['product_provide_type'] === 'tool'){
+                                prod = row
+                                icon = '<i class="fas fa-tools"></i>'
+                                row.uom = data?.uom
+                                row.available = data?.product_available
+                                title = row.title
+                                link = $urlFact.attr('data-prod-detail')
+                            }
+                            const dataCont = DataTableAction.item_view(prod, link, isFormat)
+                            return `<div class="input-group title_prod">`
+                                        + `<div class="dropdown pointer mr-2">`
+                                            + `<i class="fas fa-info-circle text-blue info-btn"></i>`
+                                            + `<div class="dropdown-menu w-210p">${dataCont}</div>`
+                                        + `</div>`
+                                        + `<p>${title} <span>${icon}</span></p></div>`;
                         }
                     },
                     {
                         data: 'request_number',
                         width: '10%',
-                        render: (row, type, data, meta) => {
+                        render: (row) => {
                             return row
                         }
                     },
                     {
                         data: 'delivered_number',
                         width: '10%',
-                        render: (row, type, data, meta) => {
+                        render: (row) => {
                             return row
                         }
                     },
@@ -107,7 +128,7 @@ class DeliveryTableHandle {
                         }
                     }
                 ],
-                rowCallback: (row, data, index) => {
+                rowCallback: (row, data) => {
                     // delete row
                     $('.btn-remove-row', row).off().on('click', () => {
                         $table.DataTable().row(row).remove().draw(false)
@@ -128,7 +149,6 @@ class DeliveryTableHandle {
                             $.fn.notifyB({description: $('#trans-factory').attr('data-err-done')}, 'failure')
                         data.done = isVal
                     });
-
                     // handle date delivered
                     $('[name*="date_"]', row).daterangepicker({
                         singleDatePicker: true,
@@ -143,7 +163,7 @@ class DeliveryTableHandle {
                         data.date_delivered = moment(this.value, 'DD/MM/YYYY').format('YYYY-MM-DD')
                     })
                 },
-                drawCallback: (row, data, index) =>{
+                drawCallback: () =>{
                     DropdownBSHandle.init()
                 }
             })
@@ -185,21 +205,21 @@ class ModalProvideProdList {
                     {
                         data: 'product',
                         width: '50%',
-                        render: (row, type, data, meta) => {
+                        render: (row, type, data) => {
                             return row?.title ? row.title : data.product_remark
                         }
                     },
                     {
                         data: 'quantity',
                         width: '20%',
-                        render: (row, type, data, meta) => {
+                        render: (row) => {
                             return row
                         }
                     },
                     {
                         data: 'delivered',
                         width: '20%',
-                        render: (row, type, data, meta) => {
+                        render: (row) => {
                             return row
                         }
                     }
@@ -243,25 +263,31 @@ function submitHandleFunc() {
     formData.products = DeliveryTableHandle.get_data()
     formData.date_created = moment(formData.date_created, 'DD/MM/YYYY').format('YYYY-MM-DD')
     for (let item of formData.products) {
-        item.product = item.product?.id
         if (
             ((item.done + item.delivered_number) > item.request_number || item.done === 0)
-            && item.product_remark === '' ){
+            || (item.product_remark === '' && item.product_provide_type === 'new')
+        ){
             $.fn.notifyB({description: $('#trans-factory').attr('data-err-done')}, 'failure');
             return false
         }
-        const prodAvail = item.product_available
-        if (!prodAvail && item.product_remark === ''){
+
+        if (item.product_provide_type === 'tool') item.product = item.product?.id
+        else if (item.product_provide_type === 'fixed'){
+            item.product_fixed = item.product_fixed?.id
+            delete item.product
+        }
+        else delete item.product
+        if (!item.product_available && item.product_provide_type === 'tool'){
             $.fn.notifyB({description: $('#trans-factory').attr('data-out_of_stock')}, 'failure');
             return false
         }
-        if (item.done > prodAvail && item.product_remark === ''){
+        if (item.done > item.product_available && item.product_provide_type === 'tool'){
             $.fn.notifyB({description: $('#trans-factory').attr('data-err-low_stock')}, 'failure');
             return false
         }
     }
 
-    formData.attachments = $x.cls.file.get_val(formData.attachments, []),
+    formData.attachments = $x.cls.file.get_val(formData.attachments, [])
     WFRTControl.callWFSubmitForm(frm);
 }
 
@@ -302,4 +328,23 @@ $(document).ready(function(){
 
     // run attachment file
     new $x.cls.file($('#attachment')).init({'name': 'attachments'});
+    const $FormElm = $('#asset_delivery_form')
+    SetupFormSubmit.validate($FormElm, {
+        rules: {
+            title: {
+                required: true,
+            },
+            date: {
+                required: true,
+            },
+            employee_inherit: {
+                required: true,
+            },
+            provide: {
+                required: true,
+            },
+        },
+        errorClass: 'is-invalid cl-red',
+        submitHandler: submitHandleFunc
+    })
 });

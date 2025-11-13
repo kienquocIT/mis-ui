@@ -450,20 +450,23 @@ class IndicatorControl {
     static checkSpecialCaseIndicator(data_form) {
         // check if product data has promotion gift then => += vào total_cost_pretax_amount
         if (data_form.hasOwnProperty('total_cost_pretax_amount')) {
-            let promotion = document.getElementById('datable-quotation-create-product').querySelector('.table-row-promotion');
-            if (promotion) {
-                if (promotion.closest('tr').querySelector('.table-row-description').value === '(Gift)') {
-                    let productGift = promotion.getAttribute('data-id-product');
-                    let product_data_list = [];
-                    if (data_form.hasOwnProperty('quotation_costs_data')) {
-                        product_data_list = data_form['quotation_costs_data'];
-                    } else if (data_form.hasOwnProperty('sale_order_costs_data')) {
-                        product_data_list = data_form['sale_order_costs_data'];
-                    }
-                    for (let product of product_data_list) {
-                        if (product.product === productGift) {
-                            data_form['total_cost_pretax_amount'] += product.product_cost_price;
-                            break;
+            let tableProduct = document.getElementById('datable-quotation-create-product');
+            if (tableProduct) {
+                let promotion = tableProduct.querySelector('.table-row-promotion');
+                if (promotion) {
+                    if (promotion.closest('tr').querySelector('.table-row-description').value === '(Gift)') {
+                        let productGift = promotion.getAttribute('data-id-product');
+                        let product_data_list = [];
+                        if (data_form.hasOwnProperty('quotation_costs_data')) {
+                            product_data_list = data_form['quotation_costs_data'];
+                        } else if (data_form.hasOwnProperty('sale_order_costs_data')) {
+                            product_data_list = data_form['sale_order_costs_data'];
+                        }
+                        for (let product of product_data_list) {
+                            if (product.product === productGift) {
+                                data_form['total_cost_pretax_amount'] += product.product_cost_price;
+                                break;
+                            }
                         }
                     }
                 }

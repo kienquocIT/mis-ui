@@ -70,8 +70,8 @@ msgid "No notification here"
 msgstr "Không có thông báo"
 
 #
-msgid "Click here to load more notifications"
-msgstr "Nhấn vào đây để tải thêm thông báo"
+msgid "Load more notifications"
+msgstr "Tải thêm thông báo"
 
 #
 msgid "Mark as read"
@@ -12359,3 +12359,7 @@ msgstr "Trạm khởi tạo là bắt buộc"
 #
 msgid "Node approved is required"
 msgstr "Trạm chấp thuận là bắt buộc"
+
+#
+msgid "Serial is selected in other row. Please select another"
+msgstr "Số serial này đã được chọn. Vui lòng chọn số serial khác"

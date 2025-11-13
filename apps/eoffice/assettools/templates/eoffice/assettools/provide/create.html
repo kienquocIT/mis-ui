@@ -6,6 +6,7 @@
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/sales/asset/fixedasset/css/fixed-asset.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/css/eoffice/assettools/provide-detail.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-outline-primary" type="submit" form="asset_provide_form">
@@ -77,7 +78,7 @@
                         <table id="products_detail_tbl" class="table nowrap w-100 mb-5 min-w-1500p">
                                 <thead>
                                 <tr>
-                                    <th>{% trans 'Product' %}</th>
+                                    <th>{% trans 'Product' %}<span class="text-primary popover-elm pl-1"><i class="fa-solid fa-circle-info"></i></span></th>
                                     <th>{% trans 'Remarks' %}</th>
                                     <th>{% trans 'UOM' %}</th>
                                     <th>{% trans 'Quantity' %}</th>
@@ -111,7 +112,7 @@
                                     </span>
                                     <ul>
                                         <li><a class="add_new_line w-100 d-block" data-type="crt_prod_fixed">{% trans 'Fixed asset' %}</a></li>
-                                        <li><a class="add_new_line w-100 d-block" data-type="crt_prod_instrument">{% trans 'Instrument tool' %}</a></li>
+                                        <li><a class="add_new_line w-100 d-block" data-type="crt_prod_instrument">{% trans 'Instrument Tool' %}</a></li>
                                     </ul>
                                 </div>
                                 <a class="dropdown-item add_new_line" href="#" data-type="new_prod">

@@ -198,7 +198,7 @@ class TabMoneyEventHandler {
             UsualLoadPageAccountingFunction.LoadAccountingAccount({
                 element: row_added.find('.row-account-code'),
                 data_url: pageElements.$urlFactory.attr('data-url-accounting-account'),
-                data_params: {'acc_type': 1}
+                data_params: {'acc_type': 1, 'is_account': true}
             })
         });
 

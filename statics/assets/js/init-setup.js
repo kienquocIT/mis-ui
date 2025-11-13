@@ -873,12 +873,12 @@ class NotifyController {
         const btnDeleteAll$ = notifyGroup$.find('#notifyBtnDeleteAll');
 
         btn$.on('click', function () {
-            if (!notifyGroup$.is(':visible') && body$.find('.notify-bell-item').length === 0) {
+            if (notifyGroup$.is(':visible') && body$.find('.notify-bell-item').length === 0) {
                 notifyGroup$.trigger("data.load")
             }
-            notifyGroup$.fadeToggle(0, function () {
-                notifyContent$.fadeToggle(100);
-            });
+            // notifyGroup$.fadeToggle(0, function () {
+            //     notifyContent$.fadeToggle(100);
+            // });
         })
         notifyGroup$.on('click', function (event) {
             const target$ = $(event.target);
@@ -950,10 +950,6 @@ class NotifyController {
             return _code_app;
         }
 
-        function date_to_str(dateObj){
-            return `${dateObj.getDate()}-${dateObj.getMonth() + 1}-${dateObj.getFullYear()}`
-        }
-
         function call_done_notify(notify_id, ele$){
             $.fn.callAjax2({
                 url: notifyGroup$.attr('data-url-done-notify').replaceAll('__pk__', notify_id),
@@ -1003,31 +999,14 @@ class NotifyController {
                     'callback': function (data) {
                         const dateStr = data['objDT'].toDate().toISOString().substring(0, 10);
                         const eleSubTmp$ = notifyGroup$.find(`.notify-bell-item-sub[data-value="${dateStr}"]`);
-                        let dateShow = null;
-                        switch (DateTimeControl.diffDay(data['objDT'].toDate(), nowDate)) {
-                            case 0:
-                                dateShow = $.fn.gettext('Today');
-                            case 1:
-                                if (dateShow === null) dateShow = $.fn.gettext('1 day ago');
-                            case 2:
-                                if (dateShow === null) dateShow = $.fn.gettext('2 day ago');
-                            case 3:
-                                if (dateShow === null) dateShow = $.fn.gettext('3 day ago');
-                                if (eleSubTmp$.length === 0){
-                                    const sub$ = $(itemSub$.prop('outerHTML')).removeAttr('id').attr('data-value', dateStr);
-                                    sub$.find('p').text(dateShow);
-                                    body$.append(sub$);
-                                }
-                                return `<small>${data.relate}</small> ● <small>${data.output}</small>`;
-                            default:
-                                if (eleSubTmp$.length === 0){
-                                    const sub$ = $(itemSub$.prop('outerHTML')).removeAttr('id').attr('data-value', dateStr);
-                                    sub$.find('p').text(date_to_str(data['objDT'].toDate()));
-                                    body$.append(sub$);
-                                }
-                                return `<small>${data.output}</small>`;
+                        if (eleSubTmp$.length === 0){
+                            const sub$ = $(itemSub$.prop('outerHTML')).removeAttr('id').attr('data-value', dateStr);
+                            sub$.find('p').html($x.fn.displayRelativeTime(data['objDT'], {'outputFormat': 'DD/MM/YYYY'}));
+                            body$.append(sub$);
                         }
-                    }
+                        return `<small>${data.output}</small>`;
+                    },
+                    'outputFormat': 'DD/MM/YYYY HH:mm:ss'
                 })
             );
             if (data.is_done !== true) base$.addClass('unread');
@@ -10236,7 +10215,6 @@ var DataTableAction = {
         ];
         // if (format) keyArg = JSON.parse(format.replace(/'/g, '"'));
         if (format) keyArg = format;
-
         let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$elmTrans.attr('data-more-info')}</h6>`;
         for (let key of keyArg) {
             let isValue = data[key.value] ? data[key.value] : '--'

@@ -37,7 +37,7 @@ class BudgetControl {
                     render: (data, type, row) => {
                         return `<select 
                                     class="form-select table-row-dimension-1"
-                                    data-url="${BudgetControl.$urlEle.attr('data-md-dimension')}"
+                                    data-url="${BudgetControl.$urlEle.attr('data-api-md-dimension')}"
                                     data-method="GET"
                                     data-keyResp="dimension_list"
                                  >
@@ -50,7 +50,7 @@ class BudgetControl {
                     render: (data, type, row) => {
                         return `<select 
                                     class="form-select table-row-dimension-2"
-                                    data-url="${BudgetControl.$urlEle.attr('data-md-dimension-value')}"
+                                    data-url="${BudgetControl.$urlEle.attr('data-api-md-dimension-value')}"
                                     data-method="GET"
                                     data-keyResp="dimension_value_list"
                                  >
@@ -63,7 +63,7 @@ class BudgetControl {
                     render: (data, type, row) => {
                         return `<select 
                                     class="form-select table-row-dimension-1"
-                                    data-url="${BudgetControl.$urlEle.attr('data-md-dimension')}"
+                                    data-url="${BudgetControl.$urlEle.attr('data-api-md-dimension')}"
                                     data-method="GET"
                                     data-keyResp="dimension_list"
                                  >
@@ -76,7 +76,7 @@ class BudgetControl {
                     render: (data, type, row) => {
                         return `<select 
                                     class="form-select table-row-dimension-2"
-                                    data-url="${BudgetControl.$urlEle.attr('data-md-dimension-value')}"
+                                    data-url="${BudgetControl.$urlEle.attr('data-api-md-dimension-value')}"
                                     data-method="GET"
                                     data-keyResp="dimension_value_list"
                                  >

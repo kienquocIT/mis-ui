@@ -43,6 +43,7 @@ class ModalProdByEmployeeList {
                     }
                 ],
                 rowCallback: (row, data, index) => {
+                    data['order'] = index
                     data['product']["uom_data"] = data?.['uom_data']
                     data['product']["available"] = data?.['product_available']
                     $(`#row_return_number_${index}`, row).on('change', function(){
@@ -61,10 +62,6 @@ class ModalProdByEmployeeList {
                     $(`#check_select_${index}`, row).on('change', function () {
                         if (this.checked) $(this).parents('tr').addClass('selected')
                         else $(this).parents('tr').removeClass('selected')
-                        if (this.checked && data['return_number'] <= 0 || !data['return_number']){
-                            $(`#row_return_number_${index}`, row).addClass('is-invalid')
-                            $.fn.notifyB({description: $('#trans-factory').attr('data-err-01')}, 'failure')
-                        }
                     })
                 }
             });
@@ -80,9 +77,15 @@ class ModalProdByEmployeeList {
                 'data': {'employee_inherit_id': provideID, 'delivered__gt': 0}
             }).then(
                 (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && data.hasOwnProperty('asset_provide_product_list'))
-                        this.init(data.asset_provide_product_list)
+                    let datas = $.fn.switcherResp(resp);
+                    if (datas && datas.hasOwnProperty('asset_provide_product_list')){
+                        let dataList = []
+                        for (let data of datas['asset_provide_product_list']){
+                            if (data['is_returned'] !== data.quantity)
+                                dataList.push(data)
+                        }
+                        this.init(dataList)
+                    }
                 },
                 (err) => {
                     console.log('error load resource', err)
@@ -120,19 +123,15 @@ class AssetReturnProductList {
                             ]
                             let link = null
                             let icon = ''
-                            let rowData = {'title': data.product_remark}
-                            let name = data.product_remark
+                            let rowData = data.product_provide_type === 'new' ? {'title': data.product_remark} : row
+                            let name = data.product_provide_type === 'new' ? data.product_remark : rowData.title
                             if (data.product_provide_type === 'tool'){
                                 icon = '<i class="fas fa-tools"></i>'
                                 link = urlFact.attr('data-prod-detail')
-                                rowData = row
-                                name = row?.title
                             }
                             else if (data.product_provide_type === 'fixed'){
                                 icon = '<i class="fas fa-warehouse"></i>'
                                 link = urlFact.attr('data-fixed-detail')
-                                rowData = data.product_fixed
-                                name = rowData.title
                             }
                             const dataCont = DataTableAction.item_view(rowData, link, isFormat)
                             return `<div class="input-group">
@@ -244,30 +243,35 @@ $(document).ready(function() {
     // run dropdown employee_inherit
     const $EmpElm = $('#selectEmployeeInherit')
     const $ElmBtn = $('#add_new_line')
+    const $modalElm = $('#provide_product_list')
     $EmpElm.initSelect2()
     $EmpElm.on('select2:select', function () {
         $ElmBtn.removeClass('disabled')
     });
 
     // on show modal load asset employee used
-    $('#provide_product_list').on('shown.bs.modal', () => {
+    $modalElm.on('shown.bs.modal', () => {
         $('.wrap-loading').removeClass('hidden')
         const _EmpID = $EmpElm.val()
         ModalProdByEmployeeList.getData(_EmpID)
     })
 
     $('#btn-add').off().on('click', function () {
+        // lấy danh sách prod, kiểm tra danh sách prod có/ko
+        // lấy danh sách trả về kiểm tra sản phẩm được chọn có nhập số lượng trả về không và số lượng trả về
+        // có lớn hơn số lượng đã cấp không, kiểm tra xem có bị trùng prod đã select trước đó ko
         const prodSlt = $('#table_provide_product_list').DataTable().rows('.selected').data().toArray(),
             $ReturnTbl = $('#products_detail_tbl')
         let addedList = []
-        let temp = $ReturnTbl.DataTable().data().toArray()
+        let returnLst = $ReturnTbl.DataTable().data().toArray()
         if (prodSlt.length > 0) {
             for (let item of prodSlt) {
                 const returnNumber = item?.['return_number']
-                if (returnNumber && returnNumber > 0 && returnNumber <= item.quantity){
+                if (returnNumber && returnNumber > 0 && returnNumber <= item.quantity ){
                     let baby_red_flag = false
-                    for (let select of temp){
-                        if (item.product.id === select.product.id){
+                    for (let select of returnLst){
+                        if (item.product.id === select.product.id || (item.product_provide_type === 'fixed' && returnNumber > 1)){
+                            // kiểm tra xem nếu đã chọn rồi ko cho chọn lại
                             $ReturnTbl.DataTable().cell(select.order, 1).data(select.return_number + returnNumber).draw(true)
                             baby_red_flag = true
                             break;
@@ -275,8 +279,16 @@ $(document).ready(function() {
                     }
                     if (!baby_red_flag) addedList.push(item)
                 }
+                else{
+                    const index = item.order
+                    $(`#row_return_number_${index}`).addClass('is-invalid')
+                    $.fn.notifyB({description: $('#trans-factory').attr('data-err-01')}, 'failure')
+                }
             }
-            if (addedList && addedList.length) $ReturnTbl.DataTable().rows.add(prodSlt).draw()
+            if (addedList && addedList.length){
+                $modalElm.modal('hide')
+                $ReturnTbl.DataTable().rows.add(prodSlt).draw()
+            }
         }
     });
 

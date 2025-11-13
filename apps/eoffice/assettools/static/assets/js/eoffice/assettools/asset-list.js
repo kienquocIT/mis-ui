@@ -34,7 +34,8 @@ class ListByUserHandle {
                             data: 'product_data',
                             width: '10%',
                             render: (row, index, data) => {
-                                return row?.uom ? row.uom?.title : data?.uom ? data.uom?.title : '--'
+                                let obj_uom = row?.uom ? row.uom : data?.uom ? data.uom : '--'
+                                return obj_uom?.title ? obj_uom.title : obj_uom
                             }
                         },
                         {
@@ -261,7 +262,7 @@ $(document).ready(function () {
     // load asset list by product
     ListByAssetHandle.init()
     let has = false
-    $('.asset-list-tabs a.prod-list').on('shown.bs.tab', function (e) {
+    $('.asset-list-tabs a.prod-list').on('shown.bs.tab', function () {
         if (!has){
             $('#product_list_tb').DataTable().columns.adjust()
             has = true

@@ -44,7 +44,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: "w-20",
+                    className: 'w-20',
                     render: (data, type, row) => {
                         return `<div class="input-group">
                             <select class="form-select select2 row-account-code" disabled>
@@ -79,19 +79,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'w-10',
-                    render: (data, type, row) => {
-                        return '--';
-                    }
-                },
-                {
-                    className: 'w-10',
-                    render: (data, type, row) => {
-                        return `<span class="balance-quantity mr-1">${row?.['quantity']}</span><span class="uom-title">${row?.['uom']?.['title']}</span>`;
-                    }
-                },
-                {
-                    className: 'w-15',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         let dot = [
                             '<span class="badge bg-blue badge-indicator"></span>',
@@ -111,6 +99,12 @@ $(document).ready(function () {
                 },
                 {
                     className: 'w-10',
+                    render: (data, type, row) => {
+                        return `<span class="balance-quantity mr-1">${row?.['quantity']}</span><span class="uom-title">${row?.['uom']?.['title']}</span>`;
+                    }
+                },
+                {
+                    className: 'w-15',
                     render: (data, type, row) => {
                         return `<span data-wh-id="${row?.['warehouse']?.['id']}" class="badge badge-sm badge-light balance-wh">
                                     ${row?.['warehouse']?.['code']}
@@ -135,6 +129,8 @@ $(document).ready(function () {
                 },
             ],
             initComplete: function () {
+                InitialBalancePageFunction.CalculateAccountBalanceSummarize()
+
                 let wrapper$ = dtb_balance_init_item_Ele.closest('.dataTables_wrapper');
                 const headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
                 const textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');

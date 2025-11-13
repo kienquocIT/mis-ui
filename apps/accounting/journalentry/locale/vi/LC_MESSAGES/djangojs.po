@@ -28,3 +28,11 @@ msgstr "Đã cân bằng"
 #
 msgid "Imbalance"
 msgstr "Chưa cân bằng"
+
+#
+msgid "Debit"
+msgstr "Nợ"
+
+#
+msgid "Credit"
+msgstr "Có"

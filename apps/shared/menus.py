@@ -992,6 +992,11 @@ class MenusFinancials:
                 view_name='DimensionSyncConfigList',
                 icon='<i class="fa fa-rotate"></i>',
             ),
+            MenuCommon(
+                name='Dimension Account Mapping', code='menu_dimension_account_list',
+                view_name='DimensionAccountList',
+                icon='<i class="fa fa-link"></i>',
+            ),
         ],
     )
     ASSET = MenuCommon(

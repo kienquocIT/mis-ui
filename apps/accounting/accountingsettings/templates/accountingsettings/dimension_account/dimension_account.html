@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Dimension Value' %}{% endblock %}
+{% block cssHeader %}
+    <style>
+            .parent-option {
+            padding: 6px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .parent-option:hover {
+            background-color: #f1f3f4;
+        }
+
+        .parent-option.selected {
+            background-color: #0d6ee63b;
+            font-weight: 600;
+        }
+
+            .hidden-row {
+            display: none !important;
+        }
+
+        .tree-toggle {
+            cursor: pointer;
+            margin-right: 8px;
+            color: #666;
+            transition: color 0.2s;
+        }
+
+        .tree-toggle:hover {
+            color: #333;
+        }
+
+        .tree-toggle.collapsed i {
+            transform: rotate(0deg);
+        }
+
+
+        .node-parent {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .node-child {
+            color: #555;
+        }
+
+        .title-cell {
+            display: flex;
+            align-items: center;
+        }
+
+        #datatable-value_wrapper .row {
+            margin-bottom: 1rem;
+        }
+
+        .btn-toolbar {
+            margin-bottom: 1rem;
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    <div class="row mb-5">
+        <div class="col-12 col-md-8">
+            <label class="form-label fw-semibold text-dark mb-2" for="account-select">
+                <i class="bi bi-funnel me-2"></i>{% trans 'Select Account' %}
+            </label>
+            <select class="form-select select2" id="account-select" data-url="{% url 'ChartOfAccountsListAPI' %}" data-keyResp="chart_of_accounts_list"
+                data-keytext="acc_name"
+            >
+            </select>
+        </div>
+    </div>
+    <table id="datatable-dimension-map" class="table nowrap w-100 table-hover" data-url="{% url 'DimensionListForAccountingAccountAPI' 0 %}">
+        <thead>
+            <tr>
+                <th class="w-60">{% trans 'Dimension' %}</th>
+                <th class="w-20">{% trans 'Status' %}</th>
+                <th class="w-20">{% trans 'Action' %}</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+{% endblock %}
+{% block modalData %}
+    <div class="modal fade" id="modal-add-dimension-acc-map" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">{% trans 'Add Dimension Account Map' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-add" data-url="{% url "DimensionAccountListAPI" %}" data-method="POST">
+                        <div class="mb-5">
+                            <h6 class="text-uppercase text-primary fw-semibold mb-3 fs-7">
+                                <i class="bi bi-info-circle me-2"></i>
+                                {% trans 'Account Information' %}
+                            </h6>
+
+                            <div class="row gx-3">
+                                <div class="col-md-6 mb-3">
+                                    <label for="account-code" class="form-label">{% trans 'Account Code' %}</label>
+                                    <input type="text" class="form-control account-code" id="account-code" readonly>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="account-name" class="form-label">{% trans 'Account Name' %}</label>
+                                    <input type="text" class="form-control account-name" id="account-name" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <h6 class="text-uppercase text-primary fw-semibold mb-3 fs-7">
+                                <i class="bi bi-info-circle me-2"></i>
+                                {% trans 'Dimension Information' %}
+                            </h6>
+
+                            <div class="row gx-3">
+                                <div class="col-md-6 mb-3">
+                                    <label for="dimension-code" class="form-label">{% trans 'Dimension Code' %}</label>
+                                    <input type="text" class="form-control dimension-code" id="dimension-code" readonly>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="dimension-name" class="form-label">{% trans 'Dimension Name' %}</label>
+                                    <input type="text" class="form-control dimension-name" id="dimension-name" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold text-dark mb-3 required">
+                                {% trans 'Status' %}
+                            </label>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="status" id="status-required" value=0 checked>
+                                <label class="form-check-label" for="status-required">
+                                    {% trans 'Required' %}
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="status" id="status-optional" value=1>
+                                <label class="form-check-label" for="status-optional">
+                                    {% trans 'Optional' %}
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                    <button type="submit" class="btn btn-primary" id="modal-add-dimension-acc-map" form="form-add">
+                        <span>{% trans 'Save' %}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-update-dimension-acc-map" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">{% trans 'Update Dimension Account Map' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-update" data-url="{% url "DimensionAccountDetailAPI" 0 %}" data-method="PUT">
+                        <div class="mb-5">
+                            <h6 class="text-uppercase text-primary fw-semibold mb-3 fs-7">
+                                <i class="bi bi-info-circle me-2"></i>
+                                {% trans 'Account Information' %}
+                            </h6>
+
+                            <div class="row gx-3">
+                                <div class="col-md-6 mb-3">
+                                    <label for="account-code-update" class="form-label">{% trans 'Account Code' %}</label>
+                                    <input type="text" class="form-control account-code" id="account-code-update" readonly>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="account-name-update" class="form-label">{% trans 'Account Name' %}</label>
+                                    <input type="text" class="form-control account-name" id="account-name-update" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <h6 class="text-uppercase text-primary fw-semibold mb-3 fs-7">
+                                <i class="bi bi-info-circle me-2"></i>
+                                {% trans 'Dimension Information' %}
+                            </h6>
+
+                            <div class="row gx-3">
+                                <div class="col-md-6 mb-3">
+                                    <label for="dimension-code-update" class="form-label">{% trans 'Dimension Code' %}</label>
+                                    <input type="text" class="form-control dimension-code" id="dimension-code-update" readonly>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="dimension-name-update" class="form-label">{% trans 'Dimension Name' %}</label>
+                                    <input type="text" class="form-control dimension-name" id="dimension-name-update" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold text-dark mb-3 required">
+                                {% trans 'Status' %}
+                            </label>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="status" id="status-required-update" value=0 checked>
+                                <label class="form-check-label" for="status-required-update">
+                                    {% trans 'Required' %}
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="status" id="status-optional-update" value=1>
+                                <label class="form-check-label" for="status-optional-update">
+                                    {% trans 'Optional' %}
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                    <button type="submit" class="btn btn-primary" id="modal-update-dimension-acc-map" form="form-update">
+                        <span>{% trans 'Save' %}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/accountingsettings/dimension_account/dimension_account.js' %}"></script>
+{% endblock %}

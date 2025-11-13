@@ -931,6 +931,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DIMENSION_VALUE_DETAIL = StringUrl('accounting-setting/dimension-value/detail/{pk}')
     DIMENSION_SYNC_CONFIG_APPLICATION_LIST = StringUrl('accounting-setting/dimension-sync-config/application-list')
     DIMENSION_SYNC_CONFIG_LIST = StringUrl('accounting-setting/dimension-sync-config/list')
+    DIMENSION_SYNC_CONFIG_DETAIL = StringUrl('accounting-setting/dimension-sync-config/detail/{pk}')
+    DIMENSION_LIST_FOR_ACCOUNTING_ACCOUNT = StringUrl('accounting-setting/dimension-for-account/detail/{pk}')
+    DIMENSION_ACCOUNT_MAP_LIST = StringUrl('accounting-setting/dimension-account-map/list')
+    DIMENSION_ACCOUNT_MAP_DETAIL = StringUrl('accounting-setting/dimension-account-map/detail/{pk}')
 
     JOURNAL_ENTRY_LIST = StringUrl('journal-entry/list')
     JOURNAL_ENTRY_DETAIL = StringUrl('journal-entry/detail/{pk}')

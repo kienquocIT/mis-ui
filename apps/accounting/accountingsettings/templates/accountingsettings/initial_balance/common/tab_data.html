@@ -31,18 +31,18 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_tools" role="tab" aria-selected="false">
+                    <span class="nav-link-text">{% trans 'Tools' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_fixed_assets" role="tab" aria-selected="false">
                     <span class="nav-link-text">{% trans 'Fixed Assets' %}</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#tab_expenses" role="tab" aria-selected="false">
-                    <span class="nav-link-text">{% trans 'Expenses' %}</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#tab_owner_equity" role="tab" aria-selected="false">
-                    <span class="nav-link-text">{% trans 'Owner Equity' %}</span>
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_account" role="tab" aria-selected="false">
+                    <span class="nav-link-text">{% trans 'Account' %}</span>
                 </a>
             </li>
         </ul>
@@ -68,16 +68,16 @@
             <div class="tab-pane fade" id="tab_employee_payable">
                 {% include 'accountingsettings/initial_balance/common/tab_detail/tab_employee_payable.html' %}
             </div>
-            <!-- TAB 6: Fixed Assets - TODO: Implement -->
+            <!-- TAB 6: Tools - TODO: Implement -->
+            <div class="tab-pane fade" id="tab_tools">
+                <!-- To be implemented -->
+            </div>
+            <!-- TAB 7: Fixed Assets - TODO: Implement -->
             <div class="tab-pane fade" id="tab_fixed_assets">
                 <!-- To be implemented -->
             </div>
-            <!-- TAB 7: Expenses - TODO: Implement -->
-            <div class="tab-pane fade" id="tab_expenses">
-                <!-- To be implemented -->
-            </div>
-            <!-- TAB 8: Owner Equity - TODO: Implement -->
-            <div class="tab-pane fade" id="tab_owner_equity">
+            <!-- TAB 8: Account - TODO: Implement -->
+            <div class="tab-pane fade" id="tab_account">
                 <!-- To be implemented -->
             </div>
         </div>

@@ -205,7 +205,7 @@ class TabMoneyEventHandler {
                 element: row_added.find('.row-account'),
                 data_url: pageElements.$urlFactory.attr('data-url-accounting-account'),
                 data_params: {'acc_type': 1, 'is_account': true}
-            })
+            });
         });
 
         // event for deleting row

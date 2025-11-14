@@ -40,7 +40,7 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-20',
+                        className: 'ellipsis-cell-lg w-15',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
@@ -56,7 +56,14 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-xs w-15',
+                        className: 'ellipsis-cell-lg w-10',
+                        render: (data, type, row) => {
+                            let target = row?.['supplier_data']?.['name'] || '--'
+                            return `<span title="${target}">${target}</span>`
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-xs w-10',
                         render: (data, type, row) => {
                             return `<span title="${row?.['sale_code'] || '--'}">${row?.['sale_code'] || '--'}</span>`
                         }

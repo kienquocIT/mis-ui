@@ -1,4 +1,10 @@
+import os
+import shutil
+import cv2
+import numpy as np
+from django.conf import settings
 from django.views import View
+from rembg import remove
 from requests_toolbelt import MultipartEncoder
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser
@@ -443,13 +449,58 @@ class ProductQuotationListLoadDBAPI(APIView):
 class ProductUploadAvatarAPI(APIView):
     parser_classes = [MultiPartParser]
 
+    @staticmethod
+    def clear_dir(dir_path):
+        for item in os.listdir(dir_path):
+            item_path = os.path.join(dir_path, item)
+            if os.path.isfile(item_path) or os.path.islink(item_path):
+                os.remove(item_path)
+            elif os.path.isdir(item_path):
+                shutil.rmtree(item_path)
+        return
+
+    @staticmethod
+    def rembg(temp_dir, temp_file_name):
+        path = os.path.join(temp_dir, temp_file_name)
+        img = cv2.imread(path)
+        rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        output = remove(rgb)
+        output = cv2.cvtColor(output, cv2.COLOR_RGBA2BGRA)
+        b, g, r = (255, 255, 255)
+        h, w, _ = output.shape
+        background = np.full((h, w, 3), (b, g, r), dtype=np.uint8)
+        alpha = output[:, :, 3] / 255.0
+        foreground = output[:, :, :3]
+        combined = cv2.convertScaleAbs(foreground * alpha[:, :, None] + background * (1 - alpha[:, :, None]))
+        temp_file_path = temp_dir + 'rembg' + temp_file_name
+        cv2.imwrite(temp_file_path, combined)
+        return temp_file_path
+
+    @staticmethod
+    def for_rembg(uploaded_file, temp_dir, temp_file_name):
+        os.makedirs(temp_dir, exist_ok=True)
+        temp_file_path = os.path.join(temp_dir, temp_file_name)
+        with open(temp_file_path, 'wb+') as f:
+            for chunk in uploaded_file.chunks():
+                f.write(chunk)
+        rembg_path = ProductUploadAvatarAPI.rembg(temp_dir, temp_file_name)
+        return rembg_path
+
     @mask_view(auth_require=True, login_require=True, is_api=True)
     def post(self, request, *args, pk, **kwargs):
         url = ApiURL.PRODUCT_UPLOAD_AVATAR.fill_key(pk=pk)
         uploaded_file = request.FILES.get('file')
-        m = MultipartEncoder(fields={'avatar_img': (uploaded_file.name, uploaded_file, uploaded_file.content_type)})
+        params = request.query_params.dict()
+        if 'auto_rm_bg' in params and params.get('auto_rm_bg') == 'true':
+            temp_dir = os.path.join(settings.BASE_DIR, 'apps/masterdata/saledata/static/assets/temp_img_rm_bg/')
+            temp_file_name = f"{str(pk)}-{uploaded_file.name}"
+            rembg_path = self.for_rembg(uploaded_file, temp_dir, temp_file_name)
+            m = MultipartEncoder(fields={'avatar_img': (temp_file_name, open(rembg_path, "rb"), uploaded_file.content_type)})
+        else:
+            m = MultipartEncoder(fields={'avatar_img': (uploaded_file.name, uploaded_file, uploaded_file.content_type)})
         headers = {'content-type': m.content_type}
         resp = ServerAPI(request=request, user=request.user, url=url, cus_headers=headers).post(data=m)
+        self.clear_dir(temp_dir)
         if resp.state:
             return {'detail': resp.result}, status.HTTP_200_OK
         return resp.auto_return()

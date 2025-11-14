@@ -34,7 +34,8 @@ class ListByUserHandle {
                             data: 'product_data',
                             width: '10%',
                             render: (row, index, data) => {
-                                return row?.uom ? row.uom : data?.uom ? data.uom : '--'
+                                let obj_uom = row?.uom ? row.uom : data?.uom ? data.uom : '--'
+                                return obj_uom?.title ? obj_uom.title : obj_uom
                             }
                         },
                         {
@@ -127,7 +128,7 @@ class ListByUserHandle {
                     }
                 },
             ],
-            rowCallback: function (row, data, index) {
+            rowCallback: function (row, data) {
                 $(row).on('click', function(){
                     if ($(this).hasClass('selected')) $(this).removeClass('selected');
                     else{
@@ -196,7 +197,7 @@ class ListByAssetHandle{
                     width: '10%',
                     render: (row) => {
                         let txt = '--'
-                        if (row?.['measure_unit']) txt = row['measure_unit']
+                        if (row?.['uom']) txt = row['measure_unit']
                         return txt
                     }
                 },
@@ -261,7 +262,7 @@ $(document).ready(function () {
     // load asset list by product
     ListByAssetHandle.init()
     let has = false
-    $('.asset-list-tabs a.prod-list').on('shown.bs.tab', function (e) {
+    $('.asset-list-tabs a.prod-list').on('shown.bs.tab', function () {
         if (!has){
             $('#product_list_tb').DataTable().columns.adjust()
             has = true

@@ -812,7 +812,46 @@ $(async function () {
                         }
                     }
                 });
-                if (deliver <= valStock && deliver <= valAvb) {  // Kiểm tra <= tồn kho và <= khả dụng (mượn hàng)
+                // Check serial exist in other row data
+                let rowEle = ele.closest('tr');
+                let rowIndex = $tableSerial.DataTable().row(rowEle).index();
+                let $row = $tableSerial.DataTable().row(rowIndex);
+                let dataRow = $row.data();
+                if (ele.checked === true && dataRow) {
+                    for (let prod of prodTable.getProdList) {
+                        let offsetData = prod?.['offset_data'] ? prod?.['offset_data'] : [];
+                        if (offsetData.length === 0) {
+                            let deliveryData = prod?.['delivery_data'] ? prod?.['delivery_data'] : [];
+                            for (let deliData of deliveryData) {
+                                for (let serial of deliData?.['serial_data'] ? deliData?.['serial_data'] : []) {
+                                    if (serial?.['product_warehouse_serial_id'] === dataRow?.['id']) {
+                                        $.fn.notifyB({description: $trans.attr('data-serial-selected')}, 'failure');
+                                        ele.checked = false;
+                                        DeliveryStoreDataHandle.storeData();
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                        if (offsetData.length > 0) {
+                            for (let osData of offsetData) {
+                                let deliveryData = osData?.['delivery_data'] ? osData?.['delivery_data'] : [];
+                                for (let deliData of deliveryData) {
+                                    for (let serial of deliData?.['serial_data'] ? deliData?.['serial_data'] : []) {
+                                        if (serial?.['product_warehouse_serial_id'] === dataRow?.['id']) {
+                                            $.fn.notifyB({description: $trans.attr('data-serial-selected')}, 'failure');
+                                            ele.checked = false;
+                                            DeliveryStoreDataHandle.storeData();
+                                            return false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                // Kiểm tra <= tồn kho và <= khả dụng (mượn hàng)
+                if (deliver <= valStock && deliver <= valAvb) {
                     // store data
                     DeliveryStoreDataHandle.storeData();
                     let check = prodTable.loadCheckExceedQuantity();

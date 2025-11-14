@@ -12355,3 +12355,7 @@ msgstr "Trạm khởi tạo là bắt buộc"
 #
 msgid "Node approved is required"
 msgstr "Trạm chấp thuận là bắt buộc"
+
+#
+msgid "Serial is selected in other row. Please select another"
+msgstr "Số serial này đã được chọn. Vui lòng chọn số serial khác"

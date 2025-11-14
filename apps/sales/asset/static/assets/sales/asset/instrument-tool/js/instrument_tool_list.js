@@ -69,7 +69,10 @@ $(document).ready(function () {
                     render: (data, type, row) => {
                         const statusMap = {
                             0: 'Using',
-                            1: 'Leased'
+                            1: 'Leased',
+                            2: 'Delivered',
+                            3: 'Under Maintenance',
+                            4: 'Fully Depreciated'
                         }
                         return `<div>${statusMap[row?.['status']]}</div>`
                     }

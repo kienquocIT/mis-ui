@@ -1129,7 +1129,7 @@ class NodeStoreHandle {
         if (NodeLoadDataHandle.$btnSaveNode[0].getAttribute('data-save-type')) {
             if (NodeLoadDataHandle.$btnSaveNode[0].getAttribute('data-save-type') === '0') {  // new
                 let newData = NodeStoreHandle.storeSetup();
-                if (NodeLoadDataHandle.dataNode.length > 2) {
+                if (NodeLoadDataHandle.dataNode.length >= 2) {
                     // NodeLoadDataHandle.dataNode.splice(-2, 2);
                     NodeLoadDataHandle.dataNode.pop();
                 }

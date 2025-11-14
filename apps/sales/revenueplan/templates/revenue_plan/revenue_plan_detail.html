@@ -4,11 +4,8 @@
 {% block title %}{% trans 'Revenue plan' %}{% endblock %}
 {% block cssHeader %}
     <style>
-        td input, td, th {
+        td input, th input, td, th {
             text-align: right;
-        }
-        th {
-            color: white !important;
         }
     </style>
 {% endblock %}
@@ -56,6 +53,9 @@
         {% csrf_token %}
         {% include 'revenue_plan/common.html' %}
     </form>
+{% endblock %}
+{% block modalData %}
+    {% include 'revenue_plan/modal.html' %}
 {% endblock %}
 {% block jsFooterUnCompress %}
 {% endblock %}

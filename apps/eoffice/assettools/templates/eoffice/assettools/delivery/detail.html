@@ -10,6 +10,9 @@
         min-width: 768px;
     }
     .pointer{cursor: pointer}
+    .title_prod p > span {
+        color: rgb(90, 147, 255)
+    }
     </style>
 {% endblock %}
 {% block pageAction %}
@@ -115,6 +118,7 @@
     <input type="text" id="url-factory"
            data-provide_detail-url="{% url 'AssetProductListByProvideIDAPI'%}"
            data-prod-detail="{% url 'InstrumentToolDetail' 1%}"
+           data-fixed-detail="{% url 'FixedAssetDetail' 1%}"
     >
     <input type="text" id="trans-factory" data-products="{% trans 'List of Asset, Tools request is empty' %}"
     data-return="{% trans 'Detail' %}"

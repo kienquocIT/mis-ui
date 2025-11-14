@@ -6,7 +6,9 @@ from apps.accounting.accountingsettings.views import (
     ProductTypeAccountDeterminationDetailAPI, ProductAccountDeterminationDetailAPI, AccountDeterminationDetailAPI,
     InitialBalanceList, InitialBalanceListAPI, DimensionDefinitionList, DimensionDefinitionListAPI,
     DimensionDefinitionDetailAPI, DimensionValueList, DimensionDefinitionWithValueAPI, DimensionValueListAPI,
-    DimensionValueDetailAPI
+    DimensionValueDetailAPI, DimensionSyncConfigApplicationListAPI, DimensionSyncConfigList, DimensionSyncConfigListAPI,
+    DimensionSyncConfigDetailAPI, DimensionListForAccountingAccountAPI, DimensionAccountList, DimensionAccountListAPI,
+    DimensionAccountDetailAPI
 )
 
 urlpatterns = [
@@ -36,6 +38,8 @@ urlpatterns += [
     # view url
     path('dimension-definition/list', DimensionDefinitionList.as_view(), name='DimensionDefinitionList'),
     path('dimension-value/list', DimensionValueList.as_view(), name='DimensionValueList'),
+    path('dimension-sync-config/list', DimensionSyncConfigList.as_view(), name='DimensionSyncConfigList'),
+    path('dimension-account/list', DimensionAccountList.as_view(), name='DimensionAccountList'),
 
     # api url
     path('dimension-definition/list/api', DimensionDefinitionListAPI.as_view(), name='DimensionDefinitionListAPI'),
@@ -43,4 +47,10 @@ urlpatterns += [
     path('dimension-definition-values/api/<str:pk>', DimensionDefinitionWithValueAPI.as_view(), name='DimensionDefinitionWithValueAPI'),
     path('dimension-value/list/api', DimensionValueListAPI.as_view(), name='DimensionValueListAPI'),
     path('dimension-value/detail/api/<str:pk>', DimensionValueDetailAPI.as_view(), name='DimensionValueDetailAPI'),
+    path('dimension-sync-config/application-list/api', DimensionSyncConfigApplicationListAPI.as_view(), name='DimensionSyncConfigApplicationListAPI'),
+    path('dimension-sync-config/list/api', DimensionSyncConfigListAPI.as_view(), name='DimensionSyncConfigListAPI'),
+    path('dimension-sync-config/detail/api/<str:pk>', DimensionSyncConfigDetailAPI.as_view(), name='DimensionSyncConfigDetailAPI'),
+    path('dimension-list-for-accounting-account/detail/api/<str:pk>', DimensionListForAccountingAccountAPI.as_view(), name='DimensionListForAccountingAccountAPI'),
+    path('dimension-account/list/api', DimensionAccountListAPI.as_view(), name='DimensionAccountListAPI'),
+    path('dimension-account/detail/api/<str:pk>', DimensionAccountDetailAPI.as_view(), name='DimensionAccountDetailAPI'),
 ]

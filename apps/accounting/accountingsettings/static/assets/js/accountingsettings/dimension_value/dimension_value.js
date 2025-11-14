@@ -1,7 +1,7 @@
 $(document).ready(function () {
     const $dimensionValueDataTable = $('#datatable-value')
     const $dimensionSelect = $('#dimension-select')
-
+    const $addValueButton = $('#btn-add-value')
     let currData = null
 
     function getDescendantIds(nodeId) {
@@ -146,24 +146,26 @@ $(document).ready(function () {
             {
                 className: 'text-center',
                 render: function (data, type, row) {
-                    let edit_btn = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-edit"
+                    const isDisabled = row.is_system_created
+                    let edit_btn = `<button class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-edit"
                            data-id="${row?.['id']}"
                            data-code="${row?.['code']}"
                            data-title="${row?.['title']}"
                            data-bs-toggle="modal"
                            data-bs-target="#modal-update-value"
                            data-bs-placement="top" title=""
+                           ${isDisabled ? 'disabled' : ''}
                            >
                            <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
-                        </a>`
-                    let delete_btn = `<a class="btn btn-icon btn-flush-danger btn-rounded flush-soft-hover btn-delete"
-                                data-id="${row?.['id']}">
-                            <span class="btn-icon-wrap">
-                                <span class="feather-icon text-danger">
-                                    <i class="bi bi-trash"></i>
+                        </button>`
+                    let delete_btn = `<button class="btn btn-icon btn-flush-danger btn-rounded flush-soft-hover btn-delete"
+                                    data-id="${row?.['id']}" ${isDisabled ? 'disabled' : ''}>
+                                <span class="btn-icon-wrap">
+                                    <span class="feather-icon text-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </span>
                                 </span>
-                            </span>
-                        </a>`
+                            </button>`
                     return `${edit_btn}${delete_btn}`
                 }
             }
@@ -179,6 +181,12 @@ $(document).ready(function () {
             method: 'GET',
         }).then(
             (resp) => {
+                const isSystemDimension = resp.data?.['dimension_definition_with_values']?.['is_system_dimension']
+                if(isSystemDimension){
+                    $addValueButton.prop('disabled', true);
+                } else {
+                    $addValueButton.prop('disabled', false);
+                }
                 currData = sortByHierarchy(resp.data?.['dimension_definition_with_values']?.['values'] || [])
                 currData = currData.map((item)=>{
                     return {
@@ -191,6 +199,8 @@ $(document).ready(function () {
                 table.clear().rows.add(currData).draw();
 
                 buildParentSelector($('#parent-selector'), currData);
+
+
             }
         )
     })

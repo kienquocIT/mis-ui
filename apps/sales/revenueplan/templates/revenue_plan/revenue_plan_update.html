@@ -4,11 +4,8 @@
 {% block title %}{% trans 'Revenue plan' %}{% endblock %}
 {% block cssHeader %}
     <style>
-        td input, td, th {
+        td input, th input, td, th {
             text-align: right;
-        }
-        th {
-            color: white !important;
         }
     </style>
 {% endblock %}
@@ -57,34 +54,7 @@
     </form>
 {% endblock %}
 {% block modalData %}
-    <div class="modal fade" style="z-index: 99999" id="add-group-plan-modal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Add group plan' %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label for="modal-group" class="form-label">{% trans 'Select group' %}</label>
-                                <select class="form-select select2" id="modal-group"
-                                        data-method="GET" data-url="{% url 'GroupListAPI' %}"
-                                ></select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="button" class="btn btn-primary" id="btn-add-group-plan">{% trans 'Add' %}</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% include 'revenue_plan/modal.html' %}
 {% endblock %}
 {% block jsFooterUnCompress %}
 {% endblock %}

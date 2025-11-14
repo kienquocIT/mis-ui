@@ -290,7 +290,7 @@ class RevenuePlanPageFunction {
                     render: (data, type, row) => {
                         return `<script class="script-data-employee" type="application/json">${JSON.stringify(row).replace(/</g, '\\u003c')}</script>
                                 <span class="employee-mapped ${row?.['is_changed_group'] ? 'text-orange' : ''}" data-employee-id="${row?.['id']}">${row?.['full_name']}</span><br>
-                                ${row?.['is_changed_group'] ? `<button type="button" class="btn bflow-mirrow-btn-sm btn-move-plan" data-current-group-id="${row?.['current_group']?.['id'] || ''}">${$.fn.gettext('Move plan to')} ${row?.['current_group']?.['title']}</button>` : ''}`
+                                ${row?.['is_changed_group'] ? `<button type="button" class="btn bflow-mirrow-btn-sm btn-move-plan" data-current-group-id="${row?.['current_group']?.['id'] || ''}">${$.fn.gettext('Move plan to')} <span class="fw-bold">${row?.['current_group']?.['title']}</span></button>` : ''}`
                     }
                 },
                 {

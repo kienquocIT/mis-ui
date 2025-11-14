@@ -87,21 +87,21 @@ class BudgetControl {
                     targets: 5,
                     width: '12%',
                     render: (data, type, row) => {
-                        return `<span class="mask-money badge text-dark-10 fs-8 bg-grey-light-4 table-row-value-planned" data-init-money="${parseFloat(row?.['value_planned'] ? row?.['value_planned'] : '0')}"></span>`;
+                        return `<span class="mask-money badge text-dark-10 fs-6 bg-grey-light-4 table-row-value-planned" data-init-money="${parseFloat(row?.['budget_line_data']?.['value_planned'] ? row?.['budget_line_data']?.['value_planned'] : '0')}"></span><input type="text" class="form-control table-row-budget-line-data hidden">`;
                     }
                 },
                 {
                     targets: 6,
                     width: '12%',
                     render: (data, type, row) => {
-                        return `<span class="mask-money badge text-dark-10 fs-8 bg-yellow-light-4 table-row-value-consumed" data-init-money="${parseFloat(row?.['value_consumed'] ? row?.['value_consumed'] : '0')}"></span>`;
+                        return `<span class="mask-money badge text-dark-10 fs-6 bg-yellow-light-4 table-row-value-consumed" data-init-money="${parseFloat(row?.['budget_line_data']?.['value_consumed'] ? row?.['budget_line_data']?.['value_consumed'] : '0')}"></span>`;
                     }
                 },
                 {
                     targets: 7,
                     width: '12%',
                     render: (data, type, row) => {
-                        return `<span class="mask-money badge text-dark-10 fs-8 bg-red-light-4 table-row-value-available" data-init-money="${parseFloat(row?.['value_available'] ? row?.['value_available'] : '0')}"></span>`;
+                        return `<span class="mask-money badge text-dark-10 fs-6 bg-red-light-4 table-row-value-available" data-init-money="${parseFloat(row?.['budget_line_data']?.['value_available'] ? row?.['budget_line_data']?.['value_available'] : '0')}"></span>`;
                     }
                 },
                 {
@@ -110,7 +110,7 @@ class BudgetControl {
                     render: (data, type, row) => {
                         return `<input 
                                     type="text" 
-                                    class="form-control mask-money table-row-value-advance valid-num" 
+                                    class="form-control mask-money table-row-value-use valid-num" 
                                     value="${row?.['value_use'] ? row?.['value_use'] : '0'}"
                                     data-return-type="number"
                                 >`;
@@ -129,6 +129,7 @@ class BudgetControl {
                 let dimensionValue1Ele$ = $(row).find('.table-row-dimension-value-1');
                 let dimension2Ele$ = $(row).find('.table-row-dimension-2');
                 let dimensionValue2Ele$ = $(row).find('.table-row-dimension-value-2');
+                let budgetLineDataEle$ = $(row).find('.table-row-budget-line-data');
                 if (dimension1Ele$.length > 0) {
                     let dataS2 = [];
                     if (data?.['dimension_first_data']) {
@@ -156,6 +157,9 @@ class BudgetControl {
                         dataS2 = [data?.['dimension_value_second_data']];
                     }
                     FormElementControl.loadInitS2($(dimensionValue2Ele$), dataS2, {}, null, true);
+                }
+                if (budgetLineDataEle$.length > 0) {
+                    budgetLineDataEle$.val(JSON.stringify(data?.['budget_line_data'] ? data?.['budget_line_data'] : {}));
                 }
             },
             drawCallback: function () {
@@ -265,6 +269,22 @@ class BudgetControl {
         let dimensionValue1Ele$ = $(row).find('.table-row-dimension-value-1');
         let dimensionValue2Ele$ = $(row).find('.table-row-dimension-value-2');
         if (orderEle$.length > 0 && dimensionValue1Ele$.length > 0 && dimensionValue2Ele$.length > 0) {
+            let plannedValue = 0;
+            let consumedValue = 0;
+            let availableValue = 0;
+            let plannedEle$ = $(row).find('.table-row-value-planned');
+            let consumedEle$ = $(row).find('.table-row-value-consumed');
+            let availableEle$ = $(row).find('.table-row-value-available');
+            let budgetLineDataEle$ = $(row).find('.table-row-budget-line-data');
+            if (plannedEle$.length > 0 && consumedEle$.length > 0 && availableEle$.length > 0) {
+                plannedEle$.attr('data-init-money', plannedValue);
+                consumedEle$.attr('data-init-money', consumedValue);
+                availableEle$.attr('data-init-money', availableValue);
+            }
+            if (budgetLineDataEle$.length > 0) {
+                budgetLineDataEle$.val(JSON.stringify({}));
+            }
+            $.fn.initMaskMoney2();
             if (dimensionValue1Ele$.val() && dimensionValue2Ele$.val()) {
                 let dimensionValues = [dimensionValue1Ele$.val(), dimensionValue2Ele$.val()];
                 BudgetControl.$tbl.DataTable().rows().every(function () {
@@ -289,7 +309,7 @@ class BudgetControl {
                 $.fn.callAjax2({
                         'url': BudgetControl.$urlEle.attr('data-api-budget-line'),
                         'method': "GET",
-                        'data': {'dimension_values__id__in': dimensionValues.join(',')},
+                        'data': {'dimension_values': dimensionValues.join(',')},
                         'isDropdown': true,
                     }
                 ).then(
@@ -297,33 +317,52 @@ class BudgetControl {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             if (data.hasOwnProperty('budget_line_list') && Array.isArray(data.budget_line_list)) {
-                                let plannedValue = 0;
-                                let consumedValue = 0;
-                                let availableValue = 0;
-                                if (data?.['budget_line_list'].length === 1) {
-                                    let budgetLine = data?.['budget_line_list']?.[0];
-                                    plannedValue = parseFloat(budgetLine?.['value_planned'] ? budgetLine?.['value_planned'] : '0');
-                                    consumedValue = parseFloat(budgetLine?.['value_consumed'] ? budgetLine?.['value_consumed'] : '0');
-                                    availableValue = plannedValue - consumedValue;
+                                for (let budgetLine of data?.['budget_line_list']) {
+                                    let count = 0;
+                                    for (let dimensionValue of dimensionValues) {
+                                        if (budgetLine?.['dimension_values_id'].includes(dimensionValue)) {
+                                            count++;
+                                        }
+                                        if (count === dimensionValues.length) {
+                                            plannedValue = parseFloat(budgetLine?.['value_planned'] ? budgetLine?.['value_planned'] : '0');
+                                            consumedValue = parseFloat(budgetLine?.['value_consumed'] ? budgetLine?.['value_consumed'] : '0');
+                                            availableValue = parseFloat(budgetLine?.['value_available'] ? budgetLine?.['value_available'] : '0');
+                                            if (plannedEle$.length > 0 && consumedEle$.length > 0 && availableEle$.length > 0) {
+                                                plannedEle$.attr('data-init-money', plannedValue);
+                                                consumedEle$.attr('data-init-money', consumedValue);
+                                                availableEle$.attr('data-init-money', availableValue);
+                                            }
+                                            if (budgetLineDataEle$.length > 0) {
+                                                budgetLineDataEle$.val(JSON.stringify(budgetLine));
+                                            }
+                                            $.fn.initMaskMoney2();
+                                            break;
+                                        }
+                                    }
                                 }
-                                let plannedEle$ = $(row).find('.table-row-value-planned');
-                                let consumedEle$ = $(row).find('.table-row-value-consumed');
-                                let availableEle$ = $(row).find('.table-row-value-available');
-                                if (plannedEle$.length > 0) {
-                                    plannedEle$.attr('data-init-money', plannedValue);
-                                }
-                                if (consumedEle$.length > 0) {
-                                    consumedEle$.attr('data-init-money', consumedValue);
-                                }
-                                if (availableEle$.length > 0) {
-                                    availableEle$.attr('data-init-money', availableValue);
-                                }
-                                $.fn.initMaskMoney2();
                                 WindowControl.hideLoading();
                             }
                         }
                     }
                 )
+            }
+        }
+    };
+
+    static dtbOnChangeValueUse(ele) {
+        let row = ele.closest('tr');
+        if (row) {
+            let valueAvailableEle$ = $(row).find('.table-row-value-available');
+            if (valueAvailableEle$.length > 0) {
+                if (valueAvailableEle$.attr('data-init-money')) {
+                    let availableValue = parseFloat(valueAvailableEle$.attr('data-init-money'));
+                    if ($(ele).valCurrency() > availableValue) {
+                        $.fn.notifyB({description: "The used value cannot be greater than the available value"}, 'failure');
+                        $(ele).attr('value', '0');
+                        $.fn.initMaskMoney2();
+                        return false;
+                    }
+                }
             }
         }
     };
@@ -437,6 +476,7 @@ class BudgetControl {
             let dimensionValue1Ele$ = $(row).find('.table-row-dimension-value-1');
             let dimension2Ele$ = $(row).find('.table-row-dimension-2');
             let dimensionValue2Ele$ = $(row).find('.table-row-dimension-value-2');
+            let budgetLineDataEle$ = $(row).find('.table-row-budget-line-data');
             let valueAdvanceEle$ = $(row).find('.table-row-value-advance');
             if (orderEle$.length > 0) {
                 rowData['order'] = parseInt(orderEle$.text());
@@ -463,6 +503,11 @@ class BudgetControl {
                 if (dimensionValue2Ele$.val()) {
                     rowData['dimension_value_second_id'] = dimensionValue2Ele$.val();
                     rowData['dimension_value_second_data'] = SelectDDControl.get_data_from_idx(dimensionValue2Ele$, dimensionValue2Ele$.val());
+                }
+            }
+            if (budgetLineDataEle$.length > 0) {
+                if (budgetLineDataEle$.val()) {
+                    rowData['budget_line_data'] = JSON.parse(budgetLineDataEle$.val());
                 }
             }
             if (valueAdvanceEle$.length > 0) {
@@ -497,6 +542,10 @@ $(function () {
 
         BudgetControl.$tbl.on('change', '.table-row-dimension-value-1, .table-row-dimension-value-2', function (e) {
             BudgetControl.dtbOnChangeDimensionValue(this);
+        });
+
+        BudgetControl.$tbl.on('change', '.table-row-value-use', function (e) {
+            BudgetControl.dtbOnChangeValueUse(this);
         });
 
     });

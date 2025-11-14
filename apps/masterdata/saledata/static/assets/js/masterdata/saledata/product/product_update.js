@@ -39,7 +39,7 @@ $(document).ready(async function () {
                                                 'title': `${$.fn.gettext('Avatar')} (May be take more time to load image)`,
                                                 'description': $.fn.transEle.attr('data-success')
                                             }, 'success');
-                                            setTimeout(() => window.location.reload(), 1000)
+                                            setTimeout(() => window.location.reload(), 5000)
                                         }
                                     },
                                     (errs) => $.fn.switcherResp(errs),

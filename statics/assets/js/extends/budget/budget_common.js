@@ -111,7 +111,7 @@ class BudgetControl {
                         return `<input 
                                     type="text" 
                                     class="form-control mask-money table-row-value-advance valid-num" 
-                                    value="${row?.['value_advance'] ? row?.['value_advance'] : '0'}"
+                                    value="${row?.['value_use'] ? row?.['value_use'] : '0'}"
                                     data-return-type="number"
                                 >`;
                     }

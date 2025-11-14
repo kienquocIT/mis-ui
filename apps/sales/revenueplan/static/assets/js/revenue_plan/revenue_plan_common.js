@@ -275,7 +275,8 @@ class RevenuePlanPageFunction {
             }
         })
     }
-    static LoadTableGroup($table, data_list=[], group_data={}) {
+    static LoadTableGroup($table, data_list=[]) {
+        console.log(data_list)
         $table.DataTable().clear().destroy()
         $table.DataTableDefault({
             styleDom: 'hide-foot',
@@ -295,7 +296,9 @@ class RevenuePlanPageFunction {
                 },
                 {
                     render: (data, type, row) => {
-                        return `<span class="employee-mapped" data-employee-id="${row?.['id']}">${row?.['full_name']}</span>`
+                        return `<script class="script-data-employee" type="application/json">${JSON.stringify(row).replace(/</g, '\\u003c')}</script>
+                                <span class="employee-mapped ${row?.['is_changed_group'] ? 'text-orange' : ''}" data-employee-id="${row?.['id']}">${row?.['full_name']}</span><br>
+                                ${row?.['is_changed_group'] ? `<button type="button" class="btn bflow-mirrow-btn-sm btn-move-plan" data-current-group-id="${row?.['current_group']?.['id'] || ''}">${$.fn.gettext('Move plan to')} ${row?.['current_group']?.['title']}</button>` : ''}`
                     }
                 },
                 {
@@ -805,6 +808,36 @@ class RevenuePlanPageFunction {
             }
         })
     }
+
+    static GetDataGroup(data_group_detail=[], group_list_data={}) {
+        let group_employee_valid = (data_group_detail?.['group']?.['group_employee'] || []).filter(function (item) {
+            return (item?.['role'] || []).some(function (role) {
+                return pageVariables.revenue_plan_config_list.includes(role?.['id']);
+            });
+        });
+        let employee_target_data = []
+        for (let j = 0; j < group_employee_valid.length; j++) {
+            let temp = group_employee_valid[j]
+            employee_target_data.push({
+                'emp_month_target': Array(12).fill(0),
+                'emp_quarter_target': Array(4).fill(0),
+                'emp_year_target': 0,
+                'emp_month_profit_target': Array(12).fill(0),
+                'emp_quarter_profit_target': Array(4).fill(0),
+                'emp_year_profit_target': 0,
+                'id': temp?.['id'],
+                'code': temp?.['code'],
+                'full_name': temp?.['full_name'],
+                'current_group': {
+                    'id': group_list_data?.['id'],
+                    'code': group_list_data?.['code'],
+                    'title': group_list_data?.['title'],
+                },
+                'is_changed_group': false,
+            })
+        }
+        return employee_target_data
+    }
 }
 
 /**
@@ -990,14 +1023,13 @@ class RevenuePlanHandler {
 
                 $x.fn.renderCodeBreadcrumb(data);
 
-                console.log(data)
                 RevenuePlanPageFunction.getMonthOrder($('#revenue-plan-company-table'), data?.['period_mapped']?.['space_month'])
                 RevenuePlanPageFunction.LoadTableCompany(data)
 
                 for (let i=0; i < group_list.length; i++) {
                     let is_set_up = data?.['group_mapped_list'].includes(group_list[i]?.['id']);
                     pageElements.$nav_group.append(`
-                        <li class="nav-item">
+                        <li class="nav-item nav-group-item" data-group-id="${group_list[i]?.['id']}">
                             <a class="nav-link" data-bs-toggle="pill" href="#tab_group_${group_list[i]?.['id']}">
                                 <span class="nav-link-text">${group_list[i]?.['title']} ${is_set_up ? `<i class="fa-solid fa-check"></i>` : ''}</span>
                             </a>
@@ -1035,7 +1067,7 @@ class RevenuePlanHandler {
                                 </tr>
                                 </thead>
                                 <tbody></tbody>
-                                <tfoot class="bg-light">
+                                <tfoot>
                                 <tr>
                                     <th style="min-width: 50px;"></th>
                                     <th style="min-width: 200px;">${$.fn.gettext('TOTAL')}</th>
@@ -1113,8 +1145,25 @@ class RevenuePlanHandler {
                         </div>
                     `)
                     let group_table = $(`#revenue-plan-group-${group_list[i]?.['id']}-table`)
-                    RevenuePlanPageFunction.getMonthOrder(group_table, data?.['period_mapped']?.['space_month'])
-                    RevenuePlanPageFunction.LoadTableGroup(group_table, group_data?.['employee_target_data'] || [], group_data)
+
+
+                    let url_loaded = pageElements.$modalGroupEle.attr('data-url-detail').replace(0, group_list[i]?.['id']);
+                    $.fn.callAjax(url_loaded, 'GET').then(
+                        (resp) => {
+                            let data_group_detail = $.fn.switcherResp(resp);
+                            if (data_group_detail) {
+                                if (pageVariables.revenue_plan_config_list.length > 0) {
+                                    RevenuePlanPageFunction.getMonthOrder(group_table, data?.['period_mapped']?.['space_month'])
+                                    if (is_set_up) {
+                                        RevenuePlanPageFunction.LoadTableGroup(group_table, group_data?.['employee_target_data'] || [], group_data)
+                                    }
+                                    else {
+                                        let employee_target_data = RevenuePlanPageFunction.GetDataGroup(data_group_detail, group_list[i])
+                                        RevenuePlanPageFunction.LoadTableGroup(group_table, employee_target_data)
+                                    }
+                                }
+                            }
+                        })
                 }
 
                 // pageVariables.DETAIL_DATA = data
@@ -1242,166 +1291,88 @@ class RevenuePlanEventHandler {
         $(document).on("change", '.month-target', function () {
             RevenuePlanPageFunction.calculatePlan($(this).closest('tr'))
 
-            let sum_month_target_company = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            let sum_quarter_target_company = [0, 0, 0, 0]
-            let sum_year_target_company = 0
-
-            pageElements.$revenuePlanTable.find('tbody tr .minimize-group').each(function (index, ele) {
-                let group_row = $(ele).closest('tr')
-                let sum_m = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                let sum_q = [0, 0, 0, 0]
-                let sum_year = 0
-
-                pageElements.$revenuePlanTable.find(`.${$(ele).attr('data-group-id')}`).each(function () {
-                    let emp_row = $(this).closest('tr')
-                    let row_month_target_value = [
-                        parseFloat(emp_row.find('.m1targetvalue').attr('value')),
-                        parseFloat(emp_row.find('.m2targetvalue').attr('value')),
-                        parseFloat(emp_row.find('.m3targetvalue').attr('value')),
-                        parseFloat(emp_row.find('.m4targetvalue').attr('value')),
-                        parseFloat(emp_row.find('.m5targetvalue').attr('value')),
-                        parseFloat(emp_row.find('.m6targetvalue').attr('value')),
-                        parseFloat(emp_row.find('.m7targetvalue').attr('value')),
-                        parseFloat(emp_row.find('.m8targetvalue').attr('value')),
-                        parseFloat(emp_row.find('.m9targetvalue').attr('value')),
-                        parseFloat(emp_row.find('.m10targetvalue').attr('value')),
-                        parseFloat(emp_row.find('.m11targetvalue').attr('value')),
-                        parseFloat(emp_row.find('.m12targetvalue').attr('value'))
-                    ]
-                    let row_quarter_target_value = [
-                        parseFloat(emp_row.find('.q1targetvalue').attr('value')),
-                        parseFloat(emp_row.find('.q2targetvalue').attr('value')),
-                        parseFloat(emp_row.find('.q3targetvalue').attr('value')),
-                        parseFloat(emp_row.find('.q4targetvalue').attr('value')),
-                    ]
-
-                    sum_m = sum_m.map(function (value, index) {
-                        if (!isNaN(row_month_target_value[index])) {
-                            return value + row_month_target_value[index];
-                        } else {
-                            return value
-                        }
-                    });
-
-                    sum_q = sum_q.map(function (value, index) {
-                        if (!isNaN(row_quarter_target_value[index])) {
-                            return value + row_quarter_target_value[index];
-                        } else {
-                            return value
-                        }
-                    });
-
-                    if (!isNaN(emp_row.find('.yeartargetvalue').attr('value'))) {
-                        sum_year += parseFloat(emp_row.find('.yeartargetvalue').attr('value'))
-                    }
-                })
-
-                for (let i = 0; i < 12; i++) {
-                    group_row.find(`.sum-group-m${i+1}`).attr('value', sum_m[i])
-                    sum_month_target_company[i] += parseFloat(sum_m[i])
+            let sum_group_order = Array(17).fill(0);
+            $(this).closest('tbody').find('tr').each(function (index, ele) {
+                for (let i=0; i < 17; i++) {
+                    sum_group_order[i] += parseFloat($(ele).find(`td:eq(${i+2}) input:eq(0)`).attr('value') || 0)
                 }
-
-                for (let i = 0; i < 4; i++) {
-                    group_row.find(`.sum-group-q${i+1}`).attr('value', sum_q[i])
-                    sum_quarter_target_company[i] += parseFloat(sum_q[i])
-                }
-
-                group_row.find('.sum-group-year').attr('value', sum_year)
-                sum_year_target_company += sum_year
             })
-
-            for (let i = 0; i < 12; i++) {
-                $(`.sum-company-m${i+1}`).attr('value', sum_month_target_company[i])
+            let $wrapper = $(this).closest('.dataTables_wrapper')
+            let $tfoot = $wrapper.find('.dataTables_scrollFoot tfoot tr')
+            for (let i=0; i < 17; i++) {
+                $tfoot.find(`th:eq(${i+2}) input:eq(0)`).attr('value', sum_group_order[i])
             }
-
-            for (let i = 0; i < 4; i++) {
-                $(`.sum-company-q${i+1}`).attr('value', sum_quarter_target_company[i])
-            }
-
-            $('.sum-company-year').attr('value', sum_year_target_company)
-
             $.fn.initMaskMoney2()
         })
         $(document).on("change", '.month-target-profit', function () {
             RevenuePlanPageFunction.calculatePlanProfit($(this).closest('tr'))
 
-            let sum_month_profit_target_company = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            let sum_quarter_profit_target_company = [0, 0, 0, 0]
-            let sum_year_profit_target_company = 0
-
-            pageElements.$revenuePlanTable.find('tbody tr .minimize-group').each(function (index, ele) {
-                let group_row = $(ele).closest('tr')
-                let sum_m = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                let sum_q = [0, 0, 0, 0]
-                let sum_year = 0
-
-                pageElements.$revenuePlanTable.find(`.${$(ele).attr('data-group-id')}`).each(function () {
-                    let emp_row = $(this).closest('tr')
-                    let row_month_target_value = [
-                        parseFloat(emp_row.find('.m1targetvalue-profit').attr('value')),
-                        parseFloat(emp_row.find('.m2targetvalue-profit').attr('value')),
-                        parseFloat(emp_row.find('.m3targetvalue-profit').attr('value')),
-                        parseFloat(emp_row.find('.m4targetvalue-profit').attr('value')),
-                        parseFloat(emp_row.find('.m5targetvalue-profit').attr('value')),
-                        parseFloat(emp_row.find('.m6targetvalue-profit').attr('value')),
-                        parseFloat(emp_row.find('.m7targetvalue-profit').attr('value')),
-                        parseFloat(emp_row.find('.m8targetvalue-profit').attr('value')),
-                        parseFloat(emp_row.find('.m9targetvalue-profit').attr('value')),
-                        parseFloat(emp_row.find('.m10targetvalue-profit').attr('value')),
-                        parseFloat(emp_row.find('.m11targetvalue-profit').attr('value')),
-                        parseFloat(emp_row.find('.m12targetvalue-profit').attr('value'))
-                    ]
-                    let row_quarter_target_value = [
-                        parseFloat(emp_row.find('.q1targetvalue-profit').attr('value')),
-                        parseFloat(emp_row.find('.q2targetvalue-profit').attr('value')),
-                        parseFloat(emp_row.find('.q3targetvalue-profit').attr('value')),
-                        parseFloat(emp_row.find('.q4targetvalue-profit').attr('value')),
-                    ]
-
-                    sum_m = sum_m.map(function (value, index) {
-                        if (!isNaN(row_month_target_value[index])) {
-                            return value + row_month_target_value[index];
-                        } else {
-                            return value
-                        }
-                    });
-
-                    sum_q = sum_q.map(function (value, index) {
-                        if (!isNaN(row_quarter_target_value[index])) {
-                            return value + row_quarter_target_value[index];
-                        } else {
-                            return value
-                        }
-                    });
-
-                    if (!isNaN(emp_row.find('.yeartargetvalue-profit').attr('value'))) {
-                        sum_year += parseFloat(emp_row.find('.yeartargetvalue-profit').attr('value'))
-                    }
-                })
-
-                for (let i = 0; i < 12; i++) {
-                    group_row.find(`.sum-group-m${i+1}-profit`).attr('value', sum_m[i])
-                    sum_month_profit_target_company[i] += parseFloat(sum_m[i])
+            let sum_group_profit_order = Array(17).fill(0);
+            $(this).closest('tbody').find('tr').each(function (index, ele) {
+                for (let i=0; i < 17; i++) {
+                    sum_group_profit_order[i] += parseFloat($(ele).find(`td:eq(${i+2}) input:eq(1)`).attr('value') || 0)
                 }
-
-                for (let i = 0; i < 4; i++) {
-                    group_row.find(`.sum-group-q${i+1}-profit`).attr('value', sum_q[i])
-                    sum_quarter_profit_target_company[i] += parseFloat(sum_q[i])
-                }
-
-                group_row.find('.sum-group-year-profit').attr('value', sum_year)
-                sum_year_profit_target_company += sum_year
             })
+            let $wrapper = $(this).closest('.dataTables_wrapper');
+            let $tfoot = $wrapper.find('.dataTables_scrollFoot tfoot tr');
+            for (let i=0; i < 17; i++) {
+                $tfoot.find(`th:eq(${i+2}) input:eq(1)`).attr('value', sum_group_profit_order[i])
+            }
+            $.fn.initMaskMoney2()
+        })
+        $(document).on("click", '.btn-move-plan', function () {
+            let this_row = $(this).closest('tr')
+            let this_row_data = JSON.parse(this_row.find('.script-data-employee').text() || '{}')
+            this_row_data['is_changed_group'] = false
 
-            for (let i = 0; i < 12; i++) {
-                $(`.sum-company-m${i+1}-profit`).attr('value', sum_month_profit_target_company[i])
+            let $this_table = $(this).closest('table')
+            let move_to_group_id = $(this).attr('data-current-group-id')
+            let $move_to_table = $(`#revenue-plan-group-${move_to_group_id}-table`)
+            UsualLoadPageFunction.DeleteTableRow(
+                $move_to_table,
+                parseInt($move_to_table.find(`.employee-mapped[data-employee-id=${this_row_data?.['id']}]`).closest('tr').find('td:first-child').text())
+            )
+
+            UsualLoadPageFunction.AddTableRow($move_to_table, this_row_data)
+            let row_added = $move_to_table.find('tbody tr:last-child')
+            row_added.addClass('bg-warning-light-5')
+
+            UsualLoadPageFunction.DeleteTableRow(
+                $this_table,
+                parseInt($(this).closest('tr').find('td:first-child').text())
+            )
+
+            // recalculate this table
+            let sum_group_order = Array(17).fill(0);
+            let sum_group_profit_order = Array(17).fill(0);
+            $this_table.find('tbody tr').each(function (index, ele) {
+                for (let i=0; i < 17; i++) {
+                    sum_group_order[i] += parseFloat($(ele).find(`td:eq(${i+2}) input:eq(0)`).attr('value') || 0)
+                    sum_group_profit_order[i] += parseFloat($(ele).find(`td:eq(${i+2}) input:eq(1)`).attr('value') || 0)
+                }
+            })
+            let $wrapper = $this_table.closest('.dataTables_wrapper')
+            let $tfoot = $wrapper.find('.dataTables_scrollFoot tfoot tr')
+            for (let i=0; i < 17; i++) {
+                $tfoot.find(`th:eq(${i+2}) input:eq(0)`).attr('value', sum_group_order[i])
+                $tfoot.find(`th:eq(${i+2}) input:eq(1)`).attr('value', sum_group_profit_order[i])
             }
 
-            for (let i = 0; i < 4; i++) {
-                $(`.sum-company-q${i+1}-profit`).attr('value', sum_quarter_profit_target_company[i])
+            // recalculate move to table
+            let sum_group_order_move_to = Array(17).fill(0);
+            let sum_group_profit_order_move_to = Array(17).fill(0);
+            $move_to_table.find('tbody tr').each(function (index, ele) {
+                for (let i=0; i < 17; i++) {
+                    sum_group_order_move_to[i] += parseFloat($(ele).find(`td:eq(${i+2}) input:eq(0)`).attr('value') || 0)
+                    sum_group_profit_order_move_to[i] += parseFloat($(ele).find(`td:eq(${i+2}) input:eq(1)`).attr('value') || 0)
+                }
+            })
+            let $wrapper_move_to = $move_to_table.closest('.dataTables_wrapper')
+            let $tfoot_move_to = $wrapper_move_to.find('.dataTables_scrollFoot tfoot tr')
+            for (let i=0; i < 17; i++) {
+                $tfoot_move_to.find(`th:eq(${i+2}) input:eq(0)`).attr('value', sum_group_order_move_to[i])
+                $tfoot_move_to.find(`th:eq(${i+2}) input:eq(1)`).attr('value', sum_group_profit_order_move_to[i])
             }
-
-            $('.sum-company-year-profit').attr('value', sum_year_profit_target_company)
 
             $.fn.initMaskMoney2()
         })

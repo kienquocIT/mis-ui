@@ -15,7 +15,7 @@
                         <div class="form-group">
                             <label for="modal-group" class="form-label">{% trans 'Select group' %}</label>
                             <select class="form-select select2" id="modal-group"
-                                    data-method="GET" data-url="{% url 'GroupListAPI' %}"
+                                    data-method="GET" data-url="{% url 'GroupListAPI' %}" data-url-detail="{% url 'GroupDetailAPI' '0' %}"
                             ></select>
                         </div>
                     </div>

@@ -164,7 +164,7 @@
 
 .bflow-mirrow-btn-sm {
     padding: 3px 10px;
-    font-size: 0.65rem;
+    font-size: 0.8rem;
 }
 
 /* Base style chung cho Badge */
@@ -193,7 +193,7 @@
 /* Kích thước Badge */
 .bflow-mirrow-badge {
     padding: 0px 10px;
-    font-size: 0.95rem;
+    font-size: inherit;
 }
 
 .bflow-mirrow-badge-lg {
@@ -204,7 +204,7 @@
 
 .bflow-mirrow-badge-sm {
     padding: 0px 8px;
-    font-size: 0.6rem;
+    font-size: 0.8rem;
 }
 
 .bflow-mirrow-card-pill-gray {

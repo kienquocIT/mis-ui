@@ -41,6 +41,10 @@
             data-trans-net-profit="{% trans 'Net income' %}"
             data-trans-gross-profit="{% trans 'Gross profit' %}"
     ></script>
+    <script id="url-script"
+            data-url-group="{% url 'GroupListAPI' %}"
+            data-url-group-detail="{% url 'GroupDetailAPI' '0' %}"
+    ></script>
     <form id="form-create-revenue-plan"
           data-method="POST"
           data-url-redirect="{% url "RevenuePlanList" %}"
@@ -50,9 +54,6 @@
         {% csrf_token %}
         {% include 'revenue_plan/common.html' %}
     </form>
-{% endblock %}
-{% block modalData %}
-    {% include 'revenue_plan/modal.html' %}
 {% endblock %}
 {% block jsFooterUnCompress %}
 {% endblock %}

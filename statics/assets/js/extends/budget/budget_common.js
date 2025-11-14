@@ -302,7 +302,18 @@ class BudgetControl {
                 });
                 if (check === false) {
                     $.fn.notifyB({description: "Dimension values must be different with other row"}, 'failure');
-                    FormElementControl.loadInitS2($(ele), [], {}, null, true);
+                    if ($(ele).hasClass('table-row-dimension-value-1')) {
+                        let dimensionEle$ = $(row).find('.table-row-dimension-1');
+                        if (dimensionEle$.length > 0) {
+                            FormElementControl.loadInitS2($(ele), [], {'dimension_id': dimensionEle$.val()}, null, true);
+                        }
+                    }
+                    if ($(ele).hasClass('table-row-dimension-value-2')) {
+                        let dimensionEle$ = $(row).find('.table-row-dimension-2');
+                        if (dimensionEle$.length > 0) {
+                            FormElementControl.loadInitS2($(ele), [], {'dimension_id': dimensionEle$.val()}, null, true);
+                        }
+                    }
                     return false;
                 }
                 WindowControl.showLoading();

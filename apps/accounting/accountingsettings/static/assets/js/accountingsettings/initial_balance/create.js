@@ -1,8 +1,11 @@
 $(document).ready(function () {
     UsualLoadPageFunction.LoadPeriod({
         element: pageElements.$accountingPeriodEle,
-        data_url: pageElements.$accountingPeriodEle.attr('data-url')
+        data: {'id': '123123123', 'title': 'Kì kế toán 2025', 'fiscal_year': 2025, 'start_date': '2025-01-01', 'end_date': '2025-12-31'},
+        data_url: pageElements.$accountingPeriodEle.attr('data-url'),
+        apply_default_on_change: true
     });
+    pageElements.$accountingPeriodEle.trigger('change')
     InitialBalancePageFunction.loadDates([
         tabAccountReceivableElements.$invoiceDate,
         tabAccountReceivableElements.$expectedPaymentDate,

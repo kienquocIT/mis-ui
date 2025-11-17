@@ -2305,16 +2305,7 @@ const ServiceOrder = (function($) {
     }
 
     function handleChangeServiceQuantity() {
-        pageElement.serviceDetail.$table.on('change', '.service-quantity', function (e) {
-            const $input = $(this)
-            const $row = $input.closest('tr')
-            const table = pageElement.serviceDetail.$table.DataTable()
-            const rowData = table.row($row).data()
-
-            const dataWorkOrder = pageElement.workOrder.$table.DataTable().data().toArray()
-            const dataPayment = pageElement.payment.$table.DataTable().data()
-
-            // allow change without warning
+        function updateServiceQuantityAndResetData($input, $row, rowData) {
             const newQuantity = parseFloat($input.val()) || 0
             const serviceId = rowData.id
 
@@ -2324,14 +2315,14 @@ const ServiceOrder = (function($) {
             // Calculate new total (quantity * price)
             const attrTotalCost = rowData?.['attributes_total_cost'] || 0
             const duration = rowData.duration || 1
-            const price = parseFloat(rowData.price) || 0;
+            const price = parseFloat(rowData.price) || 0
             const taxRate = parseFloat(rowData.tax_data?.rate || 0) / 100
             const subtotal = newQuantity * price * duration + attrTotalCost
             const taxAmount = subtotal * taxRate
             rowData.sub_total_value = subtotal
             rowData.total_value = subtotal + taxAmount
 
-            //update total
+            // Update total display
             const $totalMoney = $row.find('.service-detail-total')
             $totalMoney.attr('data-init-money', subtotal + taxAmount)
 
@@ -2350,11 +2341,7 @@ const ServiceOrder = (function($) {
                                 ...contribution,
                                 quantity: newQuantity,
                                 balance_quantity: newQuantity,
-                                contribution_percent: 0,
                                 delivered_quantity: 0,
-                                is_selected: false,
-                                total_contribution_percent: 0,
-                                unit_cost: 0,
                                 total_cost: 0
                             }
                         }
@@ -2381,18 +2368,16 @@ const ServiceOrder = (function($) {
                                 payment_percent: 0,
                                 payment_value: 0,
                                 is_selected: false,
-
                             }
 
-                            // For each advance and invoiced payments, also reset additional fields
+                            // For advance and invoiced payments, also reset additional fields
                             if (detail.tax_data !== undefined) {
                                 resetDetail.tax_value = 0
                                 resetDetail.issued_value = 0
                                 resetDetail.balance_value = subtotal
                                 resetDetail.reconcile_value = 0
                                 resetDetail.receivable_value = 0
-                            }
-                            else {
+                            } else {
                                 resetDetail.total_reconciled_value = 0
                             }
 
@@ -2408,155 +2393,94 @@ const ServiceOrder = (function($) {
                 }
                 updatePaymentRowAfterReset(paymentId)
             })
+
             $.fn.initMaskMoney2()
             loadServiceDetailSummaryValue()
+        }
 
-            // if(dataWorkOrder.length > 0 || dataPayment.length > 0){
-            //     const confirmTitle = $.fn.gettext('Change service quantity')
-            //     const confirmText = $.fn.gettext('This will reset the contribution and payment data')
-            //     Swal.fire({
-            //         html: `
-            //             <div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>
-            //             <h5 class="text-danger">${confirmTitle}</h5>
-            //             <p>${confirmText}</p>`,
-            //         customClass: {
-            //             confirmButton: 'btn btn-outline-secondary text-danger',
-            //             cancelButton: 'btn btn-outline-secondary text-gray',
-            //             container: 'swal2-has-bg',
-            //             actions: 'w-100'
-            //         },
-            //         showCancelButton: true,
-            //         buttonsStyling: false,
-            //         confirmButtonText: $.fn.gettext('Yes'),
-            //         cancelButtonText: $.fn.gettext('Cancel'),
-            //         reverseButtons: true
-            //     }).then((result) => {
-            //         if (result.value) {
-            //             if (rowData) {
-            //                 const newQuantity = parseFloat($input.val()) || 0
-            //                 const serviceId = rowData.id
-            //
-            //                 // Update row data
-            //                 rowData.quantity = newQuantity
-            //
-            //                 // Calculate new total (quantity * price)
-            //                 const attrTotalCost = rowData?.['attributes_total_cost'] || 0
-            //                 const duration = rowData.duration || 1
-            //                 const price = parseFloat(rowData.price) || 0;
-            //                 const taxRate = parseFloat(rowData.tax_data?.rate || 0) / 100
-            //                 const subtotal = newQuantity * price * duration + attrTotalCost
-            //                 const taxAmount = subtotal * taxRate
-            //                 rowData.sub_total_value = subtotal
-            //                 rowData.total_value = subtotal + taxAmount
-            //
-            //                 //update total
-            //                 const $totalMoney = $row.find('.service-detail-total')
-            //                 $totalMoney.attr('data-init-money', subtotal + taxAmount)
-            //
-            //                 // 1. Reset serviceDetailTotalContributionData
-            //                 if (pageVariable.serviceDetailTotalContributionData[serviceId]) {
-            //                     delete pageVariable.serviceDetailTotalContributionData[serviceId]
-            //                 }
-            //
-            //                 // 2. Reset product contribution data for this service
-            //                 Object.keys(pageVariable.productContributionData).forEach(workOrderId => {
-            //                     const contributions = pageVariable.productContributionData[workOrderId]
-            //                     if (contributions) {
-            //                         pageVariable.productContributionData[workOrderId] = contributions.map(contribution => {
-            //                             if (contribution.service_id === serviceId) {
-            //                                 return {
-            //                                     ...contribution,
-            //                                     quantity: newQuantity,
-            //                                     balance_quantity: newQuantity,
-            //                                     contribution_percent: 0,
-            //                                     delivered_quantity: 0,
-            //                                     is_selected: false,
-            //                                     total_contribution_percent: 0,
-            //                                     unit_cost: 0,
-            //                                     total_cost: 0
-            //                                 }
-            //                             }
-            //                             return contribution
-            //                         })
-            //                     }
-            //                 })
-            //
-            //                 // 3. Reset serviceDetailTotalPaymentData
-            //                 if (pageVariable.serviceDetailTotalPaymentData[serviceId]) {
-            //                     delete pageVariable.serviceDetailTotalPaymentData[serviceId]
-            //                 }
-            //
-            //                 // 4. Reset payment detail data for this service
-            //                 Object.keys(pageVariable.paymentDetailData).forEach(paymentId => {
-            //                     const paymentDetails = pageVariable.paymentDetailData[paymentId]
-            //                     if (paymentDetails) {
-            //                         pageVariable.paymentDetailData[paymentId] = paymentDetails.map(detail => {
-            //                             if (detail.service_id === serviceId) {
-            //                                 // Reset payment detail for this service
-            //                                 const resetDetail = {
-            //                                     ...detail,
-            //                                     sub_total_value: subtotal,
-            //                                     payment_percent: 0,
-            //                                     payment_value: 0,
-            //                                     is_selected: false,
-            //
-            //                                 }
-            //
-            //                                 // For each advance and invoiced payments, also reset additional fields
-            //                                 if (detail.tax_data !== undefined) {
-            //                                     resetDetail.tax_value = 0
-            //                                     resetDetail.issued_value = 0
-            //                                     resetDetail.balance_value = subtotal
-            //                                     resetDetail.reconcile_value = 0
-            //                                     resetDetail.receivable_value = 0
-            //                                 }
-            //                                 else {
-            //                                     resetDetail.total_reconciled_value = 0
-            //                                 }
-            //
-            //                                 // Remove reconcile data for this payment detail
-            //                                 if (pageVariable.reconcileData[detail.id]) {
-            //                                     delete pageVariable.reconcileData[detail.id]
-            //                                 }
-            //
-            //                                 return resetDetail
-            //                             }
-            //                             return detail
-            //                         })
-            //                     }
-            //                     updatePaymentRowAfterReset(paymentId)
-            //                 })
-            //                 $.fn.initMaskMoney2()
-            //                 loadServiceDetailSummaryValue()
-            //             }
-            //         }
-            //         else {
-            //             $input.val(rowData.quantity)
-            //         }
-            //     });
-            // }
-            // else {
-            //     const newQuantity = parseFloat($input.val()) || 0
-            //
-            //     // Update row data
-            //     rowData.quantity = newQuantity
-            //
-            //     // Calculate new total (quantity * price)
-            //     const attrTotalCost = rowData?.['attributes_total_cost'] || 0
-            //     const duration = rowData.duration || 1
-            //     const price = parseFloat(rowData.price) || 0;
-            //     const taxRate = parseFloat(rowData.tax_data?.rate || 0) / 100
-            //     const subtotal = newQuantity * price * duration + attrTotalCost
-            //     const taxAmount = subtotal * taxRate
-            //     rowData.sub_total_value = subtotal
-            //     rowData.total_value = subtotal + taxAmount
-            //
-            //     //update total
-            //     const $totalMoney = $row.find('.service-detail-total')
-            //     $totalMoney.attr('data-init-money', subtotal + taxAmount)
-            //     $.fn.initMaskMoney2()
-            //     loadServiceDetailSummaryValue()
-            // }
+        pageElement.serviceDetail.$table.on('change', '.service-quantity', function (e) {
+            const $input = $(this)
+            const $row = $input.closest('tr')
+            const table = pageElement.serviceDetail.$table.DataTable()
+            const rowData = table.row($row).data()
+            const serviceId = rowData.id
+
+            // Check if there are any contributions linked to this service detail
+            let hasLinkedContributions = false
+
+            // Check through all work order contributions
+            Object.keys(pageVariable.productContributionData).forEach(workOrderId => {
+                const contributions = pageVariable.productContributionData[workOrderId]
+                if (contributions && Array.isArray(contributions)) {
+                    contributions.forEach(contribution => {
+                        if (contribution.service_id === serviceId) {
+                            // Check if this contribution has any meaningful data
+                            if (contribution.is_selected ||
+                                (contribution.contribution_percent && contribution.contribution_percent > 0) ||
+                                (contribution.delivered_quantity && contribution.delivered_quantity > 0)) {
+                                hasLinkedContributions = true
+                            }
+                        }
+                    })
+                }
+            })
+
+            // Check if there are any payment details linked to this service
+            let hasLinkedPayments = false
+            Object.keys(pageVariable.paymentDetailData).forEach(paymentId => {
+                const paymentDetails = pageVariable.paymentDetailData[paymentId]
+                if (paymentDetails && Array.isArray(paymentDetails)) {
+                    paymentDetails.forEach(detail => {
+                        if (detail.service_id === serviceId) {
+                            if (detail.is_selected ||
+                                (detail.payment_percent && detail.payment_percent > 0) ||
+                                (detail.payment_value && detail.payment_value > 0)) {
+                                hasLinkedPayments = true
+                            }
+                        }
+                    })
+                }
+            })
+
+            // If there are linked contributions or payments, show warning
+            if (hasLinkedContributions || hasLinkedPayments) {
+                let contribConfirmText = hasLinkedContributions ? 'contribution deliver quantity' : ''
+                let paymentConfirmText = hasLinkedPayments ? 'payment data' : ''
+                let linkText = (hasLinkedContributions && hasLinkedPayments) ? 'and' : ''
+
+                const oldQuantity = rowData.quantity
+                const confirmTitle = $.fn.gettext('Change service quantity')
+                let confirmText = $.fn.gettext(`This action will reset ${contribConfirmText} ${linkText} ${paymentConfirmText}`)
+
+                Swal.fire({
+                    html: `
+                        <div class="mb-3"><i class="ri-alert-line fs-5 text-warning"></i></div>
+                        <h5 class="text-warning">${confirmTitle}</h5>
+                        <div>${confirmText}</div>`,
+                    customClass: {
+                        confirmButton: 'btn btn-outline-secondary text-danger',
+                        cancelButton: 'btn btn-outline-secondary text-gray',
+                        container: 'swal2-has-bg',
+                        actions: 'w-100'
+                    },
+                    showCancelButton: true,
+                    buttonsStyling: false,
+                    confirmButtonText: $.fn.gettext('Confirm'),
+                    cancelButtonText: $.fn.gettext('Cancel'),
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        // User confirmed - proceed with the update
+                        updateServiceQuantityAndResetData($input, $row, rowData)
+                    } else {
+                        // User cancelled - restore the old quantity
+                        $input.val(oldQuantity)
+                    }
+                })
+            } else {
+                // No linked contributions or payments - proceed without warning
+                updateServiceQuantityAndResetData($input, $row, rowData)
+            }
         })
     }
 
@@ -4985,13 +4909,86 @@ const ServiceOrder = (function($) {
 
     function handleDeleteServiceDetailRow() {
         pageElement.serviceDetail.$table.on('click', '.service-del-row', function(e) {
-            e.preventDefault();
+            e.preventDefault()
 
-            const $btn = $(this);
-            const $row = $btn.closest('tr');
-            const table = pageElement.serviceDetail.$table.DataTable();
-            const rowData = table.row($row).data();
-            const serviceDetailId = rowData.id;
+            const $btn = $(this)
+            const $row = $btn.closest('tr')
+            const table = pageElement.serviceDetail.$table.DataTable()
+            const rowData = table.row($row).data()
+            const serviceDetailId = rowData.id
+
+            // Check for linked contributions
+            let hasLinkedContributions = false
+            Object.keys(pageVariable.productContributionData).forEach(workOrderId => {
+                const contributions = pageVariable.productContributionData[workOrderId];
+                if (contributions && Array.isArray(contributions)) {
+                    contributions.forEach(contribution => {
+                        if (contribution.service_id === serviceDetailId) {
+                            // Check if this contribution has any meaningful data
+                            if (contribution.is_selected ||
+                                (contribution.contribution_percent && contribution.contribution_percent > 0) ||
+                                (contribution.delivered_quantity && contribution.delivered_quantity > 0)) {
+                                hasLinkedContributions = true
+                            }
+                        }
+                    })
+                }
+            })
+
+            // Check for linked payments
+            let hasLinkedPayments = false
+            Object.keys(pageVariable.paymentDetailData).forEach(paymentId => {
+                const paymentDetails = pageVariable.paymentDetailData[paymentId];
+                if (paymentDetails && Array.isArray(paymentDetails)) {
+                    paymentDetails.forEach(detail => {
+                        if (detail.service_id === serviceDetailId) {
+                            if (detail.is_selected ||
+                                (detail.payment_percent && detail.payment_percent > 0) ||
+                                (detail.payment_value && detail.payment_value > 0)) {
+                                hasLinkedPayments = true
+                            }
+                        }
+                    });
+                }
+            });
+
+            if (hasLinkedContributions || hasLinkedPayments) {
+                const errorTitle = $.fn.gettext('Cannot delete service detail');
+                let errorMessage = $.fn.gettext('This service detail cannot be deleted because it has:');
+
+                // Build detailed error message
+                let errorDetails = '<ul class="text-start mt-3">';
+
+                if (hasLinkedContributions) {
+                    errorDetails += '<strong>' + $.fn.gettext('Work Order Contributions') + '</strong>'
+                }
+
+                if (hasLinkedPayments) {
+                    errorDetails += '<strong>' + $.fn.gettext('Payment Allocations:') + '</strong>'
+                }
+
+                errorDetails += '</ul>';
+                errorDetails += '<p class="mt-3 text-muted">' +
+                               $.fn.gettext('Please remove all contributions and payment allocations before deleting this service detail.') +
+                               '</p>';
+
+                Swal.fire({
+                    html: `
+                        <div class="mb-3"><i class="ri-error-warning-line fs-5 text-danger"></i></div>
+                        <h5 class="text-danger">${errorTitle}</h5>
+                        <p>${errorMessage}</p>
+                        ${errorDetails}`,
+                    customClass: {
+                        confirmButton: 'btn btn-outline-secondary text-danger',
+                        container: 'swal2-has-bg'
+                    },
+                    showCancelButton: false,
+                    buttonsStyling: false,
+                    confirmButtonText: $.fn.gettext('Confirm'),
+                });
+
+                return // Stop here, don't allow deletion
+            }
 
             const confirmTitle = $.fn.gettext('Delete service detail?')
             Swal.fire({

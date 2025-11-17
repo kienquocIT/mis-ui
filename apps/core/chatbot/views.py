@@ -8,7 +8,7 @@ from apps.shared import mask_view, ServerAPI, ApiURL
 class ChatbotView(View):
     @mask_view(
         login_require=True,
-        template='chatbot/chat_view.html',
+        template='bflow-ai/chat_view.html',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

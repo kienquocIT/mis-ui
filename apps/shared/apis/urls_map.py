@@ -550,7 +550,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PROCESS_RUNTIME_LOG = StringUrl('process/runtime/detail/{pk}/log')
 
     # Chatbot
-    CHATBOT_CHAT = StringUrl('chatbot/chat')
+    CHATBOT_CHAT = StringUrl('bflow-ai/chat')
 
     # Expense item
 

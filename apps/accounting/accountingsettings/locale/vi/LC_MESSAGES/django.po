@@ -16,23 +16,3 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-
-#
-msgid "Journal lines"
-msgstr "Dòng bút toán"
-
-#
-msgid "Balanced"
-msgstr "Đã cân bằng"
-
-#
-msgid "Imbalance"
-msgstr "Chưa cân bằng"
-
-#
-msgid "Debit"
-msgstr "Nợ"
-
-#
-msgid "Credit"
-msgstr "Có"

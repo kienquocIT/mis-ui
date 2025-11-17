@@ -56,121 +56,44 @@
     </div>
 </div>
 
-<div class="row main mt-5">
-    <div class="col-12 col-md-6 col-lg-6">
-        <button type="button" id="add-group-plan" class="btn btn-custom btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add-group-plan-modal">
-            <span>
-                <span class="icon"><span class="feather-icon"><i class="fas fa-plus"></i></span></span>
-                <span>{% trans 'Add group plan' %}</span>
-            </span>
-        </button>
-    </div>
-    <div class="col-12 col-md-6 col-lg-6 mt-1 mt-md-0 mt-lg-0 text-right" id="notify-change-group" hidden>
-        <a href="#" class="fw-bold link-danger underline_hover" id="btn_update_group">
-            {% trans "had been changed. Update here!" %}
-        </a>
-    </div>
-</div>
-
-<div class="row main mt-5 mb-5">
+<div class="row mt-5 mb-5">
     <div class="col-12">
-        <table class="table table-bordered nowrap w-100" id="revenue-plan-table" data-group-url="{% url 'GroupDetailAPI' '0' %}">
-            <thead class="bg-primary">
-                <tr>
-                    <th style="min-width: 200px;" class="bg-primary">{% trans 'Employee' %}</th>
-                    <th style="min-width: 150px;" id="m1th"></th>
-                    <th style="min-width: 150px;" id="m2th"></th>
-                    <th style="min-width: 150px;" id="m3th"></th>
-                    <th style="min-width: 150px;">{% trans 'QUARTER' %} 1</th>
-                    <th style="min-width: 150px;" id="m4th"></th>
-                    <th style="min-width: 150px;" id="m5th"></th>
-                    <th style="min-width: 150px;" id="m6th"></th>
-                    <th style="min-width: 150px;">{% trans 'QUARTER' %} 2</th>
-                    <th style="min-width: 150px;" id="m7th"></th>
-                    <th style="min-width: 150px;" id="m8th"></th>
-                    <th style="min-width: 150px;" id="m9th"></th>
-                    <th style="min-width: 150px;">{% trans 'QUARTER' %} 3</th>
-                    <th style="min-width: 150px;" id="m10th"></th>
-                    <th style="min-width: 150px;" id="m11th"></th>
-                    <th style="min-width: 150px;" id="m12th"></th>
-                    <th style="min-width: 150px;">{% trans 'QUARTER' %} 4</th>
-                    <th style="min-width: 200px;">{% trans 'YEAR' %}</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-            <tfoot>
-                <tr>
-                    <td style="min-width: 200px;" class="fw-bold bg-primary-light-5">{% trans 'TOTAL' %}</td>
-                    <td style="min-width: 150px;" class="sum-m1">
-                        <input readonly disabled class="mb-1 sum-company-m1 mask-money form-control form-control-line fw-bold" value="0">
-                        <input readonly disabled class="sum-company-m1-profit mask-money form-control form-control-line fw-bold" value="0">
-                    </td>
-                    <td style="min-width: 150px;" class="sum-m2">
-                        <input readonly disabled class="mb-1 sum-company-m2 mask-money form-control form-control-line fw-bold" value="0">
-                        <input readonly disabled class="sum-company-m2-profit mask-money form-control form-control-line fw-bold" value="0">
-                    </td>
-                    <td style="min-width: 150px;" class="sum-m3">
-                        <input readonly disabled class="mb-1 sum-company-m3 mask-money form-control form-control-line fw-bold" value="0">
-                        <input readonly disabled class="sum-company-m3-profit mask-money form-control form-control-line fw-bold" value="0">
-                    </td>
-                    <td style="min-width: 15px;" class="sum-q1">
-                        <input readonly disabled class="mb-1 sum-company-q1 mask-money form-control form-control-line fw-bold" value="0">
-                        <input readonly disabled class="sum-company-q1-profit mask-money form-control form-control-line fw-bold" value="0">
-                    </td>
-                    <td style="min-width: 150px;" class="sum-m4">
-                        <input readonly disabled class="mb-1 sum-company-m4 mask-money form-control form-control-line fw-bold" value="0">
-                        <input readonly disabled class="sum-company-m4-profit mask-money form-control form-control-line fw-bold" value="0">
-                    </td>
-                    <td style="min-width: 150px;" class="sum-m5">
-                        <input readonly disabled class="mb-1 sum-company-m5 mask-money form-control form-control-line fw-bold" value="0">
-                        <input readonly disabled class="sum-company-m5-profit mask-money form-control form-control-line fw-bold" value="0">
-                    </td>
-                    <td style="min-width: 150px;" class="sum-m6">
-                        <input readonly disabled class="mb-1 sum-company-m6 mask-money form-control form-control-line fw-bold" value="0">
-                        <input readonly disabled class="sum-company-m6-profit mask-money form-control form-control-line fw-bold" value="0">
-                    </td>
-                    <td style="min-width: 150px;" class="sum-q2">
-                        <input readonly disabled class="mb-1 sum-company-q2 mask-money form-control form-control-line fw-bold" value="0">
-                        <input readonly disabled class="sum-company-q2-profit mask-money form-control form-control-line fw-bold" value="0">
-                    </td>
-                    <td style="min-width: 150px;" class="sum-m7">
-                        <input readonly disabled class="mb-1 sum-company-m7 mask-money form-control form-control-line fw-bold" value="0">
-                        <input readonly disabled class="sum-company-m7-profit mask-money form-control form-control-line fw-bold" value="0">
-                    </td>
-                    <td style="min-width: 150px;" class="sum-m8">
-                        <input readonly disabled class="mb-1 sum-company-m8 mask-money form-control form-control-line fw-bold" value="0">
-                        <input readonly disabled class="sum-company-m8-profit mask-money form-control form-control-line fw-bold" value="0">
-                    </td>
-                    <td style="min-width: 150px;" class="sum-m9">
-                        <input readonly disabled class="mb-1 sum-company-m9 mask-money form-control form-control-line fw-bold" value="0">
-                        <input readonly disabled class="sum-company-m9-profit mask-money form-control form-control-line fw-bold" value="0">
-                    </td>
-                    <td style="min-width: 150px;" class="sum-q3">
-                        <input readonly disabled class="mb-1 sum-company-q3 mask-money form-control form-control-line fw-bold" value="0">
-                        <input readonly disabled class="sum-company-q3-profit mask-money form-control form-control-line fw-bold" value="0">
-                    </td>
-                    <td style="min-width: 150px;" class="sum-m10">
-                        <input readonly disabled class="mb-1 sum-company-m10 mask-money form-control form-control-line fw-bold" value="0">
-                        <input readonly disabled class="sum-company-m10-profit mask-money form-control form-control-line fw-bold" value="0">
-                    </td>
-                    <td style="min-width: 150px;" class="sum-m11">
-                        <input readonly disabled class="mb-1 sum-company-m11 mask-money form-control form-control-line fw-bold" value="0">
-                        <input readonly disabled class="sum-company-m11-profit mask-money form-control form-control-line fw-bold" value="0">
-                    </td>
-                    <td style="min-width: 150px;" class="sum-m12">
-                        <input readonly disabled class="mb-1 sum-company-m12 mask-money form-control form-control-line fw-bold" value="0">
-                        <input readonly disabled class="sum-company-m12-profit mask-money form-control form-control-line fw-bold" value="0">
-                    </td>
-                    <td style="min-width: 150px;" class="sum-q4">
-                        <input readonly disabled class="mb-1 sum-company-q4 mask-money form-control form-control-line fw-bold" value="0">
-                        <input readonly disabled class="sum-company-q4-profit mask-money form-control form-control-line fw-bold" value="0">
-                    </td>
-                    <td style="min-width: 200px;" class="sum-year">
-                        <input readonly disabled class="mb-1 sum-company-year mask-money form-control form-control-line fw-bold" value="0">
-                        <input readonly disabled class="sum-company-year-profit mask-money form-control form-control-line fw-bold" value="0">
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
+        <ul class="nav nav-pills-bfl" id="nav-group">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="pill" href="#tab_company">
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-building"></i></span></span>
+                    <span class="nav-link-text fw-bold">{% trans 'Company' %}</span>
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content" id="nav-content">
+            <div class="tab-pane fade show active" id="tab_company">
+                <table class="table nowrap w-100" id="revenue-plan-company-table">
+                    <thead class="bg-light">
+                    <tr>
+                        <th style="min-width: 30px;"></th>
+                        <th style="min-width: 200px;" class="m1th"></th>
+                        <th style="min-width: 200px;" class="m2th"></th>
+                        <th style="min-width: 200px;" class="m3th"></th>
+                        <th style="min-width: 200px;">{% trans 'QUARTER' %} 1</th>
+                        <th style="min-width: 200px;" class="m4th"></th>
+                        <th style="min-width: 200px;" class="m5th"></th>
+                        <th style="min-width: 200px;" class="m6th"></th>
+                        <th style="min-width: 200px;">{% trans 'QUARTER' %} 2</th>
+                        <th style="min-width: 200px;" class="m7th"></th>
+                        <th style="min-width: 200px;" class="m8th"></th>
+                        <th style="min-width: 200px;" class="m9th"></th>
+                        <th style="min-width: 200px;">{% trans 'QUARTER' %} 3</th>
+                        <th style="min-width: 200px;" class="m10th"></th>
+                        <th style="min-width: 200px;" class="m11th"></th>
+                        <th style="min-width: 200px;" class="m12th"></th>
+                        <th style="min-width: 200px;">{% trans 'QUARTER' %} 4</th>
+                        <th style="min-width: 200px;">{% trans 'YEAR' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>

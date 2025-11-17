@@ -8,7 +8,7 @@ from apps.accounting.accountingsettings.views import (
     DimensionDefinitionDetailAPI, DimensionValueList, DimensionDefinitionWithValueAPI, DimensionValueListAPI,
     DimensionValueDetailAPI, DimensionSyncConfigApplicationListAPI, DimensionSyncConfigList, DimensionSyncConfigListAPI,
     DimensionSyncConfigDetailAPI, DimensionListForAccountingAccountAPI, DimensionAccountList, DimensionAccountListAPI,
-    DimensionAccountDetailAPI
+    DimensionAccountDetailAPI, DimensionSplitTemplateList, DimensionSplitTemplateListAPI
 )
 
 urlpatterns = [
@@ -33,13 +33,13 @@ urlpatterns = [
     path('initial-balance/list/api', InitialBalanceListAPI.as_view(), name='InitialBalanceListAPI'),
 ]
 
-# dimension
 urlpatterns += [
     # view url
     path('dimension-definition/list', DimensionDefinitionList.as_view(), name='DimensionDefinitionList'),
     path('dimension-value/list', DimensionValueList.as_view(), name='DimensionValueList'),
     path('dimension-sync-config/list', DimensionSyncConfigList.as_view(), name='DimensionSyncConfigList'),
     path('dimension-account/list', DimensionAccountList.as_view(), name='DimensionAccountList'),
+    path('dimension-split-template/list', DimensionSplitTemplateList.as_view(), name='DimensionSplitTemplateList'),
 
     # api url
     path('dimension-definition/list/api', DimensionDefinitionListAPI.as_view(), name='DimensionDefinitionListAPI'),
@@ -53,4 +53,5 @@ urlpatterns += [
     path('dimension-list-for-accounting-account/detail/api/<str:pk>', DimensionListForAccountingAccountAPI.as_view(), name='DimensionListForAccountingAccountAPI'),
     path('dimension-account/list/api', DimensionAccountListAPI.as_view(), name='DimensionAccountListAPI'),
     path('dimension-account/detail/api/<str:pk>', DimensionAccountDetailAPI.as_view(), name='DimensionAccountDetailAPI'),
+    path('dimension-split-template/list/api', DimensionSplitTemplateListAPI.as_view(), name='DimensionSplitTemplateListAPI'),
 ]

@@ -79,7 +79,8 @@ class DimensionDefinitionWithValueAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DIMENSION_DEFINITION_WITH_VALUES.fill_key(pk=pk)).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.DIMENSION_DEFINITION_WITH_VALUES.fill_key(pk=pk)).get(params)
         return resp.auto_return(key_success='dimension_definition_with_values')
 
 
@@ -207,7 +208,7 @@ class DimensionAccountList(View):
     @mask_view(
         auth_require=True,
         template='accountingsettings/dimension_account/dimension_account.html',
-        breadcrumb='DIMENSION_VALUE_LIST_PAGE',
+        breadcrumb='DIMENSION_ACCOUNT_MAP_LIST_PAGE',
         menu_active='menu_dimension_account_list',
         icon_cls='fa fa-table',
         icon_bg='bg-primary',
@@ -235,3 +236,36 @@ class DimensionAccountDetailAPI(APIView):
     def put(self, request, pk, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.DIMENSION_ACCOUNT_MAP_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return(key_success='dimension_account_detail')
+
+
+class DimensionSplitTemplateList(View):
+    @mask_view(
+        auth_require=True,
+        template='accountingsettings/dimension_split_template/dimension_split_template_list.html',
+        breadcrumb='DIMENSION_VALUE_LIST_PAGE',
+        menu_active='menu_dimension_split_template_list',
+        icon_cls='fa fa-table',
+        icon_bg='bg-primary',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+class DimensionSplitTemplateListAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.DIMENSION_SPLIT_TEMPLATE_LIST).get(params)
+        return resp.auto_return(key_success='dimension_split_template_list')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.DIMENSION_SPLIT_TEMPLATE_LIST).post(request.data)
+        return resp.auto_return()

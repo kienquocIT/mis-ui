@@ -34,6 +34,15 @@ class InitialBalancePageFunction {
         $('#totalBalance').attr('data-init-money', sum_account_balance_debit - sum_account_balance_credit)
         $.fn.initMaskMoney2()
     }
+
+    static loadDates(elements) {
+        elements.forEach(ele => {
+            UsualLoadPageFunction.LoadDate({
+                element: ele,
+                empty: true
+            });
+        });
+    }
 }
 
 

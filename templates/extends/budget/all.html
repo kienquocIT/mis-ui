@@ -10,14 +10,14 @@
         <thead>
         <tr class="bg-light">
             <th>#</th>
-            <th>{% trans 'Dimension' %} 1</th>
-            <th>{% trans 'Value' %} 1</th>
-            <th>{% trans 'Dimension' %} 2</th>
-            <th>{% trans 'Value' %} 2</th>
+            <th>{% trans '1st Dimension' %}</th>
+            <th>{% trans '1st Value' %}</th>
+            <th>{% trans '2nd Dimension' %}</th>
+            <th>{% trans '2nd Value' %}</th>
             <th>{% trans 'Budget' %}</th>
             <th>{% trans 'Consumed' %}</th>
             <th>{% trans 'Available' %}</th>
-            <th>{% trans 'Advance' %}</th>
+            <th>{% trans 'Consume' %}</th>
             <th></th>
         </tr>
         </thead>
@@ -26,6 +26,12 @@
     </table>
 </div>
 
+<input
+    type="text"
+    id="budget_trans_factory"
+    data-valid-value-consume="{% trans 'The consume value cannot be greater than the available value' %}"
+    data-valid-dimension-value="{% trans 'Dimension values must be different with other row' %}"
+>
 <input
         type="text" class="hidden"
         id="budget_url_factory"

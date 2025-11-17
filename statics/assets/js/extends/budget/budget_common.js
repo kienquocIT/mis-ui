@@ -7,7 +7,15 @@ BudgetControl{}
 
 class BudgetControl {
     static $tbl = $('#tbl_budget_extend');
+    static $transEle = $('#budget_trans_factory');
     static $urlEle = $('#budget_url_factory');
+    static appMapDimension = {
+        // 'financialcashflow.cashoutflow'
+        "c51857ef-513f-4dbf-babd-26d68950ad6e": [
+            "a870e392-9ad2-4fe2-9baa-298a38691cf2",
+            "245e9f47-df59-4d4a-b355-7eff2859247f",
+        ]
+    }
 
     static dtbBudget(data) {
         if ($.fn.dataTable.isDataTable(BudgetControl.$tbl)) {
@@ -110,8 +118,8 @@ class BudgetControl {
                     render: (data, type, row) => {
                         return `<input 
                                     type="text" 
-                                    class="form-control mask-money table-row-value-use valid-num" 
-                                    value="${row?.['value_use'] ? row?.['value_use'] : '0'}"
+                                    class="form-control mask-money table-row-value-consume valid-num" 
+                                    value="${row?.['value_consume'] ? row?.['value_consume'] : '0'}"
                                     data-return-type="number"
                                 >`;
                     }
@@ -135,7 +143,7 @@ class BudgetControl {
                     if (data?.['dimension_first_data']) {
                         dataS2 = [data?.['dimension_first_data']];
                     }
-                    FormElementControl.loadInitS2($(dimension1Ele$), dataS2, {}, null, true);
+                    FormElementControl.loadInitS2($(dimension1Ele$), dataS2, {'related_app_id__in': BudgetControl.appMapDimension["c51857ef-513f-4dbf-babd-26d68950ad6e"].join(',')}, null, true);
                 }
                 if (dimensionValue1Ele$.length > 0) {
                     let dataS2 = [];
@@ -149,7 +157,7 @@ class BudgetControl {
                     if (data?.['dimension_second_data']) {
                         dataS2 = [data?.['dimension_second_data']];
                     }
-                    FormElementControl.loadInitS2($(dimension2Ele$), dataS2, {}, null, true);
+                    FormElementControl.loadInitS2($(dimension2Ele$), dataS2, {'related_app_id__in': BudgetControl.appMapDimension["c51857ef-513f-4dbf-babd-26d68950ad6e"].join(',')}, null, true);
                 }
                 if (dimensionValue2Ele$.length > 0) {
                     let dataS2 = [];
@@ -186,26 +194,26 @@ class BudgetControl {
         }
         let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
         let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
-        if (headerToolbar$.length > 0) {
-            headerToolbar$.prepend(textFilter$);
-            if (!$('#tbl_budget_extend_add').length) {
-                let $group = $(`<button type="button" class="btn btn-primary" id="tbl_budget_extend_add">
-                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>Add</span></span>
+        if (window.location.href.includes('/create') || window.location.href.includes('/update/')) {
+            if (headerToolbar$.length > 0) {
+                headerToolbar$.prepend(textFilter$);
+                if (!$('#tbl_budget_extend_add').length) {
+                    let $group = $(`<button type="button" class="btn btn-primary" id="tbl_budget_extend_add">
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${$.fn.transEle.attr('data-add')}</span></span>
                                 </button>`);
-                headerToolbar$.append($group);
-                $('#tbl_budget_extend_add').css('margin-left', 'auto');
-                // Select the appended button from the DOM and attach the event listener
-                $('#tbl_budget_extend_add').on('click', function () {
-                    BudgetControl.storeDtbData(1);
-                    BudgetControl.loadAddBudget();
-                });
+                    headerToolbar$.append($group);
+                    $('#tbl_budget_extend_add').css('margin-left', 'auto');
+                    // Select the appended button from the DOM and attach the event listener
+                    $('#tbl_budget_extend_add').on('click', function () {
+                        BudgetControl.storeDtbData(1);
+                        BudgetControl.loadAddBudget();
+                    });
+                }
+                let util$ = headerToolbar$.find('.util-btn');
+                if (util$.length > 0) {
+                    util$.attr('hidden', 'true');
+                }
             }
-
-            let util$ = headerToolbar$.find('.util-btn');
-            if (util$.length > 0) {
-                util$.attr('hidden', 'true');
-            }
-
         }
 
         if (textFilter$.length > 0) {
@@ -251,7 +259,7 @@ class BudgetControl {
             }
             if (check === false) {
                 $.fn.notifyB({description: "Dimensions must be different"}, 'failure');
-                FormElementControl.loadInitS2($(ele), [], {}, null, true);
+                FormElementControl.loadInitS2($(ele), [], {'related_app_id__in': BudgetControl.appMapDimension["c51857ef-513f-4dbf-babd-26d68950ad6e"].join(',')}, null, true);
                 return false;
             }
             if (dimensionValueEle$) {
@@ -301,7 +309,7 @@ class BudgetControl {
                     }
                 });
                 if (check === false) {
-                    $.fn.notifyB({description: "Dimension values must be different with other row"}, 'failure');
+                    $.fn.notifyB({description: BudgetControl.$transEle.attr('data-valid-dimension-value')}, 'failure');
                     if ($(ele).hasClass('table-row-dimension-value-1')) {
                         let dimensionEle$ = $(row).find('.table-row-dimension-1');
                         if (dimensionEle$.length > 0) {
@@ -368,7 +376,7 @@ class BudgetControl {
                 if (valueAvailableEle$.attr('data-init-money')) {
                     let availableValue = parseFloat(valueAvailableEle$.attr('data-init-money'));
                     if ($(ele).valCurrency() > availableValue) {
-                        $.fn.notifyB({description: "The used value cannot be greater than the available value"}, 'failure');
+                        $.fn.notifyB({description: BudgetControl.$transEle.attr('data-valid-value-consume')}, 'failure');
                         $(ele).attr('value', '0');
                         $.fn.initMaskMoney2();
                         return false;
@@ -378,14 +386,14 @@ class BudgetControl {
         }
     };
 
-    static dtbTotalUse() {
+    static dtbTotalConsume() {
         let total = 0;
         BudgetControl.$tbl.DataTable().rows().every(function () {
             let row = this.node();
-            let valueUseEle$ = $(row).find('.table-row-value-use');
-            if (valueUseEle$.length > 0) {
-                if (valueUseEle$.valCurrency()) {
-                    total += valueUseEle$.valCurrency();
+            let valueConsumeEle$ = $(row).find('.table-row-value-consume');
+            if (valueConsumeEle$.length > 0) {
+                if (valueConsumeEle$.valCurrency()) {
+                    total += valueConsumeEle$.valCurrency();
                 }
             }
         });
@@ -412,6 +420,10 @@ class BudgetControl {
                 }
             }
         }
+    };
+
+    static dtbRenderDetail(data) {
+        BudgetControl.dtbBudget(data);
     };
 
     static loadAddBudget() {
@@ -488,7 +500,7 @@ class BudgetControl {
             let dimension2Ele$ = $(row).find('.table-row-dimension-2');
             let dimensionValue2Ele$ = $(row).find('.table-row-dimension-value-2');
             let budgetLineDataEle$ = $(row).find('.table-row-budget-line-data');
-            let valueAdvanceEle$ = $(row).find('.table-row-value-advance');
+            let valueConsumeEle$ = $(row).find('.table-row-value-consume');
             if (orderEle$.length > 0) {
                 rowData['order'] = parseInt(orderEle$.text());
             }
@@ -518,13 +530,15 @@ class BudgetControl {
             }
             if (budgetLineDataEle$.length > 0) {
                 if (budgetLineDataEle$.val()) {
-                    rowData['budget_line_data'] = JSON.parse(budgetLineDataEle$.val());
+                    let budget_line_data = JSON.parse(budgetLineDataEle$.val());
+                    rowData['budget_line_id'] = budget_line_data?.['id'];
+                    rowData['budget_line_data'] = budget_line_data;
                 }
             }
-            if (valueAdvanceEle$.length > 0) {
-                rowData['value_use'] = 0;
-                if (valueAdvanceEle$.valCurrency()) {
-                    rowData['value_use'] = valueAdvanceEle$.valCurrency();
+            if (valueConsumeEle$.length > 0) {
+                rowData['value_consume'] = 0;
+                if (valueConsumeEle$.valCurrency()) {
+                    rowData['value_consume'] = valueConsumeEle$.valCurrency();
                 }
             }
             result.push(rowData);
@@ -542,6 +556,7 @@ $(function () {
 
         // events
         BudgetControl.$tbl.on('click', '.del-row', function (e) {
+            BudgetControl.storeDtbData(1);
             BudgetControl.dtbDeleteRow(this.closest('tr'));
             BudgetControl.dtbReOrderSTT();
             BudgetControl.storeDtbData(1);
@@ -555,7 +570,7 @@ $(function () {
             BudgetControl.dtbOnChangeDimensionValue(this);
         });
 
-        BudgetControl.$tbl.on('change', '.table-row-value-use', function (e) {
+        BudgetControl.$tbl.on('change', '.table-row-value-consume', function (e) {
             BudgetControl.dtbOnChangeValueUse(this);
         });
 

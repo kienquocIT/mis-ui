@@ -813,6 +813,9 @@ class COFHandler {
 
         frm.dataForm['payment_method_data'] = pageElements.$btn_modal_payment_method.attr('data-payment-method') ? JSON.parse(pageElements.$btn_modal_payment_method.attr('data-payment-method')) : {}
 
+        // budget line data
+        frm.dataForm['budget_line_data'] = BudgetControl.setupSubmitTblBudget();
+
         // console.log(frm)
         return frm
     }
@@ -907,6 +910,9 @@ class COFHandler {
                         ['#btn-modal-payment-method']
                     );
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
+
+                    // budget line data
+                    BudgetControl.dtbRenderDetail(data?.['budget_line_data'] ? data?.['budget_line_data'] : []);
                 }
             })
     }

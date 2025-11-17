@@ -1,6 +1,6 @@
 import os
 import shutil
-import cv2
+from PIL import Image
 import numpy as np
 from django.conf import settings
 from django.views import View
@@ -461,20 +461,14 @@ class ProductUploadAvatarAPI(APIView):
 
     @staticmethod
     def rembg(temp_dir, temp_file_name):
-        path = os.path.join(temp_dir, temp_file_name)
-        img = cv2.imread(path)
-        rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        output = remove(rgb)
-        output = cv2.cvtColor(output, cv2.COLOR_RGBA2BGRA)
-        b, g, r = (255, 255, 255)
-        h, w, _ = output.shape
-        background = np.full((h, w, 3), (b, g, r), dtype=np.uint8)
-        alpha = output[:, :, 3] / 255.0
-        foreground = output[:, :, :3]
-        combined = cv2.convertScaleAbs(foreground * alpha[:, :, None] + background * (1 - alpha[:, :, None]))
-        temp_file_path = temp_dir + 'rembg' + temp_file_name
-        cv2.imwrite(temp_file_path, combined)
-        return temp_file_path
+        input_path = os.path.join(temp_dir, temp_file_name)
+        output_path = os.path.join(temp_dir, f"rembg_{temp_file_name}")
+        with Image.open(input_path).convert("RGBA") as img:
+            output = remove(img)
+            background = Image.new("RGB", output.size, (255, 255, 255))
+            background.paste(output, mask=output.split()[3])
+            background.save(output_path, format="PNG")
+        return output_path
 
     @staticmethod
     def for_rembg(uploaded_file, temp_dir, temp_file_name):

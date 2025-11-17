@@ -61,7 +61,7 @@ class TabToolFunction {
                                 <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fa-regular fa-circle-question"></i>
                                 </a>
-                                <div class="dropdown-menu bflow-mirrow-card-80 p-3" style="min-width: 200px;">
+                                <div class="dropdown-menu bflow-mirrow-card p-3" style="min-width: 200px;">
                                     <h5 class="row-tool-type-code fw-bold"></h5>
                                     <h6 class="row-fk-tool-type-name"></h6>
                                     <h6 class="row-tool-type-name"></h6>

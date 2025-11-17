@@ -62,7 +62,7 @@ class TabMoneyFunction {
                                 <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fa-regular fa-circle-question"></i>
                                 </a>
-                                <div class="dropdown-menu bflow-mirrow-card-80 p-3" style="min-width: 200px;">
+                                <div class="dropdown-menu bflow-mirrow-card p-3" style="min-width: 200px;">
                                     <h5 class="row-account-code fw-bold"></h5>
                                     <h6 class="row-fk-account-name"></h6>
                                     <h6 class="row-account-name"></h6>

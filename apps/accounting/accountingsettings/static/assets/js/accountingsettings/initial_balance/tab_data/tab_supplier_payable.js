@@ -68,17 +68,15 @@ class TabSupplierPayableFunction {
                 {
                     className: "w-30",
                     render: (data, type, row) => {
-                    return  `
-                        <div class="d-flex align-items-center gap-2">
-                            <input type="text" class="form-control row-detail-supplier-payable" 
-                                placeholder="Click icon to add detail..." readonly/>
-                            <button type="button" class="bflow-mirrow-badge btn-supplier-payable-modal" disabled
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#supplier_payable_modal">
-                               <i class="fas fa-info"></i>
-                            </button>
-                        </div>
-                    `;
+                        return `<div class="input-group">
+                                    <input type="text" class="form-control row-detail-supplier-payable" 
+                                        placeholder="Click icon to add detail..." readonly/>
+                                    <button type="button" class="btn btn-info btn-supplier-payable-modal" disabled
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#supplier_payable_modal">
+                                       <i class="fas fa-info"></i>
+                                    </button>
+                                </div>`;
                     }
                 },
                 {

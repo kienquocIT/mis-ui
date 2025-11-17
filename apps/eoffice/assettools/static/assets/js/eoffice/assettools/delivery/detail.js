@@ -1,6 +1,7 @@
 $(document).ready(function(){
     const $formElm = $('#asset_delivery_form')
     const $tblElm = $('#products_detail_tbl')
+    const urlFact = $('#url-factory')
 
     // get detail request info
     $.fn.callAjax2({
@@ -37,7 +38,7 @@ $(document).ready(function(){
                     {
                         data: 'product',
                         width: '35%',
-                        render: (row, type, data, meta) => {
+                        render: (row, type, data) => {
                             const $elmTrans = $.fn.transEle, $localTrans = $('#trans-factory');
                             let isFormat = [
                                 {name: $elmTrans.attr('data-title'), value: 'title'},
@@ -45,55 +46,68 @@ $(document).ready(function(){
                                 {name: $localTrans.attr('data-uom'), value: 'uom.title'},
                                 {name: $localTrans.attr('data-avail'), value: 'available'}
                             ]
-                            let prodAvail = data.product_available
-                            row.available = prodAvail
-                            const dataCont = DataTableAction.item_view(row, $('#url-factory').attr('data-prod-detail'),
-                                isFormat)
-                            return `<div class="input-group">
-                                        <div class="dropdown pointer mr-2">
-                                            <i class="fas fa-info-circle text-blue info-btn"></i>
-                                            <div class="dropdown-menu w-210p">${dataCont}</div>
-                                        </div>
-                                        <p>${row.title}</p>
-                                    </div>`;
+                            let prod = {title: data.product_remark}
+                            let title = data.product_remark
+                            let link = null
+                            if (row){
+                                prod = row
+                                row.available = data.product_available
+                                title = row.title
+                                link = urlFact.attr('data-prod-detail')
+                            }
+                            else if ('product_fixed' in data){
+                                prod = data.product_fixed
+                                title = prod.title
+                                link = urlFact.attr('data-fixed-detail')
+                            }
+                            const dataCont = DataTableAction.item_view(prod, link, isFormat)
+                            let icon = ''
+                            if (data?.['product_provide_type'] === 'fixed') icon = '<i class="fas fa-warehouse"></i>'
+                            if (data?.['product_provide_type'] === 'tool') icon = '<i class="fas fa-tools"></i>'
+                            return `<div class="input-group title_prod">`
+                                        +`<div class="dropdown pointer mr-2">`
+                                        +    `<i class="fas fa-info-circle text-blue info-btn"></i>`
+                                        +   `<div class="dropdown-menu w-210p">${dataCont}</div>`
+                                        +`</div><p>${title} <span>${icon}</span></p></div>`;
                         }
                     },
                     {
                         data: 'request_number',
                         width: '10%',
-                        render: (row, type, data, meta) => {
+                        render: (row) => {
                             return row
                         }
                     },
                     {
                         data: 'delivered_number',
                         width: '10%',
-                        render: (row, type, data, meta) => {
+                        render: (row) => {
                             return row
                         }
                     },
                     {
                         data: 'done',
                         width: '15%',
-                        render: (row, type, data, meta) => {
+                        render: (row) => {
                             return row
                         }
                     },
                     {
                         data: 'date_delivered',
                         width: '10%',
-                        render: (row, type, data, meta) => {
+                        render: (row) => {
                             return moment(row, 'YYYY-MM-DD').format('DD/MM/YYYY')
                         }
                     },
                     {
                         targets: 6,
                         width: '5%',
-                        render: (row, type, data, meta) => {
+                        render: () => {
                             return ``
                         }
                     }
-                ],drawCallback: (row, data, index) =>{
+                ],
+                drawCallback: () =>{
                     DropdownBSHandle.init()
                 }
             })

@@ -4,11 +4,8 @@
 {% block title %}{% trans 'Revenue plan' %}{% endblock %}
 {% block cssHeader %}
     <style>
-        td input, td, th {
+        td input, th input, td, th {
             text-align: right;
-        }
-        th {
-            color: white !important;
         }
     </style>
 {% endblock %}
@@ -44,6 +41,10 @@
             data-trans-revenue="{% trans 'Revenue' %}"
             data-trans-net-profit="{% trans 'Net income' %}"
             data-trans-gross-profit="{% trans 'Gross profit' %}"
+            data-url-group-detail="{% url 'GroupDetailAPI' '0' %}"
+    ></script>
+    <script id="url-script"
+            data-url-group="{% url 'GroupListAPI' %}"
             data-url-group-detail="{% url 'GroupDetailAPI' '0' %}"
     ></script>
     <form id="form-detail-revenue-plan"

@@ -1,8 +1,6 @@
 $(document).ready(function () {
     RevenuePlanEventHandler.InitPageEven()
     RevenuePlanPageFunction.LoadPeriod()
-    RevenuePlanPageFunction.LoadModalGroup()
-    RevenuePlanPageFunction.RenderRPTable()
 
     RevenuePlanHandler.LoadDetailRevenuePlan('update')
 

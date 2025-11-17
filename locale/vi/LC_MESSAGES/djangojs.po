@@ -491,7 +491,7 @@ msgstr "Không có nhóm"
 
 #
 msgid "In each row, the first input is Revenue, the next one is Profit"
-msgstr "Ở mỗi dòng, ô đầu tiên là Doanh thu, ô tiếp theo là Lợi nhuận"
+msgstr "Ở mỗi dòng, dòng đầu tiên là Doanh thu, dòng tiếp theo là Lợi nhuận"
 
 #
 msgid "This action can not be undo!"
@@ -584,3 +584,7 @@ msgstr "Cấp trên"
 #
 msgid "Fiscal year"
 msgstr "Năm tài chính"
+
+#
+msgid "Move plan to"
+msgstr "Chuyển kế hoạch sang"

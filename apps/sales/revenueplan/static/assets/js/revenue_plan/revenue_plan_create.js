@@ -1,8 +1,6 @@
 $(document).ready(function () {
     RevenuePlanEventHandler.InitPageEven()
     RevenuePlanPageFunction.LoadPeriod()
-    RevenuePlanPageFunction.LoadModalGroup()
-    RevenuePlanPageFunction.RenderRPTable()
 
     $('#form-create-revenue-plan').submit(function (event) {
         event.preventDefault();

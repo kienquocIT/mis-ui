@@ -107,25 +107,11 @@ $(document).ready(function () {
                 'allow_posting': 'true',
             },
             data: rowData?.dimension_value_data,
-        });
-        $row.find('.account-select').initSelect2({
+        })
+        UsualLoadPageAccountingFunction.LoadAccountingAccount({
+            element: $row.find('.account-select'),
+            data_params: {'is_account': true},
             data: rowData?.overwrite_account_data,
-            templateSelection: function (state) {
-                if (state.data){
-                    return $(`
-                        <span>${state.data.acc_name}</span> - <span>${state.data.acc_code}</span>
-                    `);
-                }
-                return state.text
-            },
-            templateResult: function (state) {
-                if (state.data) {
-                    return $(`
-                        <span>${state.data.acc_name}</span> - <span>${state.data.acc_code}</span>
-                    `);
-                }
-                return state.text;
-            }
         })
     }
 
@@ -211,23 +197,9 @@ $(document).ready(function () {
                 'allow_posting': 'true',
             }
         })
-        $splitLineContainer.find('.account-select').initSelect2({
-            templateSelection: function (state) {
-                if (state.data){
-                    return $(`
-                        <span>${state.data.acc_name}</span> - <span>${state.data.acc_code}</span>
-                    `);
-                }
-                return state.text
-            },
-            templateResult: function (state) {
-                if (state.data) {
-                    return $(`
-                        <span>${state.data.acc_name}</span> - <span>${state.data.acc_code}</span>
-                    `);
-                }
-                return state.text;
-            }
+        UsualLoadPageAccountingFunction.LoadAccountingAccount({
+            element: $splitLineContainer.find('.account-select'),
+            data_params: {'is_account': true},
         })
     })
 

@@ -8,7 +8,8 @@ from apps.accounting.accountingsettings.views import (
     DimensionDefinitionDetailAPI, DimensionValueList, DimensionDefinitionWithValueAPI, DimensionValueListAPI,
     DimensionValueDetailAPI, DimensionSyncConfigApplicationListAPI, DimensionSyncConfigList, DimensionSyncConfigListAPI,
     DimensionSyncConfigDetailAPI, DimensionListForAccountingAccountAPI, DimensionAccountList, DimensionAccountListAPI,
-    DimensionAccountDetailAPI, DimensionSplitTemplateList, DimensionSplitTemplateListAPI
+    DimensionAccountDetailAPI, DimensionSplitTemplateList, DimensionSplitTemplateListAPI,
+    DimensionSplitTemplateDetailAPI
 )
 
 urlpatterns = [
@@ -54,4 +55,5 @@ urlpatterns += [
     path('dimension-account/list/api', DimensionAccountListAPI.as_view(), name='DimensionAccountListAPI'),
     path('dimension-account/detail/api/<str:pk>', DimensionAccountDetailAPI.as_view(), name='DimensionAccountDetailAPI'),
     path('dimension-split-template/list/api', DimensionSplitTemplateListAPI.as_view(), name='DimensionSplitTemplateListAPI'),
+    path('dimension-split-template/detail/api/<str:pk>', DimensionSplitTemplateDetailAPI.as_view(), name='DimensionSplitTemplateDetailAPI'),
 ]

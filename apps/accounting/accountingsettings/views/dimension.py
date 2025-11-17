@@ -269,3 +269,23 @@ class DimensionSplitTemplateListAPI(APIView):
     def post(self, request, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.DIMENSION_SPLIT_TEMPLATE_LIST).post(request.data)
         return resp.auto_return()
+
+
+class DimensionSplitTemplateDetailAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.DIMENSION_SPLIT_TEMPLATE_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='dimension_split_template')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.DIMENSION_SPLIT_TEMPLATE_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='dimension_split_template')

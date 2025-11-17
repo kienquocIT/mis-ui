@@ -3,15 +3,14 @@ $(document).ready(function () {
         element: pageElements.$accountingPeriodEle,
         data_url: pageElements.$accountingPeriodEle.attr('data-url')
     });
+    InitialBalancePageFunction.loadDates([
+        tabAccountReceivableElements.$invoiceDate,
+        tabAccountReceivableElements.$expectedPaymentDate,
+        tabSupplierPayableElements.$supplierInvoiceDate,
+        tabSupplierPayableElements.$expectedSupplierPaymentDate,
+        tabToolElements.$startDateEle
+    ]);
     InitialBalanceEventHandler.InitPageEvent();
-    UsualLoadPageFunction.LoadDate({
-        element: tabAccountReceivableElements.$invoiceDate,
-        empty: true
-    });
-    UsualLoadPageFunction.LoadDate({
-        element: tabAccountReceivableElements.$expectedPaymentDate,
-        empty: true
-    });
 
     // Tab Money
     TabMoneyEventHandler.InitPageEvent();
@@ -20,4 +19,20 @@ $(document).ready(function () {
     // Tab Account Receivable
     TabAccountReceivableFunction.initAccountReceivableTable();
     TabAccountReceivableEventHandler.InitPageEvent();
+
+    // Tab Supplier Payable
+    TabSupplierPayableFunction.initSupplierPayableTable();
+    TabSupplierPayableEventHandler.InitPageEvent();
+
+    // Tab Employee Payable
+    TabEmployeePayableFunction.initEmployeePayableTable();
+    TabEmployeePayableEventHandler.InitPageEvent();
+
+    // Tab Tools
+    TabToolFunction.initToolTable();
+    TabToolEventHandler.InitPageEvent();
+
+    // Tab Account
+    TabAccountFunction.initAccountTable();
+    TabAccountEventHandler.InitPageEvent();
 });

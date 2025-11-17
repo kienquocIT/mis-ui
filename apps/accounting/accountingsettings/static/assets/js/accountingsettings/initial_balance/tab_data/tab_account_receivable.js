@@ -68,17 +68,15 @@ class TabAccountReceivableFunction {
                 {
                     className: "w-30",
                     render: (data, type, row) => {
-                    return  `
-                        <div class="d-flex align-items-center gap-2">
-                            <input type="text" class="form-control row-detail-account-receivable" 
-                                placeholder="Click icon to add detail..." readonly />
-                            <button type="button" class="bflow-mirrow-badge btn-account-receivable-modal" disabled
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#account_receivable_modal">
-                               <i class="fas fa-info"></i>
-                            </button>
-                        </div>
-                    `;
+                        return `<div class="input-group">
+                                    <input type="text" class="form-control row-detail-account-receivable"
+                                        placeholder="Click icon to add detail..." readonly/>
+                                    <button type="button" class="btn btn-info btn-account-receivable-modal" disabled
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#account_receivable_modal">
+                                       <i class="fas fa-info"></i>
+                                    </button>
+                                </div>`;
                     }
                 },
                 {

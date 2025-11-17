@@ -36,7 +36,7 @@ $(document).ready(async function () {
                                         let data = $.fn.switcherResp(resp);
                                         if (data) {
                                             $.fn.notifyB({
-                                                'title': `${$.fn.gettext('Avatar')} (May be take more time to load image)`,
+                                                'title': `${$.fn.gettext('Avatar')}`,
                                                 'description': $.fn.transEle.attr('data-success')
                                             }, 'success');
                                             setTimeout(() => window.location.reload(), 5000)

@@ -1,10 +1,10 @@
-import os
-import shutil
-from PIL import Image
-import numpy as np
-from django.conf import settings
+# import os
+# import shutil
+# from PIL import Image
+# import numpy as np
+# from django.conf import settings
 from django.views import View
-from rembg import remove
+# from rembg import remove
 from requests_toolbelt import MultipartEncoder
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser
@@ -449,36 +449,36 @@ class ProductQuotationListLoadDBAPI(APIView):
 class ProductUploadAvatarAPI(APIView):
     parser_classes = [MultiPartParser]
 
-    @staticmethod
-    def clear_dir(dir_path):
-        for item in os.listdir(dir_path):
-            item_path = os.path.join(dir_path, item)
-            if os.path.isfile(item_path) or os.path.islink(item_path):
-                os.remove(item_path)
-            elif os.path.isdir(item_path):
-                shutil.rmtree(item_path)
-        return
-
-    @staticmethod
-    def rembg(temp_dir, temp_file_name):
-        input_path = os.path.join(temp_dir, temp_file_name)
-        output_path = os.path.join(temp_dir, f"rembg_{temp_file_name}")
-        with Image.open(input_path).convert("RGBA") as img:
-            output = remove(img)
-            background = Image.new("RGB", output.size, (255, 255, 255))
-            background.paste(output, mask=output.split()[3])
-            background.save(output_path, format="PNG")
-        return output_path
-
-    @staticmethod
-    def for_rembg(uploaded_file, temp_dir, temp_file_name):
-        os.makedirs(temp_dir, exist_ok=True)
-        temp_file_path = os.path.join(temp_dir, temp_file_name)
-        with open(temp_file_path, 'wb+') as f:
-            for chunk in uploaded_file.chunks():
-                f.write(chunk)
-        rembg_path = ProductUploadAvatarAPI.rembg(temp_dir, temp_file_name)
-        return rembg_path
+    # @staticmethod
+    # def clear_dir(dir_path):
+    #     for item in os.listdir(dir_path):
+    #         item_path = os.path.join(dir_path, item)
+    #         if os.path.isfile(item_path) or os.path.islink(item_path):
+    #             os.remove(item_path)
+    #         elif os.path.isdir(item_path):
+    #             shutil.rmtree(item_path)
+    #     return
+    #
+    # @staticmethod
+    # def rembg(temp_dir, temp_file_name):
+    #     input_path = os.path.join(temp_dir, temp_file_name)
+    #     output_path = os.path.join(temp_dir, f"rembg_{temp_file_name}")
+    #     with Image.open(input_path).convert("RGBA") as img:
+    #         output = remove(img)
+    #         background = Image.new("RGB", output.size, (255, 255, 255))
+    #         background.paste(output, mask=output.split()[3])
+    #         background.save(output_path, format="PNG")
+    #     return output_path
+    #
+    # @staticmethod
+    # def for_rembg(uploaded_file, temp_dir, temp_file_name):
+    #     os.makedirs(temp_dir, exist_ok=True)
+    #     temp_file_path = os.path.join(temp_dir, temp_file_name)
+    #     with open(temp_file_path, 'wb+') as f:
+    #         for chunk in uploaded_file.chunks():
+    #             f.write(chunk)
+    #     rembg_path = ProductUploadAvatarAPI.rembg(temp_dir, temp_file_name)
+    #     return rembg_path
 
     @mask_view(auth_require=True, login_require=True, is_api=True)
     def post(self, request, *args, pk, **kwargs):
@@ -486,15 +486,16 @@ class ProductUploadAvatarAPI(APIView):
         uploaded_file = request.FILES.get('file')
         params = request.query_params.dict()
         if 'auto_rm_bg' in params and params.get('auto_rm_bg') == 'true':
-            temp_dir = os.path.join(settings.BASE_DIR, 'apps/masterdata/saledata/static/assets/temp_img_rm_bg/')
-            temp_file_name = f"{str(pk)}-{uploaded_file.name}"
-            rembg_path = self.for_rembg(uploaded_file, temp_dir, temp_file_name)
-            m = MultipartEncoder(fields={'avatar_img': (temp_file_name, open(rembg_path, "rb"), uploaded_file.content_type)})
+            pass
+            # temp_dir = os.path.join(settings.BASE_DIR, 'apps/masterdata/saledata/static/assets/temp_img_rm_bg/')
+            # temp_file_name = f"{str(pk)}-{uploaded_file.name}"
+            # rembg_path = self.for_rembg(uploaded_file, temp_dir, temp_file_name)
+            # m = MultipartEncoder(fields={'avatar_img': (temp_file_name, open(rembg_path, "rb"), uploaded_file.content_type)})
         else:
             m = MultipartEncoder(fields={'avatar_img': (uploaded_file.name, uploaded_file, uploaded_file.content_type)})
         headers = {'content-type': m.content_type}
         resp = ServerAPI(request=request, user=request.user, url=url, cus_headers=headers).post(data=m)
-        self.clear_dir(temp_dir)
+        # self.clear_dir(temp_dir)
         if resp.state:
             return {'detail': resp.result}, status.HTTP_200_OK
         return resp.auto_return()

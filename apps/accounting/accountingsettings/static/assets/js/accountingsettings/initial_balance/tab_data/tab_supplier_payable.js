@@ -52,17 +52,18 @@ class TabSupplierPayableFunction {
                     className: "w-20",
                     render: (data, type, row) => {
                     return  `
-                        <div class="d-flex align-items-center gap-2">
+                        <div class="input-group">
                             <input type="text" class="form-control row-supplier-info" 
                                 placeholder="Click to select..." readonly/>
-                            <button type="button" ${option === 'detail' ? 'disabled' : ''}
-                                class="btn btn-primary btn-sm add-supplier-btn"
-                                data-bs-toggle="modal"
-                                data-bs-target="#supplier-modal">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                    `;
+                            <span class="input-group-text p-0">
+                                <button type="button" ${option === 'detail' ? 'disabled' : ''}
+                                    class="btn btn-primary btn-sm add-supplier-btn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#supplier-modal">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </button>
+                            </span>
+                        </div>`;
                     }
                 },
                 {
@@ -71,24 +72,30 @@ class TabSupplierPayableFunction {
                         return `<div class="input-group">
                                     <input type="text" class="form-control row-detail-supplier-payable" 
                                         placeholder="Click icon to add detail..." readonly/>
-                                    <button type="button" class="btn btn-info btn-supplier-payable-modal" disabled
+                                    <button type="button" class="btn btn-primary btn-sm btn-supplier-payable-modal" disabled
                                             data-bs-toggle="modal"
                                             data-bs-target="#supplier_payable_modal">
-                                       <i class="fas fa-info"></i>
+                                       <i class="fa-solid fa-circle-info"></i>
                                     </button>
                                 </div>`;
                     }
                 },
                 {
-                    className: "w-10",
+                    className: "w-20",
                     render: (data, type, row) => {
-                        return `<select class="form-select select2 row-supplier-payable-code"></select>`;
-                    }
-                },
-                {
-                    className: "w-10",
-                    render: (data, type, row) => {
-                        return `<span class="row-ar-account-name"></span><br><span class="row-supplier-payable-name"></span>`;
+                        return `<div class="input-group">
+                            <select class="form-select select2 row-supplier-payable-code"></select>
+                            <span class="input-group-text p-0">
+                                <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-regular fa-circle-question"></i>
+                                </a>
+                                <div class="dropdown-menu bflow-mirrow-card-80 p-3" style="min-width: 200px;">
+                                    <h5 class="row-supplier-payable-code-detail fw-bold"></h5>
+                                    <h6 class="row-fk-supplier-payable-name"></h6>
+                                    <h6 class="row-supplier-payable-name"></h6>
+                                </div>
+                            </span>
+                        </div>`;
                     }
                 },
                 {
@@ -217,8 +224,9 @@ class TabSupplierPayableEventHandler {
 
         // event for load account name when account code is selected
         tabSupplierPayableElements.$tableSupplierPayable.on('change', '.row-supplier-payable-code', function() {
-            let selected = SelectDDControl.get_data_from_idx($(this), $(this).val());
-            $(this).closest('tr').find('.row-ar-account-name').text(selected?.['foreign_acc_name'] || '');
+            let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
+            $(this).closest('tr').find('.row-supplier-payable-code-detail').text(selected?.['acc_code'] || '')
+            $(this).closest('tr').find('.row-fk-supplier-payable-name').text(selected?.['foreign_acc_name'] || '')
             $(this).closest('tr').find('.row-supplier-payable-name').text(`(${selected?.['acc_name'] || ''})`)
         });
 

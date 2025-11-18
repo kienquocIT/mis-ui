@@ -76,10 +76,10 @@ class TabToolFunction {
                     return  `<div class="input-group">
                                 <input type="text" class="form-control row-detail-tool"
                                     placeholder="Click icon to add detail..." readonly/>
-                                <button type="button" class="btn btn-info btn-tool-modal"
+                                <button type="button" class="btn btn-primary btn-sm btn-tool-modal"
                                         data-bs-toggle="modal"
                                         data-bs-target="#tool-modal">
-                                   <i class="fas fa-info"></i>
+                                   <i class="fa-solid fa-circle-info"></i>
                                 </button>
                             </div>`;
                     }

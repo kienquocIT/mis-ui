@@ -42,7 +42,7 @@ $(document).ready(function () {
         dataForm["description"] = pageElements.$descriptionEle.val();
 
         return {
-            url: frm.dataUrl,
+            url: $(frmEle).attr('data-url-detail'),
             method: 'PUT',
             data: dataForm,
         };

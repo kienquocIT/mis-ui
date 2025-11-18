@@ -50,7 +50,7 @@ class InitialBalancePageFunction {
  */
 class InitialBalanceHandler {
     static LoadDetailInitialBalance(option) {
-        let url_loaded = $('#frm_detail_initial_balance').attr('data-url-detail');
+        let url_loaded = $('#frm_detail_initial_balance').attr('data-url');
         $.fn.callAjax(url_loaded, 'GET').then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);

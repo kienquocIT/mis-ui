@@ -20,7 +20,7 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <form id="frm_detail_initial_balance" data-method="GET" data-url-detail="{% url 'InitialBalanceDetailAPI' pk=pk %}">
+    <form id="frm_detail_initial_balance" data-method="GET" data-url="{% url 'InitialBalanceDetailAPI' pk=pk %}">
         {% csrf_token %}
         {% include 'accountingsettings/initial_balance/common/information.html' %}
     </form>

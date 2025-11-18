@@ -493,6 +493,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     INITIAL_BALANCE_LIST_PAGE = BreadcrumbChildren(_('Opening Balance Setup'), 'InitialBalanceList')
     DIMENSION_DEFINITION_LIST_PAGE = BreadcrumbChildren(_('Dimension definition'), 'DimensionDefinitionList')
     DIMENSION_VALUE_LIST_PAGE = BreadcrumbChildren(_('Dimension value'), 'DimensionValueList')
+    DIMENSION_SYNC_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Dimension sync config'), 'DimensionSyncConfigList')
+    DIMENSION_ACCOUNT_MAP_LIST_PAGE = BreadcrumbChildren(_('Dimension account map'), 'DimensionAccountList')
 
     # Journal entry
     JOURNAL_ENTRY_LIST_PAGE = BreadcrumbChildren(_('Journal entry'), 'JournalEntryList')
@@ -1556,6 +1558,9 @@ class BreadcrumbView:
     INITIAL_BALANCE_LIST_PAGE = [BreadcrumbItem.INITIAL_BALANCE_LIST_PAGE]
     DIMENSION_DEFINITION_LIST_PAGE = [BreadcrumbItem.DIMENSION_DEFINITION_LIST_PAGE]
     DIMENSION_VALUE_LIST_PAGE = [BreadcrumbItem.DIMENSION_VALUE_LIST_PAGE]
+    DIMENSION_SYNC_CONFIG_LIST_PAGE = [
+        BreadcrumbItem.DIMENSION_SYNC_CONFIG_LIST_PAGE
+    ]
 
     JOURNAL_ENTRY_LIST_PAGE = [BreadcrumbItem.JOURNAL_ENTRY_LIST_PAGE]
     JOURNAL_ENTRY_CREATE_PAGE = JOURNAL_ENTRY_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]

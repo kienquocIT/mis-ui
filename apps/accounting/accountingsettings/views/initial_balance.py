@@ -15,6 +15,14 @@ class InitialBalanceList(View):
         icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PERIODS_CONFIG_LIST).get()
+        for item in resp.result:
+            if item['software_start_using_time']:
+                return {
+                    'data': {
+                        'period_setup_sw_start_using_time': item['id'],
+                    },
+                }, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 
 

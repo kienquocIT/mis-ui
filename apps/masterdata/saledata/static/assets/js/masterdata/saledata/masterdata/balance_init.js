@@ -11,11 +11,7 @@ $(document).ready(function () {
     const dtb_load_lot_space = $('#table-load-lot-space')
     const dtb_load_sn = $('#table-load-sn')
     const dtb_load_sn_space = $('#table-load-sn-space')
-    const modal_add_balance = $('#modal-add-balance')
     const trans_script = $('#trans-script')
-
-    form_balance_Ele.prop('hidden', false)
-    $('#notify-div').prop('hidden', true)
 
     function LoadBalanceInitTable() {
         dtb_balance_init_item_Ele.DataTable().clear().destroy()
@@ -587,7 +583,6 @@ $(document).ready(function () {
         }
     })
 
-    // excel
     $('.excelFileInput').on('change', async function (even_object) {
         let prd_selected = SelectDDControl.get_data_from_idx(prd_Ele, prd_Ele.val())
         if (prd_selected?.['general_traceability_method'] === 1) {

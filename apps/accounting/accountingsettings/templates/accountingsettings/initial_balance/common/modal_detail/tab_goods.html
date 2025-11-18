@@ -1,0 +1,164 @@
+{% load i18n %}
+
+<div class="modal fade" id="modal-view-detail" tabindex="-1" role="dialog" aria-labelledby="modal-view-detail" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="min-width: 50%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{% trans 'Detail' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="overflow: auto; max-height: 64vh">
+                <div class="row">
+                    <div class="col-12">
+                        <table id="table-detail-space-lot" hidden class="table nowrap w-100">
+                            <thead class="bg-secondary-light-5">
+                                <tr>
+                                    <th>{% trans 'Lot number' %}</th>
+                                    <th>{% trans 'Quantity' %}</th>
+                                    <th>{% trans 'UOM' %}</th>
+                                    <th>{% trans 'Expired date' %}</th>
+                                    <th>{% trans 'Manufacture date' %}</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detail-space-lot"></tbody>
+                        </table>
+                        <table id="table-detail-space-sn" hidden class="table nowrap w-100">
+                            <thead class="bg-secondary-light-5">
+                                <tr>
+                                    <th>{% trans 'Vendor serial no.' %}</th>
+                                    <th>{% trans 'Serial no.' %}</th>
+                                    <th>{% trans 'Expired date' %}</th>
+                                    <th>{% trans 'Manufacture date' %}</th>
+                                    <th>{% trans 'Warranty start' %}</th>
+                                    <th>{% trans 'Warranty end' %}</th>
+                                    <th>{% trans 'Specific value' %}</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detail-space-sn"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-add-balance" tabindex="-1" role="dialog" aria-labelledby="modal-add-balance" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="min-width: 90%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{% trans 'Add balance' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="overflow: auto; max-height: 72vh">
+                <form id="form-balance"
+                      data-method="POST"
+                      data-url="{% url 'BalanceInitListAPI' %}"
+                      data-url-delete="{% url 'PeriodsConfigDetailAPI' '0' %}">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label for="select-wh" class="form-label required">{% trans 'Select warehouse' %}</label>
+                                <select id="select-wh" class="form-select select2" data-method="GET" data-url="{% url 'WareHouseListAPI' %}"></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="select-prd">{% trans "Product" %}</label>
+                                <select class="form-select select2"
+                                        id="select-prd"
+                                        data-method="GET"
+                                        data-url="{% url 'ProductListAPI' %}"
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-2 col-lg-2">
+                            <div class="form-group">
+                                <label class="form-label" for="prd-quantity">{% trans "Quantity" %}</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="prd-quantity" value="0">
+                                    <span class="input-group-text" id="prd-uom"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label" for="prd-value">{% trans "Pretax value" %}</label>
+                                <input class="form-control mask-money" id="prd-value" value="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12" id="table-load-lot-space" hidden>
+                            <div class="row">
+                                <div class="col-12">
+                                    <table class="table nowrap w-100" id="table-load-lot">
+                                        <thead class="bg-secondary-light-5">
+                                            <tr>
+                                                <th></th>
+                                                <th>{% trans 'Lot number' %}</th>
+                                                <th>{% trans 'Lot quantity' %}</th>
+                                                <th>{% trans 'Expiration date' %}</th>
+                                                <th>{% trans 'Manufacture date' %}</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                    <button type="button" class="btn btn-primary btn-xs mt-2" id="add-row-lot">{% trans 'Add new row' %}</button>
+                                </div>
+                                <div class="col-12 col-md-3 col-lg-3 mt-2">
+                                    <div class="form-group">
+                                        <label class="form-label" for="prd-value">({% trans 'or import here' %})</label>
+                                        <input type="file" class="form-control excelFileInput" accept=".xlsx,.xls,.csv,.ods,.xlsm,.xlsb,.xml,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12" id="table-load-sn-space" hidden>
+                            <div class="row">
+                                <div class="col-12">
+                                    <table class="table nowrap w-100" id="table-load-sn">
+                                        <thead class="bg-secondary-light-5">
+                                            <tr>
+                                                <th></th>
+                                                <th>{% trans 'Vendor serial no.' %}</th>
+                                                <th>{% trans 'Serial no.' %}</th>
+                                                <th>{% trans 'Expiration date' %}</th>
+                                                <th>{% trans 'Manufacture date' %}</th>
+                                                <th>{% trans 'Warranty start' %}</th>
+                                                <th>{% trans 'Warranty end' %}</th>
+                                                <th>{% trans 'Specific value' %}</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                    <button type="button" class="btn btn-primary btn-xs mt-2" id="add-row-sn">{% trans 'Add new row' %}</button>
+                                </div>
+                                <div class="col-12 col-md-3 col-lg-3 mt-2">
+                                    <div class="form-group">
+                                        <label class="form-label" for="prd-value">({% trans 'or import here' %})</label>
+                                        <input type="file" class="form-control excelFileInput" accept=".xlsx,.xls,.csv,.ods,.xlsm,.xlsb,.xml,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="submit" id="save-balance" form="form-balance" id="save-modal" class="btn btn-primary">{% trans 'Save' %}</button>
+            </div>
+        </div>
+    </div>
+</div>

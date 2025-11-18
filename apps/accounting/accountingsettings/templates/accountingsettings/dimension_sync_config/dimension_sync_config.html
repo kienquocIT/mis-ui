@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Dimension Sync Config' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal-add-config">
+        <span>
+            <span>{% trans 'Add' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-plus"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <table id="datatable-config" class="table nowrap w-100 table-hover" data-url="{% url "DimensionSyncConfigListAPI" %}">
+        <thead>
+            <tr>
+                <th class="w-20">{% trans 'Dimension Code' %}</th>
+                <th class="w-20">{% trans 'Dimension Name' %}</th>
+                <th class="w-20">{% trans 'Application' %}</th>
+                <th class="w-20">{% trans 'Sync Status' %}</th>
+                <th class="w-10">{% trans 'Records' %}</th>
+                <th class="w-10">{% trans 'Action' %}</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+{% endblock %}
+{% block modalData %}
+    <div class="modal fade" id="modal-add-config" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">{% trans 'Add Dimension Config' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-add-config" data-url="{% url "DimensionSyncConfigListAPI" %}" data-method="POST">
+                        <div class="mb-5">
+                            <h6 class="text-uppercase text-primary fw-semibold mb-3 fs-7">
+                                <i class="bi bi-info-circle me-2"></i>
+                                {% trans 'Dimension Information' %}
+                            </h6>
+
+                            <div class="mb-3">
+                                <label for="dimension-select" class="form-label required">{% trans 'Dimension' %}</label>
+                                <select required class="form-select select2 dimension-select" id="dimension-select" data-url="{% url 'DimensionDefinitionListAPI'%}"
+                                        data-keyResp="dimension_definition_list" name="dimension_id">
+                                </select>
+                                <div class="form-text">{% trans 'Select the dimension to sync' %}</div>
+                            </div>
+
+                            <div class="row gx-3">
+                                <div class="col-md-6 mb-3">
+                                    <label for="dimension-code" class="form-label">{% trans 'Dimension Code' %}</label>
+                                    <input type="text" class="form-control dimension-code" id="dimension-code" readonly>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="dimension-name" class="form-label">{% trans 'Dimension Name' %}</label>
+                                    <input type="text" class="form-control dimension-name" id="dimension-name" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <h6 class="text-uppercase text-success fw-semibold mb-3 fs-7">
+                                <i class="bi bi-table me-2"></i>
+                                {% trans 'Master Table Configuration' %}
+                            </h6>
+
+                            <div class="mb-3">
+                                <label for="related_app" class="form-label required">{% trans 'Source Table' %}</label>
+                                <select required class="form-select select2 related-app-select" id="related_app" data-url="{% url 'DimensionSyncConfigApplicationListAPI'%}"
+                                        data-keyResp="dimension_sync_config_app_list" name="related_app_id">
+                                </select>
+                                <div class="form-text">{% trans 'Select the master data table to sync from' %}</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <h6 class="text-uppercase text-warning fw-semibold mb-3 fs-7">
+                                <i class="bi bi-arrow-repeat me-2"></i>
+                                {% trans 'Synchronization Options' %}
+                            </h6>
+
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="sync-on-save" name="sync_on_save" checked>
+                                <label class="form-check-label" for="sync-on-save">
+                                    {% trans 'Sync on save' %}
+                                </label>
+                            </div>
+
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="sync-on-delete" name="sync_on_delete" checked>
+                                <label class="form-check-label" for="sync-on-delete">
+                                    {% trans 'Sync on delete' %}
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <h6 class="text-uppercase text-info fw-semibold mb-3 fs-7">
+                                {% trans 'Run initial sync for old data' %}
+                            </h6>
+
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="initial_sync" checked name="allow_init_sync">
+                                <label class="form-check-label" for="initial_sync">
+                                    {% trans 'Run initial sync' %}
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-config" form="form-add-config">
+                        <span>{% trans 'Save Dimension Config' %}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-update-config" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">{% trans 'Update Dimension Config' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-update-config" data-url="{% url "DimensionSyncConfigDetailAPI" 0 %}" data-method="PUT">
+                        <div class="mb-5">
+                            <h6 class="text-uppercase text-primary fw-semibold mb-3 fs-7">
+                                <i class="bi bi-info-circle me-2"></i>
+                                {% trans 'Dimension Information' %}
+                            </h6>
+
+                            <div class="mb-3">
+                                <label for="dimension-select-update" class="form-label required">{% trans 'Dimension' %}</label>
+                                <select required class="form-select select2 dimension-select" id="dimension-select-update" data-url="{% url 'DimensionDefinitionListAPI'%}"
+                                        data-keyResp="dimension_definition_list" name="dimension_id">
+                                </select>
+                                <div class="form-text">{% trans 'Select the dimension to sync' %}</div>
+                            </div>
+
+                            <div class="row gx-3">
+                                <div class="col-md-6 mb-3">
+                                    <label for="dimension-code-update" class="form-label ">{% trans 'Dimension Code' %}</label>
+                                    <input type="text" class="form-control dimension-code" id="dimension-code-update" readonly>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="dimension-name-update" class="form-label ">{% trans 'Dimension Name' %}</label>
+                                    <input type="text" class="form-control dimension-name" id="dimension-name-update" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <h6 class="text-uppercase text-success fw-semibold mb-3 fs-7">
+                                <i class="bi bi-table me-2"></i>
+                                {% trans 'Master Table Configuration' %}
+                            </h6>
+
+                            <div class="mb-3">
+                                <label for="related-app-update" class="form-label required">{% trans 'Source Table' %}</label>
+                                <select required class="form-select select2 related-app-select" id="related-app-update" data-url="{% url 'DimensionSyncConfigApplicationListAPI'%}"
+                                        data-keyResp="dimension_sync_config_app_list" name="related_app_id">
+                                </select>
+                                <div class="form-text">{% trans 'Select the master data table to sync from' %}</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <h6 class="text-uppercase text-warning fw-semibold mb-3 fs-7">
+                                <i class="bi bi-arrow-repeat me-2"></i>
+                                {% trans 'Synchronization Options' %}
+                            </h6>
+
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="sync-on-save-update" name="sync_on_save" checked>
+                                <label class="form-check-label" for="sync-on-save-update">
+                                    {% trans 'Sync on save' %}
+                                </label>
+                            </div>
+
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="sync-on-delete-update" name="sync_on_delete" checked>
+                                <label class="form-check-label" for="sync-on-delete-update">
+                                    {% trans 'Sync on delete' %}
+                                </label>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                    <button type="submit" class="btn btn-primary" id="btn-update-config" form="form-update-config">
+                        <span>{% trans 'Save Dimension Config' %}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/accountingsettings/dimension_sync_config/dimension_sync_config.js' %}"></script>
+{% endblock %}

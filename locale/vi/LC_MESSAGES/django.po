@@ -9049,10 +9049,6 @@ msgid "The product does not have opportunity BOM"
 msgstr "Sản phẩm không có định mức nguyên vật liệu dự án"
 
 #
-msgid "According to inventory UOM"
-msgstr "Theo đơn vị lưu kho"
-
-#
 msgid "Import status"
 msgstr "Trạng thái nhập"
 

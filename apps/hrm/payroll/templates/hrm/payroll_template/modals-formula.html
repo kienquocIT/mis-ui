@@ -9,13 +9,13 @@
         <div class="row">
             <div class="col-12">
                 <div class="form-check-inline justify-content-center d-inline-flex">
-                    <input class="form-check-input" type="radio" name="formula_type" id="formula_type_1" checked>
+                    <input class="form-check-input" type="radio" name="formula_type" id="formula_type_1" value="0">
                     <label class="form-check-label" for="formula_type_1">
                         {% trans 'Formula' %}
                     </label>
                 </div>
                 <div class="form-check-inline justify-content-center d-inline-flex">
-                    <input class="form-check-input" type="radio" name="formula_type" id="formula_type_2">
+                    <input class="form-check-input" type="radio" name="formula_type" id="formula_type_2" value="1">
                     <label class="form-check-label" for="formula_type_2">
                         {% trans 'Manual' %}
                     </label>
@@ -76,9 +76,6 @@
         </div>
     </div>
     <div class="offcanvas-footer border-top p-4 text-right">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas" aria-label="Close">
-            <span>{% trans 'Close' %}</span>
-        </button>
         <button class="btn btn-primary" id="formula-save" type="button">
             <span>
                 <span class="icon">
@@ -86,6 +83,9 @@
                 </span>
                 <span>{% trans 'Save' %}</span>
             </span>
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas" aria-label="Close">
+            <span>{% trans 'Close' %}</span>
         </button>
     </div>
 </div>

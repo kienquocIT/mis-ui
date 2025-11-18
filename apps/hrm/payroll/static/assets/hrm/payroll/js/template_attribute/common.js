@@ -14,7 +14,6 @@ class TemplateAttrElements {
 
 const pageElements = new TemplateAttrElements();
 
-
 class TemplateAttrPageFunction {
     static combineSubmitData(form) {
         form.dataForm['component_title'] = pageElements.$titleEle.val();
@@ -29,22 +28,11 @@ class TemplateAttrPageFunction {
 
 class TemplateAttrEventHandler {
     static initPageEvent() {
-        $(document).on('click', '.edit-attr', function() {
-            $('#template_attr_modal_title').attr('data-id', $(this).attr('data-id'));
-            pageElements.$titleEle.val($(this).attr('data-title'));
-            pageElements.$nameEle.val($(this).attr('data-name'));
-            pageElements.$codeEle.val($(this).attr('data-code'));
-            pageElements.$attrTypeEle.val($(this).attr('data-type')).trigger('change');
-            pageElements.$mandatoryEle.prop('checked', $(this).attr('data-mandatory') === 'true');
-            pageElements.$formulaEle.val($(this).attr('data-formula'));
-        });
-
+        let $formTemplate = $('#frm_template_attribute')
         // reset all element when closing modal
         $('#templateAttributeModal').on('hidden.bs.modal', function () {
-            $('#frm_template_attribute')[0].reset();
+            $formTemplate[0].reset();
             $('#template_attr_type').val('').trigger('change');
-            $('#frm_template_attribute').removeAttr('data-id').data('method', 'POST');
-            $('#template_attr_modal_title').removeAttr('data-id');
         });
     }
 }

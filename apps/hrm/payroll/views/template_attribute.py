@@ -12,7 +12,7 @@ class PayrollTemplAttrList(View):
         auth_require=True,
         template='hrm/payroll/template_attribute/list.html',
         breadcrumb='HRM_TEMPLATE_ATTRIBUTE_LIST_PAGE',
-        menu_active='menu_payroll_template',
+        menu_active='menu_template_attribute_list',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

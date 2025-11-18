@@ -40,3 +40,6 @@ msgstr "Thuộc tính hoặc phép tính cần thiết"
 #
 msgid "Attribute list not found"
 msgstr "Danh sách thuộc tính trống"
+#
+msgid "Custom"
+msgstr "Tùy chỉnh"

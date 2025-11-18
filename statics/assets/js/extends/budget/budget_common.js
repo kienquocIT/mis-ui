@@ -234,40 +234,72 @@ class BudgetControl {
         let row = ele.closest('tr');
         let check = true;
         if ($(ele).val() && row) {
+            let dimensionOtherEle$ = null;
+            let dimensionValueOtherEle$ = null;
             let dimensionValueEle$ = null;
             if ($(ele).hasClass('table-row-dimension-1')) {
-                let dimension2Ele$ = $(row).find('.table-row-dimension-2');
-                if (dimension2Ele$.length > 0) {
-                    if (dimension2Ele$.val()) {
-                        if (dimension2Ele$.val() === $(ele).val()) {
+                dimensionOtherEle$ = $(row).find('.table-row-dimension-2');
+                if (dimensionOtherEle$.length > 0) {
+                    if (dimensionOtherEle$.val()) {
+                        if (dimensionOtherEle$.val() === $(ele).val()) {
                             check = false;
                         }
                     }
                 }
                 dimensionValueEle$ = $(row).find('.table-row-dimension-value-1');
+                dimensionValueOtherEle$ = $(row).find('.table-row-dimension-value-2');
             }
             if ($(ele).hasClass('table-row-dimension-2')) {
-                let dimension1Ele$ = $(row).find('.table-row-dimension-1');
-                if (dimension1Ele$.length > 0) {
-                    if (dimension1Ele$.val()) {
-                        if (dimension1Ele$.val() === $(ele).val()) {
+                dimensionOtherEle$ = $(row).find('.table-row-dimension-1');
+                if (dimensionOtherEle$.length > 0) {
+                    if (dimensionOtherEle$.val()) {
+                        if (dimensionOtherEle$.val() === $(ele).val()) {
                             check = false;
                         }
                     }
                 }
                 dimensionValueEle$ = $(row).find('.table-row-dimension-value-2');
+                dimensionValueOtherEle$ = $(row).find('.table-row-dimension-value-1');
             }
             if (check === false) {
                 $.fn.notifyB({description: "Dimensions must be different"}, 'failure');
                 FormElementControl.loadInitS2($(ele), [], {'related_app_id__in': BudgetControl.appMapDimension["c51857ef-513f-4dbf-babd-26d68950ad6e"].join(',')}, null, true);
                 return false;
             }
-            if (dimensionValueEle$) {
-                if (dimensionValueEle$.length > 0) {
-                    FormElementControl.loadInitS2(dimensionValueEle$, [], {'dimension_id': $(ele).val()}, null, true);
+            FormElementControl.loadInitS2(dimensionValueEle$, [], {'dimension_id': $(ele).val()}, null, true);
+            if (dimensionValueEle$ && dimensionValueOtherEle$) {
+                if (dimensionValueEle$.length > 0 && dimensionValueOtherEle$.length > 0) {
+                    if (dimensionValueOtherEle$.val()) {
+                        let dataDimensionValue = SelectDDControl.get_data_from_idx($(dimensionValueOtherEle$), $(dimensionValueOtherEle$).val());
+                        WindowControl.showLoading();
+                        $.fn.callAjax2({
+                                'url': BudgetControl.$urlEle.attr('data-api-budget'),
+                                'method': "GET",
+                                'data': {'doc_id': dataDimensionValue?.['related_doc_id'] ? dataDimensionValue?.['related_doc_id'] : null},
+                                'isDropdown': true,
+                            }
+                        ).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    if (data.hasOwnProperty('budget_list') && Array.isArray(data.budget_list)) {
+                                        let idsIn = [];
+                                        for (let budget of data?.['budget_list']) {
+                                            for (let budgetLine of budget?.['budget_line_data'] ? budget?.['budget_line_data'] : []) {
+                                                idsIn = idsIn.concat(budgetLine?.['dimension_values_id']);
+                                            }
+                                        }
+                                        FormElementControl.loadInitS2(dimensionValueEle$, [], {'id__in': idsIn.join(','), 'dimension_id': $(ele).val()}, null, true);
+                                        WindowControl.hideLoading();
+                                    }
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
+        return true;
     };
 
     static dtbOnChangeDimensionValue(ele) {
@@ -422,8 +454,24 @@ class BudgetControl {
         }
     };
 
+    static dtbLoadTotal() {
+        let tblWrapper = document.getElementById('tbl_budget_extend_wrapper');
+        if (tblWrapper) {
+            let tblFt = tblWrapper.querySelector('.dataTables_scrollFoot');
+            if (tblFt) {
+                let totalEle = tblFt.querySelector('.tbl-budget-total');
+                if (totalEle) {
+                    $(totalEle).attr('data-init-money', String(BudgetControl.dtbTotalConsume()));
+                    $.fn.initMaskMoney2();
+                }
+            }
+        }
+        return true;
+    };
+
     static dtbRenderDetail(data) {
         BudgetControl.dtbBudget(data);
+        BudgetControl.dtbLoadTotal();
     };
 
     static loadAddBudget() {
@@ -572,6 +620,7 @@ $(function () {
 
         BudgetControl.$tbl.on('change', '.table-row-value-consume', function (e) {
             BudgetControl.dtbOnChangeValueUse(this);
+            BudgetControl.dtbLoadTotal();
         });
 
     });

@@ -12389,5 +12389,9 @@ msgid "The consume value cannot be greater than the available value"
 msgstr "Giá trị tiêu thụ không thể lớn hơn giá trị khả dụng"
 
 #
+msgid "Dimensions must be different"
+msgstr "Các chiều phải khác nhau"
+
+#
 msgid "Dimension values must be different with other row"
-msgstr "Giá trị ở các dòng phải khác nhau"
+msgstr "Bộ giá trị ở mỗi dòng dòng phải khác nhau"

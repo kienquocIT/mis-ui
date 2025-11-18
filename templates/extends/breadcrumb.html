@@ -5,7 +5,7 @@
                 {% if forloop.last %}
                     <li class="breadcrumb-item active" aria-current="page">
                         {{ item.title }}
-                        <span class="ml-2 hidden" {% if item.is_append_code %} id="idx-breadcrumb-current-code" {% endif %}></span>
+                        <div class="d-flex align-items-center ml-2 hidden" {% if item.is_append_code %} id="idx-breadcrumb-current-code" {% endif %}></div>
                     </li>
                 {% else %}
                     <li class="breadcrumb-item"><a href="{{ item.url }}">{{ item.title }}</a></li>

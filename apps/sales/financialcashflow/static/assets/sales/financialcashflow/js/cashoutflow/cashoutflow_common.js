@@ -941,6 +941,8 @@ class COFEventHandler {
                 pageElements.$customer_space.prop('hidden', true)
                 pageElements.$employee_space.prop('hidden', false)
                 // pageElements.$account_space.prop('hidden', true)
+
+                BudgetControl.loadReInitDtbBudget();
             }
             else if (Number($(this).val()) === 3) {
                 pageElements.$supplier_space.prop('hidden', true)

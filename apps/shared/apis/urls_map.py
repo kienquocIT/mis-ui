@@ -1059,4 +1059,5 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     INITIAL_BALANCE_LIST = StringUrl('accounting-setting/initial-balance/list')
 
     # accounting - budget
+    BUDGET_LIST = StringUrl('budget/list')
     BUDGET_LINE_LIST = StringUrl('budget/budget-line/list')

@@ -23,18 +23,32 @@
         </thead>
         <tbody>
         </tbody>
+        <tfoot>
+        <tr class="bg-light">
+            <th colspan="7"></th>
+            <th colspan="1">
+                <b>{% trans 'Total' %}:</b>
+            </th>
+            <th colspan="1">
+                <span class="mask-money badge text-dark-10 fs-6 bg-blue-light-4 border border-blue tbl-budget-total" data-init-money="0"></span>
+            </th>
+            <th colspan="1"></th>
+        </tr>
+        </tfoot>
     </table>
 </div>
 
 <input
-    type="text"
+    type="text" class="hidden"
     id="budget_trans_factory"
     data-valid-value-consume="{% trans 'The consume value cannot be greater than the available value' %}"
+    data-valid-dimension="{% trans 'Dimensions must be different' %}"
     data-valid-dimension-value="{% trans 'Dimension values must be different with other row' %}"
 >
 <input
         type="text" class="hidden"
         id="budget_url_factory"
+        data-api-budget="{% url 'BudgetListAPI' %}"
         data-api-budget-line="{% url 'BudgetLineListAPI' %}"
         data-api-md-dimension="{% url 'DimensionDefinitionListAPI' %}"
         data-api-md-dimension-value="{% url 'DimensionValueListAPI' %}"

@@ -31,3 +31,7 @@
 .margin-bt-25vh{
     margin-bottom: 25vh;
 }
+
+.max-w-375p {
+    max-width: 375px;
+}

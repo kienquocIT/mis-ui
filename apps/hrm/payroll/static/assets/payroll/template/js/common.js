@@ -104,7 +104,8 @@ class PayrollTemplateCommon {
                         let isFor = ``;
                         if (data.source === 1){
                             if (data.formula_type === 0 || data.formula_type === false)
-                                isFor = `<span class="w-100 d-flex justify-content-start">=<i class="font-3 w-90 overflow-hidden white-space-nowrap d-inline-block text-ellipsis">${row?.txt || ''}</i></span>`
+                                isFor = `<span class="w-100 d-flex justify-content-start">=`
+                                    +`<i class="font-3 w-90 max-w-375p overflow-hidden white-space-nowrap d-inline-block text-ellipsis">${row?.txt || ''}</i></span>`
                             if (data.formula_type === 1 || data.formula_type === true){
                                 if (data?.formula?.txt)
                                     isFor = data?.formula?.txt

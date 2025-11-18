@@ -832,7 +832,6 @@ class UsualLoadPageFunction {
             keyText: 'title',
         }).on('change', function () {
             if (apply_default_on_change) {
-                debugger
                 if ($(this).val()) {
                     let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
                     $(this).closest('.input-group').find('.dropdown-menu').prop('hidden', false)

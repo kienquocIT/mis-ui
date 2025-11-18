@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Initial Balance list' %}
+{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+
+{% block pageAction %}
+    <a data-bs-toggle="modal" data-bs-target="#modal-create-initial-balance">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+{% endblock %}
+{% block modalData %}
+
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/kms/incoming-doc/list.js' %}"></script>
+{% endblock %}
+
+

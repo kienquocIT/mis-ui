@@ -38,18 +38,19 @@ class TabEmployeePayableFunction {
                 {
                     className: "w-20",
                     render: (data, type, row) => {
-                    return  `
-                        <div class="d-flex align-items-center gap-2">
-                            <input type="text" class="form-control row-employee-info" 
-                                placeholder="Click to select..." readonly/>
-                            <button type="button" ${option === 'detail' ? 'disabled' : ''}
-                                class="btn btn-primary btn-sm add-employee-btn"
-                                data-bs-toggle="modal"
-                                data-bs-target="#employee-modal">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                    `;
+                        return  `
+                            <div class="input-group">
+                                <input type="text" class="form-control row-employee-info" 
+                                    placeholder="Click to select..." readonly/>
+                                <span class="input-group-text p-0">
+                                    <button type="button" ${option === 'detail' ? 'disabled' : ''}
+                                        class="btn btn-primary btn-sm add-employee-btn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#employee-modal">
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                    </button>
+                                </span>
+                            </div>`;
                     }
                 },
                 {
@@ -64,15 +65,21 @@ class TabEmployeePayableFunction {
                     }
                 },
                 {
-                    className: "w-10",
+                    className: "w-20",
                     render: (data, type, row) => {
-                        return `<select class="form-select select2 row-employee-payable-code"></select>`;
-                    }
-                },
-                {
-                    className: "w-10",
-                    render: (data, type, row) => {
-                        return `<span class="row-ar-account-name"></span><br><span class="row-employee-payable-name"></span>`;
+                        return `<div class="input-group">
+                            <select class="form-select select2 row-employee-payable-code"></select>
+                            <span class="input-group-text p-0">
+                                <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-regular fa-circle-question"></i>
+                                </a>
+                                <div class="dropdown-menu bflow-mirrow-card-80 p-3" style="min-width: 200px;">
+                                    <h5 class="row-employee-payable-code-detail fw-bold"></h5>
+                                    <h6 class="row-fk-employee-payable-name"></h6>
+                                    <h6 class="row-employee-payable-name"></h6>
+                                </div>
+                            </span>
+                        </div>`;
                     }
                 },
                 {
@@ -185,8 +192,9 @@ class TabEmployeePayableEventHandler {
 
         // event for load account name when account code is selected
         tabEmployeePayableElements.$tableEmployeePayable.on('change', '.row-employee-payable-code', function() {
-            let selected = SelectDDControl.get_data_from_idx($(this), $(this).val());
-            $(this).closest('tr').find('.row-ar-account-name').text(selected?.['foreign_acc_name'] || '');
+            let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
+            $(this).closest('tr').find('.row-employee-payable-code-detail').text(selected?.['acc_code'] || '')
+            $(this).closest('tr').find('.row-fk-employee-payable-name').text(selected?.['foreign_acc_name'] || '')
             $(this).closest('tr').find('.row-employee-payable-name').text(`(${selected?.['acc_name'] || ''})`)
         });
 

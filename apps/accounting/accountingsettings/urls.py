@@ -9,7 +9,7 @@ from apps.accounting.accountingsettings.views import (
     DimensionValueDetailAPI, DimensionSyncConfigApplicationListAPI, DimensionSyncConfigList, DimensionSyncConfigListAPI,
     DimensionSyncConfigDetailAPI, DimensionListForAccountingAccountAPI, DimensionAccountList, DimensionAccountListAPI,
     DimensionAccountDetailAPI, DimensionSplitTemplateList, DimensionSplitTemplateListAPI,
-    DimensionSplitTemplateDetailAPI
+    DimensionSplitTemplateDetailAPI, InitialBalanceDetail, InitialBalanceDetailAPI, InitialBalanceUpdate,
 )
 
 urlpatterns = [
@@ -32,6 +32,9 @@ urlpatterns = [
 ] + [
     path('initial-balance/list', InitialBalanceList.as_view(), name='InitialBalanceList'),
     path('initial-balance/list/api', InitialBalanceListAPI.as_view(), name='InitialBalanceListAPI'),
+    path('initial-balance/detail/<str:pk>', InitialBalanceDetail.as_view(), name='InitialBalanceDetail'),
+    path('initial-balance/update/<str:pk>', InitialBalanceUpdate.as_view(), name='InitialBalanceUpdate'),
+    path('initial-balance/detail/api/<str:pk>', InitialBalanceDetailAPI.as_view(), name='InitialBalanceDetailAPI'),
 ]
 
 urlpatterns += [

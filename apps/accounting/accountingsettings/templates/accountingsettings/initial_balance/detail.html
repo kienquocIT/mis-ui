@@ -8,17 +8,19 @@
     <link href="{% static 'assets/css/accountingsettings/initial_balance/common.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm_initial_balance" id="btn_create_initial_balance">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon"><i class="fa-regular fa-floppy-disk"></i></span>
-        </span>
-    </button>
+    <a href="{% url 'InitialBalanceUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary" id="btn-enable-edit">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
+            </span>
+        </button>
+    </a>
 {% endblock %}
 {% block pageContent %}
-    <form id="frm_initial_balance" data-method="POST" method="GET"
-          data-url="{% url 'InitialBalanceListAPI' %}"
-          data-url-redirect="{% url 'InitialBalanceList' %}">
+    <form id="frm_detail_initial_balance" data-method="GET" data-url-detail="{% url 'InitialBalanceDetailAPI' pk=pk %}">
         {% csrf_token %}
         {% include 'accountingsettings/initial_balance/common/information.html' %}
     </form>
@@ -49,5 +51,5 @@
     <script src="{% static "assets/js/accountingsettings/initial_balance/tab_data/tab_employee_payable.js" %}"></script>
     <script src="{% static "assets/js/accountingsettings/initial_balance/tab_data/tab_tools.js" %}"></script>
     <script src="{% static "assets/js/accountingsettings/initial_balance/tab_data/tab_account.js" %}"></script>
-    <script src="{% static "assets/js/accountingsettings/initial_balance/create.js" %}"></script>
+    <script src="{% static "assets/js/accountingsettings/initial_balance/detail.js" %}"></script>
 {% endblock %}

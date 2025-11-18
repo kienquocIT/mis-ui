@@ -285,3 +285,9 @@ msgstr "Lương đóng bảo hiểm"
 #
 msgid "Employee salary"
 msgstr "Lương cơ bản"
+#
+msgid "Personal infomation"
+msgstr "Thông tin cá nhân"
+#
+msgid "Dependent person"
+msgstr "Người phụ thuộc"

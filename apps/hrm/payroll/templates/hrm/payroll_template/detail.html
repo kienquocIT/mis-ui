@@ -89,14 +89,7 @@
                 <div class="dropdown-item position-relative menus-attr disabled">
                     <span>{% trans 'Select attribute' %}</span>
                     <span><i class="fa-solid fa-chevron-right fa-2xs"></i></span>
-                    <ul>
-                        <li>
-                            <a href="#">
-                                {% trans 'Add new attribute' %}
-                                <span><i class="fa-solid fa-circle-plus"></i></span>
-                            </a>
-                        </li>
-                    </ul>
+                    <ul></ul>
                 </div>
                 <a class="dropdown-item disabled" href="#" data-selected="formula">
                     <span>{% trans 'Formula' %}</span>
@@ -106,6 +99,8 @@
     </div>
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'assets/js/extends/components/offcanvas-formula.js' %}"></script>
+
     <script src="{% static 'assets/payroll/template/js/common.js' %}"></script>
     <script src="{% static 'assets/payroll/template/js/detail.js' %}"></script>
 {% endblock %}

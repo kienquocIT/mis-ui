@@ -40,6 +40,7 @@
                             data-url="{% url 'GroupDDListAPI' %}"
                             data-method="GET" data-keyResp="group_dd_list"
                             data-allowClear="true"
+                            data-maximumSelectionLength="Infinity"
                             multiple
                             data-closeOnSelect="false"
                     ></select>
@@ -55,7 +56,6 @@
             </div>
         </div>
         <div class="row">
-
             <table class="table nowrap min-w-1500p w-100" id="tbl_attribute_list">
                  <thead>
                     <tr>
@@ -72,6 +72,7 @@
             <button class="btn btn-icon btn btn-outline-primary" type="button" id="add-new-row-attr">
                 <i class="fa-solid fa-plus"></i>
             </button>
+            <div class="margin-bt-25vh clearfix"></div>
         </div>
     </form>
 {% endblock %}
@@ -93,7 +94,7 @@
                     <span><i class="fa-solid fa-chevron-right fa-2xs"></i></span>
                     <ul>
                         <li>
-                            <a href="#">
+                            <a href="#" target="_blank">
                                 {% trans 'Add new attribute' %}
                                 <span><i class="fa-solid fa-circle-plus"></i></span>
                             </a>

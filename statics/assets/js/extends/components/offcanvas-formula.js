@@ -70,6 +70,7 @@ const ComponentListController = (function() {
         'unbalance': $.fn.gettext('value or operator expected')
     };
     let onSaveCallback = null;
+    let onOpenCanvasCallback = null;
 
     /**
      * Initialize controller
@@ -85,21 +86,28 @@ const ComponentListController = (function() {
 
         // clear form when close canvas
         const $modal = $('#offcanvasFormula')
+        $modal.on('show.bs.offcanvas', function(){
+            onOpenCanvasCallback()
+        })
+
         $modal.on('hidden.bs.offcanvas', function () {
             // default field of form
-            $('#input_editor').val('')
+            $elmFormula.val('')
             $('#formula_type_1').prop('checked', true)
-
             // clear custom field of form
-            $('#table_index').remove()
+            $('.table_index').remove()
+            $('.error-message').text('')
+            $('#formula-save').prop('disabled', false)
         })
 
         // Khi click Save button
-        $('#formula-save').on('click', function () {
-            if (validateFormula()?.result === true && onSaveCallback) {
+        $elmSave.on('click', function () {
+            const formulaType = parseInt($('input[name="formula_type"]:checked').val())
+            if ((validateFormula()?.result === true && onSaveCallback)
+                || onSaveCallback && formulaType === 1) {
                 const data = {
                     formula: $elmFormula.val(),
-                    formulaType: $('input[name="formula_type"]:checked').val(),
+                    formulaType: formulaType,
                     rowIndex: $('#offcanvasFormula').find('.table_index').attr('data-idx'),
                     formula_explain: $('.editor_explain').text()
                 };
@@ -116,35 +124,48 @@ const ComponentListController = (function() {
      * Render component list với optimization
      * @param {Array} data - Template attribute list
      */
-    function render(data) {
+    function render(data, isAddMore=false) {
         if (!Array.isArray(data) || !container) {
             console.error('Invalid render parameters');
             return this;
         }
 
+        const ul = container.querySelector('ul');
         // Clear previous data
-        store.clear();
-
-        // get all formula
-        let crtDataFormula = $('#tbl_attribute_list').DataTable().data().toArray()
-        for (let formula of crtDataFormula){
-            if (formula.source === 1){  //  row source===1 data is formula
-                data.push({
-                    'compoment_code': formula.code,
-                    'compoment_name': formula.name,
-                    'compoment_title': formula.title,
-                    'component_type': formula.type,
-                })
+        if (!isAddMore) {
+            store.clear();
+        }
+        else {
+            // Xóa các key bị trùng dữ liệu khi isAddMore là true
+            const newCodes = data
+                .filter(attr => attr.component_code && attr.component_code.trim())
+                .map(attr => escapeHtml(attr.component_code));
+            const keysToDelete = [];
+            if(newCodes.length){
+                for (const [key, _value] of store.entries()) {
+                    if (newCodes.some(code => key.startsWith(code))) {
+                        keysToDelete.push(key);
+                    }
+                }
+                keysToDelete.forEach((key) => {
+                    store.delete(key)
+                    const elmSelected = ul.querySelector(`.component-item[data-key="${key}"]`)
+                    if (elmSelected){
+                        elmSelected.remove()
+                    }
+                });
             }
         }
-        // Build HTML with template literals (faster than string concat)
+
+        const startIndex = isAddMore ? store.size : 0;
+
+        // Build HTML with template literals
         const html = data.map((attr, index) => {
             const safeCode = escapeHtml(attr.component_code || '');
-            const key = `${safeCode}_${index}`;
-
+            const key = `${safeCode}_${startIndex + index}`;
             // Store data
             store.set(key, {
-                index,
+                index: startIndex + index,
                 data: attr,
                 element: null // Will be set after DOM insertion
             });
@@ -156,15 +177,17 @@ const ComponentListController = (function() {
                     role="button"
                     tabindex="0">
                     <i class="fas fa-hashtag"></i>
-                    <span class="code-text">${attr.component_name}</span>
+                    <span class="code-text">${attr.component_title}</span>
                 </li>
             `;
         }).join('');
 
         // Single DOM update
-        const ul = container.querySelector('ul');
+
         if (ul) {
-            ul.innerHTML = html;
+            if (!isAddMore)
+                ul.innerHTML = html;
+            else ul.innerHTML += html
             // Cache DOM references
             ul.querySelectorAll('li').forEach(li => {
                 const key = li.dataset.key;
@@ -192,10 +215,11 @@ const ComponentListController = (function() {
         // check formula valid
         $elmFormula.on('blur', () =>{
             let objCheck = validateFormula()
-            if (objCheck?.['result'] === true) {
+            if (objCheck?.['result'] === true || $('input[name="formula_type"]:checked').val() === "1") {
                 $elmFormula.next().text('')
                 $elmSave.removeClass('disabled')
-            } else {
+            }
+            else {
                 $elmSave.addClass('disabled')
                 const error = errorMessages[objCheck?.remark] || '';
                 $elmFormula.next().text(error);
@@ -306,7 +330,7 @@ const ComponentListController = (function() {
     }
 
     function validateFormula(){
-        let dataInput = $('#input_editor').val();
+        let dataInput = $elmFormula.val();
 
         const validations = [
             {check: validateParentheses, error: 'parentheses'},
@@ -328,10 +352,21 @@ const ComponentListController = (function() {
         onSaveCallback = callback;
     }
 
+    function setOnOpenCallback(callback) {
+        onOpenCanvasCallback = callback;
+    }
+
+    function setOnEditCallback(dataRow) {
+        $elmFormula.val(dataRow.formula.txt)
+        $(`input[name="formula_type"][value="${dataRow?.['formula_type'] ? 1 : 0}"]`).prop('checked', true)
+    }
+
     // Public API
     return {
         init,
         render,
-        setOnSaveCallback
+        setOnSaveCallback,
+        setOnOpenCallback,
+        setOnEditCallback,
     };
 })();

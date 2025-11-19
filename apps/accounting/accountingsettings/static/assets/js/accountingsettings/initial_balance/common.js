@@ -70,7 +70,7 @@ class InitialBalanceHandler {
                     });
                     pageElements.$accountingPeriodEle.trigger('change');
                     $.fn.initMaskMoney2();
-                    UsualLoadPageFunction.DisablePage(option==='detail')
+                    UsualLoadPageFunction.DisablePage(option==='detail');
                 }
             })
     }

@@ -39,7 +39,7 @@ $(document).ready(function () {
         let dataForm = {};
         dataForm["title"] = pageElements.$titleEle.val();
         dataForm["description"] = pageElements.$descriptionEle.val();
-
+        dataForm["tab_money_data"] = TabMoneyFunction.combineTabCashData();
         return {
             url: frm.dataUrl,
             method: 'PUT',
@@ -59,8 +59,8 @@ $(document).ready(function () {
                         if (data) {
                             $.fn.notifyB({description: "Successfully"}, 'success')
                             setTimeout(() => {
-                                window.location.replace($(this).attr('data-url-redirect'));
-                                location.reload.bind(location);
+                                window.location.replace($(this).attr('data-url-redirect'))
+                                location.reload.bind(location)
                             }, 1000);
                         }
                     },

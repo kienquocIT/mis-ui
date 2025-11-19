@@ -6,15 +6,27 @@ BudgetControl{}
 */
 
 class BudgetControl {
+    static appID = JSON.parse($('#app_id_current').text());
     static $tbl = $('#tbl_budget_extend');
     static $transEle = $('#budget_trans_factory');
     static $urlEle = $('#budget_url_factory');
-    static appMapDimension = {
+    static appMapData = {
         // 'financialcashflow.cashoutflow'
-        "c51857ef-513f-4dbf-babd-26d68950ad6e": [
-            "a870e392-9ad2-4fe2-9baa-298a38691cf2",
-            "245e9f47-df59-4d4a-b355-7eff2859247f",
-        ]
+        "c51857ef-513f-4dbf-babd-26d68950ad6e": {
+            "dimension": [
+                "a870e392-9ad2-4fe2-9baa-298a38691cf2",
+                "245e9f47-df59-4d4a-b355-7eff2859247f",
+            ],
+            "columns": BudgetControl.dtbRenderColumnsCOF(),
+        },
+        // 'purchasing.purchaserequest'
+        "fbff9b3f-f7c9-414f-9959-96d3ec2fb8bf": {
+            "dimension": [
+                "a870e392-9ad2-4fe2-9baa-298a38691cf2",
+                "a8badb2e-54ff-4654-b3fd-0d2d3c777538",
+            ],
+            "columns": BudgetControl.dtbRenderColumnsPR(),
+        }
     }
 
     static dtbBudget(data) {
@@ -31,107 +43,7 @@ class BudgetControl {
             searching: false,
             autoWidth: true,
             scrollX: true,
-            columns: [
-                {
-                    targets: 0,
-                    width: '1%',
-                    render: (data, type, row) => {
-                        return `<span class="table-row-order">${row?.['order']}</span>`;
-                    }
-                },
-                {
-                    targets: 1,
-                    width: '12%',
-                    render: (data, type, row) => {
-                        return `<select 
-                                    class="form-select table-row-dimension-1"
-                                    data-url="${BudgetControl.$urlEle.attr('data-api-md-dimension')}"
-                                    data-method="GET"
-                                    data-keyResp="dimension_definition_list"
-                                 >
-                                </select>`;
-                    }
-                },
-                {
-                    targets: 2,
-                    width: '12%',
-                    render: (data, type, row) => {
-                        return `<select 
-                                    class="form-select table-row-dimension-value-1"
-                                    data-url="${BudgetControl.$urlEle.attr('data-api-md-dimension-value')}"
-                                    data-method="GET"
-                                    data-keyResp="dimension_value_list"
-                                 >
-                                </select>`;
-                    }
-                },
-                {
-                    targets: 3,
-                    width: '12%',
-                    render: (data, type, row) => {
-                        return `<select 
-                                    class="form-select table-row-dimension-2"
-                                    data-url="${BudgetControl.$urlEle.attr('data-api-md-dimension')}"
-                                    data-method="GET"
-                                    data-keyResp="dimension_definition_list"
-                                 >
-                                </select>`;
-                    }
-                },
-                {
-                    targets: 4,
-                    width: '12%',
-                    render: (data, type, row) => {
-                        return `<select 
-                                    class="form-select table-row-dimension-value-2"
-                                    data-url="${BudgetControl.$urlEle.attr('data-api-md-dimension-value')}"
-                                    data-method="GET"
-                                    data-keyResp="dimension_value_list"
-                                 >
-                                </select>`;
-                    }
-                },
-                {
-                    targets: 5,
-                    width: '12%',
-                    render: (data, type, row) => {
-                        return `<span class="mask-money badge text-dark-10 fs-6 bg-grey-light-4 table-row-value-planned" data-init-money="${parseFloat(row?.['budget_line_data']?.['value_planned'] ? row?.['budget_line_data']?.['value_planned'] : '0')}"></span><input type="text" class="form-control table-row-budget-line-data hidden">`;
-                    }
-                },
-                {
-                    targets: 6,
-                    width: '12%',
-                    render: (data, type, row) => {
-                        return `<span class="mask-money badge text-dark-10 fs-6 bg-yellow-light-4 table-row-value-consumed" data-init-money="${parseFloat(row?.['budget_line_data']?.['value_consumed'] ? row?.['budget_line_data']?.['value_consumed'] : '0')}"></span>`;
-                    }
-                },
-                {
-                    targets: 7,
-                    width: '12%',
-                    render: (data, type, row) => {
-                        return `<span class="mask-money badge text-dark-10 fs-6 bg-red-light-4 table-row-value-available" data-init-money="${parseFloat(row?.['budget_line_data']?.['value_available'] ? row?.['budget_line_data']?.['value_available'] : '0')}"></span>`;
-                    }
-                },
-                {
-                    targets: 8,
-                    width: '14%',
-                    render: (data, type, row) => {
-                        return `<input 
-                                    type="text" 
-                                    class="form-control mask-money table-row-value-consume valid-num" 
-                                    value="${row?.['value_consume'] ? row?.['value_consume'] : '0'}"
-                                    data-return-type="number"
-                                >`;
-                    }
-                },
-                {
-                    targets: 9,
-                    width: '1%',
-                    render: (data, type, row) => {
-                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
-                    }
-                },
-            ],
+            columns: BudgetControl.dtbRenderColumns(),
             rowCallback: function (row, data, index) {
                 let dimension1Ele$ = $(row).find('.table-row-dimension-1');
                 let dimensionValue1Ele$ = $(row).find('.table-row-dimension-value-1');
@@ -143,7 +55,7 @@ class BudgetControl {
                     if (data?.['dimension_first_data']) {
                         dataS2 = [data?.['dimension_first_data']];
                     }
-                    FormElementControl.loadInitS2($(dimension1Ele$), dataS2, {'related_app_id__in': BudgetControl.appMapDimension["c51857ef-513f-4dbf-babd-26d68950ad6e"].join(',')}, null, true);
+                    FormElementControl.loadInitS2($(dimension1Ele$), dataS2, {'related_app_id__in': BudgetControl.appMapData[BudgetControl.appID]['dimension'].join(',')}, null, true);
                 }
                 if (dimensionValue1Ele$.length > 0) {
                     let dataS2 = [];
@@ -157,7 +69,7 @@ class BudgetControl {
                     if (data?.['dimension_second_data']) {
                         dataS2 = [data?.['dimension_second_data']];
                     }
-                    FormElementControl.loadInitS2($(dimension2Ele$), dataS2, {'related_app_id__in': BudgetControl.appMapDimension["c51857ef-513f-4dbf-babd-26d68950ad6e"].join(',')}, null, true);
+                    FormElementControl.loadInitS2($(dimension2Ele$), dataS2, {'related_app_id__in': BudgetControl.appMapData[BudgetControl.appID]['dimension'].join(',')}, null, true);
                 }
                 if (dimensionValue2Ele$.length > 0) {
                     let dataS2 = [];
@@ -180,6 +92,201 @@ class BudgetControl {
             },
         });
     };
+
+    static dtbRenderColumns() {
+        let baseColumns = [
+            {
+                targets: 0,
+                width: '1%',
+                render: (data, type, row) => {
+                    return `<span class="table-row-order">${row?.['order']}</span>`;
+                }
+            },
+            {
+                targets: 1,
+                width: '12%',
+                render: (data, type, row) => {
+                    return `<select 
+                                    class="form-select table-row-dimension-1"
+                                    data-url="${BudgetControl.$urlEle.attr('data-api-md-dimension')}"
+                                    data-method="GET"
+                                    data-keyResp="dimension_definition_list"
+                                 >
+                                </select>`;
+                }
+            },
+            {
+                targets: 2,
+                width: '12%',
+                render: (data, type, row) => {
+                    return `<select 
+                                    class="form-select table-row-dimension-value-1"
+                                    data-url="${BudgetControl.$urlEle.attr('data-api-md-dimension-value')}"
+                                    data-method="GET"
+                                    data-keyResp="dimension_value_list"
+                                 >
+                                </select>`;
+                }
+            },
+            {
+                targets: 3,
+                width: '12%',
+                render: (data, type, row) => {
+                    return `<select 
+                                    class="form-select table-row-dimension-2"
+                                    data-url="${BudgetControl.$urlEle.attr('data-api-md-dimension')}"
+                                    data-method="GET"
+                                    data-keyResp="dimension_definition_list"
+                                 >
+                                </select>`;
+                }
+            },
+            {
+                targets: 4,
+                width: '12%',
+                render: (data, type, row) => {
+                    return `<select 
+                                    class="form-select table-row-dimension-value-2"
+                                    data-url="${BudgetControl.$urlEle.attr('data-api-md-dimension-value')}"
+                                    data-method="GET"
+                                    data-keyResp="dimension_value_list"
+                                 >
+                                </select>`;
+                }
+            },
+        ]
+        baseColumns = baseColumns.concat(BudgetControl.appMapData[BudgetControl.appID]['columns']);
+        return baseColumns;
+    };
+
+    static dtbRenderColumnsCOF() {
+        return [
+            {
+                targets: 5,
+                width: '12%',
+                render: (data, type, row) => {
+                    return `<span class="mask-money badge text-dark-10 fs-6 bg-grey-light-4 table-row-value-planned" data-init-money="${parseFloat(row?.['budget_line_data']?.['value_planned'] ? row?.['budget_line_data']?.['value_planned'] : '0')}"></span><input type="text" class="form-control table-row-budget-line-data hidden">`;
+                }
+            },
+            {
+                targets: 6,
+                width: '12%',
+                render: (data, type, row) => {
+                    return `<span class="mask-money badge text-dark-10 fs-6 bg-yellow-light-4 table-row-value-consumed" data-init-money="${parseFloat(row?.['budget_line_data']?.['value_consumed'] ? row?.['budget_line_data']?.['value_consumed'] : '0')}"></span>`;
+                }
+            },
+            {
+                targets: 7,
+                width: '12%',
+                render: (data, type, row) => {
+                    return `<span class="mask-money badge text-dark-10 fs-6 bg-red-light-4 table-row-value-available" data-init-money="${parseFloat(row?.['budget_line_data']?.['value_available'] ? row?.['budget_line_data']?.['value_available'] : '0')}"></span>`;
+                }
+            },
+            {
+                targets: 8,
+                width: '14%',
+                render: (data, type, row) => {
+                    return `<input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-value-consume valid-num" 
+                                    value="${row?.['value_consume'] ? row?.['value_consume'] : '0'}"
+                                    data-return-type="number"
+                                >`;
+                }
+            },
+            {
+                targets: 9,
+                width: '1%',
+                render: (data, type, row) => {
+                    return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
+                }
+            },
+        ]
+    };
+
+    static dtbRenderColumnsPR() {
+        return [
+            {
+                targets: 5,
+                width: '12%',
+                render: (data, type, row) => {
+                    return `<span class="badge text-dark-10 fs-6 bg-grey-light-4 table-row-value-planned">${parseFloat(row?.['budget_line_data']?.['quantity_planned'] ? row?.['budget_line_data']?.['quantity_planned'] : '0')}</span><input type="text" class="form-control table-row-budget-line-data hidden">`;
+                }
+            },
+            {
+                targets: 6,
+                width: '12%',
+                render: (data, type, row) => {
+                    return `<span class="badge text-dark-10 fs-6 bg-yellow-light-4 table-row-value-consumed">${parseFloat(row?.['budget_line_data']?.['quantity_consumed'] ? row?.['budget_line_data']?.['quantity_consumed'] : '0')}</span>`;
+                }
+            },
+            {
+                targets: 7,
+                width: '12%',
+                render: (data, type, row) => {
+                    return `<span class="badge text-dark-10 fs-6 bg-red-light-4 table-row-value-available">${parseFloat(row?.['budget_line_data']?.['quantity_available'] ? row?.['budget_line_data']?.['quantity_available'] : '0')}</span>`;
+                }
+            },
+            {
+                targets: 8,
+                width: '14%',
+                render: (data, type, row) => {
+                    return `<input 
+                                    type="text" 
+                                    class="form-control table-row-value-consume valid-num" 
+                                    value="${row?.['value_consume'] ? row?.['value_consume'] : '0'}"
+                                    data-return-type="number"
+                                >`;
+                }
+            },
+            {
+                targets: 9,
+                width: '1%',
+                render: (data, type, row) => {
+                    return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
+                }
+            },
+        ]
+    };
+
+    // static dtbRowCallBack(row, data) {
+    //     let dimension1Ele$ = $(row).find('.table-row-dimension-1');
+    //     let dimensionValue1Ele$ = $(row).find('.table-row-dimension-value-1');
+    //     let dimension2Ele$ = $(row).find('.table-row-dimension-2');
+    //     let dimensionValue2Ele$ = $(row).find('.table-row-dimension-value-2');
+    //     let budgetLineDataEle$ = $(row).find('.table-row-budget-line-data');
+    //     if (dimension1Ele$.length > 0) {
+    //         let dataS2 = [];
+    //         if (data?.['dimension_first_data']) {
+    //             dataS2 = [data?.['dimension_first_data']];
+    //         }
+    //         FormElementControl.loadInitS2($(dimension1Ele$), dataS2, {'related_app_id__in': BudgetControl.appMapData[BudgetControl.appID]['dimension'].join(',')}, null, true);
+    //     }
+    //     if (dimensionValue1Ele$.length > 0) {
+    //         let dataS2 = [];
+    //         if (data?.['dimension_value_first_data']) {
+    //             dataS2 = [data?.['dimension_value_first_data']];
+    //         }
+    //         FormElementControl.loadInitS2($(dimensionValue1Ele$), dataS2, {}, null, true);
+    //     }
+    //     if (dimension2Ele$.length > 0) {
+    //         let dataS2 = [];
+    //         if (data?.['dimension_second_data']) {
+    //             dataS2 = [data?.['dimension_second_data']];
+    //         }
+    //         FormElementControl.loadInitS2($(dimension2Ele$), dataS2, {'related_app_id__in': BudgetControl.appMapData[BudgetControl.appID]['dimension'].join(',')}, null, true);
+    //     }
+    //     if (dimensionValue2Ele$.length > 0) {
+    //         let dataS2 = [];
+    //         if (data?.['dimension_value_second_data']) {
+    //             dataS2 = [data?.['dimension_value_second_data']];
+    //         }
+    //         FormElementControl.loadInitS2($(dimensionValue2Ele$), dataS2, {}, null, true);
+    //     }
+    //     if (budgetLineDataEle$.length > 0) {
+    //         budgetLineDataEle$.val(JSON.stringify(data?.['budget_line_data'] ? data?.['budget_line_data'] : {}));
+    //     }
+    // };
 
     static dtbBudgetHeaderCustom() {
         let $table = BudgetControl.$tbl;
@@ -263,7 +370,7 @@ class BudgetControl {
             }
             if (check === false) {
                 $.fn.notifyB({description: "Dimensions must be different"}, 'failure');
-                FormElementControl.loadInitS2($(ele), [], {'related_app_id__in': BudgetControl.appMapDimension["c51857ef-513f-4dbf-babd-26d68950ad6e"].join(',')}, null, true);
+                FormElementControl.loadInitS2($(ele), [], {'related_app_id__in': BudgetControl.appMapData[BudgetControl.appID]['dimension'].join(',')}, null, true);
                 return false;
             }
             FormElementControl.loadInitS2(dimensionValueEle$, [], {'dimension_id': $(ele).val()}, null, true);
@@ -377,14 +484,7 @@ class BudgetControl {
                                             count++;
                                         }
                                         if (count === dimensionValues.length) {
-                                            plannedValue = parseFloat(budgetLine?.['value_planned'] ? budgetLine?.['value_planned'] : '0');
-                                            consumedValue = parseFloat(budgetLine?.['value_consumed'] ? budgetLine?.['value_consumed'] : '0');
-                                            availableValue = parseFloat(budgetLine?.['value_available'] ? budgetLine?.['value_available'] : '0');
-                                            if (plannedEle$.length > 0 && consumedEle$.length > 0 && availableEle$.length > 0) {
-                                                plannedEle$.attr('data-init-money', plannedValue);
-                                                consumedEle$.attr('data-init-money', consumedValue);
-                                                availableEle$.attr('data-init-money', availableValue);
-                                            }
+                                            BudgetControl.dtbLoadBudgetLineCOF(plannedEle$, consumedEle$, availableEle$, budgetLine);
                                             if (budgetLineDataEle$.length > 0) {
                                                 budgetLineDataEle$.val(JSON.stringify(budgetLine));
                                             }
@@ -399,6 +499,22 @@ class BudgetControl {
                     }
                 )
             }
+        }
+    };
+
+    static dtbLoadBudgetLineCOF(plannedEle$, consumedEle$, availableEle$, budgetLine) {
+        if (plannedEle$.length > 0 && consumedEle$.length > 0 && availableEle$.length > 0) {
+            plannedEle$.attr('data-init-money', parseFloat(budgetLine?.['value_planned'] ? budgetLine?.['value_planned'] : '0'));
+            consumedEle$.attr('data-init-money', parseFloat(budgetLine?.['value_consumed'] ? budgetLine?.['value_consumed'] : '0'));
+            availableEle$.attr('data-init-money', parseFloat(budgetLine?.['value_available'] ? budgetLine?.['value_available'] : '0'));
+        }
+    };
+
+    static dtbLoadBudgetLinePR(plannedEle$, consumedEle$, availableEle$, budgetLine) {
+        if (plannedEle$.length > 0 && consumedEle$.length > 0 && availableEle$.length > 0) {
+            plannedEle$.val(parseFloat(budgetLine?.['quantity_planned'] ? budgetLine?.['quantity_planned'] : '0'));
+            consumedEle$.val(parseFloat(budgetLine?.['quantity_consumed'] ? budgetLine?.['quantity_consumed'] : '0'));
+            availableEle$.val(parseFloat(budgetLine?.['quantity_available'] ? budgetLine?.['quantity_available'] : '0'));
         }
     };
 

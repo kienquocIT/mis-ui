@@ -44,7 +44,7 @@ class CashOutflowDetail(View):
         icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        return {'app_id': 'c51857ef-513f-4dbf-babd-26d68950ad6e',}, status.HTTP_200_OK
 
 
 class CashOutflowUpdate(View):

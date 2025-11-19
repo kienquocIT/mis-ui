@@ -33,8 +33,9 @@ class PurchaseRequestCreate(View):
     )
     def get(self, request, *args, **kwargs):
         return {
-            'data': {'employee_current': request.user.employee_current_data},
-        }, status.HTTP_200_OK
+                   'data': {'employee_current': request.user.employee_current_data},
+                   'app_id': 'fbff9b3f-f7c9-414f-9959-96d3ec2fb8bf',
+               }, status.HTTP_200_OK
 
 
 class PurchaseRequestDetail(View):

@@ -345,13 +345,15 @@ class BudgetControl {
                     if ($(ele).hasClass('table-row-dimension-value-1')) {
                         let dimensionEle$ = $(row).find('.table-row-dimension-1');
                         if (dimensionEle$.length > 0) {
-                            FormElementControl.loadInitS2($(ele), [], {'dimension_id': dimensionEle$.val()}, null, true);
+                            dimensionEle$.trigger('change');
+                            // FormElementControl.loadInitS2($(ele), [], {'dimension_id': dimensionEle$.val()}, null, true);
                         }
                     }
                     if ($(ele).hasClass('table-row-dimension-value-2')) {
                         let dimensionEle$ = $(row).find('.table-row-dimension-2');
                         if (dimensionEle$.length > 0) {
-                            FormElementControl.loadInitS2($(ele), [], {'dimension_id': dimensionEle$.val()}, null, true);
+                            dimensionEle$.trigger('change');
+                            // FormElementControl.loadInitS2($(ele), [], {'dimension_id': dimensionEle$.val()}, null, true);
                         }
                     }
                     return false;
@@ -435,7 +437,7 @@ class BudgetControl {
     static dtbDeleteRow(currentRow) {
         let rowIndex = BudgetControl.$tbl.DataTable().row(currentRow).index();
         let row = BudgetControl.$tbl.DataTable().row(rowIndex);
-        row.remove().draw();
+        row.remove();
     };
 
     static dtbReOrderSTT() {
@@ -604,10 +606,10 @@ $(function () {
 
         // events
         BudgetControl.$tbl.on('click', '.del-row', function (e) {
-            BudgetControl.storeDtbData(1);
             BudgetControl.dtbDeleteRow(this.closest('tr'));
             BudgetControl.dtbReOrderSTT();
             BudgetControl.storeDtbData(1);
+            BudgetControl.dtbLoadTotal();
         });
 
         BudgetControl.$tbl.on('change', '.table-row-dimension-1, .table-row-dimension-2', function (e) {

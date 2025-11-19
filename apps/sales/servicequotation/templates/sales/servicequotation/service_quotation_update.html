@@ -35,6 +35,7 @@
     {% include 'sales/serviceorder/common/modal_data.html' %}
     {% include 'sales/task/extend/task-form.html' with not_bastion=True custom_assignee=True %}
     {% include 'extends/product_attribute_extend/canvas.html' %}
+    {% include 'extends/indicator/all.html' with is_order=True %}
 {% endblock %}
 {% block dataHiddenGroup %}
     <script id="script-url"
@@ -57,7 +58,9 @@
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static "assets/js/extends/product_attribute/product_attribute.js" %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/service_order_common.js' %}"></script>
-    <script src="{% static 'assets/sales/servicequotation/js/service_quotation_update.js' %}"></script>
+    <script src="{% static 'assets/sales/serviceorder/js/service_page_handler.js' %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/tab_shipment.js' %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/tab_expense.js' %}"></script>
+    <script src="{% static 'assets/js/extends/indicator/indicator_common.js' %}"></script>
+    <script src="{% static 'assets/sales/servicequotation/js/service_quotation_update.js' %}"></script>
 {% endblock %}

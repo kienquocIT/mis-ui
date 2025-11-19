@@ -658,16 +658,6 @@ class ToolCommonHandler{
         })
     }
 
-    disableFields(){
-        const $fields = $('#form-instrument-tool').find('input, select, button:not(#load-depreciation-btn)')
-        $fields.attr('disabled', true)
-        $fields.attr('readonly', true)
-
-        $('#datatable-asset-source').on('draw.dt', function() {
-            $(this).find('input, button').attr('disabled', true).attr('readonly', true);
-        });
-    }
-
     fetchDetailData(disabledFields=false){
         $.fn.callAjax2({
             url: this.$formSubmit.attr('data-url'),
@@ -710,9 +700,7 @@ class ToolCommonHandler{
                 }
             })
             .then(() => {
-                if(disabledFields) {
-                    this.disableFields();
-                }
+                UsualLoadPageFunction.DisablePage(disabledFields, ['.open-modal', '.btn-close', '#load-depreciation-btn'])
             })
     }
 

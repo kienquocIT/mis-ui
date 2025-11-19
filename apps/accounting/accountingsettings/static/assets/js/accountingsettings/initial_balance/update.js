@@ -36,8 +36,7 @@ $(document).ready(function () {
 
     function CombinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
-
-        let dataForm = {}
+        let dataForm = {};
         dataForm["title"] = pageElements.$titleEle.val();
         dataForm["description"] = pageElements.$descriptionEle.val();
 
@@ -66,15 +65,12 @@ $(document).ready(function () {
                         }
                     },
                     (errs) => {
-                        setTimeout(
-                            () => {
+                        setTimeout(() => {
                                 WindowControl.hideLoading();
-                            },
-                            1000
-                        )
+                            },1000);
                         $.fn.notifyB({description: errs.data.errors}, 'failure');
                     }
-                )
+                );
         }
-    })
+    });
 });

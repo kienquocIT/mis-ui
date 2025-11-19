@@ -57,28 +57,20 @@ class InitialBalanceHandler {
                 if (data) {
                     data = data['initial_balance_detail'];
 
-                    // console.log(data)
-
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
 
                     pageElements.$titleEle.val(data?.['title'] || '');
                     pageElements.$descriptionEle.val(data?.['description'] || '');
-
                     UsualLoadPageFunction.LoadPeriod({
                         element: pageElements.$accountingPeriodEle,
                         data: data?.['period_mapped_data'] || {},
                         data_url: pageElements.$accountingPeriodEle.attr('data-url'),
                         apply_default_on_change: true
                     });
-                    pageElements.$accountingPeriodEle.trigger('change')
-
+                    pageElements.$accountingPeriodEle.trigger('change');
                     $.fn.initMaskMoney2();
-
-
-                    UsualLoadPageFunction.DisablePage(
-                        option==='detail',
-                    )
+                    UsualLoadPageFunction.DisablePage(option==='detail')
                 }
             })
     }

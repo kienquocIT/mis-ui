@@ -29,6 +29,7 @@ class InitialBalancePageFunction {
             sum_tab_goods += row_goods_value
             sum_account_balance_debit += row_goods_value
         })
+        $('#balanceTabCash').attr('data-init-money', sum_tab_goods)
         $('#balanceTabGoods').attr('data-init-money', sum_tab_goods)
         $('#totalBalance').attr('data-init-money', sum_account_balance_debit - sum_account_balance_credit)
         $.fn.initMaskMoney2()
@@ -69,7 +70,13 @@ class InitialBalanceHandler {
                         apply_default_on_change: true
                     });
                     pageElements.$accountingPeriodEle.trigger('change');
+
+                    $('#balanceTabCash').attr('data-init-money', data?.['tab_account_balance_data'].find(item => item?.['tab_type'] === 0)?.['tab_value'] || 0)
+
+                    InitialBalancePageFunction.CalculateAccountBalanceSummarize()
+
                     $.fn.initMaskMoney2();
+
                     UsualLoadPageFunction.DisablePage(option==='detail');
                 }
             })

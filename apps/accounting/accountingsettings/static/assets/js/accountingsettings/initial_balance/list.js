@@ -33,7 +33,7 @@ $(document).ready(function() {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
+                            $.fn.notifyB({description: "Successfully"}, 'success');
                             setTimeout(() => {
                                 window.location.replace($(this).attr('data-url-redirect').replace('0', data?.id));
                                 location.reload.bind(location);
@@ -44,9 +44,8 @@ $(document).ready(function() {
                         setTimeout(
                             () => {
                                 WindowControl.hideLoading();
-                            },
-                            1000
-                        )
+                            },1000
+                        );
                         $.fn.notifyB({description: errs.data.errors}, 'failure');
                     }
                 )

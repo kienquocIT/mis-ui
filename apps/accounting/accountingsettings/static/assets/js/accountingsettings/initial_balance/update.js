@@ -36,11 +36,10 @@ $(document).ready(function () {
 
     function CombinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
-
-        let dataForm = {}
+        let dataForm = {};
         dataForm["title"] = pageElements.$titleEle.val();
         dataForm["description"] = pageElements.$descriptionEle.val();
-
+        dataForm["tab_money_data"] = TabMoneyFunction.combineTabCashData();
         return {
             url: frm.dataUrl,
             method: 'PUT',
@@ -60,21 +59,18 @@ $(document).ready(function () {
                         if (data) {
                             $.fn.notifyB({description: "Successfully"}, 'success')
                             setTimeout(() => {
-                                window.location.replace($(this).attr('data-url-redirect'));
-                                location.reload.bind(location);
+                                window.location.replace($(this).attr('data-url-redirect'))
+                                location.reload.bind(location)
                             }, 1000);
                         }
                     },
                     (errs) => {
-                        setTimeout(
-                            () => {
+                        setTimeout(() => {
                                 WindowControl.hideLoading();
-                            },
-                            1000
-                        )
+                            },1000);
                         $.fn.notifyB({description: errs.data.errors}, 'failure');
                     }
-                )
+                );
         }
-    })
+    });
 });

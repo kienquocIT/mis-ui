@@ -1100,13 +1100,21 @@ class OpportunityPageFunction {
                                             let tDataStatus = tData?.['doc_data']?.['system_status'];
                                             if (label === 'quotation.quotation') {
                                                 if (tDataLabel === 'saleorder.saleorder' && [1, 2, 3].includes(tDataStatus)) {
-                                                    $.fn.notifyB({description: $transEle.attr('data-cancel-quo-so')}, 'failure');
+                                                    $.fn.notifyB({description: $transEle.attr('data-cancel-so')}, 'failure');
                                                     return false;
                                                 }
                                             }
-                                            if (tDataLabel === label && [1, 2, 3].includes(tDataStatus)) {
-                                                $.fn.notifyB({description: appMapErr?.[label]}, 'failure');
-                                                return false;
+                                            if (label === 'saleorder.saleorder') {
+                                                if (tDataLabel === label && [1, 2, 3].includes(tDataStatus)) {
+                                                    $.fn.notifyB({description: appMapErr?.[label]}, 'failure');
+                                                    return false;
+                                                }
+                                            }
+                                            if (label === 'leaseorder.leaseorder') {
+                                                if (tDataLabel === label && [1, 2, 3].includes(tDataStatus)) {
+                                                    $.fn.notifyB({description: appMapErr?.[label]}, 'failure');
+                                                    return false;
+                                                }
                                             }
                                         }
                                     }

@@ -76,7 +76,7 @@ $(document).ready(function() {
                                     </div>`
                     }
                     $('#initial-balance-list-container').append(`
-                        <div class="col-12">
+                        <div class="col-12 mb-3">
                             <div class="bflow-mirrow-card">
                                 <div class="row mb-5">
                                     <div class="col-10">

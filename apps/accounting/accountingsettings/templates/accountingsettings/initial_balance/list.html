@@ -19,6 +19,12 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script id="script-url"
+            data-url-list="{% url 'InitialBalanceListAPI' %}"
+            data-url-detail="{% url 'InitialBalanceDetail' '0' %}"
+    ></script>
+
+    <div class="row" id="initial-balance-list-container"></div>
 {% endblock %}
 {% block modalData %}
     <div class="modal fade" id="modal-create-initial-balance" tabindex="-1" role="dialog" aria-labelledby="modal-create-initial-balance">

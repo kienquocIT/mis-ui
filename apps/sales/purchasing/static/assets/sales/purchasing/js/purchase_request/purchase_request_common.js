@@ -694,6 +694,9 @@ class PurchaseRequestHandler {
         }
         frm.dataForm['purchase_request_product_datas'] = purchase_request_product_datas
         frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
+
+        // budget line data
+        frm.dataForm['budget_line_data'] = BudgetControl.setupSubmitTblBudget();
         return frm
     }
     static LoadDetailPR(option) {
@@ -763,6 +766,9 @@ class PurchaseRequestHandler {
                 $.fn.initMaskMoney2()
 
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
+
+                // budget line data
+                BudgetControl.dtbRenderDetail(data?.['budget_line_data'] ? data?.['budget_line_data'] : []);
             }
         })
 }

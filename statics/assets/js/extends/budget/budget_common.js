@@ -117,6 +117,7 @@ class BudgetControl {
                 if (budgetLineDataEle$.length > 0) {
                     budgetLineDataEle$.val(JSON.stringify(data?.['budget_line_data'] ? data?.['budget_line_data'] : {}));
                 }
+                BudgetControl.dtbSubtotal(row);
             },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
@@ -140,7 +141,7 @@ class BudgetControl {
             },
             {
                 targets: 1,
-                width: '12%',
+                width: '14%',
                 render: (data, type, row) => {
                     return `<div class="border border-green bg-green-light-5 p-2 rounded-2">
                             <div class="form-group">
@@ -168,7 +169,7 @@ class BudgetControl {
             },
             {
                 targets: 2,
-                width: '12%',
+                width: '14%',
                 render: (data, type, row) => {
                     return `<div class="border border-green bg-green-light-5 p-2 rounded-2">
                             <div class="form-group">
@@ -656,21 +657,39 @@ class BudgetControl {
     static dtbOnChangeValueConsume(ele) {
         let row = ele.closest('tr');
         if (row) {
-            let valueAvailableEle$ = $(row).find('.table-row-value-available');
-            if (valueAvailableEle$.length > 0) {
-                if (valueAvailableEle$.attr('data-init-money')) {
+            BudgetControl.dtbValidValueConsume($(ele), $(row).find('.table-row-value-available'));
+            BudgetControl.dtbSubtotal(row);
+        }
+    };
+
+    static dtbValidValueConsume(valueConsumeEle$, valueAvailableEle$) {
+        if (valueConsumeEle$.length > 0 && valueAvailableEle$.length > 0) {
+            if (BudgetControl.appMapData[BudgetControl.appID]["app_code"] === 'financialcashflow.cashoutflow') {
+                if (valueConsumeEle$.valCurrency() && valueAvailableEle$.attr('data-init-money')) {
+                    let consumeValue = valueConsumeEle$.valCurrency();
                     let availableValue = parseFloat(valueAvailableEle$.attr('data-init-money'));
-                    if ($(ele).valCurrency() > availableValue) {
+                    if (consumeValue > availableValue) {
                         $.fn.notifyB({description: BudgetControl.$transEle.attr('data-valid-value-consume')}, 'failure');
-                        $(ele).attr('value', '0');
+                        valueConsumeEle$.attr('value', '0');
                         $.fn.initMaskMoney2();
                         return false;
                     }
                 }
             }
-            BudgetControl.dtbSubtotal(row);
+            if (BudgetControl.appMapData[BudgetControl.appID]["app_code"] === 'purchasing.purchaserequest') {
+                if (valueConsumeEle$.val() && valueAvailableEle$.text()) {
+                    let consumeValue = valueConsumeEle$.val();
+                    let availableValue = parseFloat(valueAvailableEle$.text());
+                    if (consumeValue > availableValue) {
+                        $.fn.notifyB({description: BudgetControl.$transEle.attr('data-valid-value-consume')}, 'failure');
+                        valueConsumeEle$.val(0);
+                        $.fn.initMaskMoney2();
+                        return false;
+                    }
+                }
+            }
         }
-    };
+    }
 
     static dtbSubtotal(row) {
         if (BudgetControl.appMapData[BudgetControl.appID]["app_code"] === 'purchasing.purchaserequest') {
@@ -864,8 +883,15 @@ class BudgetControl {
             }
             if (valueConsumeEle$.length > 0) {
                 rowData['value_consume'] = 0;
-                if (valueConsumeEle$.valCurrency()) {
-                    rowData['value_consume'] = valueConsumeEle$.valCurrency();
+                if (BudgetControl.appMapData[BudgetControl.appID]["app_code"] === 'financialcashflow.cashoutflow') {
+                    if (valueConsumeEle$.valCurrency()) {
+                        rowData['value_consume'] = valueConsumeEle$.valCurrency();
+                    }
+                }
+                if (BudgetControl.appMapData[BudgetControl.appID]["app_code"] === 'purchasing.purchaserequest') {
+                    if (valueConsumeEle$.val()) {
+                        rowData['value_consume'] = parseFloat(valueConsumeEle$.val());
+                    }
                 }
             }
             result.push(rowData);

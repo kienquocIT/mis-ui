@@ -5,42 +5,53 @@
 <div class="row">
     <table
             id="tbl_budget_extend"
-            class="table nowrap min-w-1280p w-100 mb-5"
+            class="table nowrap min-w-1440p w-100 mb-5"
     >
         <thead>
         <tr class="bg-light">
-            <th>#</th>
-            <th>{% trans '1st Dimension' %}</th>
-            <th>{% trans '1st Value' %}</th>
-            <th>{% trans '2nd Dimension' %}</th>
-            <th>{% trans '2nd Value' %}</th>
-            <th>{% trans 'Planned' %}</th>
-            <th>{% trans 'Consumed' %}</th>
-            <th>{% trans 'Available' %}</th>
-            <th>{% trans 'Consume' %}</th>
-            <th></th>
+{#            <th>#</th>#}
+{#            <th>{% trans '1st Dimension' %}</th>#}
+{#            <th>{% trans '1st Value' %}</th>#}
+{#            <th>{% trans '2nd Dimension' %}</th>#}
+{#            <th>{% trans '2nd Value' %}</th>#}
+{#            <th>{% trans 'Planned' %}</th>#}
+{#            <th>{% trans 'Consumed' %}</th>#}
+{#            <th>{% trans 'Available' %}</th>#}
+{#            <th>{% trans 'Consume' %}</th>#}
+{#            <th></th>#}
         </tr>
         </thead>
         <tbody>
         </tbody>
-        <tfoot>
-        <tr class="bg-light">
-            <th colspan="7"></th>
-            <th colspan="1">
-                <b>{% trans 'Total' %}:</b>
-            </th>
-            <th colspan="1">
-                <span class="mask-money badge text-dark-10 fs-6 bg-blue-light-4 border border-blue tbl-budget-total" data-init-money="0"></span>
-            </th>
-            <th colspan="1"></th>
-        </tr>
-        </tfoot>
+{#        <tfoot>#}
+{#        <tr class="bg-light">#}
+{#            <th colspan="5"></th>#}
+{#            <th colspan="1">#}
+{#                <b>{% trans 'Total' %}:</b>#}
+{#            </th>#}
+{#            <th colspan="1">#}
+{#                <span class="mask-money badge text-dark-10 fs-6 bg-blue-light-4 border border-blue tbl-budget-total" data-init-money="0"></span>#}
+{#            </th>#}
+{#            <th colspan="1"></th>#}
+{#        </tr>#}
+{#        </tfoot>#}
     </table>
 </div>
 
 <input
     type="text" class="hidden"
     id="budget_trans_factory"
+    data-tr-1="{% trans '1st Dimension' %}"
+    data-tr-2="{% trans '1st Value' %}"
+    data-tr-3="{% trans '2nd Dimension' %}"
+    data-tr-4="{% trans '2nd Value' %}"
+    data-tr-5="{% trans 'Plan' %}"
+    data-tr-6="{% trans 'Consumed' %}"
+    data-tr-7="{% trans 'Available' %}"
+    data-tr-8="{% trans 'Consume' %}"
+    data-tr-9="{% trans 'Unit price' %}"
+    data-tr-10="{% trans 'Tax' %}"
+    data-tr-11="{% trans 'Subtotal' %}"
     data-valid-value-consume="{% trans 'The consume value cannot be greater than the available value' %}"
     data-valid-dimension="{% trans 'Dimensions must be different' %}"
     data-valid-dimension-value="{% trans 'Dimension values must be different with other row' %}"

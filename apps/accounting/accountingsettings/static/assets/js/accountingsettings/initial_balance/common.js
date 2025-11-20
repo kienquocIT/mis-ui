@@ -6,6 +6,7 @@ class InitialBalanceElements {
         this.$accountingPeriodEle = $('#accountingPeriod');
         this.$titleEle = $('#title');
         this.$descriptionEle = $('#description');
+        this.$table_account_balance = $('#table_account_balance');
 
         this.$btnSubmit = $('#btn_submit');
         this.$urlFactory = $('#url-factory');
@@ -13,27 +14,61 @@ class InitialBalanceElements {
 }
 const pageElements = new InitialBalanceElements();
 
-
 /**
  * Khai báo các hàm chính
  */
 class InitialBalancePageFunction {
-    static CalculateAccountBalanceSummarize(tab_account_balance_data=[]) {
+    static CalculateAccountBalance(tab_account_balance_data=[]) {
         // Money
         let tab_money_item = tab_account_balance_data.find(item => item?.['tab_type'] === 0)
         let tab_money_value = tab_money_item ? tab_money_item?.['tab_value'] || 0 : 0
-        $('#balanceTabCash').attr('data-init-money', tab_money_value)
+        $('#balanceMoney span:eq(0)').attr('data-init-money', tab_money_value)
         // Goods
         let tab_goods_item = tab_account_balance_data.find(item => item?.['tab_type'] === 1)
         let tab_goods_value = tab_goods_item ? tab_goods_item?.['tab_value'] || 0 : 0
-        $('#balanceTabGoods').attr('data-init-money', tab_goods_value)
+        $('#balanceGoods span:eq(0)').attr('data-init-money', tab_goods_value)
 
         // total
-        $('#totalBalance').attr('data-init-money', tab_money_value + tab_goods_value)
+        $('#totalBalance span:eq(0)').attr('data-init-money', tab_money_value + tab_goods_value)
 
         $.fn.initMaskMoney2();
     }
+    static UpdateTabAccountBalance($row) {
+        let total_debit = 0
+        let total_credit = 0
+        if ($row.attr('data-type-row') === 'added') {
+            let table = $row.closest('table')
+            if (table.attr('id') === 'tbl_money') {
+                let tab_row = pageElements.$table_account_balance.find('tbody tr:eq(0)')
+                let money_debit_added = tab_row.find('span:eq(1)')
+                let money_credit_added = tab_row.find('span:eq(2)')
+                let new_debit_added = 0
+                let new_credit_added = 0
+                table.find('tbody tr').each(function (index, ele) {
+                    new_debit_added += parseFloat($(ele).find('.row-debit').attr('value') || 0)
+                    new_credit_added += parseFloat($(ele).find('.row-credit').attr('value') || 0)
+                })
+                money_debit_added.prop('hidden', new_debit_added <= 0)
+                money_debit_added.attr('data-init-money', new_debit_added)
+                money_credit_added.prop('hidden', new_credit_added <= 0)
+                money_credit_added.attr('data-init-money', new_credit_added)
+                total_debit += new_debit_added
+                total_credit += new_credit_added
+            }
+        }
+        else if ($row.attr('.data-type-row') === 'updated') {
 
+        }
+
+        let sum_row = pageElements.$table_account_balance.find('tfoot tr:eq(0)')
+        let sum_debit_added = sum_row.find('span:eq(1)')
+        let sum_credit_added = sum_row.find('span:eq(2)')
+        sum_debit_added.prop('hidden', total_debit <= 0)
+        sum_debit_added.attr('data-init-money', total_debit)
+        sum_credit_added.prop('hidden', total_credit <= 0)
+        sum_credit_added.attr('data-init-money', total_credit)
+        $.fn.initMaskMoney2()
+    }
     static loadDates(elements) {
         elements.forEach(ele => {
             UsualLoadPageFunction.LoadDate({
@@ -43,7 +78,6 @@ class InitialBalancePageFunction {
         });
     }
 }
-
 
 /**
  * Khai báo các hàm chính
@@ -71,10 +105,10 @@ class InitialBalanceHandler {
                     });
                     pageElements.$accountingPeriodEle.trigger('change');
 
+                    InitialBalancePageFunction.CalculateAccountBalance(data?.['tab_account_balance_data'] || [])
+
                     // load Tabs information
                     TabMoneyFunction.initMoneyTable(data?.['tab_money_data'] || []);
-
-                    InitialBalancePageFunction.CalculateAccountBalanceSummarize(data?.['tab_account_balance_data'] || []);
 
                     $.fn.initMaskMoney2();
 
@@ -83,7 +117,6 @@ class InitialBalanceHandler {
             })
     }
 }
-
 
 class InitialBalanceEventHandler {
     static InitPageEvent() {

@@ -129,7 +129,7 @@ $(document).ready(function () {
                 },
             ],
             initComplete: function () {
-                InitialBalancePageFunction.CalculateAccountBalanceSummarize()
+                InitialBalancePageFunction.CalculateAccountBalance()
 
                 let wrapper$ = dtb_balance_init_item_Ele.closest('.dataTables_wrapper');
                 const headerToolbar$ = wrapper$.find('.dtb-header-toolbar');

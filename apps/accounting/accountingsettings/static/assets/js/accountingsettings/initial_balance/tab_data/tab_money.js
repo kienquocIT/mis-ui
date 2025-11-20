@@ -74,7 +74,7 @@ class TabMoneyFunction {
                 {
                     className: "w-10",
                     render: (data, type, row) => {
-                        return `<input class="form-control mask-money row-amount row-access" value="0" disabled>`;
+                        return `<input class="form-control mask-money row-amount row-amount-changed row-access" value="0" disabled>`;
                     }
                 },
                 {
@@ -261,6 +261,8 @@ class TabMoneyFunction {
         $row.find('.row-debit').attr('value', debitValue);
 
         $.fn.initMaskMoney2();
+
+        InitialBalancePageFunction.UpdateTabAccountBalance($row)
     }
 
     static combineTabCashData() {

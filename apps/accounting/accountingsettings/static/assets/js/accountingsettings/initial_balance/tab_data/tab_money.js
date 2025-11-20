@@ -2,7 +2,6 @@ class TabMoneyElements {
     constructor() {
         this.$tableMoney = $('#tbl_money');
         this.$btnAddMoney = $('#add_tab_money');
-        this.$modalBankAccount = $('#bank_account_modal');
         this.$tableBankAccount = $('#bank_account_table');
         this.$btnSaveBankAccount = $('#btn_save_bank_account');
     }
@@ -156,11 +155,7 @@ class TabMoneyFunction {
 
                     // load amount values
                     $row.find('.row-amount').attr('value', rowData?.['money_value'] || 0);
-                    const isFC = rowData?.['is_fc'] || false;
                     $row.find('.row-exchange-amount').attr('value', rowData?.['money_value_exchange'] || 0)
-                        .prop('readonly', !isFC)
-                        .prop('disabled', true);
-
 
                     // load debit and credit value
                     $row.find('.row-debit').attr('value', rowData?.['debit_value'] || 0);
@@ -278,6 +273,7 @@ class TabMoneyFunction {
 
             if (typeRow === 'added' || typeRow === 'updated') {
                 const rowData = {
+                    id: typeRow === 'added' ? null : $(this).attr('data-id'),
                     type_row: typeRow,
                     currency_mapped: $currencyItem.val(),
                     currency_mapped_data: $currencyMappedData,
@@ -343,8 +339,8 @@ class TabMoneyEventHandler {
         tabMoneyElements.$tableMoney.on('change', '.row-currency', function() {
             const $row = $(this).closest('tr');
             const $exchange_amount = $row.find('.row-exchange-amount');
-            let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
-            const isVND = selected?.['abbreviation'] === 'VND'
+            let selected = SelectDDControl.get_data_from_idx($(this), $(this).val());
+            const isVND = selected?.['abbreviation'] === 'VND';
             $exchange_amount.prop('readonly', isVND).attr('value', 0);
 
             // update debit value after currency change
@@ -393,6 +389,11 @@ class TabMoneyEventHandler {
             const $row = $(this).closest('tr');
             $row.find('.row-access').prop('disabled', false);
             $row.attr('data-type-row', 'updated');
+
+            const $exchange_amount = $row.find('.row-exchange-amount');
+            let selected = SelectDDControl.get_data_from_idx($(this), $(this).val());
+            const isVND = selected?.['abbreviation'] === 'VND';
+            $exchange_amount.prop('readonly', isVND).attr('value', 0);
         });
     }
 }

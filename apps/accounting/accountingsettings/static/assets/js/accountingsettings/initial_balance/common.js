@@ -105,10 +105,10 @@ class InitialBalanceHandler {
                     });
                     pageElements.$accountingPeriodEle.trigger('change');
 
-                    InitialBalancePageFunction.CalculateAccountBalance(data?.['tab_account_balance_data'] || [])
-
                     // load Tabs information
                     TabMoneyFunction.initMoneyTable(data?.['tab_money_data'] || []);
+
+                    InitialBalancePageFunction.CalculateAccountBalance(data?.['tab_account_balance_data'] || [])
 
                     $.fn.initMaskMoney2();
 

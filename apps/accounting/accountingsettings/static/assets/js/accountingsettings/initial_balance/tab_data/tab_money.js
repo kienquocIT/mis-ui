@@ -131,7 +131,6 @@ class TabMoneyFunction {
                     if (rowData?.['id']) {
                         $row.attr('data-id', rowData['id']);
                     }
-                    $row.attr('data-type-row', 'loaded');
 
                     // load money type
                     $row.find('.row-money-type').val(rowData?.['money_type']?.toString() || '');

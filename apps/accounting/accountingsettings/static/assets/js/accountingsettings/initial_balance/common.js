@@ -3,9 +3,8 @@
  */
 class InitialBalanceElements {
     constructor() {
-        this.$openingDateEle = $('#openingDate');
-        this.$fiscalYearEle = $('#fiscalYear');
         this.$accountingPeriodEle = $('#accountingPeriod');
+        this.$titleEle = $('#title');
         this.$descriptionEle = $('#description');
 
         this.$btnSubmit = $('#btn_submit');
@@ -34,17 +33,59 @@ class InitialBalancePageFunction {
         $('#totalBalance').attr('data-init-money', sum_account_balance_debit - sum_account_balance_credit)
         $.fn.initMaskMoney2()
     }
+
+    static loadDates(elements) {
+        elements.forEach(ele => {
+            UsualLoadPageFunction.LoadDate({
+                element: ele,
+                empty: true
+            });
+        });
+    }
+}
+
+
+/**
+ * Khai báo các hàm chính
+ */
+class InitialBalanceHandler {
+    static LoadDetailInitialBalance(option) {
+        let url_loaded = $('#frm_detail_initial_balance').attr('data-url');
+        $.fn.callAjax(url_loaded, 'GET').then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    data = data['initial_balance_detail'];
+
+                    // console.log(data)
+
+                    $.fn.compareStatusShowPageAction(data);
+                    $x.fn.renderCodeBreadcrumb(data);
+
+                    pageElements.$titleEle.val(data?.['title'] || '');
+                    pageElements.$descriptionEle.val(data?.['description'] || '');
+
+                    UsualLoadPageFunction.LoadPeriod({
+                        element: pageElements.$accountingPeriodEle,
+                        data: data?.['period_mapped_data'] || {},
+                        data_url: pageElements.$accountingPeriodEle.attr('data-url'),
+                        apply_default_on_change: true
+                    });
+                    pageElements.$accountingPeriodEle.trigger('change')
+
+                    $.fn.initMaskMoney2();
+
+
+                    UsualLoadPageFunction.DisablePage(
+                        option==='detail',
+                    )
+                }
+            })
+    }
 }
 
 
 class InitialBalanceEventHandler {
     static InitPageEvent() {
-        // event for automating field fiscal year
-        pageElements.$accountingPeriodEle.on('change', function() {
-            let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
-            pageElements.$fiscalYearEle.val(selected?.['fiscal_year'] || '');
-            let fiscalStartDate = selected?.['start_date'] ? moment(selected?.['start_date']).format('DD/MM/YYYY') : '';
-            pageElements.$openingDateEle.val(fiscalStartDate);
-        })
     }
 }

@@ -997,6 +997,11 @@ class MenusFinancials:
             #     view_name='DimensionAccountList',
             #     icon='<i class="fa fa-link"></i>',
             # ),
+            # MenuCommon(
+            #     name='Dimension Split Template', code='menu_dimension_split_template_list',
+            #     view_name='DimensionSplitTemplateList',
+            #     icon='<i class="fa fa-link"></i>',
+            # ),
             MenuCommon(
                 name='Asset Category', code='menu_asset_category_list',
                 view_name='AssetCategoryList',

@@ -2,13 +2,14 @@
 
 <div class="row">
     <div class="col-12">
-        <table class="table nowrap w-100" id="tbl_account_receivable">
+        <table class="table nowrap w-100" id="tbl_employee_payable">
             <thead class="bg-secondary-light-5">
                 <tr>
                     <th style="min-width: 50px"></th>
-                    <th style="min-width: 300px">{% trans 'Customer' %}</th>
-                    <th style="min-width: 300px">{% trans 'Detail' %}</th>
+                    <th style="min-width: 300px">{% trans 'Employee' %}</th>
+                    <th style="min-width: 300px">{% trans 'Payable Type' %}</th>
                     <th style="min-width: 300px">{% trans 'Account' %}</th>
+                    <th style="min-width: 200px">{% trans 'Amount' %}</th>
                     <th style="min-width: 200px">{% trans 'Debit' %}</th>
                     <th style="min-width: 200px">{% trans 'Credit' %}</th>
                     <th style="min-width: 100px">{% trans 'Action' %}</th>
@@ -20,7 +21,7 @@
 </div>
 <div class="row">
     <div class="col-12">
-        <button class="btn btn-primary mt-4" type="button" id="add_tab_account_receivable" aria-expanded="false">
+        <button class="btn btn-primary mt-4" type="button" id="add_tab_employee_payable" aria-expanded="false">
             <i class="fas fa-plus-circle me-2"></i>{% trans 'Add' %}
         </button>
     </div>

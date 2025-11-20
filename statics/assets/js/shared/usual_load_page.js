@@ -795,9 +795,10 @@ class UsualLoadPageFunction {
      * @param {Boolean} [allow_clear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
+     * @param {Boolean} apply_default_on_change - apply_default_on_change
      * @returns {void}
      */
-    static LoadPeriod({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+    static LoadPeriod({element, data=null, allow_clear=true, data_params = {}, data_url='', apply_default_on_change=false}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -829,6 +830,17 @@ class UsualLoadPageFunction {
             keyResp: 'periods_list',
             keyId: 'id',
             keyText: 'title',
+        }).on('change', function () {
+            if (apply_default_on_change) {
+                if ($(this).val()) {
+                    let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
+                    $(this).closest('.input-group').find('.dropdown-menu').prop('hidden', false)
+                    $(this).closest('.input-group').find('.period-title').text(selected?.['title'] || '')
+                    $(this).closest('.input-group').find('.period-fiscal-year').text(selected?.['fiscal_year'] || '')
+                    $(this).closest('.input-group').find('.period-start-date').text(selected?.['start_date'] ? moment(selected?.['start_date']).format('DD/MM/YYYY') : '')
+                    $(this).closest('.input-group').find('.period-end-date').text(selected?.['end_date'] ? moment(selected?.['end_date']).format('DD/MM/YYYY') : '')
+                }
+            }
         })
     }
 

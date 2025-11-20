@@ -7,7 +7,7 @@
         <ul class="nav nav-pills-bfl" id="initialBalanceTabs" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="tab" href="#tab_money" role="tab" aria-selected="true">
-                    <span class="nav-link-text">{% trans 'Cash' %}</span>
+                    <span class="nav-link-text">{% trans 'Money' %}</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -17,7 +17,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_receivable" role="tab" aria-selected="false">
-                    <span class="nav-link-text">{% trans 'Account Receivable' %}</span>
+                    <span class="nav-link-text">{% trans 'Customer Receivable' %}</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -31,18 +31,18 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_tools" role="tab" aria-selected="false">
+                    <span class="nav-link-text">{% trans 'Tools' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_fixed_assets" role="tab" aria-selected="false">
                     <span class="nav-link-text">{% trans 'Fixed Assets' %}</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#tab_expenses" role="tab" aria-selected="false">
-                    <span class="nav-link-text">{% trans 'Expenses' %}</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#tab_owner_equity" role="tab" aria-selected="false">
-                    <span class="nav-link-text">{% trans 'Owner Equity' %}</span>
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_account" role="tab" aria-selected="false">
+                    <span class="nav-link-text">{% trans 'Account' %}</span>
                 </a>
             </li>
         </ul>
@@ -60,25 +60,25 @@
             <div class="tab-pane fade" id="tab_receivable">
                 {% include 'accountingsettings/initial_balance/common/tab_detail/tab_account_receivable.html' %}
             </div>
-            <!-- TAB 4: Supplier Payable - TODO: Implement -->
+            <!-- TAB 4: Supplier Payable -->
             <div class="tab-pane fade" id="tab_supplier_payable">
-                <!-- To be implemented -->
+                {% include 'accountingsettings/initial_balance/common/tab_detail/tab_supplier_payable.html' %}
             </div>
-            <!-- TAB 5: Employee Payable - TODO: Implement -->
+            <!-- TAB 5: Employee Payable -->
             <div class="tab-pane fade" id="tab_employee_payable">
-                <!-- To be implemented -->
+                {% include 'accountingsettings/initial_balance/common/tab_detail/tab_employee_payable.html' %}
             </div>
-            <!-- TAB 6: Fixed Assets - TODO: Implement -->
+            <!-- TAB 6: Tools -->
+            <div class="tab-pane fade" id="tab_tools">
+                {% include 'accountingsettings/initial_balance/common/tab_detail/tab_tools.html' %}
+            </div>
+            <!-- TAB 7: Fixed Assets - TODO: Implement -->
             <div class="tab-pane fade" id="tab_fixed_assets">
                 <!-- To be implemented -->
             </div>
-            <!-- TAB 7: Expenses - TODO: Implement -->
-            <div class="tab-pane fade" id="tab_expenses">
-                <!-- To be implemented -->
-            </div>
-            <!-- TAB 8: Owner Equity - TODO: Implement -->
-            <div class="tab-pane fade" id="tab_owner_equity">
-                <!-- To be implemented -->
+            <!-- TAB 8: Account -->
+            <div class="tab-pane fade" id="tab_account">
+                {% include 'accountingsettings/initial_balance/common/tab_detail/tab_account.html' %}
             </div>
         </div>
     </div>

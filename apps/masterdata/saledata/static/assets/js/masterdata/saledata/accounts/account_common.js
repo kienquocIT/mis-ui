@@ -709,7 +709,7 @@ class AccountHandler {
         frm.dataForm['parent_account_mapped'] = pageElements.$parent_account.val() ? pageElements.$parent_account.val() : null
         frm.dataForm['annual_revenue'] = pageElements.$annual_revenue.val() ? pageElements.$annual_revenue.val() : null
         frm.dataForm['total_employees'] = pageElements.$total_employee.val() ? pageElements.$total_employee.val() : null
-        frm.dataForm['tax_code'] = pageElements.$tax_code.val();
+        frm.dataForm['tax_code'] = pageElements.$tax_code.val() === '#' ? '' : pageElements.$tax_code.val();
         frm.dataForm['industry'] = pageElements.$industry.val() ? pageElements.$industry.val() : null
         frm.dataForm['phone'] = pageElements.$phone.val();
         frm.dataForm['email'] = pageElements.$email.val();

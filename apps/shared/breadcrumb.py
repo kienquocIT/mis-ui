@@ -490,7 +490,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     CHART_OF_ACCOUNTS_LIST_PAGE = BreadcrumbChildren(_('Chart of account'), 'ChartOfAccountsList')
     ACCOUNT_DETERMINATION_LIST_PAGE = BreadcrumbChildren(_('Account determination'),
                                                                  'AccountDeterminationList')
-    INITIAL_BALANCE_LIST_PAGE = BreadcrumbChildren(_('Opening Balance Setup'), 'InitialBalanceList')
+    INITIAL_BALANCE_LIST_PAGE = BreadcrumbChildren(_('Initial Balance'), 'InitialBalanceList')
     DIMENSION_DEFINITION_LIST_PAGE = BreadcrumbChildren(_('Dimension definition'), 'DimensionDefinitionList')
     DIMENSION_VALUE_LIST_PAGE = BreadcrumbChildren(_('Dimension value'), 'DimensionValueList')
     DIMENSION_SYNC_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Dimension sync config'), 'DimensionSyncConfigList')
@@ -1551,26 +1551,30 @@ class BreadcrumbView:
         BreadcrumbItem.PAYROLL_CONFIG_PAGE
     ]
 
-    # ACCOUNTING BREADCRUMB SPACE
+    # /////////////////////////// ACCOUNTING BREADCRUMB SPACE ///////////////////////////
     PERIODS_CONFIG_PAGE = [BreadcrumbItem.PERIODS_CONFIG_PAGE]
     ACCOUNTING_POLICIES_PAGE = [BreadcrumbItem.ACCOUNTING_POLICIES_PAGE]
     CHART_OF_ACCOUNTS_LIST_PAGE = [BreadcrumbItem.CHART_OF_ACCOUNTS_LIST_PAGE]
     ACCOUNT_DETERMINATION_LIST_PAGE = [BreadcrumbItem.ACCOUNT_DETERMINATION_LIST_PAGE]
     INITIAL_BALANCE_LIST_PAGE = [BreadcrumbItem.INITIAL_BALANCE_LIST_PAGE]
+    INITIAL_BALANCE_DETAIL_PAGE = INITIAL_BALANCE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    INITIAL_BALANCE_UPDATE_PAGE = INITIAL_BALANCE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+    ASSET_CATEGORY_LIST_PAGE = [
+        BreadcrumbItem.ASSET_CATEGORY_LIST_PAGE
+    ]
+
+    # DIMENSION
     DIMENSION_DEFINITION_LIST_PAGE = [BreadcrumbItem.DIMENSION_DEFINITION_LIST_PAGE]
     DIMENSION_VALUE_LIST_PAGE = [BreadcrumbItem.DIMENSION_VALUE_LIST_PAGE]
     DIMENSION_SYNC_CONFIG_LIST_PAGE = [
         BreadcrumbItem.DIMENSION_SYNC_CONFIG_LIST_PAGE
     ]
-    DIMENSION_ACCOUNT_MAP_LIST_PAGE = [
-        BreadcrumbItem.DIMENSION_ACCOUNT_MAP_LIST_PAGE
-    ]
-    ASSET_CATEGORY_LIST_PAGE = [
-        BreadcrumbItem.ASSET_CATEGORY_LIST_PAGE
-    ]
+    DIMENSION_ACCOUNT_MAP_LIST_PAGE = [BreadcrumbItem.DIMENSION_ACCOUNT_MAP_LIST_PAGE]
 
+
+    # JOURNAL ENTRY
     JOURNAL_ENTRY_LIST_PAGE = [BreadcrumbItem.JOURNAL_ENTRY_LIST_PAGE]
     JOURNAL_ENTRY_CREATE_PAGE = JOURNAL_ENTRY_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     JOURNAL_ENTRY_DETAIL_PAGE = JOURNAL_ENTRY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     JOURNAL_ENTRY_UPDATE_PAGE = JOURNAL_ENTRY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
-    # END SPACE
+    # /////////////////////////// END SPACE ///////////////////////////

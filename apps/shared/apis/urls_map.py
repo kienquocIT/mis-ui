@@ -935,6 +935,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DIMENSION_LIST_FOR_ACCOUNTING_ACCOUNT = StringUrl('accounting-setting/dimension-for-account/detail/{pk}')
     DIMENSION_ACCOUNT_MAP_LIST = StringUrl('accounting-setting/dimension-account-map/list')
     DIMENSION_ACCOUNT_MAP_DETAIL = StringUrl('accounting-setting/dimension-account-map/detail/{pk}')
+    DIMENSION_SPLIT_TEMPLATE_LIST = StringUrl('accounting-setting/dimension-split-template/list')
+    DIMENSION_SPLIT_TEMPLATE_DETAIL = StringUrl('accounting-setting/dimension-split-template/detail/{pk}')
     ASSET_CATEGORY_LIST = StringUrl('accounting-setting/asset-category/list')
     ASSET_CATEGORY_DETAIL = StringUrl('accounting-setting/asset-category/detail/{pk}')
 
@@ -1059,3 +1061,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PAYROLL_ATTRIBUTE = StringUrl('hrm/payroll/payrollattribute/list')
 
     INITIAL_BALANCE_LIST = StringUrl('accounting-setting/initial-balance/list')
+    INITIAL_BALANCE_DETAIL = StringUrl('accounting-setting/initial-balance/detail/{pk}')

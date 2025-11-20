@@ -20,7 +20,7 @@ const tabMoneyVariables = new TabMoneyVariables();
  * Các hàm load page và hàm hỗ trợ
  */
 class TabMoneyFunction {
-    static initMoneyTable(data = [], option = 'create') {
+    static initMoneyTable(data = []) {
         tabMoneyElements.$tableMoney.DataTable().destroy();
         tabMoneyElements.$tableMoney.DataTableDefault({
             rowIdx: true,
@@ -121,6 +121,77 @@ class TabMoneyFunction {
                     }
                 },
             ],
+            initComplete: function() {
+                tabMoneyElements.$tableMoney.find('tbody tr').each(function (index, ele) {
+                    const $row = $(ele);
+                    const rowData = data[index];
+                    if (!rowData) return;
+
+                    // set row  attribute
+                    if (rowData?.['id']) {
+                        $row.attr('data-id', rowData['id']);
+                    }
+                    $row.attr('data-type-row', 'loaded');
+
+                    // load money type
+                    $row.find('.row-money-type').val(rowData?.['money_type']?.toString() || '');
+
+                    // load currency data
+                    if (rowData?.['currency_mapped_data']) {
+                        UsualLoadPageFunction.LoadCurrency({
+                            element: $row.find('.row-currency'),
+                            data_url: pageElements.$urlFactory.attr('data-url-currency'),
+                            data: rowData['currency_mapped_data'],
+                        });
+                    }
+
+                    // load account data
+                    if (rowData?.['account_data']) {
+                        UsualLoadPageAccountingFunction.LoadAccountingAccount({
+                            element: $row.find('.row-account'),
+                            data_url: pageElements.$urlFactory.attr('data-url-accounting-account'),
+                            data_params: {'acc_type': 1, 'is_account': true},
+                            data: rowData['account_data'],
+                        });
+                    }
+
+                    // load amount values
+                    $row.find('.row-amount').attr('value', rowData?.['money_value'] || 0);
+                    const isFC = rowData?.['is_fc'] || false;
+                    $row.find('.row-exchange-amount').attr('value', rowData?.['money_value_exchange'] || 0)
+                        .prop('readonly', !isFC)
+                        .prop('disabled', true);
+
+
+                    // load debit and credit value
+                    $row.find('.row-debit').attr('value', rowData?.['debit_value'] || 0);
+                    $row.find('.row-credit').attr('value', rowData?.['credit_value'] || 0);
+
+                    // load bank account details
+                    const moneyType = rowData?.['money_type']?.toString() || '';
+                    if (moneyType === '1' && rowData?.['money_detail_data']) {
+                        const bankDetail = rowData['money_detail_data'];
+                        const bankInfo = {
+                            bank_id: bankDetail?.['bank_id'] || '',
+                            bank_number: bankDetail?.['bank_number'] || '',
+                            bank_abbreviation: bankDetail?.['bank_abbreviation'] || ''
+                        };
+                        $row.find('.bank-info-script').text(JSON.stringify(bankInfo));
+
+                        // update button display with bank info
+                        if (bankInfo.bank_abbreviation && bankInfo.bank_number) {
+                            $row.find('.btn-detail-modal').html(`
+                                <span class="fw-bold mr-1">${bankInfo.bank_abbreviation}</span>
+                                <span>(${bankInfo.bank_number})</span>
+                            `);
+                        }
+                    }
+
+                    //enable/disable bank detail button based on money type
+                    $row.find('.btn-detail-modal').prop('disabled', true);
+                    $.fn.initMaskMoney2();
+                });
+            }
         });
     }
 
@@ -314,6 +385,13 @@ class TabMoneyEventHandler {
                 let btn_detail_modal = tabMoneyVariables.currentMoneyRow.find('.btn-detail-modal');
                 btn_detail_modal.html(`<i class="fas fa-info"></i>`);
             }
+        });
+
+        // event when click btn edit row
+        tabMoneyElements.$tableMoney.on('click', '.update-row', function() {
+            const $row = $(this).closest('tr');
+            $row.find('.row-access').prop('disabled', false);
+            $row.attr('data-type-row', 'updated');
         });
     }
 }

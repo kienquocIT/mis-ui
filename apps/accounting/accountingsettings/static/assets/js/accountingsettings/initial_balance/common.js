@@ -60,6 +60,7 @@ class InitialBalanceHandler {
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
 
+                    // load common information
                     pageElements.$titleEle.val(data?.['title'] || '');
                     pageElements.$descriptionEle.val(data?.['description'] || '');
                     UsualLoadPageFunction.LoadPeriod({
@@ -70,7 +71,10 @@ class InitialBalanceHandler {
                     });
                     pageElements.$accountingPeriodEle.trigger('change');
 
-                    InitialBalancePageFunction.CalculateAccountBalanceSummarize(data?.['tab_account_balance_data'] || [])
+                    // load Tabs information
+                    TabMoneyFunction.initMoneyTable(data?.['tab_money_data'] || []);
+
+                    InitialBalancePageFunction.CalculateAccountBalanceSummarize(data?.['tab_account_balance_data'] || []);
 
                     $.fn.initMaskMoney2();
 

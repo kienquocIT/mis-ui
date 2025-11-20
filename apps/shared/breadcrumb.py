@@ -495,6 +495,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     DIMENSION_VALUE_LIST_PAGE = BreadcrumbChildren(_('Dimension value'), 'DimensionValueList')
     DIMENSION_SYNC_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Dimension sync config'), 'DimensionSyncConfigList')
     DIMENSION_ACCOUNT_MAP_LIST_PAGE = BreadcrumbChildren(_('Dimension account map'), 'DimensionAccountList')
+    ASSET_CATEGORY_LIST_PAGE = BreadcrumbChildren(_('Asset category'), 'AssetCategoryList')
 
     # Journal entry
     JOURNAL_ENTRY_LIST_PAGE = BreadcrumbChildren(_('Journal entry'), 'JournalEntryList')
@@ -1560,6 +1561,12 @@ class BreadcrumbView:
     DIMENSION_VALUE_LIST_PAGE = [BreadcrumbItem.DIMENSION_VALUE_LIST_PAGE]
     DIMENSION_SYNC_CONFIG_LIST_PAGE = [
         BreadcrumbItem.DIMENSION_SYNC_CONFIG_LIST_PAGE
+    ]
+    DIMENSION_ACCOUNT_MAP_LIST_PAGE = [
+        BreadcrumbItem.DIMENSION_ACCOUNT_MAP_LIST_PAGE
+    ]
+    ASSET_CATEGORY_LIST_PAGE = [
+        BreadcrumbItem.ASSET_CATEGORY_LIST_PAGE
     ]
 
     JOURNAL_ENTRY_LIST_PAGE = [BreadcrumbItem.JOURNAL_ENTRY_LIST_PAGE]

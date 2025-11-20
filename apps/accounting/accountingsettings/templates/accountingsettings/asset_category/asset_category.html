@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Asset Category' %}{% endblock %}
+{% block cssHeader %}
+    <style>
+        .tree-toggle {
+            cursor: pointer;
+            margin-right: 8px;
+            color: #666;
+            transition: color 0.2s;
+        }
+
+        .tree-toggle:hover {
+            color: #333;
+        }
+
+        .tree-toggle.collapsed i {
+            transform: rotate(0deg);
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal-add-asset-category">
+        <span>
+            <span>{% trans 'Add' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-plus"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <div class="row">
+        <div class="col-12">
+            <table class="table nowrap w-100 table-hover"
+                   id="asset-category-table"
+                   data-method="GET"
+                   data-url="{% url 'AssetCategoryListAPI' %}">
+                <thead class="bg-secondary-light-5">
+                    <tr>
+                        <th class="w-20">{% trans 'Code' %}</th>
+                        <th class="w-30">{% trans 'Name' %}</th>
+                        <th class="w-15">{% trans 'Type' %}</th>
+                        <th class="w-20">{% trans 'Depreciation Method' %}</th>
+                        <th class="w-10">{% trans 'Useful life' %}</th>
+                        <th class="w-5">{% trans 'Action' %}</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block modalData %}
+    <div class="modal fade" id="modal-add-asset-category" tabindex="-1">
+        <div class="modal-dialog" style="min-width: 80vw">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">{% trans 'Create Asset Category' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="max-height: 65vh; overflow-y: auto;">
+                    <form id="form-add" data-detail-url="{% url 'AssetCategoryDetailAPI' 0 %}" data-url="{% url "AssetCategoryListAPI" %}" data-method="POST">
+                        <!-- Tabs Navigation -->
+                        <ul class="nav nav-tabs nav-line mb-4" id="category-tab">
+                            <li class="nav-item">
+                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-detail"
+                                        type="button" role="tab" aria-controls="modal-details" aria-selected="true">
+                                    <i class="bi bi-info-circle me-2"></i>{% trans 'Category Detail' %}
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-item"
+                                        type="button" role="tab" aria-controls="modal-items" aria-selected="false">
+                                    <i class="bi bi-box me-2"></i>{% trans 'Linked Item' %}
+                                </button>
+                            </li>
+                        </ul>
+
+                        <!-- Tab Content -->
+                        <div class="tab-content" id="category-tab-content">
+                            <!-- Tab 1: Category Details -->
+                            <div class="tab-pane fade show active" id="tab-detail" role="tabpanel" aria-labelledby="modal-details-tab">
+                                    <!-- Basic Information Section -->
+                                    <div class="mb-4">
+                                        <h6 class="mb-3 fw-semibold text-primary">
+                                            <i class="bi bi-info-circle me-2"></i>Basic Information
+                                        </h6>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label for="category-code" class="form-label required">{% trans 'Category Code' %}</label>
+                                                <input name="code" type="text" class="form-control" id="category-code" placeholder="e.g., COMP-IT" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="category-type" class="form-label required">{% trans 'Category Type' %}</label>
+                                                <select name="category_type" class="form-select" id="category-type" required>
+                                                    <option value="">-- Select Type --</option>
+                                                    <option value="0">{% trans 'Tangible (Physical assets)' %}</option>
+                                                    <option value="1">{% trans 'Intangible (Non-physical assets)' %}</option>
+                                                    <option value="2">{% trans 'Tools & Instruments' %}</option>
+                                                    <option value="3">{% trans 'Prepaid Expenses' %}</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-12">
+                                                <label for="parent-category" class="form-label">{% trans 'Parent Category' %}</label>
+                                                <select class="form-select select2" id="parent-category" name="parent_id"
+                                                        data-url="{% url 'AssetCategoryListAPI' %}" data-keyResp="asset_category_list">
+                                                </select>
+                                            </div>
+                                            <div class="col-12">
+                                                <label for="category-name" class="form-label required">{% trans 'Category Name' %}</label>
+                                                <input name="title" type="text" class="form-control" id="category-name" placeholder="e.g., Computer & IT Equipment" required>
+                                            </div>
+                                            <div class="col-12">
+                                                <label for="description" class="form-label">Description</label>
+                                                <textarea name="remark" class="form-control" id="description" rows="2" placeholder="Optional description..."></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Depreciation Settings Section -->
+                                    <div class="mb-4">
+                                        <h6 class="mb-3 fw-semibold text-primary">
+                                            <i class="bi bi-calculator me-2"></i>{% trans 'Depreciation Settings' %}
+                                        </h6>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label for="depreciation-method" class="form-label required">{% trans 'Depreciation Method' %}</label>
+                                                <select class="form-select" id="depreciation-method" required name="depreciation_method">
+                                                    <option value="">-- Select Method --</option>
+                                                    <option value="0">{% trans 'Straight line depreciation' %}</option>
+                                                    <option value="1">{% trans 'Adjusted reducing balance' %}</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="depreciation-time" class="form-label">{% trans 'Depreciation Time (Months)' %}</label>
+                                                <input name="depreciation_time" type="number" class="form-control" id="depreciation-time" placeholder="e.g., 12" min="1" required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- GL Account Mapping Section -->
+                                    <div class="mb-4">
+                                        <h6 class="mb-3 fw-semibold text-primary">
+                                            <i class="bi bi-journal-bookmark me-2"></i>{% trans 'GL Account Mapping' %}
+                                        </h6>
+                                        <div class="row g-3">
+                                            <div class="col-md-4">
+                                                <label for="asset-account" class="form-label required">{% trans 'Asset Account' %}</label>
+                                                <select name="asset_account_id" class="gl-acc-select form-select select2"
+                                                        id="asset-account"
+                                                        data-url="{% url "ChartOfAccountsListAPI" %}"
+                                                        data-keyResp="chart_of_accounts_list"
+                                                        required>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="accum-dep-account" class="form-label required">{% trans 'Accumulated Depreciation' %}</label>
+                                                <select class="gl-acc-select form-select select2" id="accum-dep-account"
+                                                        name="accumulated_depreciation_account_id"
+                                                        data-url="{% url "ChartOfAccountsListAPI" %}"
+                                                        data-keyResp="chart_of_accounts_list"
+                                                        required>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="dep-expense-account" class="form-label required">{% trans 'Depreciation Expense' %}</label>
+                                                <select class="gl-acc-select form-select select2" id="dep-expense-account"
+                                                        name="depreciation_expense_account_id"
+                                                        data-url="{% url "ChartOfAccountsListAPI" %}"
+                                                        data-keyResp="chart_of_accounts_list"
+                                                        required>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                            <!-- End Tab 1 -->
+
+                            <!-- Tab 2: Linked Items -->
+                            <div class="tab-pane fade" id="tab-item" role="tabpanel" aria-labelledby="modal-items-tab">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <button type="button" class="btn btn-sm btn-primary" id="assign-item-btn">
+                                        <i class="bi bi-plus-circle me-1"></i>
+                                        {% trans "Assign Items" %}
+                                    </button>
+                                </div>
+
+                                <!-- Items Table -->
+                                <div>
+                                    <table id="table-linked-item" class="w-100 table table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th class="5"></th>
+                                                <th class="w-35">Item Code</th>
+                                                <th class="w-35">Item Name</th>
+                                                <th class="w-25 text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- End Tab 2 -->
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                    <button type="submit" class="btn btn-primary" form="form-add">
+                        <span>{% trans 'Save' %}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-product" tabindex="-1" role="dialog" aria-labelledby="modal-product">
+        <div class="modal-dialog modal-lg" style="min-width: 70%" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Select Product/Service" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table nowrap w-100" id="modal-table-product"
+                                   data-url="{% url 'ProductListAPI' %}">
+                                <thead>
+                                <tr class="bg-secondary-light-5">
+                                    <th style="min-width: 30px"></th>
+                                    <th style="min-width: 30px"></th>
+                                    <th style="min-width: 250px">{% trans 'Product/Service' %}</th>
+                                    <th style="min-width: 200px">{% trans 'Description' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Asset Category' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="button" id="btn-save-product" class="btn btn-primary"
+                            data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
+    <script src="{% static 'assets/js/accountingsettings/asset_category/asset_category.js' %}"></script>
+{% endblock %}

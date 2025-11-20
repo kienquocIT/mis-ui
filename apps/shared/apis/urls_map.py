@@ -935,6 +935,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DIMENSION_LIST_FOR_ACCOUNTING_ACCOUNT = StringUrl('accounting-setting/dimension-for-account/detail/{pk}')
     DIMENSION_ACCOUNT_MAP_LIST = StringUrl('accounting-setting/dimension-account-map/list')
     DIMENSION_ACCOUNT_MAP_DETAIL = StringUrl('accounting-setting/dimension-account-map/detail/{pk}')
+    ASSET_CATEGORY_LIST = StringUrl('accounting-setting/asset-category/list')
+    ASSET_CATEGORY_DETAIL = StringUrl('accounting-setting/asset-category/detail/{pk}')
 
     JOURNAL_ENTRY_LIST = StringUrl('journal-entry/list')
     JOURNAL_ENTRY_DETAIL = StringUrl('journal-entry/detail/{pk}')

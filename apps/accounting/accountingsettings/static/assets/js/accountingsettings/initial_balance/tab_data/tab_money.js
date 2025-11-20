@@ -193,7 +193,7 @@ class TabMoneyFunction {
     }
 
     static combineTabCashData() {
-        const cashDataList = [];
+        const moneyDataList = [];
 
         tabMoneyElements.$tableMoney.find('tbody tr').each(function() {
             const typeRow = $(this).attr('data-type-row');
@@ -219,10 +219,10 @@ class TabMoneyFunction {
                         money_detail_data: bankDetailData
                     },
                 }
-                cashDataList.push(rowData)
+                moneyDataList.push(rowData)
             }
         });
-        return cashDataList;
+        return moneyDataList;
     }
 }
 

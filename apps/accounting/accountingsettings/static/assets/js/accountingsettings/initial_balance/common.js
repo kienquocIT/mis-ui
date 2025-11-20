@@ -18,21 +18,20 @@ const pageElements = new InitialBalanceElements();
  * Khai báo các hàm chính
  */
 class InitialBalancePageFunction {
-    static CalculateAccountBalanceSummarize() {
-        let sum_account_balance_debit = 0
-        let sum_account_balance_credit = 0
-        // 1. Add tab Cash
-        // 2. Add tab Goods
-        let sum_tab_goods = 0
-        $('#table-balance-product').find('tbody tr').each(function (index, ele) {
-            let row_goods_value = parseFloat($(ele).find('td:eq(2) span').attr('data-init-money') || 0)
-            sum_tab_goods += row_goods_value
-            sum_account_balance_debit += row_goods_value
-        })
-        $('#balanceTabCash').attr('data-init-money', sum_tab_goods)
-        $('#balanceTabGoods').attr('data-init-money', sum_tab_goods)
-        $('#totalBalance').attr('data-init-money', sum_account_balance_debit - sum_account_balance_credit)
-        $.fn.initMaskMoney2()
+    static CalculateAccountBalanceSummarize(tab_account_balance_data=[]) {
+        // Money
+        let tab_money_item = tab_account_balance_data.find(item => item?.['tab_type'] === 0)
+        let tab_money_value = tab_money_item ? tab_money_item?.['tab_value'] || 0 : 0
+        $('#balanceTabCash').attr('data-init-money', tab_money_value)
+        // Goods
+        let tab_goods_item = tab_account_balance_data.find(item => item?.['tab_type'] === 1)
+        let tab_goods_value = tab_goods_item ? tab_goods_item?.['tab_value'] || 0 : 0
+        $('#balanceTabGoods').attr('data-init-money', tab_goods_value)
+
+        // total
+        $('#totalBalance').attr('data-init-money', tab_money_value + tab_goods_value)
+
+        $.fn.initMaskMoney2();
     }
 
     static loadDates(elements) {
@@ -71,9 +70,7 @@ class InitialBalanceHandler {
                     });
                     pageElements.$accountingPeriodEle.trigger('change');
 
-                    $('#balanceTabCash').attr('data-init-money', data?.['tab_account_balance_data'].find(item => item?.['tab_type'] === 0)?.['tab_value'] || 0)
-
-                    InitialBalancePageFunction.CalculateAccountBalanceSummarize()
+                    InitialBalancePageFunction.CalculateAccountBalanceSummarize(data?.['tab_account_balance_data'] || [])
 
                     $.fn.initMaskMoney2();
 

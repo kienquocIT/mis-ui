@@ -1777,6 +1777,7 @@ class PODataTableHandle {
             },
             autoWidth: true,
             scrollX: true,
+            scrollY: "60vh",
             info: false,
             columns: [
                 {
@@ -1832,6 +1833,7 @@ class PODataTableHandle {
             searching: false,
             autoWidth: true,
             scrollX: true,
+            scrollY: "60vh",
             columns: [
                 {
                     targets: 0,

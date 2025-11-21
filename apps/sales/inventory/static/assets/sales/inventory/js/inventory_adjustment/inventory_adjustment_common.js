@@ -142,6 +142,7 @@ class IAHandle {
             $('.select2').prop('disabled', true);
             $('#collapse-area input').prop('disabled', true);
             addRowLineDetailBtn.prop('disabled', true)
+            $('#printModal .form-select').prop('disabled', false)
         }
         if (option === 'update') {
             $('#collapse-area .form-control').prop('disabled', true).prop('readonly', true);
@@ -349,7 +350,7 @@ class IAHandle {
                             name: 'attachment'
                         })
 
-                        UsualLoadPageFunction.DisablePage(option === 'detail')
+                        IAHandle.Disable(option);
                     }
                 }
             })

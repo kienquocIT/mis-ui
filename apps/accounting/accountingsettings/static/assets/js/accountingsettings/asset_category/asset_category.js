@@ -4,8 +4,9 @@ $(document).ready(function () {
     const $tableProduct = $('#modal-table-product')
     const $saveProductBtn = $('#btn-save-product')
     const $linkedItemTable = $('#table-linked-item')
-
     const $formAdd = $('#form-add')
+    const $categoryTable = $('#asset-category-table')
+    let isAddNew = true
 
     let tempSelectedProducts = []
     let linkedItemData = []
@@ -21,12 +22,11 @@ $(document).ready(function () {
         }
     })
 
-    let assetCateDtb = $('#asset-category-table').DataTableDefault({
+    let assetCateDtb = $categoryTable.DataTableDefault({
         data: [],
         columns: [
             {
                 targets: 0,
-                data: 'title',
                 className: 'w-20',
                 render: (data, type, row) => {
                     const indent = row.level * 20;
@@ -43,7 +43,7 @@ $(document).ready(function () {
                     return `
                     <div style="padding-left:${indent}px;">
                         ${toggle}
-                        <span>${row.title}</span>
+                        <span>${row.code}</span>
                     </div>`;
                 }
             },
@@ -183,7 +183,7 @@ $(document).ready(function () {
 
     function loadAssetCategoryData() {
         return $.ajax({
-            url: $('#asset-category-table').attr('data-url'),
+            url: $categoryTable.attr('data-url'),
             type: "GET",
         }).then(resp => {
             assetCategoryCache = resp.data.asset_category_list || [];
@@ -222,22 +222,30 @@ $(document).ready(function () {
         children.forEach((child, index) => {
             child.level = (assetCategoryMap[parentId].level || 0) + 1;
             child.isExpanded = false;
-            UsualLoadPageFunction.AddTableRowAtIndex($('#asset-category-table'), child, parentRowIndex + 1 + index)
+            UsualLoadPageFunction.AddTableRowAtIndex($categoryTable, child, parentRowIndex + 1 + index)
         })
     }
 
     function collapseNode(parentId) {
         const rowsToRemove = [];
 
-        assetCateDtb.rows().every(function () {
-            const row = this.data();
-            if (row.parent_id === parentId) {
-                rowsToRemove.push(this.index());
-                collapseNode(row.id);
-            }
-        });
+        function collectDescendants(nodeId) {
+            assetCateDtb.rows().every(function () {
+                const row = this.data();
+                if (row.parent_id === nodeId) {
+                    rowsToRemove.push(this.index());
+                    // Recursively collect children of this row
+                    collectDescendants(row.id);
+                }
+            });
+        }
 
-        rowsToRemove.sort((a, b) => b - a).forEach(i => {
+        collectDescendants(parentId);
+
+        // Sort indices in descending order to avoid index shifting issues
+        rowsToRemove.sort((a, b) => b - a);
+
+        rowsToRemove.forEach(i => {
             assetCateDtb.row(i).remove();
         });
 
@@ -283,7 +291,7 @@ $(document).ready(function () {
             tempSelectedProducts = []
         })
 
-        $('#modal-product').on('hidden.bs.modal', function () {
+        $modalProduct.on('hidden.bs.modal', function () {
             tempSelectedProducts = [];
         });
     }
@@ -302,7 +310,7 @@ $(document).ready(function () {
         $tableProduct.find(`input[data-product-id="${productId}"]`).prop('checked', false)
     })
 
-    $('#asset-category-table').on('click', '.tree-toggle', function () {
+    $categoryTable.on('click', '.tree-toggle', function () {
         const nodeId = $(this).data('node-id');
         const rowIndex = assetCateDtb.row($(this).closest('tr')).index();
         const rowData = assetCateDtb.row(rowIndex).data();
@@ -318,60 +326,19 @@ $(document).ready(function () {
         assetCateDtb.row(rowIndex).data(rowData).draw(false);
     });
 
-    function setUpFormData(frm) {
-        frm.dataForm['linked_product_data'] = linkedItemDtb.data().toArray().map(item => item.product_id)
-    }
-
-    new SetupFormSubmit($formAdd).validate({
-        submitHandler: function (form) {
-            let frm = new SetupFormSubmit($(form))
-            setUpFormData(frm)
-
-            $.fn.callAjax2({
-                'url': frm.dataUrl,
-                'method': frm.dataMethod,
-                'data': frm.dataForm,
-            }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: "Successfully"}, 'success')
-                        $(form)[0].reset();
-                        const $modal = $(form).closest('.modal');
-                        if ($modal.length) {
-                            $modal.modal('hide');
-                        }
-                        $('.gl-acc-select').val('').trigger('change');
-                        UsualLoadPageAccountingFunction.LoadAccountingAccount({
-                            element: $('.gl-acc-select'),
-                            data_params: {
-                                "is_account": true,
-                            }
-                        })
-                        linkedItemDtb.clear().draw(false)
-                    }
-
-                    loadAssetCategoryData().then(() => {
-                        renderRootRows()
-                    })
-                },
-                (errs) => {
-                    $.fn.notifyB({description: errs.data.errors}, 'failure');
-                }
-            )
-        }
+    $('#btn-add').on('click', function () {
+        isAddNew = true
     })
 
-    // call functions
-    handleCheckAndSaveProduct()
-    loadAssetCategoryData().then(() => {
-        renderRootRows()
-    })
-    $('#asset-category-table').on('click', '.btn-edit', function(e) {
+    $categoryTable.on('click', '.btn-edit', function(e) {
+        isAddNew = false
         const categoryId = $(this).data('id')
         const $modal = $('#modal-add-asset-category')
         const $form = $('#form-add')
         const $modalTitle = $('#modalTitle')
+
+        $form.attr('data-asset-category-id', categoryId)
+
         $.fn.callAjax2({
             url: $form.data('detail-url').format_url_with_uuid(categoryId), // Adjust URL pattern as needed
             type: 'GET',
@@ -406,5 +373,92 @@ $(document).ready(function () {
         )
     })
 
+    function setUpFormData(frm) {
+        frm.dataForm['linked_product_data'] = linkedItemDtb.data().toArray().map(item => item.product_id)
+    }
+
+    new SetupFormSubmit($formAdd).validate({
+        submitHandler: function (form) {
+            if(isAddNew){
+                let frm = new SetupFormSubmit($(form))
+                setUpFormData(frm)
+                $.fn.callAjax2({
+                    'url': frm.dataUrl,
+                    'method': frm.dataMethod,
+                    'data': frm.dataForm,
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: "Successfully"}, 'success')
+                            $(form)[0].reset();
+                            const $modal = $(form).closest('.modal');
+                            if ($modal.length) {
+                                $modal.modal('hide');
+                            }
+                            $('.gl-acc-select').val('').trigger('change');
+                            UsualLoadPageAccountingFunction.LoadAccountingAccount({
+                                element: $('.gl-acc-select'),
+                                data_params: {
+                                    "is_account": true,
+                                }
+                            })
+                            linkedItemDtb.clear().draw(false)
+                        }
+
+                        loadAssetCategoryData().then(() => {
+                            renderRootRows()
+                        })
+                    },
+                    (errs) => {
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    }
+                )
+            }
+            else {
+                const categoryId = $formAdd.attr('data-asset-category-id')
+                let frm = new SetupFormSubmit($(form))
+                setUpFormData(frm)
+                $.fn.callAjax2({
+                    'url': $formAdd.attr('data-detail-url').format_url_with_uuid(categoryId),
+                    'method': 'PUT',
+                    'data': frm.dataForm,
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: "Successfully"}, 'success')
+                            $(form)[0].reset();
+                            const $modal = $(form).closest('.modal');
+                            if ($modal.length) {
+                                $modal.modal('hide');
+                            }
+                            $('.gl-acc-select').val('').trigger('change');
+                            UsualLoadPageAccountingFunction.LoadAccountingAccount({
+                                element: $('.gl-acc-select'),
+                                data_params: {
+                                    "is_account": true,
+                                }
+                            })
+                            linkedItemDtb.clear().draw(false)
+                        }
+
+                        loadAssetCategoryData().then(() => {
+                            renderRootRows()
+                        })
+                    },
+                    (errs) => {
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    }
+                )
+            }
+        }
+    })
+
+    // call functions
+    handleCheckAndSaveProduct()
+    loadAssetCategoryData().then(() => {
+        renderRootRows()
+    })
 
 })

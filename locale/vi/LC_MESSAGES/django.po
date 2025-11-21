@@ -10641,8 +10641,8 @@ msgid "Chart of account"
 msgstr "Danh sách tài khoản"
 
 #
-msgid "Trading account type"
-msgstr "Loại tài khoản giao dịch"
+msgid "Trading type defined"
+msgstr "Loại giao dịch được định nghĩa"
 
 #
 msgid "Add same level account"

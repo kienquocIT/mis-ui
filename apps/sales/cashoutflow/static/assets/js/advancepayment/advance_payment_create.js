@@ -6,7 +6,7 @@ $(document).ready(function () {
     UsualLoadPageFunction.LoadDate({element: pageElements.$date_created, empty: false})
     UsualLoadPageFunction.LoadDate({element: pageElements.$return_date})
     UsualLoadPageFunction.LoadDate({element: pageElements.$advance_date})
-    const {opp_id} = $x.fn.getManyUrlParameters(['opp_title'])
+    const {opp_id} = $x.fn.getManyUrlParameters(['opp_id'])
     AdvancePaymentHandler.LoadPageActionWithParams(opp_id)
 
     AdvancePaymentPageFunction.LoadQuotation()

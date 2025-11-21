@@ -16,23 +16,29 @@ $(document).ready(function() {
         {
             className: 'w-30',
             'render': (data, type, row) => {
-                return `<h6 class="text-muted fw-bold">${row?.['title']}</h6><h6 class="small text-primary fw-bold">${row?.['foreign_title']}</h6>`;
+                return `<span class="text-muted fw-bold">${row?.['title']}</span><br><span class="text-primary">${row?.['foreign_title']}</span>`;
             }
         },
         {
             className: 'w-20',
             'render': (data, type, row) => {
-                return `<select disabled data-account-mapped='${JSON.stringify(row?.['account_mapped'])}' class="form-select select2 selected-accounts"></select>`;
+                return `<div class="input-group">
+                            <select disabled data-account-mapped='${JSON.stringify(row?.['account_mapped'])}' class="form-select select2 selected-accounts"></select>
+                            <span class="input-group-text p-0">
+                                <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-regular fa-circle-question"></i>
+                                </a>
+                                <div class="dropdown-menu bflow-mirrow-card-80 p-3" style="min-width: 200px;">
+                                    <h5 class="row-account-code fw-bold"></h5>
+                                    <h6 class="row-fk-account-name"></h6>
+                                    <h6 class="row-account-name"></h6>
+                                </div>
+                            </span>
+                        </div>`;
             }
         },
         {
-            className: 'w-35',
-            'render': (data, type, row) => {
-                return `<div class="selected-accounts-des"></div>`;
-            }
-        },
-        {
-            className: 'text-right w-10',
+            className: 'text-right w-45',
             'render': (data, type, row) => {
                 let change_btn = `<a class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover btn-xs btn-change-account">
                    <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i class="fa-solid fa-pen-to-square"></i></span></span>
@@ -57,7 +63,7 @@ $(document).ready(function() {
                 reloadCurrency: true,
                 paging: false,
                 scrollX: true,
-                scrollY: '64vh',
+                scrollY: '65vh',
                 scrollCollapse: true,
                 ajax: {
                     url: frm.dataUrl,
@@ -95,25 +101,12 @@ $(document).ready(function() {
                 initComplete: function () {
                     $account_determination_table.find('tbody tr .selected-accounts').each(function () {
                         let account_mapped = $(this).attr('data-account-mapped') ? JSON.parse($(this).attr('data-account-mapped')) : []
-                        $(this).initSelect2({
-                            data: (account_mapped ? account_mapped : null),
-                            ajax: {
-                                url: $account_determination_table.attr('data-chart-of-account-url'),
-                                method: 'GET',
-                            },
-                            keyResp: 'chart_of_accounts_list',
-                            keyId: 'id',
-                            keyText: 'acc_code',
-                            templateResult: function (state) {
-                                return $(`<span class="badge badge-light">${state.data?.['acc_code']}</span> <span>${state.data?.['acc_name']}</span> <span class="small">(${state.data?.['foreign_acc_name']})</span>`);
-                            },
-                        })
-
-                        for (let i = 0; i < account_mapped.length; i++) {
-                            $(this).closest('tr').find('.selected-accounts-des').append(
-                                `<h6 class="text-muted">${account_mapped[i]?.['acc_name']}</h6><h6 class="small text-primary">${account_mapped[i]?.['foreign_acc_name']}</h6>`
-                            )
-                        }
+                        UsualLoadPageAccountingFunction.LoadAccountingAccount({
+                            element: $(this),
+                            data: account_mapped,
+                            data_url: $account_determination_table.attr('data-chart-of-account-url'),
+                            data_params: {'acc_type': 1, 'is_account': true}
+                        });
                     })
                 }
             });
@@ -123,13 +116,6 @@ $(document).ready(function() {
     loadAccountDeterminationTable()
 
     $(document).on('change', '.selected-accounts', function () {
-        let account_mapped = [SelectDDControl.get_data_from_idx($(this), $(this).val())]
-        $(this).closest('tr').find('.selected-accounts-des').html('')
-        for (let i = 0; i < account_mapped.length; i++) {
-            $(this).closest('tr').find('.selected-accounts-des').append(
-                `<h6 class="text-muted">${account_mapped[i]?.['acc_name']}</h6><h6 class="small text-primary">${account_mapped[i]?.['foreign_acc_name']}</h6>`
-            )
-        }
         $(this).closest('tr').find('.btn-change-account').prop('hidden', true)
         $(this).closest('tr').find('.btn-save-change-account').prop('hidden', false)
         $(this).closest('tr').addClass('bg-primary-light-5')

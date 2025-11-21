@@ -1251,7 +1251,7 @@ class UsualLoadPageAccountingFunction {
      * @param {string} data_url - data_url
      * @returns {void}
      */
-    static LoadAccountingAccount({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+    static LoadAccountingAccount({element, data=null, allow_clear=true, data_params = {}, data_url='', apply_default_on_change=true}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -1274,6 +1274,22 @@ class UsualLoadPageAccountingFunction {
             keyResp: 'chart_of_accounts_list',
             keyId: 'id',
             keyText: 'acc_code',
+        }).on('change', function () {
+            if (apply_default_on_change) {
+                if ($(this).val()) {
+                    let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
+                    element.closest('.input-group').find('.row-account-code').text(selected?.['acc_code'] || '')
+                    element.closest('.input-group').find('.row-fk-account-name').text(selected?.['foreign_acc_name'] || '')
+                    element.closest('.input-group').find('.row-account-name').text(`(${selected?.['acc_name'] || ''})`)
+                }
+            }
         })
+
+        if (data.length > 0) {
+            let selected = data[0]
+            element.closest('.input-group').find('.row-account-code').text(selected?.['acc_code'] || '')
+            element.closest('.input-group').find('.row-fk-account-name').text(selected?.['foreign_acc_name'] || '')
+            element.closest('.input-group').find('.row-account-name').text(`(${selected?.['acc_name'] || ''})`)
+        }
     }
 }

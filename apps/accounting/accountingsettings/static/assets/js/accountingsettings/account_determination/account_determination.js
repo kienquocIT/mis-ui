@@ -23,7 +23,7 @@ $(document).ready(function() {
             className: 'w-20',
             'render': (data, type, row) => {
                 return `<div class="input-group">
-                            <select disabled data-account-mapped='${JSON.stringify(row?.['account_mapped'])}' class="form-select select2 selected-accounts"></select>
+                            <select disabled data-account-mapped='${JSON.stringify(row?.['account_mapped'])}' class="form-select select2 row-account"></select>
                             <span class="input-group-text p-0">
                                 <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fa-regular fa-circle-question"></i>
@@ -99,7 +99,7 @@ $(document).ready(function() {
                     }
                 ],
                 initComplete: function () {
-                    $account_determination_table.find('tbody tr .selected-accounts').each(function () {
+                    $account_determination_table.find('tbody tr .row-account').each(function () {
                         let account_mapped = $(this).attr('data-account-mapped') ? JSON.parse($(this).attr('data-account-mapped')) : []
                         UsualLoadPageAccountingFunction.LoadAccountingAccount({
                             element: $(this),
@@ -115,7 +115,7 @@ $(document).ready(function() {
 
     loadAccountDeterminationTable()
 
-    $(document).on('change', '.selected-accounts', function () {
+    $(document).on('change', '.row-account', function () {
         $(this).closest('tr').find('.btn-change-account').prop('hidden', true)
         $(this).closest('tr').find('.btn-save-change-account').prop('hidden', false)
         $(this).closest('tr').addClass('bg-primary-light-5')
@@ -123,7 +123,7 @@ $(document).ready(function() {
 
     $(document).on('click', '.btn-save-change-account', function () {
         let row_id = $(this).attr('data-id')
-        let row_replace_account = $(this).closest('tr').find('.selected-accounts').val()
+        let row_replace_account = $(this).closest('tr').find('.row-account').val()
         Swal.fire({
             html:
             `<div class="d-flex align-items-center">
@@ -175,6 +175,6 @@ $(document).ready(function() {
     })
 
     $(document).on('click', '.btn-change-account', function () {
-        $(this).closest('tr').find('.selected-accounts').prop('disabled', false)
+        $(this).closest('tr').find('.row-account').prop('disabled', false)
     })
 });

@@ -2,13 +2,12 @@
 
 {% random_str 10 True as id_modal %}
 
-<div class="row">
-    <table
-            id="tbl_budget_extend"
-            class="table nowrap min-w-1440p w-100 mb-5"
-    >
-        <thead>
-        <tr class="bg-light">
+<table
+        id="tbl_budget_extend"
+        class="table nowrap min-w-1440p w-100 mb-5"
+>
+    <thead>
+    <tr class="bg-light">
 {#            <th>#</th>#}
 {#            <th>{% trans '1st Dimension' %}</th>#}
 {#            <th>{% trans '1st Value' %}</th>#}
@@ -19,24 +18,23 @@
 {#            <th>{% trans 'Available' %}</th>#}
 {#            <th>{% trans 'Consume' %}</th>#}
 {#            <th></th>#}
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-{#        <tfoot>#}
-{#        <tr class="bg-light">#}
-{#            <th colspan="5"></th>#}
-{#            <th colspan="1">#}
-{#                <b>{% trans 'Total' %}:</b>#}
-{#            </th>#}
-{#            <th colspan="1">#}
-{#                <span class="mask-money badge text-dark-10 fs-6 bg-blue-light-4 border border-blue tbl-budget-total" data-init-money="0"></span>#}
-{#            </th>#}
-{#            <th colspan="1"></th>#}
-{#        </tr>#}
-{#        </tfoot>#}
-    </table>
-</div>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+    <tfoot>
+    <tr class="bg-light">
+        <th colspan="5"></th>
+        <th colspan="1">
+            <b>{% trans 'Total' %}:</b>
+        </th>
+        <th colspan="1">
+            <span class="mask-money badge text-dark-10 fs-6 bg-blue-light-4 border border-blue tbl-budget-total" data-init-money="0"></span>
+        </th>
+        <th colspan="1"></th>
+    </tr>
+    </tfoot>
+</table>
 
 <input
     type="text" class="hidden"

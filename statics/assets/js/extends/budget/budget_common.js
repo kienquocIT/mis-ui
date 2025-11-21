@@ -483,7 +483,8 @@ class BudgetControl {
             }
             if (check === false) {
                 $.fn.notifyB({description: "Dimensions must be different"}, 'failure');
-                FormElementControl.loadInitS2($(ele), [], {'related_app_id__in': BudgetControl.appMapData[BudgetControl.appID]['dimension'].join(',')}, null, true);
+                $(ele).val('').trigger('change');
+                // FormElementControl.loadInitS2($(ele), [], {'related_app_id__in': BudgetControl.appMapData[BudgetControl.appID]['dimension'].join(',')}, null, true);
                 return false;
             }
             FormElementControl.loadInitS2(dimensionValueEle$, [], {'dimension_id': $(ele).val()}, null, true);
@@ -525,82 +526,86 @@ class BudgetControl {
     static dtbOnChangeDimensionValue(ele) {
         let row = ele.closest('tr');
         let check = true;
-        let orderEle$ = $(row).find('.table-row-order');
-        let dimensionValue1Ele$ = $(row).find('.table-row-dimension-value-1');
-        let dimensionValue2Ele$ = $(row).find('.table-row-dimension-value-2');
-        if (orderEle$.length > 0 && dimensionValue1Ele$.length > 0 && dimensionValue2Ele$.length > 0) {
-            let budgetLineDataEle$ = $(row).find('.table-row-budget-line-data');
-            BudgetControl.dtbLoadBudgetLine(row, {});
-            if (budgetLineDataEle$.length > 0) {
-                budgetLineDataEle$.val(JSON.stringify({}));
-            }
-            $.fn.initMaskMoney2();
-            if (dimensionValue1Ele$.val() && dimensionValue2Ele$.val()) {
-                let dimensionValues = [dimensionValue1Ele$.val(), dimensionValue2Ele$.val()];
-                BudgetControl.$tbl.DataTable().rows().every(function () {
-                    let row = this.node();
-                    let orderCheckEle$ = $(row).find('.table-row-order');
-                    let dimensionValue1CheckEle$ = $(row).find('.table-row-dimension-value-1');
-                    let dimensionValue2CheckEle$ = $(row).find('.table-row-dimension-value-2');
-                    if (orderCheckEle$.length > 0 && dimensionValue1CheckEle$.length > 0 && dimensionValue2CheckEle$.length > 0) {
-                        if (orderEle$.text() !== orderCheckEle$.text() && dimensionValue1CheckEle$.val() && dimensionValue2CheckEle$.val()) {
-                            if (dimensionValues.includes(dimensionValue1CheckEle$.val()) && dimensionValues.includes(dimensionValue2CheckEle$.val())) {
-                                check = false;
+        if ($(ele).val() && row) {
+            let orderEle$ = $(row).find('.table-row-order');
+            let dimensionValue1Ele$ = $(row).find('.table-row-dimension-value-1');
+            let dimensionValue2Ele$ = $(row).find('.table-row-dimension-value-2');
+            if (orderEle$.length > 0 && dimensionValue1Ele$.length > 0 && dimensionValue2Ele$.length > 0) {
+                let budgetLineDataEle$ = $(row).find('.table-row-budget-line-data');
+                BudgetControl.dtbLoadBudgetLine(row, {});
+                if (budgetLineDataEle$.length > 0) {
+                    budgetLineDataEle$.val(JSON.stringify({}));
+                }
+                $.fn.initMaskMoney2();
+                if (dimensionValue1Ele$.val() && dimensionValue2Ele$.val()) {
+                    let dimensionValues = [dimensionValue1Ele$.val(), dimensionValue2Ele$.val()];
+                    BudgetControl.$tbl.DataTable().rows().every(function () {
+                        let row = this.node();
+                        let orderCheckEle$ = $(row).find('.table-row-order');
+                        let dimensionValue1CheckEle$ = $(row).find('.table-row-dimension-value-1');
+                        let dimensionValue2CheckEle$ = $(row).find('.table-row-dimension-value-2');
+                        if (orderCheckEle$.length > 0 && dimensionValue1CheckEle$.length > 0 && dimensionValue2CheckEle$.length > 0) {
+                            if (orderEle$.text() !== orderCheckEle$.text() && dimensionValue1CheckEle$.val() && dimensionValue2CheckEle$.val()) {
+                                if (dimensionValues.includes(dimensionValue1CheckEle$.val()) && dimensionValues.includes(dimensionValue2CheckEle$.val())) {
+                                    check = false;
+                                }
                             }
                         }
-                    }
-                });
-                if (check === false) {
-                    $.fn.notifyB({description: BudgetControl.$transEle.attr('data-valid-dimension-value')}, 'failure');
-                    if ($(ele).hasClass('table-row-dimension-value-1')) {
-                        let dimensionEle$ = $(row).find('.table-row-dimension-1');
-                        if (dimensionEle$.length > 0) {
-                            dimensionEle$.trigger('change');
-                            // FormElementControl.loadInitS2($(ele), [], {'dimension_id': dimensionEle$.val()}, null, true);
+                    });
+                    if (check === false) {
+                        $.fn.notifyB({description: BudgetControl.$transEle.attr('data-valid-dimension-value')}, 'failure');
+                        if ($(ele).hasClass('table-row-dimension-value-1')) {
+                            let dimensionEle$ = $(row).find('.table-row-dimension-1');
+                            if (dimensionEle$.length > 0) {
+                                // dimensionEle$.trigger('change');
+                                $(ele).val('').trigger('change');
+                                // FormElementControl.loadInitS2($(ele), [], {'dimension_id': dimensionEle$.val()}, null, true);
+                            }
                         }
-                    }
-                    if ($(ele).hasClass('table-row-dimension-value-2')) {
-                        let dimensionEle$ = $(row).find('.table-row-dimension-2');
-                        if (dimensionEle$.length > 0) {
-                            dimensionEle$.trigger('change');
-                            // FormElementControl.loadInitS2($(ele), [], {'dimension_id': dimensionEle$.val()}, null, true);
+                        if ($(ele).hasClass('table-row-dimension-value-2')) {
+                            let dimensionEle$ = $(row).find('.table-row-dimension-2');
+                            if (dimensionEle$.length > 0) {
+                                // dimensionEle$.trigger('change');
+                                $(ele).val('').trigger('change');
+                                // FormElementControl.loadInitS2($(ele), [], {'dimension_id': dimensionEle$.val()}, null, true);
+                            }
                         }
+                        return false;
                     }
-                    return false;
-                }
-                WindowControl.showLoading();
-                $.fn.callAjax2({
-                        'url': BudgetControl.$urlEle.attr('data-api-budget-line'),
-                        'method': "GET",
-                        'data': {'dimension_values': dimensionValues.join(',')},
-                        'isDropdown': true,
-                    }
-                ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (data.hasOwnProperty('budget_line_list') && Array.isArray(data.budget_line_list)) {
-                                for (let budgetLine of data?.['budget_line_list']) {
-                                    let count = 0;
-                                    for (let dimensionValue of dimensionValues) {
-                                        if (budgetLine?.['dimension_values_id'].includes(dimensionValue)) {
-                                            count++;
-                                        }
-                                        if (count === dimensionValues.length) {
-                                            BudgetControl.dtbLoadBudgetLine(row, budgetLine);
-                                            if (budgetLineDataEle$.length > 0) {
-                                                budgetLineDataEle$.val(JSON.stringify(budgetLine));
+                    WindowControl.showLoading();
+                    $.fn.callAjax2({
+                            'url': BudgetControl.$urlEle.attr('data-api-budget-line'),
+                            'method': "GET",
+                            'data': {'dimension_values': dimensionValues.join(',')},
+                            'isDropdown': true,
+                        }
+                    ).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                if (data.hasOwnProperty('budget_line_list') && Array.isArray(data.budget_line_list)) {
+                                    for (let budgetLine of data?.['budget_line_list']) {
+                                        let count = 0;
+                                        for (let dimensionValue of dimensionValues) {
+                                            if (budgetLine?.['dimension_values_id'].includes(dimensionValue)) {
+                                                count++;
                                             }
-                                            $.fn.initMaskMoney2();
-                                            break;
+                                            if (count === dimensionValues.length) {
+                                                BudgetControl.dtbLoadBudgetLine(row, budgetLine);
+                                                if (budgetLineDataEle$.length > 0) {
+                                                    budgetLineDataEle$.val(JSON.stringify(budgetLine));
+                                                }
+                                                $.fn.initMaskMoney2();
+                                                break;
+                                            }
                                         }
                                     }
+                                    WindowControl.hideLoading();
                                 }
-                                WindowControl.hideLoading();
                             }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
     };

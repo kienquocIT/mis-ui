@@ -214,21 +214,62 @@
         </button>
     </div>
 </div>
-<div class="row">
-    <div class="col-12 col-md-3 col-lg-3">
-        <div class="form-group">
-            <label for="total_payment" class="form-label text-muted fw-bold">{% trans "Total payment" %}</label>
-            <div class="input-group">
-                <input disabled readonly class="form-control fw-bold mask-money fs-5" value="0" id="total_payment">
-                <button title="{% trans 'Payment method' %}" id="btn-modal-payment-method" data-payment-method='' disabled type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#payment-method-modal">
-                    <span>
-                        <span class="icon"><span class="feather-icon"><i class="fas fa-bars"></i></span></span>
-                    </span>
-                </button>
+{#<div class="row hidden">#}
+{#    <div class="col-12 col-md-3 col-lg-3">#}
+{#        <div class="form-group">#}
+{#            <label for="total_payment" class="form-label text-muted fw-bold">{% trans "Total payment" %}</label>#}
+{#            <div class="input-group">#}
+{#                <input disabled readonly class="form-control fw-bold mask-money fs-5" value="0" id="total_payment">#}
+{#                <button title="{% trans 'Payment method' %}" id="btn-modal-payment-method" data-payment-method='' type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#payment-method-modal">#}
+{#                    <span>#}
+{#                        <span class="icon"><span class="feather-icon"><i class="fas fa-bars"></i></span></span>#}
+{#                    </span>#}
+{#                </button>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#</div>#}
+{#<div class="row">#}
+{#    <div class="d-flex justify-content-end">#}
+{#        <button title="{% trans 'Payment method' %}" id="btn-modal-payment-method" data-payment-method='' type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#payment-method-modal">#}
+{#            <span>#}
+{#                {% trans 'Payment method' %}#}
+{#            </span>#}
+{#        </button>#}
+{#    </div>#}
+{#</div>#}
+<div class="card w-25 ms-auto">
+    <div class="card-header bg-primary text-white">{% trans 'Payment method' %}</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label" for="cash_value">{% trans "Cash value" %}</label>
+                    <input class="form-control mask-money" value="0" id="cash_value">
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label" for="bank_value">{% trans "Bank value" %}</label>
+                    <input class="form-control mask-money" value="0" id="bank_value">
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label" for="account_bank_account">{% trans "Select bank account" %}</label>
+                    <select class="form-select" id="account_bank_account"></select>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label" for="banking_information">({% trans "or enter other banking information here" %})</label>
+                    <textarea class="form-control" id="banking_information"></textarea>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
 <div class="row mb-10">
     <div class="col-12">
         <div class="form-group">

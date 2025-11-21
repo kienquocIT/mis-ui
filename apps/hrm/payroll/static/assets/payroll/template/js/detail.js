@@ -1,6 +1,5 @@
 $(document).ready(function(){
     const $formElm = $('#payroll_template_form')
-    const $tblElm = $('#tbl_attribute_list')
 
     // get detail request info
     $.fn.callAjax2({
@@ -26,4 +25,5 @@ $(document).ready(function(){
         },
         (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
     )
+    $('#formula-save').prop('disabled', true)
 })

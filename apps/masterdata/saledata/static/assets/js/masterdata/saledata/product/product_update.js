@@ -22,7 +22,7 @@ $(document).ready(async function () {
                                 let formData = new FormData();
                                 formData.append('file', pageVariables.avatarFiles);
                                 $.fn.callAjax2({
-                                    url: eleInputAvatar.attr('data-url'),
+                                    url: eleInputAvatar.attr('data-url') + `?auto_rm_bg=${$('#auto-remove-bg').prop('checked')}`,
                                     method: eleInputAvatar.attr('data-method'),
                                     data: formData,
                                     contentType: 'multipart/form-data',
@@ -39,7 +39,7 @@ $(document).ready(async function () {
                                                 'title': `${$.fn.gettext('Avatar')}`,
                                                 'description': $.fn.transEle.attr('data-success')
                                             }, 'success');
-                                            setTimeout(() => window.location.reload(), 1000)
+                                            setTimeout(() => window.location.reload(), 5000)
                                         }
                                     },
                                     (errs) => $.fn.switcherResp(errs),

@@ -10641,8 +10641,8 @@ msgid "Chart of account"
 msgstr "Danh sách tài khoản"
 
 #
-msgid "Trading account type"
-msgstr "Loại tài khoản giao dịch"
+msgid "Trading type defined"
+msgstr "Loại giao dịch được định nghĩa"
 
 #
 msgid "Add same level account"
@@ -12359,6 +12359,10 @@ msgstr "Trạm chấp thuận là bắt buộc"
 #
 msgid "Serial is selected in other row. Please select another"
 msgstr "Số serial này đã được chọn. Vui lòng chọn số serial khác"
+
+#
+msgid "Auto remove background"
+msgstr "Tự động xóa nền"
 
 #
 msgid "1st Dimension"

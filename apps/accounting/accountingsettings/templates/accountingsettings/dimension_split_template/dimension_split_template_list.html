@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Dimension Split Template' %}{% endblock %}
+{% block cssHeader %}
+    <style>
+        .split-line-row {
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+            transition: box-shadow 0.2s ease;
+        }
+
+        .split-line-row:hover {
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal-add-template">
+        <span>
+            <span>{% trans 'Add' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-plus"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <table
+            id="datatable-split-template"
+            class="table nowrap w-100 table-hover"
+            data-url="{% url "DimensionSplitTemplateListAPI" %}"
+            data-dimension-value-url="{% url "DimensionDefinitionWithValueAPI" 0 %}"
+            data-account-url="{% url "ChartOfAccountsListAPI" %}"
+    >
+        <thead>
+            <tr>
+                <th class="w-20">{% trans 'Code' %}</th>
+                <th class="w-20">{% trans 'Name' %}</th>
+                <th class="w-20">{% trans 'Dimension' %}</th>
+                <th class="w-20">{% trans 'Lines' %}</th>
+                <th class="w-10">{% trans 'Action' %}</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+{% endblock %}
+{% block modalData %}
+    <div class="modal fade" id="modal-add-template" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">{% trans 'Add Template' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="max-height: 65vh; overflow-y: auto;">
+                    <form id="form-add-template" data-url="{% url "DimensionSplitTemplateListAPI" %}" data-method="POST">
+                        <div class="mb-3">
+                            <label for="code" class="form-label required">{% trans 'Template Code' %}</label>
+                            <input required type="text" class="form-control required" id="code" name="code"
+                                   style="text-transform: uppercase;">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="name" class="form-label required">{% trans 'Template Name' %}</label>
+                            <input required type="text" class="form-control required" id="name" name="title">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="dimension-select" class="form-label required">{% trans 'Dimension' %}</label>
+                            <select required class="form-select select2 dimension-select" id="dimension-select" data-url="{% url 'DimensionDefinitionListAPI'%}"
+                                    data-keyResp="dimension_definition_list" name="dimension_id">
+                            </select>
+                            <div class="form-text">{% trans 'Select the dimension to sync' %}</div>
+                        </div>
+
+                        <!-- Split Lines Section -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold text-dark mb-3 required">
+                                {% trans 'Split Lines' %}
+                                <span class="text-muted fs-7 fw-normal">{% trans '(Minimum 2 lines, total must equal 100%)' %}</span>
+                            </label>
+
+                            <!-- Overwrite Account Info -->
+                            <div class="split-lines-section bg-light p-3 rounded split-line-container" id="split-line-container">
+                            </div>
+
+                            <button type="button" class="btn btn-outline-primary btn-sm mt-2 w-100 btn-add-line">
+                                <i class="bi bi-plus-circle me-1"></i>
+                                {% trans 'Add Line' %}
+                            </button>
+                        </div>
+
+                        <div class="mt-3">
+                            <strong>{% trans 'Total' %}:</strong> <span class="total-value" id="total-value">0.00</span>%
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-template" form="form-add-template">
+                        <span>{% trans 'Save Template' %}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-update-template" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">{% trans 'Update Template' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="max-height: 65vh; overflow-y: auto;">
+                    <form id="form-update-template" data-url="{% url "DimensionSplitTemplateDetailAPI" 0 %}" data-method="PUT">
+                        <div class="mb-3">
+                            <label for="code-update" class="form-label required">{% trans 'Template Code' %}</label>
+                            <input required type="text" class="form-control required" id="code-update" name="code"
+                                   style="text-transform: uppercase;">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="name-update" class="form-label required">{% trans 'Template Name' %}</label>
+                            <input required type="text" class="form-control required" id="name-update" name="title">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="dimension-select-update" class="form-label required">{% trans 'Dimension' %}</label>
+                            <select required class="form-select select2 dimension-select" id="dimension-select-update" data-url="{% url 'DimensionDefinitionListAPI'%}"
+                                    data-keyResp="dimension_definition_list" name="dimension_id">
+                            </select>
+                            <div class="form-text">{% trans 'Select the dimension to sync' %}</div>
+                        </div>
+
+                        <!-- Split Lines Section -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold text-dark mb-3 required">
+                                {% trans 'Split Lines' %}
+                                <span class="text-muted fs-7 fw-normal">{% trans '(Minimum 2 lines, total must equal 100%)' %}</span>
+                            </label>
+
+                            <!-- Overwrite Account Info -->
+                            <div class="split-lines-section bg-light p-3 rounded split-line-container" id="split-line-container-update">
+                            </div>
+
+                            <button type="button" class="btn btn-outline-primary btn-sm mt-2 w-100 btn-add-line">
+                                <i class="bi bi-plus-circle me-1"></i>
+                                {% trans 'Add Line' %}
+                            </button>
+                        </div>
+
+                        <div class="mt-3">
+                            <strong>{% trans 'Total' %}:</strong> <span class="total-value" id="total-value-update">0.00</span>%
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                    <button type="submit" class="btn btn-primary" form="form-update-template">
+                        <span>{% trans 'Save Template' %}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
+    <script src="{% static 'assets/js/accountingsettings/dimension_split_template/dimension_split_template.js' %}"></script>
+{% endblock %}

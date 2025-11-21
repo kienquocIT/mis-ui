@@ -52,3 +52,21 @@ msgstr "Chọn thuộc tính"
 #
 msgid "Select data source"
 msgstr "Chọn dữ liệu nguồn"
+#
+msgid "Attribute Type"
+msgstr "Loại thuộc tính"
+#
+msgid "Create/Edit Template Attribute"
+msgstr "Tạo/Chỉnh sửa biểu mẫu thuộc tính"
+#
+msgid "Choose the data type for this attribute"
+msgstr "Chọn loại dữ liệu cho thuộc tính này"
+#
+msgid "Mandatory"
+msgstr "Bắt buộc"
+#
+msgid "Formula (Optional)"
+msgstr "Công thức (tùy chọn)"
+#
+msgid "Available codes: SAL, DAYS, ALLOW"
+msgstr "Công thức (tùy chọn)"

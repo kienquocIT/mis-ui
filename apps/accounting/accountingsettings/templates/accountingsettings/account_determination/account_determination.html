@@ -28,10 +28,9 @@
                 <tr>
                     <th></th>
                     <th>{% trans 'Type' %}</th>
-                    <th>{% trans 'Trading account type' %}</th>
+                    <th>{% trans 'Trading type defined' %}</th>
                     <th>{% trans 'Account' %}</th>
-                    <th>{% trans 'Description' %}</th>
-                    <th>{% trans 'Change' %}</th>
+                    <th>{% trans 'Action' %}</th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -43,5 +42,6 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/js/accountingsettings/account_determination/account_determination.js' %}"></script>
 {% endblock %}

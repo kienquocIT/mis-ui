@@ -795,9 +795,10 @@ class UsualLoadPageFunction {
      * @param {Boolean} [allow_clear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
+     * @param {Boolean} apply_default_on_change - apply_default_on_change
      * @returns {void}
      */
-    static LoadPeriod({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+    static LoadPeriod({element, data=null, allow_clear=true, data_params = {}, data_url='', apply_default_on_change=false}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -829,6 +830,17 @@ class UsualLoadPageFunction {
             keyResp: 'periods_list',
             keyId: 'id',
             keyText: 'title',
+        }).on('change', function () {
+            if (apply_default_on_change) {
+                if ($(this).val()) {
+                    let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
+                    $(this).closest('.input-group').find('.dropdown-menu').prop('hidden', false)
+                    $(this).closest('.input-group').find('.period-title').text(selected?.['title'] || '')
+                    $(this).closest('.input-group').find('.period-fiscal-year').text(selected?.['fiscal_year'] || '')
+                    $(this).closest('.input-group').find('.period-start-date').text(selected?.['start_date'] ? moment(selected?.['start_date']).format('DD/MM/YYYY') : '')
+                    $(this).closest('.input-group').find('.period-end-date').text(selected?.['end_date'] ? moment(selected?.['end_date']).format('DD/MM/YYYY') : '')
+                }
+            }
         })
     }
 
@@ -1230,6 +1242,22 @@ class UsualLoadPageFunction {
  * Các hàm load page và hàm hỗ trợ thường dùng (cho Kế toán)
  */
 class UsualLoadPageAccountingFunction {
+    static default_account_select2 = `
+        <div class="input-group">
+            <select class="form-select select2 row-account"></select>
+            <span class="input-group-text p-0">
+                <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-regular fa-circle-question"></i>
+                </a>
+                <div class="dropdown-menu bflow-mirrow-card-80 p-3" style="min-width: 200px;">
+                    <h5 class="row-account-code fw-bold"></h5>
+                    <h6 class="row-fk-account-name"></h6>
+                    <h6 class="row-account-name"></h6>
+                </div>
+            </span>
+        </div>
+    `;
+
     /**
      * Load ô AccountingAccount (expected-data-url = ChartOfAccountsListAPI)
      * @param {HTMLElement|jQuery} element - element
@@ -1237,9 +1265,10 @@ class UsualLoadPageAccountingFunction {
      * @param {Boolean} [allow_clear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
+     * @param {Boolean} apply_default_on_change - apply_default_on_change
      * @returns {void}
      */
-    static LoadAccountingAccount({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+    static LoadAccountingAccount({element, data=null, allow_clear=true, data_params = {}, data_url='', apply_default_on_change=true}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -1262,6 +1291,21 @@ class UsualLoadPageAccountingFunction {
             keyResp: 'chart_of_accounts_list',
             keyId: 'id',
             keyText: 'acc_code',
+        }).on('change', function () {
+            if (apply_default_on_change) {
+                if ($(this).val()) {
+                    let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
+                    element.closest('.input-group').find('.row-account-code').text(selected?.['acc_code'] || '')
+                    element.closest('.input-group').find('.row-fk-account-name').text(selected?.['foreign_acc_name'] || '')
+                    element.closest('.input-group').find('.row-account-name').text(`(${selected?.['acc_name'] || ''})`)
+                }
+            }
         })
+
+        if (Object.keys(data).length > 0) {
+            element.closest('.input-group').find('.row-account-code').text(data?.['acc_code'] || '')
+            element.closest('.input-group').find('.row-fk-account-name').text(data?.['foreign_acc_name'] || '')
+            element.closest('.input-group').find('.row-account-name').text(`(${data?.['acc_name'] || ''})`)
+        }
     }
 }

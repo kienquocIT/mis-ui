@@ -7,23 +7,9 @@ $(document).ready(function () {
     let dimensionInstance = null
     let accData = null
 
-    $accountSelect.initSelect2({
-        templateSelection: function (state) {
-            if (state.data){
-                return $(`
-                    <span>${state.data.acc_name}</span> - <span class="badge badge-primary">${state.data.acc_code}</span>
-                `);
-            }
-            return state.text
-        },
-        templateResult: function (state) {
-            if (state.data) {
-                return $(`
-                    <span>${state.data.acc_name}</span> - <span class="badge badge-primary">${state.data.acc_code}</span>
-                `);
-            }
-            return state.text;
-        }
+    UsualLoadPageAccountingFunction.LoadAccountingAccount({
+        element: $accountSelect,
+        data_params: {'is_account': true}
     })
 
     $accountSelect.on('change.select2', function (e) {

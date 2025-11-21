@@ -1,0 +1,142 @@
+{% load i18n %}
+
+<!-- Tool Detail Modal -->
+<div class="modal fade" id="tool-modal" tabindex="-1" role="dialog" aria-labelledby="modal-tool">
+    <div class="modal-dialog modal-lg" style="min-width: 70%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Usage Tool Detail" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="max-height: 70vh; overflow-y: scroll">
+                <div class="container mt-4">
+                    <div class="card shadow-sm p-4">
+                        <h4 class="mb-5"><i class="fas fa-tools"></i>{% trans ' Tool Information' %}</h4>
+                        <div class="row">
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label for="selected_tool" class="form-label required">{% trans 'Tool Type' %}</label>
+                                    <select class="form-select select2" id="selected_tool"
+                                            data-url="{% url 'ToolClassificationMasterDataListAPI' %}" name="tool" required>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label required" for="tool_code">{% trans 'Tool Code' %}</label>
+                                    <input type="text" class="form-control" name="tool_code" id="tool_code" placeholder="TOOL-001" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="tool_name">{% trans 'Tool Name' %}</label>
+                                    <input type="text" class="form-control" name="tool_name" id="tool_name" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-lg-4 col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label required" for="amount_tool">{% trans 'Amount' %}</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="amount_tool"
+                                                name="amount_tool" placeholder="0" step="1" min="0">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-4 col-md-4">
+                                <div class="form-group">
+                                    <label for="selected_tool" class="form-label required">{% trans 'Unit of Measure' %}</label>
+                                    <select class="form-select select2" id="uom_tool"
+                                            data-url="{% url 'UnitOfMeasureListAPI' %}" name="uom_tool" required>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-4 col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label" for="start_date_tool">{% trans 'Start Date' %}</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-affix-wrapper">
+                                            <span class="input-prefix">📅</span>
+                                            <input type="text" name="start_date_tool" class="form-control"
+                                                   autocomplete="off" id="start_date_tool">
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="total_value_tool">{% trans 'Total Value' %}</label>
+                                    <div class="input-group">
+                                        <input class="form-control mask-money" id="total_value_tool" name="total_value_tool" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container mt-4">
+                    <div class="card shadow-sm p-4">
+                         <h4 class="mb-5"><i class="fas fa-compass"></i>{% trans ' Allocation Information' %}</h4>
+                        <div class="row">
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <div class="form-group">
+                                    <label class="form-label required" for="total_period">{% trans 'Total Periods (Month)' %}</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="total_period"
+                                                name="amount_tool" placeholder="0" step="1" min="0">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label required" for="total_allocated_period">{% trans 'Number of allocated periods' %}</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="total_allocated_period"
+                                                name="total_allocated_period" placeholder="0" step="1" min="0">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label" for="remaining_period">{% trans 'Number of remaining periods' %}</label>
+                                    <input class="form-control" type="text" id="remaining_period" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label" for="allocated_value">{% trans 'Allocated Value' %}</label>
+                                    <div class="input-group">
+                                        <input class="form-control mask-money" id="allocated_value" name="allocated_value">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label" for="remaining_value">{% trans 'Remaining Value' %}</label>
+                                    <div class="input-group">
+                                        <input class="form-control mask-money" id="remaining_value" name="remaining_value" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" id="btn_save_tool" class="btn btn-primary" data-bs-dismiss="modal">
+                    {% trans 'Save' %}
+                </button>
+           </div>
+        </div>
+    </div>
+</div>

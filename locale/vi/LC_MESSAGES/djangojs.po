@@ -584,3 +584,7 @@ msgstr "Cấp trên"
 #
 msgid "Fiscal year"
 msgstr "Năm tài chính"
+
+#
+msgid "Move plan to"
+msgstr "Chuyển kế hoạch sang"

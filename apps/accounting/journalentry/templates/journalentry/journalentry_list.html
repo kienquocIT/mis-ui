@@ -20,33 +20,31 @@
 {% endblock %}
 {% block pageContent %}
     <div class="row">
-        <div class="col-12">
-            <div class="row">
-                <div class="col-12 col-md-3 col-lg-3">
-                    <div class="bflow-mirrow-card">
-                        <div class="text-center">
-                            <span id="summarize-total-je" class="text-blue fw-bold h3"></span><br>
-                            <h5 class="text-muted mt-3">{% trans 'Total journal entry' %}</h5>
-                        </div>
-                    </div>
+        <div class="col-12 col-md-3 col-lg-3">
+            <div class="bflow-mirrow-card">
+                <div class="text-center">
+                    <span id="summarize-total-je" class="text-blue fw-bold h3"></span><br>
+                    <h5 class="text-muted mt-3">{% trans 'Total journal entry' %}</h5>
                 </div>
-                <div class="col-12 col-md-3 col-lg-3">
-                    <div class="bflow-mirrow-card">
-                        <div class="text-center">
-                            <span id="summarize-total-debit" class="text-blue mask-money fw-bold h3"></span><br>
-                            <h5 class="text-muted mt-3">{% trans 'Total debit' %}</h5>
-                        </div>
-                    </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3">
+            <div class="bflow-mirrow-card">
+                <div class="text-center">
+                    <span id="summarize-total-debit" class="text-blue mask-money fw-bold h3"></span><br>
+                    <h5 class="text-muted mt-3">{% trans 'Total debit' %}</h5>
                 </div>
-                <div class="col-12 col-md-3 col-lg-3">
-                    <div class="bflow-mirrow-card">
-                        <div class="text-center">
-                            <span id="summarize-total-credit" class="text-blue mask-money fw-bold h3"></span><br>
-                            <h5 class="text-muted mt-3">{% trans 'Total credit' %}</h5>
-                        </div>
-                    </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3">
+            <div class="bflow-mirrow-card">
+                <div class="text-center">
+                    <span id="summarize-total-credit" class="text-blue mask-money fw-bold h3"></span><br>
+                    <h5 class="text-muted mt-3">{% trans 'Total credit' %}</h5>
                 </div>
-                <div class="col-12 col-md-3 col-lg-3">
+            </div>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3">
                     <div class="bflow-mirrow-card">
                         <div class="text-center">
                             <span id="summarize-total-source-type" class="text-blue fw-bold h3"></span>
@@ -54,9 +52,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-12 mt-5">
+    </div>
+    <div class="row mt-5">
+        <div class="col-12">
             <table class="table nowrap w-100"
                    id="je-table-list"
                    data-method="GET"

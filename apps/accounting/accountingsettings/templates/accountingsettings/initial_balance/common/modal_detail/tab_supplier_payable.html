@@ -1,0 +1,126 @@
+{% load i18n %}
+
+<!-- Supplier Modal -->
+<div class="modal fade" id="supplier-modal" tabindex="-1" role="dialog" aria-labelledby="modal-supplier">
+    <div class="modal-dialog modal-lg" style="min-width: 70%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Select Supplier" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table nowrap w-100" id="supplier_table" data-url="{% url 'SupplierListAPI' %}">
+                    <thead>
+                        <tr class="bg-light">
+                            <th></th>
+                            <th></th>
+                            <th>{% trans 'Code' %}</th>
+                            <th>{% trans 'Supplier' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+           <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" id="btn_save_supplier" class="btn btn-primary" data-bs-dismiss="modal">
+                    {% trans 'Save' %}
+                </button>
+           </div>
+        </div>
+    </div>
+</div>
+
+<!-- Supplier Payable modal -->
+<div class="modal fade" id="supplier_payable_modal" tabindex="-1" role="dialog" aria-labelledby="modal-supplier-payable">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Payable Detail" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-check form-check-lg">
+                            <input type="checkbox" id="prepaymentSupplierCheckbox" class="form-check-input">
+                            <label for="prepaymentSupplierCheckbox" class="form-check-label">
+                                {% trans 'Advance payment to supplier (Prepayment - No Invoice)' %}
+                                <small class="d-block text-muted mt-1">
+                                    {% trans 'Check here if advance payment was made to supplier without an invoice yet' %}
+                                </small>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div id="invoiceSupplierForm" class="mt-5">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="txt_supplier_invoice_number">{% trans 'Invoice number' %}</label>
+                                <input type="text" class="form-control" name="txt_supplier_invoice_number" id="txt_supplier_invoice_number"
+                                       placeholder="VD: INV-2004-001" required>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="unpaid_supplier_amount">{% trans 'Unpaid Amount (VND)' %}</label>
+                                <input class="form-control mask-money" id="unpaid_supplier_amount" name="unpaid_supplier_amount" required>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="supplier_invoice_day">{% trans 'Invoice Date' %}</label>
+                                <div class="input-group mb-3">
+                                    <span class="input-affix-wrapper">
+                                        <span class="input-prefix">📅</span>
+                                        <input class="form-control" type="text" name="supplier_invoice_day" autocomplete="off" id="supplier_invoice_day" required>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="expected_supplier_payment">{% trans 'Expected Payment Date' %}</label>
+                                <div class="input-group mb-3">
+                                    <span class="input-affix-wrapper">
+                                        <span class="input-prefix">📅</span>
+                                        <input class="form-control" type="text" name="expected_supplier_payment" autocomplete="off" id="expected_supplier_payment" required>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="prepaymentSupplierForm" class="mt-5">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label required" for="advance_supplier_payment">{% trans 'Advanced Payment (VND)' %}</label>
+                                <input class="form-control mask-money" id="advance_supplier_payment" name="advance_supplier_payment" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label" for="note_supplier_payable">{% trans 'Notes' %}</label>
+                                <textarea name="remark" class="form-control" id="note_supplier_payable"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" id="btn_save_supplier_payable" class="btn btn-primary" data-bs-dismiss="modal">
+                    {% trans 'Save' %}
+                </button>
+           </div>
+        </div>
+    </div>
+</div>

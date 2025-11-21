@@ -179,7 +179,7 @@ class CommonHandler{
                         return `<div>${row?.['title']}</div>`
                     }
                 },
-                 {
+                {
                     targets: 2,
                     width: '40%',
                     render: (data, type, row) => {
@@ -296,7 +296,7 @@ class CommonHandler{
                         targets: 0,
                         width: '10%',
                         render: (data, type, row) => {
-                            return `<div>${row?.['product_data']?.['code']}</div>`;
+                            return `<div>${row?.['product_data']['code'] || '--'}</div>`;
                         }
                     },
                     {
@@ -479,6 +479,7 @@ class CommonHandler{
                 'transaction_type': 0,
                 'value': 0,
                 'description': '',
+
             }
             this.$sourceDatatable.DataTable().row.add(data).draw()
         })
@@ -663,19 +664,6 @@ class CommonHandler{
     }
 
     // detail page
-    disableFields(){
-        const $fields = $('#form-fixed-asset').find('input, select, button:not(#load-depreciation-btn, .open-modal)')
-        $fields.prop('disabled', true)
-        $fields.prop('readonly', true)
-
-        $('#datatable-asset-source').on('draw.dt', function() {
-            // $(this).find('input').prop({
-            //     disabled: true,
-            //     readonly: true
-            // });
-        });
-    }
-
     fetchDetailData(disabledFields=false){
         $.fn.callAjax2({
             url: this.$formSubmit.attr('data-url'),
@@ -723,9 +711,7 @@ class CommonHandler{
                 }
             })
             .then(() => {
-                if (disabledFields) {
-                    this.disableFields();
-                }
+                UsualLoadPageFunction.DisablePage(disabledFields, ['.open-modal', '.btn-close', '#load-depreciation-btn'])
             })
     }
 

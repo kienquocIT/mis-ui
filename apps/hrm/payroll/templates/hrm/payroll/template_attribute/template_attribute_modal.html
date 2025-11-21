@@ -5,7 +5,7 @@
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="template_attr_modal_title">{% trans "Create/Edit Template Attribute " %}</h5>
+                <h5 class="modal-title" id="template_attr_modal_title">{% trans "Create/Edit Template Attribute" %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true" class="icon"><i class="fas fa-times"></i></span>
                 </button>
@@ -13,7 +13,7 @@
             <div class="modal-body">
                 <form id="frm_template_attribute"
                         data-url="{% url "PayrollTemplAttrListAPI" %}"
-                        data-url-detail="{% url "PayrollTemplateAttributeDetailAPI" "0" %}"
+                        data-url-detail="{% url "PayrollTemplateAttributeDetailAPI" 1 %}"
                         data-url-redirect="{% url "PayrollTemplAttrList" %}"
                         data-method="POST" >
                     {% csrf_token %}
@@ -57,7 +57,7 @@
                             <div class="form-group">
                                 <div class="form-check form-check-lg">
                                     <input type="checkbox" id="mandatory" name="mandatory" class="form-check-input">
-                                    <label for="customCheck3" class="form-check-label">{% trans 'Mandantory' %}</label>
+                                    <label for="customCheck3" class="form-check-label">{% trans 'Mandatory' %}</label>
                                 </div>
                             </div>
                         </div>
@@ -67,7 +67,7 @@
                                 <label class="form-label">{% trans 'Formula (Optional)' %}</label>
                                 <textarea class="form-control" name="component_formula" id="formula_element"
                                         rows="3" placeholder="VD: basic_salary * 0.105"></textarea>
-                                <span class="small text-muted">{% trans 'Available codes: SAL, DAYS, ALLOW' %}</span>
+                                <span class="small text-muted hidden">{% trans 'Available codes: SAL, DAYS, ALLOW' %}</span>
                             </div>
                         </div>
                     </div>

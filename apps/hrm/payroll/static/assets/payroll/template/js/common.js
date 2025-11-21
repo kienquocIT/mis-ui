@@ -25,7 +25,7 @@ class PayrollTemplateCommon {
                     const valCodeLst = []
                     for(let attr of res.template_attribute_list){
                         objAttrLst[attr.id] = attr
-                        tempHtml += `<li><a href="#" data-id="${attr.id}">${attr.component_name}</a></li>`
+                        tempHtml += `<li><a href="#" data-id="${attr.id}">${attr.component_title}</a></li>`
                         if (attr.component_type === 0)
                             valCodeLst.push(attr)
                     }
@@ -49,6 +49,8 @@ class PayrollTemplateCommon {
             rowIdx: true,
             paging: false,
             info: false,
+            // autoWidth: true,
+            // scrollX: true,
             columns: [
                 {
                     data: 'order',
@@ -60,12 +62,12 @@ class PayrollTemplateCommon {
                     data: 'name',
                     width: '15%',
                     render: (row, type, data, meta) => {
-                        return `<input type="text" class="form-control" id="attr_name_${meta.row}" value="${row}"/>`
+                        return `<div class="form-group min-w-275p d-block"><input type="text" class="form-control" id="attr_name_${meta.row}" value="${row}"/></div>`
                     }
                 },
                 {
                     data: 'source',
-                    width: '10%',
+                    width: '15%',
                     render: (row, index, data) => {
                         let htmlElmNode = $($('#template_select').html())
                         const text = row === 1 ? 'Formula' : data?.data_source_component_data
@@ -80,14 +82,15 @@ class PayrollTemplateCommon {
                     render: (row, index, data, meta) => {
                         let name = '--';
                         if (row) name = row
-                        if (!row && data.formula && Object.keys(data.formula).length === 0)
-                            name = `<input type="text" class="form-control" id="value_code_${meta.row}"/>`
+                        if (data.source === 1)
+                            name = `<input type="text" class="form-control" id="value_code_${meta.row}" value="${
+                                data.formula.code ? data.formula.code : ''}"/>`
                         return name
                     }
                 },
                 {
                     data: 'type',
-                    width: '10%',
+                    width: '5%',
                     render: (row, index, data) => {
                         let name = ``;
                         if (data.source === 1) name = 'Number'
@@ -96,16 +99,23 @@ class PayrollTemplateCommon {
                 },
                 {
                     data: 'formula',
-                    width: '30%',
+                    width: '40%',
                     render: (row, index, data) => {
                         let isFor = ``;
                         if (data.source === 1){
-                            isFor = `<span class="w-100 d-flex justify-content-center">=<i class="font-3 w-90 overflow-hidden white-space-nowrap d-inline-block text-ellipsis">${row?.txt || ''}</i></span>`
-                            const btn = `<button type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFormula" class="edit-formula btn btn-icon btn-flush-light btn-rounded">`
+                            if (data.formula_type === 0 || data.formula_type === false)
+                                isFor = `<span class="w-100 d-flex justify-content-start">=`
+                                    +`<i class="font-3 w-90 max-w-375p overflow-hidden white-space-nowrap d-inline-block text-ellipsis">${row?.txt || ''}</i></span>`
+                            if (data.formula_type === 1 || data.formula_type === true){
+                                if (data?.formula?.txt)
+                                    isFor = data?.formula?.txt
+                                else isFor = $.fn.gettext('Custom')
+                            }
+                            const btn = `<button type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFormula" class="edit-formula btn btn-icon btn-flush-light btn-rounded ml-auto">`
                                 +`<span><i class="bi bi-pencil-square"></i></span></button>`
                             isFor += btn
                         }
-                        return `<div class="d-flex">${isFor}</div>`
+                        return `<div class="d-flex align-items-center justify-content-start">${isFor}</div>`
                     }
                 },
                 {
@@ -113,9 +123,8 @@ class PayrollTemplateCommon {
                     class: 'text-center',
                     width: '5%',
                     render: (row) => {
-                        return `<button type="button" class="btn btn-icon btn-flush-light btn-rounded delete-row " data-id="${row}">`
+                        return `<button type="button" class="btn btn-icon btn-flush-light btn-rounded delete-row" data-id="${row}">`
                             +`<span><i class="bi bi-trash"></i></span></button>`
-
                     }
                 }
             ]
@@ -135,7 +144,7 @@ class PayrollTemplateCommon {
             e.preventDefault()
             const thisID = $(this).attr('data-id')
             if (!thisID && !$(this).hasClass('disabled'))
-                window.location.href = $('#url-factory').attr('data-attr-lst')
+                window.open($('#url-factory').attr('data-attr-lst'), "_blank")
             else{
                 const componentData = _this.getAttrLst[thisID]
                 if (Object.keys(componentData).length === 0)
@@ -157,6 +166,8 @@ class PayrollTemplateCommon {
                 let td = _tblAttr.cell($(this).closest('td'));
                 let data = _tblAttr.row(td[0][0].row).data();
                 data.source = 1
+                data.name = ''
+                data.code = ''
                 _tblAttr.row(td[0][0].row).data(data).draw()
             }
         })
@@ -171,30 +182,32 @@ class PayrollTemplateCommon {
             let td = _tblAttr.cell($(this).closest('td'));
             let data = _tblAttr.row(td[0][0].row).data();
             data.code = this.value
+            if (data?.source === 1) data.formula.code = this.value
             if (!this.value) $.fn.notifyB({description: $.fn.gettext('Value code should not be null')}, 'failure')
         })
         // input on click edit formula
         _tblAttr.on('click', 'button.edit-formula', function(){
             let td = _tblAttr.cell($(this).closest('td'));
+            let rowData = _tblAttr.row(td[0][0].row).data();
             /**
             * Register callback cho offcanvas
              * @property data
             * @callback <function() => {}> là một "lệnh" để offcanvas biết "Khi user click Save Formula, hãy thực thi function này"
             */
-            ComponentListController.setOnSaveCallback((data) => {
-                if (data?.rowIndex !== undefined) {
-                    let curtData = _tblAttr.row(data.rowIndex).data();
-                    curtData.formula = {
-                        name: curtData.name,
-                        source: 1,
-                        code: curtData.code,
-                        txt: data.formula,
-                        explain_txt: data.formula_explain
-                    };
-                    _tblAttr.row(data.rowIndex).data(curtData).draw(false);
-                }
-            })
+            if (typeof ComponentListController !== 'undefined'){
+                ComponentListController.setOnSaveCallback((offcanvasData) => {
+                    if (offcanvasData?.rowIndex !== undefined) {
+                        let curtData = _tblAttr.row(offcanvasData.rowIndex).data();
+                        curtData.formula.txt = offcanvasData.formula
+                        curtData.formula.explain_txt = offcanvasData.formula_explain
+                        curtData.formula_type = offcanvasData.formulaType
+                        _tblAttr.row(offcanvasData.rowIndex).data(curtData).draw(false);
+                    }
+                })
+                ComponentListController.setOnEditCallback(rowData)
+            }
             $('#offcanvasFormula .offcanvas-body').append(`<input type="hidden" class="table_index" data-idx="${td[0][0].row}"/>`)
+
         })
         // input on hover select attr
         _tblAttr.on('mouseenter', '.menus-attr', function(){
@@ -205,8 +218,28 @@ class PayrollTemplateCommon {
                 $(this).find('ul').css('top', `-${heightPlus}px`)
             }
         })
-    }
 
+        if (typeof ComponentListController !== 'undefined'){
+            // render danh sách at
+            ComponentListController.setOnOpenCallback(()=>{
+                const dataList = _tblAttr.data().toArray();
+                const data = []
+                // get all formula
+                for (let formula of dataList) {
+                    if (formula.source === 1) {  // row source===1 data is formula
+                        data.push({
+                            'component_code': formula.code,
+                            'component_name': formula.name,
+                            'component_title': 'Formula_' + formula.name,
+                            'component_type': formula.type,
+                        })
+                    }
+                }
+                ComponentListController.render(data, true)
+                $('input[name="formula_type"][value="0"]').prop('checked', true)
+            })
+        }
+    }
     static actionAddNewRow(){
         const temp = [{
             order: 0,
@@ -248,7 +281,6 @@ $(document).ready(function(){
         const frm = new SetupFormSubmit($form);
         let formData = frm.dataForm;
         let method = frm.dataMethod.toLowerCase()
-
 
         if (method === 'post') formData.system_status = 1
         if(group_data.length) formData.department_applied_data = group_data

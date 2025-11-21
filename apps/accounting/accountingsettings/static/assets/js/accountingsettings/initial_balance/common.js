@@ -94,6 +94,7 @@ class InitialBalanceHandler {
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
 
+                    // load common information
                     pageElements.$titleEle.val(data?.['title'] || '');
                     pageElements.$descriptionEle.val(data?.['description'] || '');
                     UsualLoadPageFunction.LoadPeriod({
@@ -103,6 +104,9 @@ class InitialBalanceHandler {
                         apply_default_on_change: true
                     });
                     pageElements.$accountingPeriodEle.trigger('change');
+
+                    // load Tabs information
+                    TabMoneyFunction.initMoneyTable(data?.['tab_money_data'] || []);
 
                     InitialBalancePageFunction.CalculateAccountBalance(data?.['tab_account_balance_data'] || [])
 

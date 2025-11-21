@@ -56,19 +56,10 @@ class TabMoneyFunction {
                 {
                     className: "w-20",
                     render: (data, type, row) => {
-                        return `<div class="input-group">
-                            <select class="form-select select2 row-account row-access" disabled></select>
-                            <span class="input-group-text p-0">
-                                <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa-regular fa-circle-question"></i>
-                                </a>
-                                <div class="dropdown-menu bflow-mirrow-card-80 p-3" style="min-width: 200px;">
-                                    <h5 class="row-account-code fw-bold"></h5>
-                                    <h6 class="row-fk-account-name"></h6>
-                                    <h6 class="row-account-name"></h6>
-                                </div>
-                            </span>
-                        </div>`;
+                        let $ele = $(UsualLoadPageAccountingFunction.default_account_select2)
+                        $ele.find('.row-account').prop('disabled', true);
+                        $ele.find('.row-account').addClass('row-access');
+                        return $ele
                     }
                 },
                 {
@@ -279,13 +270,6 @@ class TabMoneyEventHandler {
 
             // update debit value after currency change
             TabMoneyFunction.updateDebitValue($row);
-        });
-
-        tabMoneyElements.$tableMoney.on('change', '.row-account', function() {
-            let selected = SelectDDControl.get_data_from_idx($(this), $(this).val());
-            $(this).closest('tr').find('.row-account-code').text(selected?.['acc_code'] || '');
-            $(this).closest('tr').find('.row-fk-account-name').text(selected?.['foreign_acc_name'] || '');
-            $(this).closest('tr').find('.row-account-name').text(`(${selected?.['acc_name'] || ''})`);
         });
 
         // calculate debit based on amount and exchange rate

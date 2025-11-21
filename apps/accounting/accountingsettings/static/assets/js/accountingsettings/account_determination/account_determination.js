@@ -22,19 +22,10 @@ $(document).ready(function() {
         {
             className: 'w-20',
             'render': (data, type, row) => {
-                return `<div class="input-group">
-                            <select disabled data-account-mapped='${JSON.stringify(row?.['account_mapped'])}' class="form-select select2 row-account"></select>
-                            <span class="input-group-text p-0">
-                                <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa-regular fa-circle-question"></i>
-                                </a>
-                                <div class="dropdown-menu bflow-mirrow-card-80 p-3" style="min-width: 200px;">
-                                    <h5 class="row-account-code fw-bold"></h5>
-                                    <h6 class="row-fk-account-name"></h6>
-                                    <h6 class="row-account-name"></h6>
-                                </div>
-                            </span>
-                        </div>`;
+                let $ele = $(UsualLoadPageAccountingFunction.default_account_select2)
+                $ele.find('.row-account').prop('disabled', true);
+                $ele.find('.row-account').attr('data-account-mapped', JSON.stringify(row?.['account_mapped'] || []))
+                return $ele.prop('outerHTML');
             }
         },
         {
@@ -103,7 +94,7 @@ $(document).ready(function() {
                         let account_mapped = $(this).attr('data-account-mapped') ? JSON.parse($(this).attr('data-account-mapped')) : []
                         UsualLoadPageAccountingFunction.LoadAccountingAccount({
                             element: $(this),
-                            data: account_mapped,
+                            data: account_mapped[0],
                             data_url: $account_determination_table.attr('data-chart-of-account-url'),
                             data_params: {'acc_type': 1, 'is_account': true}
                         });

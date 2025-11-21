@@ -21,6 +21,8 @@ $(document).ready(function () {
     )
 
     function ParseServiceOrderDetailHTML(data_list=[]) {
+        let sum_contract_value_done = 0
+
         let waiting_svo = 0
         let completed_svo = 0
         let progressing_svo = 0
@@ -125,10 +127,10 @@ $(document).ready(function () {
             }
 
             avg_svo_detail_percent_completed += avg_wo_percent_completed * item?.['service_percent'] / 100
-            if (avg_svo_detail_percent_completed === 0) {
+            if (avg_wo_percent_completed === 0) {
                 waiting_svo += 1
             }
-            else if (avg_svo_detail_percent_completed === 100) {
+            else if (avg_wo_percent_completed === 100) {
                 completed_svo += 1
             }
             else {
@@ -136,21 +138,18 @@ $(document).ready(function () {
             }
 
             service_detail_list_html += `<div class="col-12 mb-3">
-                                            <div class="bflow-glass-card-80 service-card">
+                                            <div class="bflow-mirrow-card service-card">
                                                 <div class="row">
                                                     <div class="col-12 col-md-9 col-lg-9">
-                                                        <h5 class="fw-bold"><span class="badge badge-primary badge-pill service-code">${item?.['product_data']?.['code'] || ''}</span> <span class="service-name text-primary">${item?.['product_data']?.['title'] || ''}</span></h5>
-                                                        <span class="fw-bold text-muted">
-                                                            <span>${$.fn.gettext('Service value')}:</span> <span class="service-value mask-money" data-init-money="${item?.['total_value'] || 0}"></span>
-                                                            <span class="badge badge-light badge-indicator mx-2"></span>
-                                                            <span>${$.fn.gettext('Weight')}:</span> <span class="service-weight">${item?.['service_percent'] || '--'}%</span>
-                                                        </span>
+                                                        <h5><span class="badge badge-primary badge-pill service-code">${item?.['product_data']?.['code'] || ''}</span> <span class="service-name text-primary">${item?.['product_data']?.['title'] || ''}</span></h5><br>
+                                                        <span class="bflow-mirrow-btn">${$.fn.gettext('Service value')}: <span class="service-value mask-money" data-init-money="${item?.['total_value'] || 0}"></span></span> 
+                                                        <span class="badge badge-dark badge-indicator mx-2"></span>
+                                                        <span class="bflow-mirrow-btn">${$.fn.gettext('Weight')}: <span class="service-weight">${item?.['service_percent'] || '--'}%</span></span>
                                                     </div>
                                                     <div class="col-12 col-md-3 col-lg-3 text-right">
-                                                        <span class="text-primary fw-bold h2">${avg_wo_percent_completed}%</span>
+                                                        <span class="bflow-mirrow-btn text-blue fw-bold h3">${avg_wo_percent_completed}%</span>
                                                     </div>
                                                     <div class="col-12 mt-3">
-                                                        <h6 class="fw-bold text-muted">${$.fn.gettext('Work list')}:</h6>
                                                         <ul class="advance-list wo-list mt-3">
                                                             ${wo_contribute_html}
                                                         </ul>
@@ -158,11 +157,16 @@ $(document).ready(function () {
                                                 </div>
                                             </div>
                                         </div>`
+
+            sum_contract_value_done += avg_wo_percent_completed * parseFloat(item?.['total_value'] || 0) / 100
         }
         $('#service-detail-list').html(service_detail_list_html)
         $('#service-order-progress').append(`
-            <div class="progress progress-bar-rounded progress-width-animated" style="min-height: 25px">
-                <div class="progress-bar bg-gradient-success" role="progressbar" aria-valuenow="${avg_svo_detail_percent_completed}" aria-valuemin="0" aria-valuemax="100" style="width: ${avg_svo_detail_percent_completed}%"><span class="progress-tooltip">${avg_svo_detail_percent_completed}%</span></div>
+            <div class="progress progress-modern">
+                <div class="progress-bar-modern" role="progressbar" 
+                     style="width: ${avg_svo_detail_percent_completed}%">
+                    <span class="progress-tooltip-modern">${avg_svo_detail_percent_completed}%</span>
+                </div>
             </div>
         `)
         // Load summary info total task
@@ -182,6 +186,8 @@ $(document).ready(function () {
         $('#svo-waiting').text(waiting_svo)
         $('#svo-completed').text(completed_svo)
         $('#svo-progressing').text(progressing_svo)
+
+        return sum_contract_value_done
     }
 
     Promise.all([ajax_detail_service_order]).then(
@@ -195,10 +201,11 @@ $(document).ready(function () {
             $('#service-order-time').text(`${moment(svo_detail_data?.['start_date']).format('DD/MM/YYYY')} - ${moment(svo_detail_data?.['end_date']).format('DD/MM/YYYY')}`)
             // Load summary info contract value
             $('#contract-value').attr('data-init-money', svo_detail_data?.['contract_value'] || 0)
-            $('#contract-value-delivered').attr('data-init-money', svo_detail_data?.['contract_value_delivered'] || 0)
-            $('#contract-value-delivered-percent').text((svo_detail_data?.['contract_value'] ? ((svo_detail_data?.['contract_value_delivered'] || 0) / svo_detail_data?.['contract_value']) : 0).toFixed(2))
             // Load service detail
-            ParseServiceOrderDetailHTML(svo_detail_data?.['service_order_detail_list'] || [])
+            let sum_contract_value_done = ParseServiceOrderDetailHTML(svo_detail_data?.['service_order_detail_list'] || [])
+            // UPDATE contract value des
+            $('#contract-value-delivered').attr('data-init-money', sum_contract_value_done || 0)
+            $('#contract-value-delivered-percent').text((svo_detail_data?.['contract_value'] ? ((sum_contract_value_done || 0) * 100 / svo_detail_data?.['contract_value']) : 0).toFixed(2))
 
             $.fn.initMaskMoney2()
         }).then(function () {

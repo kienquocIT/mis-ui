@@ -351,7 +351,7 @@ $(document).ready(function () {
                                         if (activity?.['trans_title'] === 'Goods transfer (in)') {
                                             text_color = 'purple'
                                         }
-                                        if (activity?.['trans_title'] === 'Delivery (sale)' || activity?.['trans_title'] === 'Delivery (lease)') {
+                                        if (activity?.['trans_title'] === 'Delivery (sale)' || activity?.['trans_title'] === 'Delivery (lease)' || activity?.['trans_title'] === 'Delivery (service)') {
                                             text_color = 'danger'
                                         }
                                         if (activity?.['trans_title'] === 'Goods issue') {
@@ -370,6 +370,7 @@ $(document).ready(function () {
                                             'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
                                             'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
                                             'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
+                                            'Delivery (service)': trans_script.attr('data-trans-dlvr-service'),
                                             'Goods issue': trans_script.attr('data-trans-gis'),
                                             'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                         }
@@ -437,7 +438,7 @@ $(document).ready(function () {
                                     if (activity?.['trans_title'] === 'Goods transfer (in)') {
                                         text_color = 'purple'
                                     }
-                                    if (activity?.['trans_title'] === 'Delivery (sale)' || activity?.['trans_title'] === 'Delivery (lease)') {
+                                    if (activity?.['trans_title'] === 'Delivery (sale)' || activity?.['trans_title'] === 'Delivery (lease)' || activity?.['trans_title'] === 'Delivery (service)') {
                                         text_color = 'danger'
                                     }
                                     if (activity?.['trans_title'] === 'Goods issue') {
@@ -456,6 +457,7 @@ $(document).ready(function () {
                                         'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
                                         'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
                                         'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
+                                        'Delivery (service)': trans_script.attr('data-trans-dlvr-service'),
                                         'Goods issue': trans_script.attr('data-trans-gis'),
                                         'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                         'Balance init input': trans_script.attr('data-trans-bii'),
@@ -610,7 +612,7 @@ $(document).ready(function () {
                                         if (activity?.['trans_title'] === 'Goods transfer (in)') {
                                             text_color = 'purple'
                                         }
-                                        if (activity?.['trans_title'] === 'Delivery (sale)' || activity?.['trans_title'] === 'Delivery (lease)') {
+                                        if (activity?.['trans_title'] === 'Delivery (sale)' || activity?.['trans_title'] === 'Delivery (lease)' || activity?.['trans_title'] === 'Delivery (service)') {
                                             text_color = 'danger'
                                         }
                                         if (activity?.['trans_title'] === 'Goods issue') {
@@ -629,6 +631,7 @@ $(document).ready(function () {
                                             'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
                                             'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
                                             'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
+                                            'Delivery (service)': trans_script.attr('data-trans-dlvr-service'),
                                             'Goods issue': trans_script.attr('data-trans-gis'),
                                             'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                         }
@@ -696,7 +699,7 @@ $(document).ready(function () {
                                     if (activity?.['trans_title'] === 'Goods transfer (in)') {
                                         text_color = 'purple'
                                     }
-                                    if (activity?.['trans_title'] === 'Delivery (sale)' || activity?.['trans_title'] === 'Delivery (lease)') {
+                                    if (activity?.['trans_title'] === 'Delivery (sale)' || activity?.['trans_title'] === 'Delivery (lease)' || activity?.['trans_title'] === 'Delivery (service)') {
                                         text_color = 'danger'
                                     }
                                     if (activity?.['trans_title'] === 'Goods issue') {
@@ -715,6 +718,7 @@ $(document).ready(function () {
                                         'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
                                         'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
                                         'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
+                                        'Delivery (service)': trans_script.attr('data-trans-dlvr-service'),
                                         'Goods issue': trans_script.attr('data-trans-gis'),
                                         'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                         'Balance init input': trans_script.attr('data-trans-bii'),
@@ -963,7 +967,7 @@ $(document).ready(function () {
                                                     )
                                                 } else {
                                                     let text_color = ''
-                                                    if (activity?.['trans_title'] === 'Delivery (sale)' || activity?.['trans_title'] === 'Delivery (lease)') {
+                                                    if (activity?.['trans_title'] === 'Delivery (sale)' || activity?.['trans_title'] === 'Delivery (lease)' || activity?.['trans_title'] === 'Delivery (service)') {
                                                         text_color = 'danger'
                                                     }
                                                     if (activity?.['trans_title'] === 'Goods issue') {
@@ -975,6 +979,7 @@ $(document).ready(function () {
                                                     let trans_title_sub = {
                                                         'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
                                                         'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
+                                                        'Delivery (service)': trans_script.attr('data-trans-dlvr-service'),
                                                         'Goods issue': trans_script.attr('data-trans-gis'),
                                                         'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                                     }
@@ -1119,7 +1124,7 @@ $(document).ready(function () {
                                                 )
                                             } else {
                                                 let text_color = ''
-                                                if (activity?.['trans_title'] === 'Delivery (sale)' || activity?.['trans_title'] === 'Delivery (lease)') {
+                                                if (activity?.['trans_title'] === 'Delivery (sale)' || activity?.['trans_title'] === 'Delivery (lease)' || activity?.['trans_title'] === 'Delivery (service)') {
                                                     text_color = 'danger'
                                                 }
                                                 if (activity?.['trans_title'] === 'Goods issue') {
@@ -1131,6 +1136,7 @@ $(document).ready(function () {
                                                 let trans_title_sub = {
                                                     'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
                                                     'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
+                                                    'Delivery (service)': trans_script.attr('data-trans-dlvr-service'),
                                                     'Goods issue': trans_script.attr('data-trans-gis'),
                                                     'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                                 }

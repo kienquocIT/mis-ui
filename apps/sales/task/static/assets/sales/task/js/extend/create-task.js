@@ -65,11 +65,7 @@ function isValidString(inputString) {
 
     // Validation bổ sung: giới hạn số ngày hợp lý (tối đa 365 ngày)
     const dayMatch = cleanInput.match(/(\d+)d/);
-    if (dayMatch && parseInt(dayMatch[1]) > 365) {
-        return false; // Quá 365 ngày
-    }
-
-    return true;
+    return !(dayMatch && parseInt(dayMatch[1]) > 365);
 }
 
 $(document).ready(function () {
@@ -80,6 +76,8 @@ $(document).ready(function () {
     const $oppElm = $('#opportunity_id')
     const $prjElm = $('#project_id')
     const $btnCanvasLoad = $('#formOpportunityTask + .task_loading')
+    const oCanvas = $('#offCanvasRightTask')
+    const $btnCreateTodo = $('.btn-create-todo')
 
     let $customAssignee = $('#custom_assignee');
 
@@ -141,7 +139,7 @@ $(document).ready(function () {
     }
 
     if (!$empElm[0].closest('#formOpportunityTask')) {
-        $('.btn-create-todo').each(function () {
+        $btnCreateTodo.each(function () {
             $(this).attr('hidden', true);
         });
         $('.sp-btn').each(function () {
@@ -233,19 +231,18 @@ $(document).ready(function () {
     window.checklist = checklist;
 
     // reset form create task khi click huỷ bỏ hoặc tạo mới task con
-    $('#offCanvasRightTask').on('hidden.bs.offcanvas', () => resetFormTask())
+    oCanvas.on('hidden.bs.offcanvas', () => resetFormTask())
 
-    $('.btn-create-todo').on('click', function () {
-        let $canvasEle = $('#offCanvasRightTask');
-        $canvasEle.removeAttr('data-tbl-id');
-        $canvasEle.removeAttr('data-row-idx');
+    $btnCreateTodo.on('click', function () {
+        oCanvas.removeAttr('data-tbl-id');
+        oCanvas.removeAttr('data-row-idx');
     });
 
-    $('#offCanvasRightTask').on('shown.bs.offcanvas', function () {
+    oCanvas.on('shown.bs.offcanvas', function () {
         // init S2 custom assignee
         if ($customAssignee.length > 0) {
             if (!$customAssignee.val()) {
-                FormElementControl.loadInitS2($customAssignee, [], {}, $('#offCanvasRightTask'), true);
+                FormElementControl.loadInitS2($customAssignee, [], {}, oCanvas, true);
             }
         }
     });
@@ -348,16 +345,16 @@ $(document).ready(function () {
 
                 let assign_toData = {};
                 if ($empElm[0].closest('#formOpportunityTask')) {
-                const assign_to = $empElm.select2('data')[0]
-                // let assign_toData = {}
-                if (assign_to) {
-                    assign_toData = {
-                        'id': assign_to.id,
-                        'full_name': assign_to.text,
-                        'first_name': assign_to.first_name,
-                        'last_name': assign_to.last_name,
+                    const assign_to = $empElm.select2('data')[0]
+                    // let assign_toData = {}
+                    if (assign_to) {
+                        assign_toData = {
+                            'id': assign_to.id,
+                            'full_name': assign_to.text,
+                            'first_name': assign_to.first_name,
+                            'last_name': assign_to.last_name,
+                        }
                     }
-                }
                 }
 
                 if ($customAssignee.length > 0) {
@@ -441,13 +438,12 @@ $(document).ready(function () {
                                 $('body').append(elm).trigger('From-Task.Submitted')
 
                                 // handle logic for task extend to other apps
-                                if (data?.['id'] && $('#offCanvasRightTask').attr('data-tbl-id') && $('#offCanvasRightTask').attr('data-row-idx')) {
+                                if (data?.['id'] && oCanvas.attr('data-tbl-id') && oCanvas.attr('data-row-idx')) {
                                     if (data?.['id']) {
                                         formData['id'] = data?.['id'];
                                     }
-                                    let $canvasEle = $('#offCanvasRightTask');
-                                    let $table = $(`#${$canvasEle.attr('data-tbl-id')}`);
-                                    let rowIdx = $canvasEle.attr('data-row-idx');
+                                    let $table = $(`#${oCanvas.attr('data-tbl-id')}`);
+                                    let rowIdx = oCanvas.attr('data-row-idx');
                                     let rowApi = $table.DataTable().row(rowIdx);
                                     let row = rowApi.node();
                                     let taskData = TaskExtend.storeData(formData, row);

@@ -487,9 +487,14 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     CONTRACT_TEMPLATE_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
     # Accounting
-    CHART_OF_ACCOUNTS_LIST_PAGE = BreadcrumbChildren(_('Chart of accounts'), 'ChartOfAccountsList')
-    DEFAULT_ACCOUNT_DETERMINATION_LIST_PAGE = BreadcrumbChildren(_('Default account determination'),
-                                                                 'DefaultAccountDeterminationList')
+    CHART_OF_ACCOUNTS_LIST_PAGE = BreadcrumbChildren(_('Chart of account'), 'ChartOfAccountsList')
+    ACCOUNT_DETERMINATION_LIST_PAGE = BreadcrumbChildren(_('Account determination'),
+                                                                 'AccountDeterminationList')
+    INITIAL_BALANCE_LIST_PAGE = BreadcrumbChildren(_('Opening Balance Setup'), 'InitialBalanceList')
+    DIMENSION_DEFINITION_LIST_PAGE = BreadcrumbChildren(_('Dimension definition'), 'DimensionDefinitionList')
+    DIMENSION_VALUE_LIST_PAGE = BreadcrumbChildren(_('Dimension value'), 'DimensionValueList')
+    DIMENSION_SYNC_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Dimension sync config'), 'DimensionSyncConfigList')
+    DIMENSION_ACCOUNT_MAP_LIST_PAGE = BreadcrumbChildren(_('Dimension account map'), 'DimensionAccountList')
 
     # Journal entry
     JOURNAL_ENTRY_LIST_PAGE = BreadcrumbChildren(_('Journal entry'), 'JournalEntryList')
@@ -1139,9 +1144,6 @@ class BreadcrumbView:
     DASHBOARD_GENERAL_LIST_PAGE = [BreadcrumbItem.DASHBOARD_GENERAL_LIST_PAGE]
     DASHBOARD_PIPELINE_LIST_PAGE = [BreadcrumbItem.DASHBOARD_PIPELINE_LIST_PAGE]
 
-    PERIODS_CONFIG_PAGE = [BreadcrumbItem.PERIODS_CONFIG_PAGE]
-    ACCOUNTING_POLICIES_PAGE = [BreadcrumbItem.ACCOUNTING_POLICIES_PAGE]
-
     BALANCE_INIT_PAGE = [BreadcrumbItem.BALANCE_INIT_PAGE]
 
     INVOICE_SIGN_PAGE = [BreadcrumbItem.INVOICE_SIGN_PAGE]
@@ -1418,19 +1420,6 @@ class BreadcrumbView:
     INSTRUMENT_TOOL_CREATE_PAGE = INSTRUMENT_TOOL_LIST + [BreadcrumbItem.BASTION_CREATE]
     INSTRUMENT_TOOL_DETAIL_PAGE = INSTRUMENT_TOOL_LIST + [BreadcrumbItem.BASTION_DETAIL]
     INSTRUMENT_TOOL_UPDATE_PAGE = INSTRUMENT_TOOL_LIST + [BreadcrumbItem.BASTION_UPDATE]
-
-    CHART_OF_ACCOUNTS_LIST_PAGE = [
-        BreadcrumbItem.CHART_OF_ACCOUNTS_LIST_PAGE
-    ]
-    DEFAULT_ACCOUNT_DETERMINATION_LIST_PAGE = [
-        BreadcrumbItem.DEFAULT_ACCOUNT_DETERMINATION_LIST_PAGE
-    ]
-
-    JOURNAL_ENTRY_LIST_PAGE = [BreadcrumbItem.JOURNAL_ENTRY_LIST_PAGE]
-    JOURNAL_ENTRY_CREATE_PAGE = JOURNAL_ENTRY_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
-    JOURNAL_ENTRY_DETAIL_PAGE = JOURNAL_ENTRY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
-    JOURNAL_ENTRY_UPDATE_PAGE = JOURNAL_ENTRY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
-
     INSTRUMENT_TOOL_WRITE_OFF_LIST = [
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.INSTRUMENT_TOOL_WRITE_OFF_PAGE
@@ -1560,3 +1549,21 @@ class BreadcrumbView:
     PAYROLL_CONFIG_PAGE = [
         BreadcrumbItem.PAYROLL_CONFIG_PAGE
     ]
+
+    # ACCOUNTING BREADCRUMB SPACE
+    PERIODS_CONFIG_PAGE = [BreadcrumbItem.PERIODS_CONFIG_PAGE]
+    ACCOUNTING_POLICIES_PAGE = [BreadcrumbItem.ACCOUNTING_POLICIES_PAGE]
+    CHART_OF_ACCOUNTS_LIST_PAGE = [BreadcrumbItem.CHART_OF_ACCOUNTS_LIST_PAGE]
+    ACCOUNT_DETERMINATION_LIST_PAGE = [BreadcrumbItem.ACCOUNT_DETERMINATION_LIST_PAGE]
+    INITIAL_BALANCE_LIST_PAGE = [BreadcrumbItem.INITIAL_BALANCE_LIST_PAGE]
+    DIMENSION_DEFINITION_LIST_PAGE = [BreadcrumbItem.DIMENSION_DEFINITION_LIST_PAGE]
+    DIMENSION_VALUE_LIST_PAGE = [BreadcrumbItem.DIMENSION_VALUE_LIST_PAGE]
+    DIMENSION_SYNC_CONFIG_LIST_PAGE = [
+        BreadcrumbItem.DIMENSION_SYNC_CONFIG_LIST_PAGE
+    ]
+
+    JOURNAL_ENTRY_LIST_PAGE = [BreadcrumbItem.JOURNAL_ENTRY_LIST_PAGE]
+    JOURNAL_ENTRY_CREATE_PAGE = JOURNAL_ENTRY_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    JOURNAL_ENTRY_DETAIL_PAGE = JOURNAL_ENTRY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    JOURNAL_ENTRY_UPDATE_PAGE = JOURNAL_ENTRY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+    # END SPACE

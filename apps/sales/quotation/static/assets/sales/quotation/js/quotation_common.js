@@ -2575,7 +2575,6 @@ class QuotationLoadDataHandle {
             FormElementControl.loadInitS2(QuotationLoadDataHandle.contactSelectEle, [data?.['contact_data']], {'account_name_id': QuotationLoadDataHandle.customerSelectEle.val()});
         }
         if (data?.['payment_term_data']) {
-            // FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_term_data']], {}, null, true);
             // load realtime payment data
             WindowControl.showLoading();
             $.fn.callAjax2({
@@ -2590,12 +2589,28 @@ class QuotationLoadDataHandle {
                     if (data) {
                         if (data.hasOwnProperty('payment_terms_list') && Array.isArray(data.payment_terms_list)) {
                             if (data?.['payment_terms_list'].length > 0) {
-                                FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                                if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+                                    if (QuotationLoadDataHandle.paymentSelectEle.val() === data?.['payment_terms_list'][0]?.['id']) {
+                                        FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                                        QuotationLoadDataHandle.loadReInitDataTablePayment();
+                                        QuotationLoadDataHandle.loadReInitDataTableInvoice();
+                                    }
+                                    if (QuotationLoadDataHandle.paymentSelectEle.val() !== data?.['payment_terms_list'][0]?.['id']) {
+                                        FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                                        QuotationLoadDataHandle.loadChangePaymentTerm();
+                                    }
+                                }
+                                if (!QuotationLoadDataHandle.paymentSelectEle.val()) {
+                                    FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                                    QuotationLoadDataHandle.loadReInitDataTablePayment();
+                                    QuotationLoadDataHandle.loadReInitDataTableInvoice();
+                                }
                             }
                             if (data?.['payment_terms_list'].length === 0) {
                                 FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [], {}, null, true);
+                                QuotationLoadDataHandle.loadReInitDataTablePayment();
+                                QuotationLoadDataHandle.loadReInitDataTableInvoice();
                             }
-                            QuotationLoadDataHandle.loadChangePaymentTerm();
                             WindowControl.hideLoading();
                         }
                     }
@@ -2809,7 +2824,7 @@ class QuotationLoadDataHandle {
     };
 
     static loadTableDisabled(table) {
-        if (['get'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+        if (table.length > 0 && ['get'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
             for (let ele of table[0].querySelectorAll('.table-row-item')) {
                 ele.setAttribute('readonly', 'true');
             }
@@ -8017,22 +8032,6 @@ class QuotationSubmitHandle {
         if (is_sale_order === true) {
             _form.dataForm['sale_order_payment_stage'] = QuotationSubmitHandle.setupDataPaymentStage();
             _form.dataForm['sale_order_invoice'] = QuotationSubmitHandle.setupDataInvoice();
-            // validate payment stage submit
-            if (type === 0) {
-                if (_form.dataForm?.['sale_order_payment_stage'] && _form.dataForm?.['total_product']) {
-                    if (_form.dataForm?.['sale_order_payment_stage'].length > 0) {
-                        let totalPayment = 0;
-                        for (let payment of _form.dataForm['sale_order_payment_stage']) {
-                            totalPayment += payment?.['value_total'] ? payment?.['value_total'] : 0;
-                        }
-                        if (totalPayment !== _form.dataForm?.['total_product']) {
-                            $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
-                            return false;
-                        }
-                    }
-                }
-            }
-
         }
         // attachment
         if (_form.dataForm.hasOwnProperty('attachment')) {

@@ -485,11 +485,12 @@ class JSPlumbsHandle {
         }
         if ($(ele).attr("data-code") === "approved") {
             disabled = "disabled";
-        }
-        if ($(ele).attr("data-code") === "completed") {
-            disabled = "disabled";
             endPointsHTML = `<div class="drop-target jsplumb-handle"></div>`;
         }
+        // if ($(ele).attr("data-code") === "completed") {
+        //     disabled = "disabled";
+        //     endPointsHTML = `<div class="drop-target jsplumb-handle"></div>`;
+        // }
         return `<div class="btn-group dropdown">
                     <div class="clone ${clsSys} ${bg}" data-drag="${$(ele).attr('data-drag')}" title="${$(ele).find('.drag-title').text()}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
                         <p class="drag-title ${color}">${$(ele).find('.drag-title').text()}</p>
@@ -543,7 +544,7 @@ class JSPlumbsHandle {
         if (!element) {
             return false;
         }
-        if (sys_code !== 'completed') {
+        if (sys_code === 'initial' || sys_code === "") {
             JSPlumbsHandle.instance.makeSource(element, {
                 filter: ".drag-handle",
                 endpoint: ["Dot", {radius: 4}],
@@ -569,10 +570,11 @@ class JSPlumbsHandle {
                 endpointStyle: {fill: "#374986", opacity: ".8"},
                 HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
                 connectionType: "pink-connection",
-                connector: ["Flowchart", {cornerRadius: 5}],
+                // connector: ["Flowchart", {cornerRadius: 5}],
+                connector: ["Bezier", { curviness: 70 }],
             });
         }
-        if (sys_code !== 'initial') {
+        if (sys_code === 'approved' || sys_code === "") {
             JSPlumbsHandle.instance.makeTarget(element, {
                 filter: ".drop-target",
                 endpoint: ["Rectangle", {width: 9, height: 9}],
@@ -598,7 +600,8 @@ class JSPlumbsHandle {
                 endpointStyle: {fill: "#374986", opacity: ".8"},
                 HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
                 connectionType: "pink-connection",
-                connector: ["Flowchart", {cornerRadius: 5}],
+                // connector: ["Flowchart", {cornerRadius: 5}],
+                connector: ["Bezier", { curviness: 70 }],
             });
         }
     };
@@ -750,6 +753,9 @@ class JSPlumbsHandle {
                 NodeListTemp[item?.['order']] = item
                 this.setCommitNodeList = NodeListTemp
             } // end loop default node list
+            if (item?.['code_node_system'] === 'approved') {
+                break;
+            }
         }
     }
 
@@ -779,7 +785,8 @@ class JSPlumbsHandle {
                 paintStyle: {stroke: "#6f6f6f", strokeWidth: 1.5},
                 hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4},
                 connectionType: "pink-connection",
-                connector: ["Flowchart", {cornerRadius: 5}],
+                // connector: ["Flowchart", {cornerRadius: 5}],
+                connector: ["Bezier", { curviness: 70 }],
             });
             jsPlumb.select({source: 'control-' + assoc.node_in}).addOverlay(
                 ["Label",
@@ -1034,13 +1041,13 @@ class NodeHandler {
                         this.nodeState[key] = 'left';
                         this.systemNode['left'] = key;
                         break;
-                    case 'completed':
+                    // case 'completed':
+                    //     this.nodeState[key] = 'right';
+                    //     this.systemNode['right'] = key;
+                    //     break;
+                    case 'approved':
                         this.nodeState[key] = 'right';
                         this.systemNode['right'] = key;
-                        break;
-                    case 'approved':
-                        this.nodeState[key] = 'middle';
-                        this.systemNode['middle'] = key;
                         break;
                     default:
                         console.log('Code:', nodeData[key]['code_node_system'], "don't supported.")
@@ -1185,10 +1192,14 @@ class NodeHandler {
                 this.replaceGroup(node_input, 'left');
                 state = true;
                 break;
+            // case 'null|right':
+            //     //
+            //     // return false;
+            //     msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-1');
+            //     break;
             case 'null|right':
-                //
-                // return false;
-                msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-1');
+                this.replaceGroup(node_input, 'left');
+                state = true;
                 break;
             case 'null|middle':
                 this.replaceGroup(node_input, 'left');
@@ -1219,10 +1230,13 @@ class NodeHandler {
             case 'left|left':
                 state = true;
                 break;
+            // case 'left|right':
+            //     //
+            //     // return false;
+            //     msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-1');
+            //     break;
             case 'left|right':
-                //
-                // return false;
-                msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-1');
+                state = true;
                 break;
             case 'left|middle':
                 state = true;

@@ -61,7 +61,7 @@
             <!-- Container -->
             <div class="container-xxl">
                 <!-- Row -->
-                <div class="row mx-auto" style="max-width: 450px;">
+                <div class="row mx-auto" style="max-width: 500px; max-height: 700px;">
                     <div class="col-12 position-relative ">
                         <form
                                 class="w-100"
@@ -73,19 +73,18 @@
                         >
                             <div class="card card-border bg-light">
                                 <div class="card-body">
-                                    <div class="text-center mb-7 overflow-hidden">
+                                    <div class="text-center my-5 overflow-hidden">
                                         <a class="navbar-brand me-0" href="https://www.bflow.vn">
-                                            <img
-                                                    class="brand-img d-inline-block"
-                                                    src="{% static 'assets/images/brand/bflow-by-mts/png/bflow-by-mts-original.png' %}"
-                                                    alt="brand"
-                                                    style="width: 70%; object-fit: cover;margin-top: 30px;"
+                                            <img class="brand-img d-inline-block"
+                                                 src="{% static 'assets/images/brand/bflow-by-mts/png/bflow-by-mts-original.png' %}"
+                                                 alt="brand"
+                                                 style="width: 50%; object-fit: cover;"
                                             >
                                         </a>
                                     </div>
-{#                                    <div class="w-100 mb-4">#}
-{#                                        <h4 class="text-center">{% trans 'Login' %}</h4>#}
-{#                                    </div>#}
+    {#                                    <div class="w-100 mb-4">#}
+    {#                                        <h4 class="text-center">{% trans 'Login' %}</h4>#}
+    {#                                    </div>#}
                                     <div class="row gx-3">
                                         <div class="form-group">
                                             <div class="form-label-group d-none">
@@ -114,7 +113,7 @@
                                                         class="form-control"
                                                         name="username"
                                                         id="inp-username"
-{#                                                        placeholder="{% trans 'Username' %}"#}
+    {#                                                        placeholder="{% trans 'Username' %}"#}
                                                         placeholder="{% trans 'Username or email' %}"
                                                         tabindex="1"
                                                         required
@@ -148,10 +147,7 @@
                                         >{% trans 'Keep me logged in' %}</label>
                                     </div>
                                     <div id="recapcha" class="mt-1 mb-1"></div>
-                                    <input
-                                            type="submit" class="btn btn-primary btn-uppercase btn-block mb-3"
-                                            value="{% trans 'Login' %}" tabindex="4"
-                                    >
+                                    <button type="submit" class="btn btn-primary btn-uppercase btn-block mb-3" tabindex="4">{% trans 'Login' %}</button>
                                     <div class="d-flex justify-content-between align-items-center mb-0">
                                         <small class="flex-item">
                                             <a href="https://www.bflow.vn/#trial-form">{% trans 'Sign Up' %}</a>
@@ -162,7 +158,7 @@
                             </div>
                         </form>
                     </div>
-                    <div class="col-12 position-relative text-center">
+                    <div class="col-12 mt-3 position-relative text-center">
                         <p class="footer-text pb-0 copyrighttext">
                             <span class="copy-text">BFlow © 2023 All rights reserved.</span>
                         </p>

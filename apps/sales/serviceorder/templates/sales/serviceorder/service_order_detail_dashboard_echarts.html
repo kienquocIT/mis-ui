@@ -6,14 +6,78 @@
     <link href="{% static 'assets/core/workflow/css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"/>
     <style>
         #idxPageContent {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-image: url("{% static 'assets/js/home_5.jpg' %}");
+            background-repeat: no-repeat;
             background-size: cover;
+            background-position: center;
         }
         .advance-list-item {
             transition: none;
         }
         .advance-list-item:hover {
             transform: none;
+        }
+
+        {#load progress #}
+        .progress-modern {
+            position: relative;
+            height: 15px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: visible;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar-modern {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%);
+            border-radius: 10px;
+            transition: width 0.6s ease;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+            position: relative;
+        }
+
+        .progress-bar-modern::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+            animation: shimmer 2s infinite;
+            border-radius: 10px;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .progress-tooltip-modern {
+            position: absolute;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #1e293b;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-tooltip-modern::after {
+            content: '';
+            position: absolute;
+            left: -4px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+            border-right: 4px solid #1e293b;
         }
     </style>
 {% endblock %}
@@ -29,54 +93,51 @@
 
     <div class="row">
         <div class="col-12 col-md-9 col-lg-9">
-            <h2 class="fw-bold text-white" id="service-order-title"></h2>
-            <h6 class="text-white" id="service-order-customer"></h6>
+            <h2 class="fw-bold" id="service-order-title"></h2>
+            <h6 id="service-order-customer"></h6>
         </div>
         <div class="col-12 col-md-3 col-lg-3 text-right">
-            <h5 class="fw-bold text-white" id="service-order-time"></h5>
+            <h6 class="fw-bold" id="service-order-time"></h6>
         </div>
-        <div class="col-12 mt-3 mb-3">
-            <div class="bflow-glass-card" id="service-order-progress">
-                <span class="fw-bold text-white">{% trans 'OVERALL PROGRESS' %}</span>
+        <div class="col-12 mt-5 mb-5">
+            <span class="fw-bold">{% trans 'OVERALL PROGRESS' %}</span>
+            <div id="service-order-progress"></div>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3">
+            <div class="bflow-mirrow-card">
+                <span class="fw-bold">{% trans 'TOTAL SERVICES' %}</span>
+                <h1 class="fw-bold" id="total-services"></h1>
+                <span class="text-muted" id="total-services-des"><span id="svo-completed"></span> {% trans 'completed' %} - <span id="svo-progressing"></span> {% trans 'progressing' %} - <span id="svo-waiting"></span> {% trans 'waiting' %}</span>
             </div>
         </div>
         <div class="col-12 col-md-3 col-lg-3">
-            <div class="bflow-glass-card">
-                <span class="fw-bold text-white">{% trans 'TOTAL SERVICES' %}</span>
-                <h1 class="fw-bold text-white" id="total-services"></h1>
-                <span class="text-white" id="total-services-des"><span id="svo-completed"></span> {% trans 'completed' %} - <span id="svo-progressing"></span> {% trans 'progressing' %} - <span id="svo-waiting"></span> {% trans 'waiting' %}</span>
+            <div class="bflow-mirrow-card">
+                <span class="fw-bold">{% trans 'TOTAL WORKS' %}</span>
+                <h1 class="fw-bold" id="total-work-orders"></h1>
+                <span class="text-muted" id="total-work-orders-des"><span id="wo-completed"></span> {% trans 'completed' %} - <span id="wo-progressing"></span> {% trans 'progressing' %} - <span id="wo-waiting"></span> {% trans 'waiting' %}</span>
             </div>
         </div>
         <div class="col-12 col-md-3 col-lg-3">
-            <div class="bflow-glass-card">
-                <span class="fw-bold text-white">{% trans 'TOTAL WORKS' %}</span>
-                <h1 class="fw-bold text-white" id="total-work-orders"></h1>
-                <span class="text-white" id="total-work-orders-des"><span id="wo-completed"></span> {% trans 'completed' %} - <span id="wo-progressing"></span> {% trans 'progressing' %} - <span id="wo-waiting"></span> {% trans 'waiting' %}</span>
+            <div class="bflow-mirrow-card">
+                <span class="fw-bold">{% trans 'TOTAL TASKS' %}</span>
+                <h1 class="fw-bold" id="total-tasks"></h1>
+                <span class="text-muted" id="total-tasks-des"><span id="task-completed"></span> {% trans 'completed' %} - <span id="task-progressing"></span> {% trans 'progressing' %} - <span id="task-waiting"></span> {% trans 'waiting' %}</span>
             </div>
         </div>
         <div class="col-12 col-md-3 col-lg-3">
-            <div class="bflow-glass-card">
-                <span class="fw-bold text-white">{% trans 'TOTAL TASKS' %}</span>
-                <h1 class="fw-bold text-white" id="total-tasks"></h1>
-                <span class="text-white" id="total-tasks-des"><span id="task-completed"></span> {% trans 'completed' %} - <span id="task-progressing"></span> {% trans 'progressing' %} - <span id="task-waiting"></span> {% trans 'waiting' %}</span>
-            </div>
-        </div>
-        <div class="col-12 col-md-3 col-lg-3">
-            <div class="bflow-glass-card">
-                <span class="fw-bold text-white">{% trans 'CONTRACT VALUE' %}</span>
-                <h1 class="fw-bold text-white"><span class="mask-money" id="contract-value" data-init-money="0"></span></h1>
-                <span class="text-white" id="contract-value-des"><span class="mask-money" id="contract-value-delivered" data-init-money="0"></span> {% trans 'delivered' %} (~<span id="contract-value-delivered-percent"></span>%)</span>
+            <div class="bflow-mirrow-card">
+                <span class="fw-bold">{% trans 'CONTRACT VALUE' %}</span>
+                <h1 class="fw-bold"><span class="mask-money" id="contract-value" data-init-money="0"></span></h1>
+                <span class="text-muted" id="contract-value-des"><span class="mask-money" id="contract-value-delivered" data-init-money="0"></span> {% trans 'delivered' %} (~<span id="contract-value-delivered-percent"></span>%)</span>
             </div>
         </div>
     </div>
-    <div class="row mt-5">
+    <div class="row mt-10 mb-10">
         <div class="col-12">
-            <h3 class="fw-bold text-white">{% trans 'SERVICE PROGRESS' %}</h3>
+            <h4 class="fw-bold">{% trans 'SERVICE PROGRESS' %}</h4>
         </div>
-        <div class="col-12">
-            <div class="bflow-glass-card">
-                <div class="row" id="service-detail-list"></div>
-            </div>
+        <div class="col-12 mt-1">
+            <div class="row" id="service-detail-list"></div>
         </div>
     </div>
 {% endblock %}

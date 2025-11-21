@@ -15,16 +15,6 @@
     </style>
 {% endblock %}
 {% block pageAction %}
-    <a id="view-dashboard" href="#" target="_blank" data-url="{% url 'ServiceOrderDetailDashboard' %}">
-        <button class="btn btn-gradient-primary">
-            <span>
-                <span class="icon">
-                  <span class="feather-icon"><i class="bi bi-clipboard-data"></i></span>
-                </span>
-                <span>{% trans 'View dashboard' %}</span>
-            </span>
-        </button>
-    </a>
     {% include 'extends/systems/page_actions.html' with is_save=True save_frm='form-update-service-order' %}
 {% endblock %}
 
@@ -55,6 +45,12 @@
     {% include 'extends/indicator/all.html' with is_order=True %}
 {% endblock %}
 {% block dataHiddenGroup %}
+    <input
+            type="hidden" id="app-trans-factory"
+            data-delivery-logs="{% trans 'Delivery logs' %}"
+            data-service-order-version="{% trans 'Service order version' %}"
+            data-delivery-quantity="{% trans 'Delivery quantity' %}"
+    >
     <script id="script-url"
             data-expense-item-list-url="{% url 'ExpenseItemListAPI' %}"
             data-tax-list-url = '{% url 'TaxListAPI' %}'
@@ -67,6 +63,7 @@
             data-uom-url="{% url "UnitOfMeasureListAPI" %}"
             data-tax-url='{% url 'TaxListAPI' %}'
             data-delivery-log-url='{% url 'DeliveryWorkLogListAPI' %}'
+            data-service-order-detail-url='{% url 'ServiceOrderDetail' 1 %}'
     ></script>
 {% endblock %}
 {% block jsFooter %}

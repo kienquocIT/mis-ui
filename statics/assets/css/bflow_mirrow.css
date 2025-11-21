@@ -1,0 +1,220 @@
+:root {
+    /* Độ blur của hiệu ứng kính */
+    --mirrow-blur: 2px;
+
+    /* Bo góc */
+    --mirrow-radius-card: 1rem;
+    --mirrow-radius-btn: 0.6rem;
+    --mirrow-radius-badge: 2rem;
+
+    /* Các sắc độ dùng lại */
+    --mirrow-border: rgba(255, 255, 255, 0.25);
+    --mirrow-highlight: rgba(255, 255, 255, 0.05);
+    --mirrow-shadow: rgba(0, 0, 0, 0.25);
+
+    /* Mặc định opacity = 0.05 nếu không khai báo */
+    --mirrow-opacity: 0.05;
+    --mirrow-opacity-btn: 0.4;
+    --mirrow-opacity-badge: 0.4;
+}
+
+/* Base style chung cho Card */
+.bflow-mirrow-card,
+.bflow-mirrow-card-20,
+.bflow-mirrow-card-40,
+.bflow-mirrow-card-60,
+.bflow-mirrow-card-80,
+.bflow-mirrow-card-90,
+.bflow-mirrow-card-100 {
+    padding: 15px;
+    border: none;
+    border-radius: var(--mirrow-radius-card);
+
+    background: rgba(255, 255, 255, var(--mirrow-opacity));
+    backdrop-filter: blur(var(--mirrow-blur));
+    -webkit-backdrop-filter: blur(var(--mirrow-blur));
+
+    box-shadow:
+        inset 0 0 0 1px var(--mirrow-border),
+        inset 0 10px 24px var(--mirrow-highlight),
+        0 4px 14px var(--mirrow-shadow);
+
+    transition: transform .25s ease, box-shadow .25s ease;
+
+    /* Thêm cho hiệu ứng ánh sáng */
+    position: relative;
+    overflow: hidden;
+}
+
+/* Hiệu ứng ánh sáng phản chiếu phía trên và Viền sáng glow nhẹ quanh card */
+.bflow-mirrow-card::before,
+.bflow-mirrow-card-20::before,
+.bflow-mirrow-card-40::before,
+.bflow-mirrow-card-60::before,
+.bflow-mirrow-card-80::before,
+.bflow-mirrow-card-90::before,
+.bflow-mirrow-card-100::before,
+.bflow-mirrow-card::after,
+.bflow-mirrow-card-20::after,
+.bflow-mirrow-card-40::after,
+.bflow-mirrow-card-60::after,
+.bflow-mirrow-card-80::after,
+.bflow-mirrow-card-90::after,
+.bflow-mirrow-card-100::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    border-radius: inherit;
+}
+
+/* Hiệu ứng ánh sáng phản chiếu phía trên (tiếp theo) */
+.bflow-mirrow-card::before,
+.bflow-mirrow-card-20::before,
+.bflow-mirrow-card-40::before,
+.bflow-mirrow-card-60::before,
+.bflow-mirrow-card-80::before,
+.bflow-mirrow-card-90::before,
+.bflow-mirrow-card-100::before {
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 38%;
+
+    background: linear-gradient(
+        rgba(255, 255, 255, 0.22),
+        rgba(255, 255, 255, 0.03)
+    );
+}
+
+/* Viền sáng glow nhẹ quanh card (tiếp theo) */
+.bflow-mirrow-card::after,
+.bflow-mirrow-card-20::after,
+.bflow-mirrow-card-40::after,
+.bflow-mirrow-card-60::after,
+.bflow-mirrow-card-80::after,
+.bflow-mirrow-card-90::after,
+.bflow-mirrow-card-100::after {
+    inset: 0;
+    box-shadow: 0 0 45px 16px rgba(255, 255, 255, 0.6);
+}
+
+/* Thiết lập Opacity cho từng Card */
+.bflow-mirrow-card       { --mirrow-opacity: 0.05; }
+.bflow-mirrow-card-20    { --mirrow-opacity: 0.20; }
+.bflow-mirrow-card-40    { --mirrow-opacity: 0.40; }
+.bflow-mirrow-card-60    { --mirrow-opacity: 0.60; }
+.bflow-mirrow-card-80    { --mirrow-opacity: 0.80; }
+.bflow-mirrow-card-90    { --mirrow-opacity: 0.90; }
+.bflow-mirrow-card-100   { --mirrow-opacity: 1; }
+
+/* Base style chung cho Button */
+.bflow-mirrow-btn,
+.bflow-mirrow-btn-lg,
+.bflow-mirrow-btn-sm {
+    border: 1px solid rgb(180, 180, 180);
+    border-radius: var(--mirrow-radius-btn);
+    background: rgba(255, 255, 255, var(--mirrow-opacity-btn));
+    backdrop-filter: blur(var(--mirrow-blur));
+    -webkit-backdrop-filter: blur(var(--mirrow-blur));
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+
+    box-shadow:
+        inset 0 0 0 1px var(--mirrow-radius-btn),
+        inset 0 6px 18px var(--mirrow-highlight),
+        0 4px 22px var(--mirrow-shadow);
+
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+/* Hover cho Button */
+.bflow-mirrow-btn:hover,
+.bflow-mirrow-btn-lg:hover,
+.bflow-mirrow-btn-sm:hover {
+    box-shadow:
+        inset 0 0 0 1px var(--mirrow-radius-btn),
+        inset 0 6px 24px var(--mirrow-highlight),
+        0 6px 28px var(--mirrow-shadow);
+}
+
+/* Active cho Button */
+.bflow-mirrow-btn:active,
+.bflow-mirrow-btn-lg:active,
+.bflow-mirrow-btn-sm:active {
+    transform: scale(0.8);
+    box-shadow:
+        inset 0 0 0 1px var(--mirrow-radius-btn),
+        inset 0 3px 12px var(--mirrow-highlight),
+        0 2px 14px var(--mirrow-shadow);
+}
+
+/* Kích thước Button */
+.bflow-mirrow-btn {
+    padding: 5px 15px;
+    font-size: inherit;
+}
+
+.bflow-mirrow-btn-lg {
+    padding: 8px 22px;
+    font-size: 1.15rem;
+    font-weight: 500;
+}
+
+.bflow-mirrow-btn-sm {
+    padding: 3px 10px;
+    font-size: 0.8rem;
+}
+
+/* Base style chung cho Badge */
+.bflow-mirrow-badge,
+.bflow-mirrow-badge-lg,
+.bflow-mirrow-badge-sm {
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: var(--mirrow-radius-badge);
+    background: rgba(255, 255, 255, var(--mirrow-opacity-badge));
+    backdrop-filter: blur(var(--mirrow-blur));
+    -webkit-backdrop-filter: blur(var(--mirrow-blur));
+
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    cursor: default; /* badge thường không phải button */
+
+    box-shadow:
+        inset 0 0 0 1px var(--mirrow-radius-badge),
+        inset 0 6px 18px var(--mirrow-highlight),
+        0 4px 22px var(--mirrow-shadow);
+
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+/* Kích thước Badge */
+.bflow-mirrow-badge {
+    padding: 0px 10px;
+    font-size: inherit;
+}
+
+.bflow-mirrow-badge-lg {
+    padding: 2px 14px;
+    font-size: 1.15rem;
+    font-weight: 500;
+}
+
+.bflow-mirrow-badge-sm {
+    padding: 0px 8px;
+    font-size: 0.8rem;
+}
+
+.bflow-mirrow-card-pill-gray {
+    padding: 15px;
+    border: 1px solid rgb(200, 200, 200);
+    border-radius: 2rem;
+
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+
+    transition: transform .25s ease, box-shadow .25s ease;
+}

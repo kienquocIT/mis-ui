@@ -204,3 +204,13 @@ class ServiceOrderDetailDeliveryAPI(APIView):
     def post(self, request, *args, pk, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_SERVICEORDER_CALL.fill_key(pk=pk)).post(data=request.data)
         return resp.auto_return()
+
+
+class ServiceOrderDiffListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, current_id, comparing_id, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.SERVICE_ORDER_DIFF.fill_key(current_id=current_id, comparing_id=comparing_id)).get()
+        return resp.auto_return()

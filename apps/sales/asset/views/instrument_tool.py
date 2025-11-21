@@ -16,7 +16,9 @@ __all__ = [
     'InstrumentToolDetailAPI',
     'ToolForLeaseListAPI',
     'ToolStatusLeaseListAPI',
+    'InstrumentToolDDListAPI',
 ]
+
 
 def create(request, url, msg):
     resp = ServerAPI(user=request.user, url=url).post(request.data)
@@ -46,6 +48,7 @@ class InstrumentToolList(View):
     def get(self, request, *args, **kwargs):
         return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
 
+
 class InstrumentToolCreate(View):
     @mask_view(
         auth_require=True,
@@ -59,6 +62,7 @@ class InstrumentToolCreate(View):
             'form_id': 'form-instrument-tool',
         }
         return ctx, status.HTTP_200_OK
+
 
 class InstrumentToolDetail(View):
     @mask_view(
@@ -74,6 +78,7 @@ class InstrumentToolDetail(View):
             'form_id': 'form-fixed-asset',
         }
         return ctx, status.HTTP_200_OK
+
 
 class InstrumentToolUpdate(View):
     @mask_view(
@@ -111,6 +116,18 @@ class InstrumentToolListAPI(APIView):
             url=ApiURL.INSTRUMENT_TOOL_LIST,
             msg=BaseMsg.SUCCESS
         )
+
+
+class InstrumentToolDDListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.INSTRUMENT_TOOL_DD_LIST).get(data)
+        return resp.auto_return(key_success='instrument_tool_dd_list')
+
 
 class InstrumentToolDetailAPI(APIView):
     @mask_view(

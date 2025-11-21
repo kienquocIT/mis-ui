@@ -53,11 +53,20 @@
         <link href="{% static 'vendors/dropify/dist/css/dropify.min.css' %}" rel="stylesheet" type="text/css">
     {% endcompress %}
 
-    <link rel="stylesheet" href="{% static 'assets/fonts/inter/Inter-VariableFont_slnt,wght.ttf' %}">
+{#    <link rel="stylesheet" href="{% static 'assets/fonts/inter/Inter-VariableFont_slnt,wght.ttf' %}">#}
+    <link rel="stylesheet" href="{% static 'assets/fonts/inter/be_vietnam_pro.css' %}">
+    <style>
+        * {
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+    </style>
+
     {% compress css %}
         <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/loading-spinner.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/my-style.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'assets/css/bflow_mirrow.css' %}" rel="stylesheet" type="text/css">
+{#        <link href="{% static 'assets/css/bflow-ai/chatbot-popup.css' %}" rel="stylesheet">#}
         <link href="{% static 'assets/css/notify.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/plugins/drawer.css' %}" rel="stylesheet" type="text/css">
         <link
@@ -252,7 +261,7 @@
                                                     data-url-current-wf="{% url 'WorkflowCurrentOfAppListAPI' %}"
                                                     data-url-app-emp-config="{% url 'AppEmpConfigListAPI' %}"
                                             >
-                                                <span class="icon"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                                                <span class="icon"><i class="fa-solid fa-clock-rotate-left text-primary"></i></span>
                                             </button>
                                         </div>
                                     </div>
@@ -335,7 +344,7 @@
                                 </div>
 								<div class="hk-sidebar-togglable"></div>
 							</header>
-							<div class="contact-body p-1">
+							<div class="contact-body" id="idxPageContentWrapper">
 								<div id="idxPageContent">
                                     {% block pageContent %}
                                     {% endblock %}
@@ -398,6 +407,8 @@
 </button>
 <!-- // Bubble -->
 
+{#<!-- Chatbot -->#}
+{#{% include 'extends/bflow-ai/chatbot-popup.html' %}#}
 <!-- Wrapper -->
 <!-- /Wrapper -->
 
@@ -819,5 +830,13 @@
 {% if is_ga_enabled %}
     <script async src="{{ ga_config.script }}"></script>
 {% endif %}
+{##}
+{#<script src="{% static 'assets/js/bflow-ai/ask-accounting.js' %}"></script>#}
+{#<script src="{% static 'assets/js/bflow-ai/bflow_chatbot_main.js' %}"></script>#}
+{#<script>#}
+{#    $(document).ready(function () {#}
+{#        $('#aiChatButton').prop('hidden', $('#menu-tenant').attr('data-space-selected') !== 'financials')#}
+{#    })#}
+{#</script>#}
 </body>
 </html>

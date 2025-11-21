@@ -3,6 +3,7 @@ from . import views
 from .views import (
     ServiceOrderListAPI, ServiceOrderDetail, ServiceOrderUpdate, ServiceOrderDetailAPI,
     ServiceOrderDetailDashboardAPI, ServiceOrderDetailDashboard, SVOWorkOrderDetailAPI, ServiceOrderDetailDeliveryAPI,
+    ServiceOrderDiffListAPI,
 )
 
 urlpatterns = [
@@ -21,4 +22,5 @@ urlpatterns = [
     path('dashboard/api/<str:pk>', ServiceOrderDetailDashboardAPI.as_view(), name='ServiceOrderDetailDashboardAPI'),
     path('work-order-detail/api', SVOWorkOrderDetailAPI.as_view(), name='SVOWorkOrderDetailAPI'),
     path('detail-api/<str:pk>/delivery', ServiceOrderDetailDeliveryAPI.as_view(), name='ServiceOrderDetailDeliveryAPI'),
+    path('diff/api/<str:current_id>/<str:comparing_id>', ServiceOrderDiffListAPI.as_view(), name='ServiceOrderDiffListAPI'),
 ]

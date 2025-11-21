@@ -377,10 +377,10 @@ class MenusCRM:
                 name='Sale quotation', code='menu_quotation_list', view_name='QuotationList',
                 icon='<i class="fas fa-file-invoice-dollar"></i>',
             ),
-            MenuCommon(
-                name='Service quotation', code='menu_service_quotation_list', view_name='ServiceQuotationList',
-                icon='<i class="fas fa-file-invoice-dollar"></i>',
-            )
+            # MenuCommon(
+            #     name='Service quotation', code='menu_service_quotation_list', view_name='ServiceQuotationList',
+            #     icon='<i class="fas fa-file-invoice-dollar"></i>',
+            # )
         ],
     )
     BIDDING = MenuCommon(
@@ -941,8 +941,8 @@ class MenusHRM:
             ),
             MenuCommon(
                 name='Template attribute', code='menu_template_attribute_list',
-                view_name='PayrollTemplAttrList', icon='<i class="fa-solid fa-gears"></i>',
-            )
+                view_name='PayrollTemplAttrList', icon='<i class="fas fa-users-cog"></i>',
+            ),
         ]
     )
 
@@ -952,7 +952,8 @@ class MenusPartnerCenter:
         name='Home', code='id_menu_partner_center_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
     LISTS = MenuCommon(
-        name='Lists', code='menu_partner_center_lists', view_name='ListList', icon='<i class="fas fa-solid fa-search"></i>',
+        name='Lists', code='menu_partner_center_lists', view_name='ListList',
+        icon='<i class="fas fa-solid fa-search"></i>',
     )
 
 
@@ -964,13 +965,38 @@ class MenusFinancials:
         name='Accounting setting', code='', view_name='', icon='<i class="fas fa-cog"></i>',
         child=[
             MenuCommon(
-                name='Chart of accounts', code='menu_chart_of_accounts_list', view_name='ChartOfAccountsList',
+                name='Chart of account', code='menu_chart_of_accounts_list', view_name='ChartOfAccountsList',
                 icon='<i class="fas fa-list-alt"></i>',
             ),
             MenuCommon(
-                name='Default account determination', code='menu_default_account_determination_list', view_name='DefaultAccountDeterminationList',
+                name='Account determination', code='menu_account_determination_list', view_name='AccountDeterminationList',
                 icon='<i class="fas bi bi-journal-text"></i>',
             ),
+            MenuCommon(
+                name='Initial balance', code='menu_initial_balance',
+                view_name='InitialBalanceList',
+                icon='<i class="fas fa-chart-bar"></i>',
+            ),
+            # MenuCommon(
+            #     name='Dimension Definition', code='menu_dimension_definition_list',
+            #     view_name='DimensionDefinitionList',
+            #     icon='<i class="fa fa-pen-ruler"></i>',
+            # ),
+            # MenuCommon(
+            #     name='Dimension Value', code='menu_dimension_value_list',
+            #     view_name='DimensionValueList',
+            #     icon='<i class="fa fa-table"></i>',
+            # ),
+            # MenuCommon(
+            #     name='Dimension Sync Config', code='menu_dimension_sync_config_list',
+            #     view_name='DimensionSyncConfigList',
+            #     icon='<i class="fa fa-rotate"></i>',
+            # ),
+            # MenuCommon(
+            #     name='Dimension Account Mapping', code='menu_dimension_account_list',
+            #     view_name='DimensionAccountList',
+            #     icon='<i class="fa fa-link"></i>',
+            # ),
         ],
     )
     ASSET = MenuCommon(

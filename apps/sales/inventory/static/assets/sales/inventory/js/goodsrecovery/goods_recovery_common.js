@@ -270,6 +270,7 @@ class RecoveryLoadDataHandle {
             let btnDepreciationEle = row.querySelector('.btn-depreciation-detail');
             if (btnDepreciationEle) {
                 RecoveryLoadDataHandle.loadShowDepreciation(btnDepreciationEle);
+                RecoveryLoadDataHandle.loadDataTableDepreciation();
                 RecoveryLoadDataHandle.loadSaveDepreciation();
             }
         });
@@ -413,40 +414,6 @@ class RecoveryLoadDataHandle {
                     }
                 }
             }
-
-            // let dataFn = [];
-            // let dataDepreciation = [];
-            // if (assetEle) {
-            //     let dataAsset = SelectDDControl.get_data_from_idx($(assetEle), $(assetEle).val());
-            //     if (dataAsset?.['depreciation_data']) {
-            //         dataDepreciation = dataAsset?.['depreciation_data'];
-            //     }
-            // }
-            // if (toolEle) {
-            //     let dataTool = SelectDDControl.get_data_from_idx($(toolEle), $(toolEle).val());
-            //     if (dataTool?.['depreciation_data']) {
-            //         dataDepreciation = dataTool?.['depreciation_data'];
-            //     }
-            // }
-            // if (dataDepreciation.length > 0) {
-            //     dataFn = dataDepreciation;
-            //     if ($leaseStartDateEle.length > 0 && $leaseEndDateEle.length > 0) {
-            //         if ($leaseStartDateEle.val() && $leaseEndDateEle.val()) {
-            //             let dataOfRange = DepreciationControl.extractDataOfRange({
-            //                 'data_depreciation': dataDepreciation,
-            //                 'start_date': $leaseStartDateEle.val(),
-            //                 'end_date': $leaseEndDateEle.val(),
-            //             });
-            //             dataFn = DepreciationControl.mapDataOfRange({
-            //                 'data_depreciation': dataDepreciation,
-            //                 'data_of_range': dataOfRange,
-            //             });
-            //         }
-            //     }
-            //     RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
-            //     RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(dataFn).draw();
-            //     return true;
-            // }
         }
 
         return true;
@@ -1103,21 +1070,9 @@ class RecoveryDataTableHandle {
                     }
                 },
             ],
-            rowCallback: function (row, data, index) {
-                let itemEle = row.querySelector('.table-row-item');
-                if (itemEle) {
-                    let dataS2 = [];
-                    if (data?.['offset_data']) {
-                        dataS2 = [data?.['offset_data']];
-                    }
-                    FormElementControl.loadInitS2($(itemEle), dataS2);
-                    $(itemEle).attr('data-product-id', data?.['offset_data']?.['id']);
-                }
-            },
             drawCallback: function () {
                 // add css to Dtb
                 RecoveryLoadDataHandle.loadCssToDtb('datable-deli-product-new');
-                RecoveryLoadDataHandle.loadEventCheckbox(RecoveryDataTableHandle.$tableProductNew);
                 RecoveryDataTableHandle.dtbProductNewHDCustom();
             },
         });

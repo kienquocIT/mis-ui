@@ -315,11 +315,12 @@ function TemplateDOM(node, data, configData) {
                             nodeMatch.innerText = dataList[codeKey].length >= i ? dataList[codeKey][i] : '_';
                             // check if data is path of img element
                             let inner = dataList[codeKey].length >= i ? dataList[codeKey][i] : '_';
-                            if (inner.includes('/media')) {
-                                // nodeMatch.innerHTML = `<img src="${inner}" class="img-fluid" alt="img" style="width: 100px; height: 100px">`;
-                                nodeMatch.innerHTML = `<div style="width: 100%; max-width: 200px; aspect-ratio: 1/1; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                            if (inner) {
+                                if (inner.includes('/media')) {
+                                    nodeMatch.innerHTML = `<div style="width: 100%; max-width: 200px; aspect-ratio: 1/1; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
                                                           <img src="${inner}" alt="img" style="width: 100%; height: 100%; object-fit: contain;">
                                                         </div>`;
+                                }
                             }
                         }
                     )

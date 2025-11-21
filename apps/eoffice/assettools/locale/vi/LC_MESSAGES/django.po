@@ -16,6 +16,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-
+#
 msgid "Done number is greater than available number"
 msgstr "số lượng hoàn tất lớn hơn số sản phẩm còn có sẵn"
+#
+msgid "Provide"
+msgstr "Cấp phát"
+
+#
+msgid "Product available"
+msgstr "Công cụ có sẵn"
+
+#
+msgid "Buy new product"
+msgstr "Mua mới"

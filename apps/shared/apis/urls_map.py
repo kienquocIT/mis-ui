@@ -550,7 +550,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PROCESS_RUNTIME_LOG = StringUrl('process/runtime/detail/{pk}/log')
 
     # Chatbot
-    CHATBOT_CHAT = StringUrl('chatbot/chat')
+    CHATBOT_CHAT = StringUrl('bflow-ai/chat')
 
     # Expense item
 
@@ -897,6 +897,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # asset/ fixed asset
     FIXED_ASSET_LIST = StringUrl('asset/fixed-asset/list')
+    FIXED_ASSET_DD_LIST = StringUrl('asset/fixed-asset/no-perm-list')
     FIXED_ASSET_DETAIL = StringUrl('asset/fixed-asset/detail')
     FIXED_ASSET_FOR_LEASE_LIST = StringUrl('asset/fixed-asset-for-lease/list')
     FIXED_ASSET_STATUS_LEASE_LIST = StringUrl('asset/fixed-asset-status-lease/list')
@@ -907,14 +908,15 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # asset/ instrument tool
     INSTRUMENT_TOOL_LIST = StringUrl('asset/instrument-tool/list')
+    INSTRUMENT_TOOL_DD_LIST = StringUrl('asset/instrument-tool/no-perm-list')
     INSTRUMENT_TOOL_DETAIL = StringUrl('asset/instrument-tool/detail')
     CHART_OF_ACCOUNTS_LIST = StringUrl('accounting-setting/chart-of-accounts/list')
     CHART_OF_ACCOUNTS_DETAIL = StringUrl('accounting-setting/chart-of-accounts/{pk}')
     INSTRUMENT_TOOL_FOR_LEASE_LIST = StringUrl('asset/instrument-tool-for-lease/list')
     INSTRUMENT_TOOL_STATUS_LEASE_LIST = StringUrl('asset/instrument-tool-status-lease/list')
 
-    DEFAULT_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/default-account-determination/list')
-    DEFAULT_ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/default-account-determination/detail/{pk}')
+    ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/account-determination/list')
+    ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/account-determination/detail/{pk}')
     WAREHOUSE_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/warehouse-account-determination/list')
     WAREHOUSE_ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/warehouse-account-determination/detail/{pk}')
     PRODUCT_TYPE_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/product-type-account-determination/list')
@@ -922,9 +924,21 @@ class ApiURL:  # pylint: disable=too-few-public-methods
         'accounting-setting/product-type-account-determination/detail/{pk}')
     PRODUCT_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/product-account-determination/list')
     PRODUCT_ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/product-account-determination/detail/{pk}')
+    DIMENSION_DEFINITION_LIST = StringUrl('accounting-setting/dimension-definition/list')
+    DIMENSION_DEFINITION_DETAIL = StringUrl('accounting-setting/dimension-definition/detail/{pk}')
+    DIMENSION_DEFINITION_WITH_VALUES = StringUrl('accounting-setting/dimension-definition-values/{pk}')
+    DIMENSION_VALUE_LIST = StringUrl('accounting-setting/dimension-value/list')
+    DIMENSION_VALUE_DETAIL = StringUrl('accounting-setting/dimension-value/detail/{pk}')
+    DIMENSION_SYNC_CONFIG_APPLICATION_LIST = StringUrl('accounting-setting/dimension-sync-config/application-list')
+    DIMENSION_SYNC_CONFIG_LIST = StringUrl('accounting-setting/dimension-sync-config/list')
+    DIMENSION_SYNC_CONFIG_DETAIL = StringUrl('accounting-setting/dimension-sync-config/detail/{pk}')
+    DIMENSION_LIST_FOR_ACCOUNTING_ACCOUNT = StringUrl('accounting-setting/dimension-for-account/detail/{pk}')
+    DIMENSION_ACCOUNT_MAP_LIST = StringUrl('accounting-setting/dimension-account-map/list')
+    DIMENSION_ACCOUNT_MAP_DETAIL = StringUrl('accounting-setting/dimension-account-map/detail/{pk}')
 
     JOURNAL_ENTRY_LIST = StringUrl('journal-entry/list')
     JOURNAL_ENTRY_DETAIL = StringUrl('journal-entry/detail/{pk}')
+    JOURNAL_ENTRY_SUMMARIZE = StringUrl('journal-entry/get-je-summarize')
 
     # asset/ fixed asset write off
     FIXED_ASSET_WRITE_OFF_LIST = StringUrl('asset/fixed-asset-writeoff/list')
@@ -1031,6 +1045,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SERVICE_ORDER_DETAIL = StringUrl('serviceorder/detail/{pk}')
     SERVICE_ORDER_DETAIL_DASHBOARD = StringUrl('serviceorder/detail-dashboard/{pk}')
     SO_WORK_ORDER_DETAIL = StringUrl('serviceorder/work-order-detail')
+    SERVICE_ORDER_DIFF = StringUrl('serviceorder/diff/{current_id}/{comparing_id}')
 
     # service-quotation
     SERVICE_QUOTATION_LIST = StringUrl('servicequotation/list')
@@ -1039,3 +1054,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # HRM - Payroll
     PAYROLL_CONFIG = StringUrl('hrm/payroll/payrollconfig/config')
+    PAYROLL_ATTRIBUTE = StringUrl('hrm/payroll/payrollattribute/list')
+
+    INITIAL_BALANCE_LIST = StringUrl('accounting-setting/initial-balance/list')

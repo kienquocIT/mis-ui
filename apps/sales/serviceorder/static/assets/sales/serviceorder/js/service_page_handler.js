@@ -1,13 +1,11 @@
 class ServiceOrderPageHandler {
     // Hàm load sẵn data cần thiết cho các page
     static async initializeCommonData() {
-        WindowControl.showLoading()
         await Promise.all([
             ServiceOrder.loadCurrencyRateData(),
             ServiceOrder.loadTaxData(),
             ServiceOrder.loadUoMData()
         ]);
-        WindowControl.hideLoading()
     }
 
     // Hàm set up form data
@@ -32,10 +30,10 @@ class ServiceOrderPageHandler {
 
     // Hàm set total fields
     static setTotalFields(formInstance) {
+        // total product
         const $pretaxPrdEle = $('#service-detail-pretax-value');
         const $taxPrdEle = $('#service-detail-taxes-value');
         const $totalPrdEle = $('#service-detail-total-value');
-
         if ($pretaxPrdEle.length > 0 && $taxPrdEle.length > 0 && $totalPrdEle.length > 0) {
             if ($pretaxPrdEle.valCurrency()) {
                 formInstance.dataForm['total_product_pretax_amount'] = parseFloat($pretaxPrdEle.valCurrency());
@@ -48,6 +46,15 @@ class ServiceOrderPageHandler {
                 formInstance.dataForm['total_product'] = parseFloat($totalPrdEle.valCurrency());
             }
         }
+        // total cost
+        let total_cost = 0;
+        for (let woData of formInstance.dataForm?.['work_order_data'] ? formInstance.dataForm?.['work_order_data'] : []) {
+            for (let pcData of woData?.['product_contribution'] ? woData?.['product_contribution'] : []) {
+                total_cost += pcData?.['total_cost'] ? pcData?.['total_cost'] : 0;
+            }
+        }
+        formInstance.dataForm['total_cost_pretax_amount'] = total_cost;
+        formInstance.dataForm['total_cost'] = total_cost;
     }
 
     // Hàm set indicator
@@ -76,6 +83,7 @@ class ServiceOrderPageHandler {
     // Hàm tạo events chung cho trang create và update
     static registerCommonEventHandlers() {
         ServiceOrder.handleSaveProduct();
+        ServiceOrder.handleCheckProduct();
         ServiceOrder.handleSaveExchangeRate();
         ServiceOrder.handleOpportunityChange();
         ServiceOrder.adjustTableSizeWhenChangeTab();
@@ -301,10 +309,9 @@ class ServiceOrderPageHandler {
             console.log('missing data url detail')
             return false
         }
-        $.fn.callAjax2({
+        await $.fn.callAjax2({
             url: dataUrl,
             method: 'GET',
-            isLoading: true
         }).then(
             (resp)=>{
                 const data = $.fn.switcherResp(resp);
@@ -312,6 +319,9 @@ class ServiceOrderPageHandler {
                 // Common data population
                 $x.fn.renderCodeBreadcrumb(data);
                 $.fn.compareStatusShowPageAction(data);
+
+                ServiceOrder.pageVariable.documentRootId = data?.document_root_id
+                ServiceOrder.pageVariable.systemStatus = data?.system_status
 
                 // Attachment
                 new $x.cls.file($('#attachment')).init({
@@ -333,6 +343,12 @@ class ServiceOrderPageHandler {
 
                 $.fn.initMaskMoney2();
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
+            }
+        ).finally(
+            ()=>{
+                if (isServiceOrder){
+                    ServiceOrderPageHandler.showBtnCompare()
+                }
             }
         )
     }
@@ -376,6 +392,7 @@ class ServiceOrderPageHandler {
             ServiceOrder.initQuotationWorkOrderDataTable(workOrderData);
         }
         ServiceOrder.loadWorkOrderRelatedData(workOrderData);
+        ServiceOrder.loadWorkOrderDetailSummaryValue();
 
         // Payment
         const paymentData = data.payment_data.map(payment => ({
@@ -390,5 +407,11 @@ class ServiceOrderPageHandler {
         tabExpenseElements.$taxEle.attr('value', data?.['total_expense_tax'] || 0);
         tabExpenseElements.$totalValueEle.attr('value', data?.['total_expense'] || 0);
         TabExpenseFunction.initExpenseTable(data?.['expenses_data'] || [], isReadOnly);
+    }
+
+    static showBtnCompare(){
+        if (ServiceOrder.pageVariable.systemStatus === 3){
+            $('#open_version_compare').removeAttr('hidden')
+        }
     }
 }

@@ -1292,18 +1292,11 @@ table.dataTable tr.dtrg-group th {
     max-width: 300px !important;           /* Giới hạn độ rộng nếu cần */
 }
 
-.ellipsis-cell-md {
-    white-space: nowrap !important;        /* Không cho xuống dòng */
-    overflow: hidden !important;           /* Ẩn phần tràn ra */
-    text-overflow: ellipsis !important;    /* Thêm dấu "..." */
-    max-width: 200px !important;           /* Giới hạn độ rộng nếu cần */
-}
-
 .ellipsis-cell-sm {
     white-space: nowrap !important;        /* Không cho xuống dòng */
     overflow: hidden !important;           /* Ẩn phần tràn ra */
     text-overflow: ellipsis !important;    /* Thêm dấu "..." */
-    max-width: 150px !important;           /* Giới hạn độ rộng nếu cần */
+    max-width: 200px !important;           /* Giới hạn độ rộng nếu cần */
 }
 
 .ellipsis-cell-xs {
@@ -1550,67 +1543,20 @@ table.dataTable tr.dtrg-group th {
   border-radius: 12px;       /* bo góc đẹp hơn */
 }
 
-/* bflow liquid glass*/
-.bflow-glass-card {
-    padding: 15px;
-    border: none;
-    border-radius: 1.25rem;
-    /* Tăng độ trong suốt */
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    /* Viền & nổi khối tinh tế hơn */
-    box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.16),  /* viền trắng mềm hơn */
-        inset 0 10px 24px rgba(255, 255, 255, 0.04),/* ánh glass nhẹ */
-        0 4px 14px rgba(0, 0, 0, 0.18);             /* đổ bóng ngoài */
-    transition: transform .25s ease, box-shadow .25s ease;
+#idxPageContentWrapper {
+    /*background-image: url("/static/assets/js/home_4.jpg");*/
+    /*background-repeat: no-repeat;*/
+    /*background-position: center;*/
+    /*background-size: cover;*/
+    padding: 0.2rem;
 }
 
-.bflow-glass-card-60 {
-    padding: 15px;
-    border: none;
-    border-radius: 1.25rem;
-    /* Tăng độ trong suốt */
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    /* Viền & nổi khối tinh tế hơn */
-    box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.16),  /* viền trắng mềm hơn */
-        inset 0 10px 24px rgba(255, 255, 255, 0.04),/* ánh glass nhẹ */
-        0 4px 14px rgba(0, 0, 0, 0.18);             /* đổ bóng ngoài */
-    transition: transform .25s ease, box-shadow .25s ease;
-}
-
-.bflow-glass-card-80 {
-    padding: 15px;
-    border: none;
-    border-radius: 1.25rem;
-    /* Tăng độ trong suốt */
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    /* Viền & nổi khối tinh tế hơn */
-    box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.16),  /* viền trắng mềm hơn */
-        inset 0 10px 24px rgba(255, 255, 255, 0.04),/* ánh glass nhẹ */
-        0 4px 14px rgba(0, 0, 0, 0.18);             /* đổ bóng ngoài */
-    transition: transform .25s ease, box-shadow .25s ease;
-}
-
-.bflow-glass-card-100 {
-    padding: 15px;
-    border: none;
-    border-radius: 1.25rem;
-    /* Tăng độ trong suốt */
-    background: rgba(255, 255, 255, 1);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    /* Viền & nổi khối tinh tế hơn */
-    box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.16),  /* viền trắng mềm hơn */
-        inset 0 10px 24px rgba(255, 255, 255, 0.04),/* ánh glass nhẹ */
-        0 4px 14px rgba(0, 0, 0, 0.18);             /* đổ bóng ngoài */
-    transition: transform .25s ease, box-shadow .25s ease;
-}
+/*#idxPageContent {*/
+/*    border-radius: 6px;*/
+/*    border: 3px solid transparent;*/
+/*    box-shadow: var(--shadow-md);*/
+/*    padding: 0.8rem;*/
+/*    position: relative;*/
+/*    transition: transform 0.3s ease, box-shadow 0.3s ease;*/
+/*    background: rgba(255, 255, 255, 1)*/
+/*}*/

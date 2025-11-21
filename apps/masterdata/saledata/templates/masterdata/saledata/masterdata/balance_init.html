@@ -12,7 +12,7 @@
 {% endblock %}
 {% block pageAction %}
     <a href="#" data-bs-toggle="modal" data-bs-target="#modal-add-balance">
-        <button class="btn btn-outline-primary">
+        <button type="button" class="btn btn-outline-primary">
             <span>
                 <span>{% trans 'Add' %}</span>
                 <span class="icon">
@@ -38,7 +38,7 @@
             <span class="text-danger"><i class="fa-solid fa-triangle-exclamation"></i> {% trans 'The initial balance will be inserted from the month of starting to use the software.' %} {% trans 'The Opening Balance should be created before these activities take place to avoid reporting errors.' %}</span>
         </div>
     </div>
-    <div class="row mt-3" id="main-div">
+    <div class="row mt-3">
         <div class="col-12">
             <table class="table nowrap w-100" id="table-balance-product"
                    data-method="GET"
@@ -50,7 +50,7 @@
                         <th style="min-width: 250px">{% trans 'Product' %}</th>
                         <th style="min-width: 150px">{% trans 'Traceability method' %}</th>
                         <th style="min-width: 150px">{% trans 'Warehouse' %}</th>
-                        <th style="min-width: 150px">{% trans 'Quantity' %} ({% trans "According to inventory UOM" %})</th>
+                        <th style="min-width: 150px">{% trans 'Quantity' %} ({% trans "Inventory UOM" %})</th>
                         <th style="min-width: 200px">{% trans 'Pretax value' %}</th>
                         <th style="min-width: 50px"></th>
                     </tr>

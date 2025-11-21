@@ -265,8 +265,8 @@
                                                             id="employee_inherit_id"
                                                             class="form-select {% if inherit_hidden %} d-none {% endif %}"
                                                             data-url="{% url 'EmployeeListAPI' %}"
-{#                                                            data-params='{"list_from_app": "{{ resolve_list_from_app }}"}'#}
-                                                            data-params='{}'
+                                                            data-params="{'is_active': true}"
+{#                                                            data-params='{}'#}
                                                             data-keyResp="employee_list"
                                                             data-keyText="full_name"
 

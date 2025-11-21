@@ -1,5 +1,5 @@
 $(document).ready(function(){
-
+    WFRTControl.setWFInitialData('assettoolsprovide')
     // get detail request info
     $.fn.callAjax2({
         'url': $('#url-factory').attr('data-detail-url'),

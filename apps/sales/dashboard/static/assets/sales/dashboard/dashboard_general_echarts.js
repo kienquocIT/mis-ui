@@ -1,11 +1,10 @@
 $(document).ready(function () {
     const CHART_COLORS = {
-        primary: '#6366f1',
+        primary: '#3b82f6',
         secondary: '#8b5cf6',
         success: '#10b981',
         danger: '#ef4444',
         warning: '#f59e0b',
-        info: '#3b82f6',
         light: '#f3f4f6',
         dark: '#1f2937'
     }
@@ -19,6 +18,7 @@ $(document).ready(function () {
     let period_selected_Setting = current_period
     let fiscal_year_Setting = current_period?.['fiscal_year']
     let space_month_Setting = current_period?.['space_month']
+    let CURRENT_GROUP = []
 
     moneyDisplayEle.on('change', function () {
         COMPANY_CURRENT_REVENUE = 0
@@ -128,13 +128,15 @@ $(document).ready(function () {
     function RevenueProfitChartCfg(labelX, data_list, chart_title='', titleX='', titleY='') {
         return {
             textStyle: {
-                fontFamily: 'Arial, Helvetica, sans-serif'
+                fontFamily: 'Arial, Helvetica, sans-serif',
+                color: '#000'
             },
             title: {
                 text: chart_title,
                 left: 'center',
                 textStyle: {
                     fontSize: 14,
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 }
@@ -204,6 +206,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 35,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -218,6 +221,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 60,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -238,7 +242,7 @@ $(document).ready(function () {
             series: data_list.map((item, index) => ({
                 ...item,
                 type: 'line',
-                smooth: true,
+                smooth: 0,
                 emphasis: {
                     focus: 'series',
                     blurScope: 'coordinateSystem',
@@ -248,7 +252,7 @@ $(document).ready(function () {
                     }
                 },
                 lineStyle: {
-                    width: 3
+                    width: 2.5
                 },
                 itemStyle: {
                     borderRadius: 0
@@ -261,6 +265,8 @@ $(document).ready(function () {
     }
 
     function DrawRevenueProfitChart(is_init=false) {
+        WindowControl.showLoading()
+
         let report_revenue_ajax = $.fn.callAjax2({
             url: scriptUrlEle.attr('data-url-report-revenue-profit'),
             data: {},
@@ -298,10 +304,25 @@ $(document).ready(function () {
                 revenueprofit_DF = (results[0] ? results[0] : []).filter(item => {
                     return Check_in_period(new Date(item?.['date_approved']), period_selected_Setting)
                 })
-                if (revenueprofitGroupEle.val()) {
-                    revenueprofit_DF = revenueprofit_DF.filter(item => {
-                        return item?.['group_inherit_id'] === revenueprofitGroupEle.val()
-                    })
+                let selected_group_list = revenueprofitGroupEle.val() || []
+                if (selected_group_list.length > 0) {
+                    if (revenueprofitGroupTypeEle.val() === '0') {
+                        revenueprofit_DF = revenueprofit_DF.filter(item => {
+                            return selected_group_list.includes(item?.['group_inherit_id'])
+                        })
+                    }
+                    else {
+                        let all_children_group_list = []
+                        for (let i=0; i < selected_group_list.length; i++) {
+                            let selected_group = CURRENT_GROUP.find(item => item?.['id'] === selected_group_list[i])
+                            all_children_group_list.push(...selected_group?.['all_children_group_list'] || []);
+                        }
+                        all_children_group_list.push(...selected_group_list)
+                        all_children_group_list = [...new Set(all_children_group_list)];
+                        revenueprofit_DF = revenueprofit_DF.filter(item => {
+                            return all_children_group_list.includes(item?.['group_inherit_id'])
+                        })
+                    }
                 }
 
                 revenue_expected_DF = Array(12).fill(0)
@@ -315,7 +336,7 @@ $(document).ready(function () {
 
                 if (parseInt(profit_expected_type) === parseInt(profitTypeEle.val())) {
                     for (let i = 0; i < results[1].length; i++) {
-                        if (!revenueprofitGroupEle.val() || results[1][i]?.['employee_mapped']?.['group']?.['id'] === revenueprofitGroupEle.val()) {
+                        if (selected_group_list.length === 0 || selected_group_list.includes(results[1][i]?.['employee_mapped']?.['group']?.['id'])) {
                             const empMonthTarget = results[1][i]?.['emp_month_target']
                             if (Array.isArray(empMonthTarget)) {
                                 for (let j = 0; j < empMonthTarget.length; j++) {
@@ -332,7 +353,7 @@ $(document).ready(function () {
                     }
                 }
 
-                if (!is_init) {
+                if (!is_init && revenue_chart && profit_chart) {
                     revenue_chart.dispose();
                     profit_chart.dispose();
                 }
@@ -360,6 +381,8 @@ $(document).ready(function () {
                     trans_script.attr('data-trans-month'),
                     trans_script.attr('data-trans-profit'),
                 ))
+
+                WindowControl.hideLoading()
             })
     }
 
@@ -434,12 +457,12 @@ $(document).ready(function () {
             {
                 name: trans_script.attr('data-trans-expected'),
                 data: revenue_expected_data,
-                itemStyle: { color: CHART_COLORS.primary }
+                color: CHART_COLORS.danger
             },
             {
                 name: trans_script.attr('data-trans-reality'),
                 data: revenue_chart_data,
-                itemStyle: { color: CHART_COLORS.danger }
+                color: CHART_COLORS.primary
             }
         ]
 
@@ -447,12 +470,12 @@ $(document).ready(function () {
             {
                 name: trans_script.attr('data-trans-expected'),
                 data: profit_expected_data,
-                itemStyle: { color: CHART_COLORS.info }
+                color: CHART_COLORS.warning
             },
             {
                 name: trans_script.attr('data-trans-reality'),
                 data: profit_chart_data,
-                itemStyle: { color: CHART_COLORS.success }
+                color: CHART_COLORS.success
             }
         ]
 
@@ -469,7 +492,39 @@ $(document).ready(function () {
         return [revenue_series_data, profit_series_data]
     }
 
+    function LoadRevenueGroup(ele, data) {
+        ele.initSelect2({
+            allowClear: true,
+            placeholder: trans_script.attr('data-trans-all'),
+            ajax: {
+                url: ele.attr('data-url'),
+                method: 'GET',
+            },
+            templateResult: function (state) {
+                return $(`<div class="row w-100">
+                    <div class="col-12">
+                        <span>${state.data?.['title']}</span>
+                        <span class="bflow-mirrow-badge-sm">Level ${state.data?.['level'] || ''} ${state.data?.['parent_n']?.['title'] ? `(${$.fn.gettext('Parent')}: ${state.data?.['parent_n']?.['title']})` : ''}</span>
+                    </div>
+                </div>`);
+            },
+            callbackDataResp: function (resp, keyResp) {
+                CURRENT_GROUP.push(...resp.data[keyResp])
+                return resp.data[keyResp]
+            },
+            data: (data ? data : null),
+            keyResp: 'group_list',
+            keyId: 'id',
+            keyText: 'title',
+        })
+    }
+
     $('#reload-revenue-profit-data-btn').on('click', function () {
+        DrawRevenueProfitChart(false)
+    })
+
+    const revenueprofitGroupTypeEle = $('#revenue-profit-group-type')
+    revenueprofitGroupTypeEle.on('change', function () {
         DrawRevenueProfitChart(false)
     })
 
@@ -479,25 +534,9 @@ $(document).ready(function () {
     })
 
     const revenueprofitGroupEle = $('#revenue-profit-group')
-    function LoadRevenueGroup(data) {
-        revenueprofitGroupEle.initSelect2({
-            allowClear: true,
-            placeholder: trans_script.attr('data-trans-all'),
-            ajax: {
-                url: revenueprofitGroupEle.attr('data-url'),
-                method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                return resp.data[keyResp]
-            },
-            data: (data ? data : null),
-            keyResp: 'group_list',
-            keyId: 'id',
-            keyText: 'title',
-        }).on('change', function () {
-            DrawRevenueProfitChart(false)
-        })
-    }
+    revenueprofitGroupEle.on('change', function () {
+        DrawRevenueProfitChart(false)
+    })
 
     const profitTypeEle = $('#profit-type')
     profitTypeEle.on('change', function () {
@@ -507,12 +546,14 @@ $(document).ready(function () {
     function TopSaleCustomerChartCfg(labelX, data_list, chart_title='', titleX='', titleY='') {
         return {
             textStyle: {
+                color: '#000',
                 fontFamily: 'Arial, Helvetica, sans-serif'
             },
             title: {
                 text: chart_title,
                 left: 'center',
                 textStyle: {
+                    color: '#000',
                     fontSize: 14,
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
@@ -561,6 +602,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 35,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -576,6 +618,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 60,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -627,6 +670,8 @@ $(document).ready(function () {
     }
 
     function DrawTopSaleCustomerChart(is_init=false, chart_name=['sale', 'customer']) {
+        WindowControl.showLoading()
+
         let report_top_sale_customer_ajax = $.fn.callAjax2({
             url: scriptUrlEle.attr('data-url-top-sale-customer-list'),
             data: {},
@@ -651,7 +696,7 @@ $(document).ready(function () {
                         return Check_in_period(new Date(item?.['date_approved']), period_selected_Setting)
                     })
 
-                    if (!is_init) {
+                    if (!is_init && topSale_chart) {
                         topSale_chart.dispose();
                     }
                     
@@ -672,7 +717,7 @@ $(document).ready(function () {
                         return Check_in_period(new Date(item?.['date_approved']), period_selected_Setting)
                     })
 
-                    if (!is_init) {
+                    if (!is_init && topCustomer_chart) {
                         topCustomer_chart.dispose();
                     }
                     
@@ -688,6 +733,8 @@ $(document).ready(function () {
                         ''
                     ))
                 }
+
+                WindowControl.hideLoading()
             })
     }
 
@@ -862,12 +909,14 @@ $(document).ready(function () {
     function TopCategoryProductChartCfg(labelX, data_list, chart_title='', titleX='', titleY='') {
         return {
             textStyle: {
+                color: '#000',
                 fontFamily: 'Arial, Helvetica, sans-serif'
             },
             title: {
                 text: chart_title,
                 left: 'center',
                 textStyle: {
+                    color: '#000',
                     fontSize: 14,
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
@@ -916,6 +965,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 35,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -931,6 +981,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 60,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -982,6 +1033,8 @@ $(document).ready(function () {
     }
 
     function DrawTopCategoryProductChart(is_init=false, chart_name=['category', 'product']) {
+        WindowControl.showLoading()
+
         let report_top_category_product_ajax = $.fn.callAjax2({
             url: scriptUrlEle.attr('data-url-top-category-product-list'),
             data: {},
@@ -1006,7 +1059,7 @@ $(document).ready(function () {
                         return Check_in_period(new Date(item?.['date_approved']), period_selected_Setting)
                     })
 
-                    if (!is_init) {
+                    if (!is_init && topCategory_chart) {
                         topCategory_chart.dispose();
                     }
                     
@@ -1027,7 +1080,7 @@ $(document).ready(function () {
                         return Check_in_period(new Date(item?.['date_approved']), period_selected_Setting)
                     })
 
-                    if (!is_init) {
+                    if (!is_init && topProduct_chart) {
                         topProduct_chart.dispose();
                     }
                     
@@ -1043,6 +1096,8 @@ $(document).ready(function () {
                         ''
                     ))
                 }
+
+                WindowControl.hideLoading()
             })
     }
 
@@ -1135,7 +1190,7 @@ $(document).ready(function () {
         
         let series_data = [{
             data: topX_revenue,
-            color: CHART_COLORS.info
+            color: CHART_COLORS.primary
         }]
 
         return [topX_title, series_data]
@@ -1225,7 +1280,7 @@ $(document).ready(function () {
     });
 
     LoadPeriod(current_period)
-    LoadRevenueGroup()
+    LoadRevenueGroup(revenueprofitGroupEle)
     DrawRevenueProfitChart(true)
     DrawTopSaleCustomerChart(true)
     DrawTopCategoryProductChart(true)

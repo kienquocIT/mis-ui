@@ -6,9 +6,16 @@
     <link href="{% static 'assets/core/workflow/css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"/>
     <style>
         #idxPageContent {
-            background-image: url("{% static 'assets/js/home_4.jpg' %}");
+            background-image: url("{% static 'assets/js/home_5.jpg' %}");
             background-repeat: no-repeat;
             background-size: cover;
+            background-position: center;     /* Optional: căn giữa ảnh */
+        }
+        #compare-dashboard-mode-modal .modal-body {
+            background-image: url("{% static 'assets/js/home_5.jpg' %}");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
         }
         .kpi-icon {
             width: 48px;
@@ -20,14 +27,6 @@
             font-size: 1.5rem;
             margin-bottom: 0;
             flex-shrink: 0;
-        }
-        .kpi-icon.primary {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            color: white;
-        }
-        .kpi-icon.success {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
         }
     </style>
 {% endblock %}
@@ -73,65 +72,134 @@
             data-trans-quarter-3="{% trans 'Quarter' %} 3"
             data-trans-quarter-4="{% trans 'Quarter' %} 4"
             data-trans-all="{% trans 'Default all' %}"
+{#            COMPARE#}
+            data-trans-revenue-profit-chart="{% trans 'Revenue & Profit chart' %}"
+            data-trans-expected-revenue="{% trans 'Expected revenue' %}"
+            data-trans-reality-revenue="{% trans 'Reality revenue' %}"
+            data-trans-expected-profit="{% trans 'Expected profit' %}"
+            data-trans-reality-profit="{% trans 'Reality profit' %}"
+            data-trans-all="{% trans 'Default all' %}"
     ></script>
 
-    <div class="row mb-3">
-        <div class="col-12">
-            <div class="bflow-glass-card">
+    <div class="row">
+        <div class="col-12 col-lg-6 mb-3">
+            <div class="bflow-mirrow-card">
                 <div class="row">
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label for="money-display" class="form-label">
+                                {% trans 'Money display' %}
+                            </label>
+                            <select class="form-select" id="money-display">
+                                <option value="0" selected>{% trans 'Million' %}</option>
+                                <option value="1">{% trans 'Billion' %}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-8">
+                        <div class="form-group">
+                            <label for="period-filter" class="form-label">
+                                {% trans 'Fiscal year' %} ({% trans 'for revenue chart & profit chart' %})
+                            </label>
+                            <select class="form-select"
+                                    id="period-filter"
+                                    data-url="{% url 'PeriodsConfigListAPI' %}"
+                                    data-method="GET"
+                            ></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3 mb-3">
+            <div class="bflow-mirrow-card">
+                <div class="d-flex align-items-center">
+                    <div class="kpi-icon text-white bg-blue me-3">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <h6>{% trans 'This month revenue' %}</h6>
+                        <span class="text-blue kpi-value mask-money fw-bold h4" data-init-money="0" id="current-revenue"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3 mb-3">
+            <div class="bflow-mirrow-card">
+                <div class="d-flex align-items-center">
+                    <div class="kpi-icon text-white bg-success me-3">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div>
+                        <h6>{% trans 'This month profit' %}</h6>
+                        <span class="text-success kpi-value mask-money fw-bold h4" data-init-money="0" id="current-profit"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-10">
+        <div class="col-12 mb-3">
+            <div class="bflow-mirrow-card">
+                <!-- Chart Controls -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-12 col-md-8 col-lg-4 mb-3">
+                                <div class="input-group" style="width: 100%">
+                                    <span class="input-group-text">{% trans 'Group' %}</span>
+                                    <select class="form-select" id="revenue-profit-group" data-method="GET" data-url="{% url 'GroupListAPI' %}" multiple></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-2 mb-3">
+                                <select class="form-select" id="revenue-profit-group-type" style="width: 100%">
+                                    <option value="0" selected>{% trans 'Single group only' %}</option>
+                                    <option value="1">{% trans 'Include child groups' %}</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-2 mb-3">
+                                <select class="form-select" id="revenue-profit-view-type" style="width: 100%">
+                                    <option value="0" selected>{% trans 'Period revenue / profit' %}</option>
+                                    <option value="1">{% trans 'Accumulated revenue / profit' %}</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-2 mb-3">
+                                <select class="form-select" id="profit-type" style="width: 100%">
+                                    <option value="0" selected>{% trans 'Gross profit' %}</option>
+                                    <option value="1">{% trans 'Net income' %}</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-2 mb-3 text-right">
+                                <button type="button" class="btn bflow-mirrow-btn" data-bs-toggle="modal" data-bs-target="#compare-dashboard-mode-modal">
+                                    <span>
+                                        <span class="icon">
+                                            <span class="feather-icon">
+                                                <i class="fa-solid fa-people-arrows"></i>
+                                            </span>
+                                        </span>
+                                        <span>{% trans 'Compare' %}</span>
+                                    </span>
+                                </button>
+                                <button type="button" id="reload-revenue-profit-data-btn" class="btn bflow-mirrow-btn" title="{% trans 'Refresh' %}">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-12 col-lg-6">
-                        <div class="bflow-glass-card-60">
+                        <div class="bflow-mirrow-card">
                             <div class="row">
-                                <div class="col-12 col-md-4">
-                                    <div class="form-group">
-                                        <label for="money-display" class="form-label">
-                                            {% trans 'Money display' %}
-                                        </label>
-                                        <select class="form-select" id="money-display">
-                                            <option value="0" selected>{% trans 'Million' %}</option>
-                                            <option value="1">{% trans 'Billion' %}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-8">
-                                    <div class="form-group">
-                                        <label for="period-filter" class="form-label">
-                                            {% trans 'Fiscal year' %} ({% trans 'for revenue chart & profit chart' %})
-                                        </label>
-                                        <select class="form-select"
-                                                id="period-filter"
-                                                data-url="{% url 'PeriodsConfigListAPI' %}"
-                                                data-method="GET"
-                                        ></select>
-                                    </div>
+                                <div class="col-12">
+                                    <div id="revenue_chart" style="width: 100%; height: 45vh;"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-6 col-lg-3">
-                        <div class="bflow-glass-card-60">
-                            <div class="d-flex align-items-center">
-                                <div class="kpi-icon primary me-3">
-                                    <i class="fas fa-chart-line"></i>
-                                </div>
-                                <div>
-                                    <h5 class="fw-bold">{% trans 'This month revenue' %}</h5>
-                                    <span class="kpi-value mask-money fw-bold h4" style="color: #3b82f6"
-                                          data-init-money="0" id="current-revenue"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-lg-3">
-                        <div class="bflow-glass-card-60">
-                            <div class="d-flex align-items-center">
-                                <div class="kpi-icon success me-3">
-                                    <i class="fas fa-dollar-sign"></i>
-                                </div>
-                                <div>
-                                    <h5 class="fw-bold">{% trans 'This month profit' %}</h5>
-                                    <span class="kpi-value mask-money fw-bold h4" style="color: #10b981"
-                                          data-init-money="0" id="current-profit"></span>
+                    <div class="col-12 col-lg-6">
+                        <div class="bflow-mirrow-card">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div id="profit_chart" style="width: 100%; height: 45vh;"></div>
                                 </div>
                             </div>
                         </div>
@@ -139,58 +207,122 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row mb-3">
-        <div class="col-12">
-            <div class="bflow-glass-card">
+        <div class="col-12 mb-3">
+            <div class="bflow-mirrow-card">
                 <!-- Chart Controls -->
                 <div class="row">
-                    <div class="col-12 mb-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex">
-                                <div class="me-2">
-                                    <div class="input-group" style="width: 400px;">
-                                        <span class="input-group-text">{% trans 'Group' %}</span>
-                                        <select class="form-select" id="revenue-profit-group"
-                                                data-method="GET"
-                                                data-url="{% url 'GroupListAPI' %}"></select>
-                                    </div>
-                                </div>
-                                <div class="me-2">
-                                    <select class="form-select" id="revenue-profit-view-type">
-                                        <option value="0" selected>{% trans 'Period revenue / profit' %}</option>
-                                        <option value="1">{% trans 'Accumulated revenue / profit' %}</option>
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-12 col-md-8 col-lg-3 mb-3">
+                                <div class="input-group" style="width: 100%;">
+                                    <span class="input-group-text">{% trans 'Time range' %}</span>
+                                    <select class="form-select" id="top-sale-customer-time">
+                                        <option value="0">{% trans 'Month' %}</option>
+                                        <option value="1">{% trans 'Quarter' %}</option>
+                                        <option value="2" selected>{% trans 'Whole year' %}</option>
                                     </select>
+                                    <select class="form-select" id="top-sale-customer-time-detail"
+                                            disabled></select>
                                 </div>
-                                <div class="me-2">
-                                    <select class="form-select" id="profit-type">
-                                        <option value="0" selected>{% trans 'Gross profit' %}</option>
-                                        <option value="1">{% trans 'Net income' %}</option>
+                            </div>
+                            <div class="col-12 col-md-8 col-lg-3 mb-3">
+                                <div class="input-group" style="width: 100%;">
+                                    <span class="input-group-text">{% trans 'Sale number viewed' %}</span>
+                                    <input class="form-control" type="number" id="top-sale-number" min="1" max="20"
+                                           value="10">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-8 col-lg-3 mb-3">
+                                <div class="input-group" style="width: 100%;">
+                                    <span class="input-group-text">{% trans 'Customer number viewed' %}</span>
+                                    <input class="form-control" type="number" id="top-customer-number" min="1"
+                                           max="20"
+                                           value="10">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-3 mb-3 text-right">
+                                <button type="button" id="reload-top-sale-customer-data-btn" class="btn bflow-mirrow-btn" title="{% trans 'Refresh' %}">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="bflow-mirrow-card">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div id="topsale_chart" style="width: 100%; height: 40vh;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="bflow-mirrow-card">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div id="topcustomer_chart" style="width: 100%; height: 40vh;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="bflow-mirrow-card">
+                <!-- Chart Controls -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-12 col-md-8 col-lg-3 mb-3">
+                                <div class="input-group" style="width: 100%;">
+                                    <span class="input-group-text">{% trans 'Time range' %}</span>
+                                    <select class="form-select" id="top-category-product-time">
+                                        <option value="0">{% trans 'Month' %}</option>
+                                        <option value="1">{% trans 'Quarter' %}</option>
+                                        <option value="2" selected>{% trans 'Whole year' %}</option>
                                     </select>
+                                    <select class="form-select" id="top-category-product-time-detail"
+                                            disabled></select>
                                 </div>
                             </div>
-                            <button type="button"
-                                    id="reload-revenue-profit-data-btn"
-                                    class="btn btn-light btn-sm"
-                                    title="{% trans 'Refresh' %}">
-                                <i class="fas fa-sync-alt"></i>
-                            </button>
+                            <div class="col-12 col-md-8 col-lg-3 mb-3">
+                                <div class="input-group" style="width: 100%;">
+                                    <span class="input-group-text">{% trans 'View category number' %}</span>
+                                    <input class="form-control" type="number" id="top-category-number" min="1"
+                                           max="20"
+                                           value="10">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-8 col-lg-3 mb-3">
+                                <div class="input-group" style="width: 100%;">
+                                    <span class="input-group-text">{% trans 'View product number' %}</span>
+                                    <input class="form-control" type="number" id="top-product-number" min="1"
+                                           max="20"
+                                           value="10">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-3 mb-3 text-right">
+                                <button type="button" id="reload-top-category-product-data-btn" class="btn bflow-mirrow-btn" title="{% trans 'Refresh' %}">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="col-12 col-lg-6">
-                        <div class="bflow-glass-card-60">
+                        <div class="bflow-mirrow-card">
                             <div class="row">
                                 <div class="col-12">
-                                    <div id="revenue_chart" style="width: 100%; height: 330px;"></div>
+                                    <div id="topcategory_chart" style="width: 100%; height: 40vh;"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-12 col-lg-6">
-                        <div class="bflow-glass-card-60">
+                        <div class="bflow-mirrow-card">
                             <div class="row">
                                 <div class="col-12">
-                                    <div id="profit_chart" style="width: 100%; height: 330px;"></div>
+                                    <div id="topproduct_chart" style="width: 100%; height: 40vh;"></div>
                                 </div>
                             </div>
                         </div>
@@ -199,131 +331,79 @@
             </div>
         </div>
     </div>
-    <div class="row mb-3">
-        <div class="col-12">
-            <div class="bflow-glass-card">
-                <!-- Chart Controls -->
-                <div class="row">
-                    <div class="col-12 mb-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex">
-                                <div class="me-2">
-                                    <div class="input-group" style="width: 350px;">
-                                        <span class="input-group-text">{% trans 'Time range' %}</span>
-                                        <select class="form-select" id="top-sale-customer-time">
-                                            <option value="0">{% trans 'Month' %}</option>
-                                            <option value="1">{% trans 'Quarter' %}</option>
-                                            <option value="2" selected>{% trans 'Whole year' %}</option>
-                                        </select>
-                                        <select class="form-select" id="top-sale-customer-time-detail"
-                                                disabled></select>
-                                    </div>
-                                </div>
-                                <div class="me-2">
-                                    <div class="input-group">
-                                        <span class="input-group-text">{% trans 'Sale number viewed' %}</span>
-                                        <input class="form-control" type="number" id="top-sale-number" min="1" max="20"
-                                               value="10">
-                                    </div>
-                                </div>
-                                <div class="me-2">
-                                    <div class="input-group">
-                                        <span class="input-group-text">{% trans 'Customer number viewed' %}</span>
-                                        <input class="form-control" type="number" id="top-customer-number" min="1"
-                                               max="20"
-                                               value="10">
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="button"
-                                    id="reload-top-sale-customer-data-btn"
-                                    class="btn btn-light btn-sm"
-                                    title="{% trans 'Refresh' %}">
-                                <i class="fas fa-sync-alt"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="col-12 col-lg-6">
-                        <div class="bflow-glass-card-60">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div id="topsale_chart" style="width: 100%; height: 250px;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-lg-6">
-                        <div class="bflow-glass-card-60">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div id="topcustomer_chart" style="width: 100%; height: 250px;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+{% endblock %}
+{% block modalData %}
+    <div class="modal fade" id="compare-dashboard-mode-modal" tabindex="-1" role="dialog" aria-labelledby="compare-dashboard-mode-modal" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{% trans 'Compare Revenue & Profit' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="row mb-3">
-        <div class="col-12">
-            <div class="bflow-glass-card">
-                <!-- Chart Controls -->
-                <div class="row">
-                    <div class="col-12 mb-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex">
-                                <div class="me-2">
-                                    <div class="input-group" style="width: 350px;">
-                                        <span class="input-group-text">{% trans 'Time range' %}</span>
-                                        <select class="form-select" id="top-category-product-time">
-                                            <option value="0">{% trans 'Month' %}</option>
-                                            <option value="1">{% trans 'Quarter' %}</option>
-                                            <option value="2" selected>{% trans 'Whole year' %}</option>
-                                        </select>
-                                        <select class="form-select" id="top-category-product-time-detail"
-                                                disabled></select>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="bflow-mirrow-card">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="row">
+                                            <div class="col-12 col-md-4 col-lg-2 mb-3">
+                                                <select class="form-select" id="revenue-profit-group-type-compare" style="width: 100%">
+                                                    <option value="0" selected>{% trans 'Single group only' %}</option>
+                                                    <option value="1">{% trans 'Include child groups' %}</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-12 col-md-4 col-lg-2 mb-3">
+                                                <select class="form-select" id="revenue-profit-view-type-compare" style="width: 100%">
+                                                    <option value="0" selected>{% trans 'Period revenue / profit' %}</option>
+                                                    <option value="1">{% trans 'Accumulated revenue / profit' %}</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-12 col-md-3 col-lg-2 mb-3">
+                                                <select class="form-select" id="profit-type-compare" style="width: 100%">
+                                                    <option value="0" selected>{% trans 'Gross profit' %}</option>
+                                                    <option value="1">{% trans 'Net income' %}</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-12 col-md-1 col-lg-6 mb-3 text-right">
+                                                <button type="button" id="reload-revenue-profit-data-btn-compare" class="btn bflow-mirrow-btn" title="{% trans 'Refresh' %}">
+                                                    <i class="fas fa-sync-alt"></i>
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="me-2">
-                                    <div class="input-group">
-                                        <span class="input-group-text">{% trans 'View category number' %}</span>
-                                        <input class="form-control" type="number" id="top-category-number" min="1"
-                                               max="20"
-                                               value="10">
+                                    <div class="col-12 col-lg-6 mb-3">
+                                        <div class="input-group" style="width: 100%">
+                                            <span class="input-group-text">{% trans 'Group' %} 1</span>
+                                            <select class="form-select" id="revenue-profit-group-compare-1" data-method="GET" data-url="{% url 'GroupListAPI' %}" multiple></select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="me-2">
-                                    <div class="input-group">
-                                        <span class="input-group-text">{% trans 'View product number' %}</span>
-                                        <input class="form-control" type="number" id="top-product-number" min="1"
-                                               max="20"
-                                               value="10">
+                                    <div class="col-12 col-lg-6 mb-3">
+                                        <div class="input-group" style="width: 100%">
+                                            <span class="input-group-text">{% trans 'Group' %} 2</span>
+                                            <select class="form-select" id="revenue-profit-group-compare-2" data-method="GET" data-url="{% url 'GroupListAPI' %}" multiple></select>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <button type="button"
-                                    id="reload-top-category-product-data-btn"
-                                    class="btn btn-light btn-sm"
-                                    title="{% trans 'Refresh' %}">
-                                <i class="fas fa-sync-alt"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="col-12 col-lg-6">
-                        <div class="bflow-glass-card-60">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div id="topcategory_chart" style="width: 100%; height: 250px;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-lg-6">
-                        <div class="bflow-glass-card-60">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div id="topproduct_chart" style="width: 100%; height: 250px;"></div>
+                                    <div class="col-12 col-lg-6">
+                                        <div class="bflow-mirrow-card">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <div id="revenue_profit_chart_compare_1" style="width: 100%; height: 60vh;"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-6">
+                                        <div class="bflow-mirrow-card">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <div id="revenue_profit_chart_compare_2" style="width: 100%; height: 60vh;"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -338,5 +418,6 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/echartjs/echart.js' %}"></script>
     <script src="{% static 'assets/sales/dashboard/dashboard_general_echarts.js' %}"></script>
+    <script src="{% static 'assets/sales/dashboard/dashboard_general_echarts_compare.js' %}"></script>
     <script src="{% static 'assets/core/workflow/js/jquery-ui.min.js' %}"></script>
 {% endblock %}

@@ -6,21 +6,20 @@
     {% include 'extends/systems/page_actions.html' with is_create=True create_link=create_link create_idx="create_service_order_button" %}
 {% endblock %}
 {% block pageContent %}
-    <table class="table nowrap w-100 mb-5" data-method="get" id="table-service-order"
+    <table class="table nowrap min-w-1280p w-100 mb-5" data-method="get" id="table-service-order"
            data-url-dashboard="{% url 'ServiceOrderDetailDashboard' %}"
            data-url="{% url 'ServiceOrderListAPI' %}"
            data-url-detail="{% url 'ServiceOrderDetail' pk='0'%}">
         <thead>
             <tr>
                 <th style="min-width: 50px"></th>
-                <th style="min-width: 100px">{% trans "Code" %}</th>
+                <th style="min-width: 150px">{% trans "Code" %}</th>
                 <th style="min-width: 300px">{% trans "Name" %}</th>
                 <th style="min-width: 300px">{% trans 'Customer' %}</th>
                 <th style="min-width: 150px">{% trans "Employee created" %}</th>
                 <th style="min-width: 150px">{% trans "Date created" %}</th>
                 <th style="min-width: 80px">{% trans "System status" %}</th>
-                <th style="min-width: 80px">{% trans "Dashboard" %}</th>
-                <th style="min-width: 80px">{% trans "Delivery" %}</th>
+                <th style="min-width: 100px">{% trans "Action" %}</th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -38,6 +37,7 @@
             type="hidden" id="url-factory"
             data-create-delivery="{% url 'ServiceOrderDetailDeliveryAPI' 1 %}"
             data-delivery="{% url 'OrderDeliveryList' %}" data-picking="{% url 'OrderPickingList' %}"
+            data-delivery-log-url='{% url 'DeliveryWorkLogListAPI' %}'
     >
 {% endblock %}
 {% block jsFooter %}

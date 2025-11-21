@@ -2,6 +2,15 @@ $(document).ready(function(){
     const $formElm = $('#asset_provide_form')
     const $tblElm = $('#products_detail_tbl')
 
+    function generateTag(is_stage) {
+        let icon = ''
+        if (is_stage === 'tool') icon = '<i class="fas fa-tools"></i>'
+        else if (is_stage === 'fixed') icon = '<i class="fas fa-warehouse"></i>'
+        let str = ''
+        if (is_stage === 'tool' || is_stage === 'fixed')
+            str = `<div class="tags-separate">${icon}</div>`
+        return str
+    }
     // get detail request info
     $.fn.callAjax2({
         'url': $formElm.attr('data-url'),
@@ -39,7 +48,10 @@ $(document).ready(function(){
                                 .attr('name', `product_${meta.row}`).attr('disabled', true)
                             if (row && Object.keys(row).length > 0)
                                 html.append(`<option value="${row.id}" selected>${row.title}</option>`)
-                            return html.prop('outerHTML')
+                            else if ('product_fixed' in data && Object.keys(data?.product_fixed).length > 0)
+                                html.append(`<option value="${data?.product_fixed.id}" selected>${data?.product_fixed.title}</option>`)
+                            const istag = generateTag('product_fixed' in data ? 'fixed' : 'product' in data ? 'tool' : 'new')
+                            return html.prop('outerHTML') + istag
                         }
                     },
                     {
@@ -72,20 +84,26 @@ $(document).ready(function(){
                         data: 'price',
                         width: '15%',
                         render: (row, type, data, meta) => {
-                            return `<input type="text" class="form-control mask-money-price" name="price_${meta.row}" value="${row}" readonly>`
+                            return `<input type="text" class="form-control mask-money" name="price_${meta.row}" value="${row}" readonly>`
                         }
                     },
                     {
                         data: 'subtotal',
                         width: '15%',
                         render: (row, type, data, meta) => {
-                            return `<input type="text" class="form-control mask-money-subtotal"  name="subtotal_${meta.row}" readonly value="${row}">`
+                            return `<input type="text" class="form-control mask-money"  name="subtotal_${meta.row}" readonly value="${row}">`
                         }
                     }
                 ],
-                drawCallback: (settings) => {
-                    $.fn.initMaskMoney2($('.mask-money-price'), 'input')
-                    $.fn.initMaskMoney2($('.mask-money-subtotal'), 'input')
+                drawCallback: (row) => {
+                    $('.popover-elm').popover({
+                        title: $.fn.gettext('Info'),
+                        html: true,
+                        trigger: 'click',
+                        content: `<p><i class="fas fa-warehouse font-2"></i>  ${$.fn.gettext('Fixed assets')}</p>`
+                            + `<p><i class="fas fa-tools font-2"></i>  ${$.fn.gettext('Instrument Tool')}</p>`
+                    });
+                    $.fn.initMaskMoney2($('.mask-money', row), 'input')
                 },
                 footerCallback: function () {
                     let api = this.api();
@@ -105,13 +123,16 @@ $(document).ready(function(){
             if (data.system_status >= 2) $('#idxRealAction').remove()
 
             // load attachments
-            new $x.cls.file(
-                $('#attachment')
-            ).init({
-                enable_edit: false,
-                data: data.attachments,
-            })
+            new $x.cls.file( $('#attachment') ).init({ enable_edit: false, data: data.attachments})
         },
         (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
     )
+
+    // Đóng popover khi click ra ngoài table
+    $(document).on('click', function (e) {
+        if (!$(e.target).closest('.popover-elm').length &&
+            !$(e.target).closest('.popover').length) {
+            $('.popover-elm').popover('hide')
+        }
+    })
 });

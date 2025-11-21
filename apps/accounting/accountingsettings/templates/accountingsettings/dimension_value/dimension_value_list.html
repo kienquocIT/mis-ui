@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Dimension Value' %}{% endblock %}
+{% block cssHeader %}
+    <style>
+            .parent-option {
+            padding: 6px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .parent-option:hover {
+            background-color: #f1f3f4;
+        }
+
+        .parent-option.selected {
+            background-color: #0d6ee63b;
+            font-weight: 600;
+        }
+
+            .hidden-row {
+            display: none !important;
+        }
+
+        .tree-toggle {
+            cursor: pointer;
+            margin-right: 8px;
+            color: #666;
+            transition: color 0.2s;
+        }
+
+        .tree-toggle:hover {
+            color: #333;
+        }
+
+        .tree-toggle.collapsed i {
+            transform: rotate(0deg);
+        }
+
+
+        .node-parent {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .node-child {
+            color: #555;
+        }
+
+        .title-cell {
+            display: flex;
+            align-items: center;
+        }
+
+        #datatable-value_wrapper .row {
+            margin-bottom: 1rem;
+        }
+
+        .btn-toolbar {
+            margin-bottom: 1rem;
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    <div class="row mb-5">
+        <div class="col-12 col-md-8">
+            <label class="form-label fw-semibold text-dark mb-2" for="dimension-select">
+                <i class="bi bi-funnel me-2"></i>{% trans 'Select Dimension' %}
+            </label>
+            <select class="form-select select2" id="dimension-select" data-url="{% url 'DimensionDefinitionListAPI' %}" data-keyResp="dimension_definition_list">
+            </select>
+        </div>
+        <div class="col-12 col-md-4 d-flex justify-content-center align-items-end">
+            <button type="button" class="btn btn-success btn-lg px-5" data-bs-toggle="modal" data-bs-target="#modal-add-value" id="btn-add-value">
+                <i class="bi bi-plus-circle me-2"></i>
+                {% trans 'Add Value' %}
+            </button>
+        </div>
+    </div>
+    <div>
+        <button class="btn btn-sm btn-outline-primary" id="expandAll">
+            <i class="fas fa-expand"></i> Expand All
+        </button>
+        <button class="btn btn-sm btn-outline-secondary" id="collapseAll">
+            <i class="fas fa-compress"></i> Collapse All
+        </button>
+    </div>
+    <table id="datatable-value" class="table nowrap w-100 table-hover">
+        <thead>
+            <tr>
+                <th class="w-50">Title</th>
+                <th class="w-20">Code</th>
+                <th class="w-15">Is Allow Posting</th>
+                <th class="w-10">Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+{% endblock %}
+{% block modalData %}
+    <div class="modal fade" id="modal-add-value" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">{% trans 'Add Dimension Value' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-add-value" data-url="{% url "DimensionValueListAPI" %}" data-method="POST">
+                        <div class="mb-3">
+                            <label for="value-code" class="form-label required">{% trans 'Value Code' %}</label>
+                            <input required type="text" class="form-control" id="value-code" name="code"
+                                   placeholder="e.g., CAMPAIGN"
+                                   style="text-transform: uppercase;">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="value-name" class="form-label required">{% trans 'Value Name' %}</label>
+                            <input required type="text" class="form-control" id="value-name" name="title"
+                                   placeholder="e.g., Chiến dịch Marketing">
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="allow-posting" name="allow_posting">
+                                <label class="form-check-label fw-medium" for="allow-posting">
+                                    {% trans 'Allow Posting' %}
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold text-dark">
+                                {% trans 'Parent Value' %}
+                            </label>
+                            <div class="form-text fs-7">{% trans 'Optional - leave unselected for root level' %}</div>
+                            <div class="parent-selector-tree bg-light border rounded p-3" id="parent-selector"></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-value" form="form-add-value">
+                        <span>{% trans 'Save Dimension Value' %}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-update-value" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">{% trans 'Update Dimension Value' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-update-value" data-url="{% url "DimensionValueDetailAPI" 0 %}" data-method="PUT">
+                        <div class="mb-3">
+                            <label for="value-code" class="form-label required">{% trans 'Value Code' %}</label>
+                            <input required type="text" class="form-control" id="value-code" name="code"
+                                   placeholder="e.g., CAMPAIGN"
+                                   style="text-transform: uppercase;">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="value-name" class="form-label required">{% trans 'Value Name' %}</label>
+                            <input required type="text" class="form-control" id="value-name" name="title"
+                                   placeholder="e.g., Chiến dịch Marketing">
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="allow-posting" name="allow_posting">
+                                <label class="form-check-label fw-medium" for="allow-posting">
+                                    {% trans 'Allow Posting' %}
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold text-dark">
+                                {% trans 'Parent Value' %}
+                            </label>
+                            <div class="form-text fs-7">{% trans 'Optional - leave unselected for root level' %}</div>
+                            <div class="parent-selector-tree bg-light border rounded p-3" id="parent-selector-update"></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                    <button type="submit" class="btn btn-primary" id="btn-update-value" form="form-update-value">
+                        <span>{% trans 'Save Dimension Value' %}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/accountingsettings/dimension_value/dimension_value.js' %}"></script>
+{% endblock %}

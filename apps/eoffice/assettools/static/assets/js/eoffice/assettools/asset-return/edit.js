@@ -1,4 +1,5 @@
 $(document).ready(function(){
+    WFRTControl.setWFInitialData('assettoolsreturn')
     const $formElm = $('#asset_return_form')
     // get detail request info
     $.fn.callAjax2({

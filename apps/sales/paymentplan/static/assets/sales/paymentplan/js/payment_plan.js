@@ -75,6 +75,11 @@ $(function () {
                             let link = $urlFact.data('so-detail').format_url_with_uuid(row?.['sale_order_data']?.['id']);
                             let title = row?.['sale_order_data']?.['title'] ? row?.['sale_order_data']?.['title'] : '';
                             let code = row?.['sale_order_data']?.['code'] ? row?.['sale_order_data']?.['code'] : '';
+                            if (row?.['lease_order_data']?.['id'] && row?.['lease_order_data']?.['title'] && row?.['lease_order_data']?.['code']) {
+                                link = $urlFact.data('lo-detail').format_url_with_uuid(row?.['lease_order_data']?.['id']);
+                                title = row?.['lease_order_data']?.['title'] ? row?.['lease_order_data']?.['title'] : '';
+                                code = row?.['lease_order_data']?.['code'] ? row?.['lease_order_data']?.['code'] : '';
+                            }
                             if (row?.['purchase_order_data']?.['id'] && row?.['purchase_order_data']?.['title'] && row?.['purchase_order_data']?.['code']) {
                                 link = $urlFact.data('po-detail').format_url_with_uuid(row?.['purchase_order_data']?.['id']);
                                 title = row?.['purchase_order_data']?.['title'] ? row?.['purchase_order_data']?.['title'] : '';
@@ -492,6 +497,11 @@ $(function () {
                         let link = $urlFact.data('so-detail').format_url_with_uuid(row?.['sale_order_data']?.['id']);
                         let title = row?.['sale_order_data']?.['title'] ? row?.['sale_order_data']?.['title'] : '';
                         let code = row?.['sale_order_data']?.['code'] ? row?.['sale_order_data']?.['code'] : '';
+                        if (row?.['lease_order_data']?.['id'] && row?.['lease_order_data']?.['title'] && row?.['lease_order_data']?.['code']) {
+                            link = $urlFact.data('lo-detail').format_url_with_uuid(row?.['lease_order_data']?.['id']);
+                            title = row?.['lease_order_data']?.['title'] ? row?.['lease_order_data']?.['title'] : '';
+                            code = row?.['lease_order_data']?.['code'] ? row?.['lease_order_data']?.['code'] : '';
+                        }
                         if (row?.['purchase_order_data']?.['id'] && row?.['purchase_order_data']?.['title'] && row?.['purchase_order_data']?.['code']) {
                             link = $urlFact.data('po-detail').format_url_with_uuid(row?.['purchase_order_data']?.['id']);
                             title = row?.['purchase_order_data']?.['title'] ? row?.['purchase_order_data']?.['title'] : '';

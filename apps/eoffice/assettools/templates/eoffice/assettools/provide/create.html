@@ -5,13 +5,8 @@
 {% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
-    <style>
-    {#this is css style for table footer#}
-    @media screen and (max-width: 1024px){
-        .dataTables_scrollFootInner{width: 100%!important;}
-        .dataTables_scrollFootInner > .min-w-1500p{min-width: 100%!important;}
-    }
-    </style>
+    <link href="{% static 'assets/sales/asset/fixedasset/css/fixed-asset.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/css/eoffice/assettools/provide-detail.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-outline-primary" type="submit" form="asset_provide_form">
@@ -83,7 +78,7 @@
                         <table id="products_detail_tbl" class="table nowrap w-100 mb-5 min-w-1500p">
                                 <thead>
                                 <tr>
-                                    <th>{% trans 'Product' %}</th>
+                                    <th>{% trans 'Product' %}<span class="text-primary popover-elm pl-1"><i class="fa-solid fa-circle-info"></i></span></th>
                                     <th>{% trans 'Remarks' %}</th>
                                     <th>{% trans 'UOM' %}</th>
                                     <th>{% trans 'Quantity' %}</th>
@@ -105,14 +100,21 @@
                                 </tfoot>
                             </table>
                         <div class="btn-group">
-                            <button class="btn btn-outline-primary dropdown-toggle" type="button"
+                            <button class="btn btn-outline-primary dropdown-toggle dd_toggle_add" type="button"
                             data-bs-toggle="dropdown" data-dropdown-animation>
                                 {% trans 'Add new' %}
                             </button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item add_new_line" href="#" data-type="crt_prod">
-                                    {% trans 'Product available' %}
-                                </a>
+                                <div class="dropdown-item add_new_line position-relative">
+                                    <span>
+                                        {% trans 'Product available' %}
+                                        <i class="fa-solid fa-chevron-right fa-xs"></i>
+                                    </span>
+                                    <ul>
+                                        <li><a class="add_new_line w-100 d-block" data-type="crt_prod_fixed">{% trans 'Fixed asset' %}</a></li>
+                                        <li><a class="add_new_line w-100 d-block" data-type="crt_prod_instrument">{% trans 'Instrument Tool' %}</a></li>
+                                    </ul>
+                                </div>
                                 <a class="dropdown-item add_new_line" href="#" data-type="new_prod">
                                     {% trans 'Buy new product' %}
                                 </a>
@@ -136,7 +138,8 @@
         </a>
     </div>
     <input type="text" id="url-factory"
-           data-prod-url="{% url 'InstrumentToolListAPI' %}"
+           data-prod-url="{% url 'InstrumentToolDDListAPI' %}"
+           data-prod-fixed-url="{% url 'FixedAssetListDDAPI' %}"
            data-tax-url="{% url 'TaxListAPI' %}"
            data-uom-url="{% url 'UnitOfMeasureListAPI' %}"
     >

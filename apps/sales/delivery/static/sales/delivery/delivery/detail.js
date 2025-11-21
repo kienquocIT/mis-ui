@@ -58,16 +58,13 @@ $(async function () {
 
             // Kiểm tra giao hàng theo đơn bán hàng hay đơn cho thuê
             let targetItemData = prod_data?.['product_data'];
-            if (prod_data?.['offset_data']?.['id']) {
-                targetItemData = prod_data?.['offset_data'];
-            }
             $tableProductNew.DataTable().clear().draw();
 
             if (prod_data?.['asset_type'] === null) {
                $tableProductNew.DataTable().rows.add([prod_data]).draw();
             }
             if (prod_data?.['asset_type'] === 1) {
-               $tableProductNew.DataTable().rows.add([prod_data]).draw();
+               $tableProductNew.DataTable().rows.add(prod_data?.['offset_data']).draw();
             }
             if (prod_data?.['asset_type'] === 2) {
                $tableProductNew.DataTable().rows.add(prod_data?.['tool_data']).draw();
@@ -161,6 +158,7 @@ $(async function () {
                     $btnSave.off().on('click', function () {
                         let temp_picked = 0;
                         let delivery_data = [];
+                        let offset_data = [];
                         let tool_data = [];
                         let asset_data = [];
                         $tableProductNew.DataTable().rows().every(function () {
@@ -171,43 +169,30 @@ $(async function () {
 
                             temp_picked += rowData?.['picked_quantity'];
                             delivery_data = rowData?.['delivery_data'] ? rowData?.['delivery_data'] : [];
+                            if (rowData?.['offset_data']?.['id']) {
+                                offset_data.push(rowData);
+                                delivery_data = [];
+                            }
                             if (rowData?.['tool_data']?.['id']) {
-                                if ($actDate.val()) {
-                                    rowData['product_lease_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
-                                }
                                 tool_data.push(rowData);
+                                delivery_data = [];
                             }
                             if (rowData?.['asset_data']?.['id']) {
-                                if ($actDate.val()) {
-                                    rowData['product_lease_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
-                                }
                                 asset_data.push(rowData);
+                                delivery_data = [];
                             }
                         });
-                        if (temp_picked > 0) {
+                        // if (temp_picked > 0) {
                             // lấy hàng từ popup warehouse add vào danh sách product detail
                             let tableTargetData = _this.getProdList;
                             tableTargetData[idx]['picked_quantity'] = temp_picked;
                             tableTargetData[idx]['delivery_data'] = delivery_data;
+                            tableTargetData[idx]['offset_data'] = offset_data;
                             tableTargetData[idx]['tool_data'] = tool_data;
                             tableTargetData[idx]['asset_data'] = asset_data;
-                            // Kiểm tra nếu giao đơn cho thuê cho SP thì dùng $actDate.val() override product_depreciation_start_date, product_lease_start_date
-                            if ($actDate.val() && tableTargetData[idx]?.['asset_type'] === 1) {
-                                tableTargetData[idx]['product_depreciation_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
-                                tableTargetData[idx]['product_lease_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
-                                tableTargetData[idx]['depreciation_data'] = DepreciationControl.callDepreciation({
-                                    "method": tableTargetData[idx]?.['product_depreciation_method'],
-                                    "months": tableTargetData[idx]?.['product_depreciation_time'],
-                                    "start_date": $actDate.val(),
-                                    "end_date": moment(tableTargetData[idx]?.['product_depreciation_end_date']).format('DD/MM/YYYY'),
-                                    "price": tableTargetData[idx]?.['product_cost'],
-                                    "adjust": tableTargetData[idx]?.['product_depreciation_adjustment'],
-                                });
-                            }
-
                             _this.setProdList = tableTargetData;
                             $tableMain.DataTable().row(idx).data(tableTargetData[idx]).draw();
-                        }
+                        // }
                         $scrollLot[0].setAttribute('hidden', 'true');
                         $scrollSerial[0].setAttribute('hidden', 'true');
                         $canvasPW.offcanvas('hide');
@@ -492,6 +477,9 @@ $(async function () {
                 if (!pwh.hasOwnProperty('lease_order') && type === 0) {
                     if ($eleSO.attr('data-lo')) {
                         pwh['lease_order_data'] = JSON.parse($eleSO.attr('data-lo'));
+                        if (pwh?.['lease_order_data']?.['id']) {
+                            pwh['lease_order_id'] = pwh?.['lease_order_data']?.['id'];
+                        }
                         for (let deliveryData of prod_data?.['delivery_data'] ? prod_data?.['delivery_data'] : []) {
                             if (pwh?.['warehouse_data']?.['id'] === deliveryData?.['warehouse_data']?.['id']) {
                                 pwh['picked_quantity'] = deliveryData?.['picked_quantity'];
@@ -824,7 +812,46 @@ $(async function () {
                         }
                     }
                 });
-                if (deliver <= valStock && deliver <= valAvb) {  // Kiểm tra <= tồn kho và <= khả dụng (mượn hàng)
+                // Check serial exist in other row data
+                let rowEle = ele.closest('tr');
+                let rowIndex = $tableSerial.DataTable().row(rowEle).index();
+                let $row = $tableSerial.DataTable().row(rowIndex);
+                let dataRow = $row.data();
+                if (ele.checked === true && dataRow) {
+                    for (let prod of prodTable.getProdList) {
+                        let offsetData = prod?.['offset_data'] ? prod?.['offset_data'] : [];
+                        if (offsetData.length === 0) {
+                            let deliveryData = prod?.['delivery_data'] ? prod?.['delivery_data'] : [];
+                            for (let deliData of deliveryData) {
+                                for (let serial of deliData?.['serial_data'] ? deliData?.['serial_data'] : []) {
+                                    if (serial?.['product_warehouse_serial_id'] === dataRow?.['id']) {
+                                        $.fn.notifyB({description: $trans.attr('data-serial-selected')}, 'failure');
+                                        ele.checked = false;
+                                        DeliveryStoreDataHandle.storeData();
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                        if (offsetData.length > 0) {
+                            for (let osData of offsetData) {
+                                let deliveryData = osData?.['delivery_data'] ? osData?.['delivery_data'] : [];
+                                for (let deliData of deliveryData) {
+                                    for (let serial of deliData?.['serial_data'] ? deliData?.['serial_data'] : []) {
+                                        if (serial?.['product_warehouse_serial_id'] === dataRow?.['id']) {
+                                            $.fn.notifyB({description: $trans.attr('data-serial-selected')}, 'failure');
+                                            ele.checked = false;
+                                            DeliveryStoreDataHandle.storeData();
+                                            return false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                // Kiểm tra <= tồn kho và <= khả dụng (mượn hàng)
+                if (deliver <= valStock && deliver <= valAvb) {
                     // store data
                     DeliveryStoreDataHandle.storeData();
                     let check = prodTable.loadCheckExceedQuantity();
@@ -1630,7 +1657,6 @@ $(async function () {
 
             return true;
         };
-
     }
 
     let prodTable = new prodDetailUtil();
@@ -1859,6 +1885,7 @@ $(async function () {
                         'product_id': prod?.['product_data']?.['id'],
                         'done': prod?.['picked_quantity'],
                         'delivery_data': prod?.['delivery_data'],
+                        'offset_data': prod?.['offset_data'],
                         'tool_data': prod?.['tool_data'],
                         'asset_data': prod?.['asset_data'],
                         'product_depreciation_start_date': prod?.['product_depreciation_start_date'],
@@ -1868,7 +1895,29 @@ $(async function () {
                     })
                 }
             }
-            if (!prodSub.length && $('#wrap-employee_inherit').attr('data-is_lead').toLowerCase() !== 'true') {
+            // use actual date replace product_lease_start_date
+            for (let prod of prodSub) {
+                for (let offset of prod?.['offset_data'] ? prod?.['offset_data'] : []) {
+                    offset['product_depreciation_start_date'] = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $actDate.val());
+                    offset['depreciation_data'] = DepreciationControl.callDepreciation({
+                        "method": offset?.['product_depreciation_method'],
+                        "months": offset?.['product_depreciation_time'],
+                        "start_date": $actDate.val(),
+                        "end_date": moment(offset?.['product_depreciation_end_date']).format('DD/MM/YYYY'),
+                        "price": offset?.['product_cost'],
+                        "adjust": offset?.['product_depreciation_adjustment'],
+                    });
+                    offset['product_lease_start_date'] = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $actDate.val());
+                }
+                for (let tool of prod?.['tool_data'] ? prod?.['tool_data'] : []) {
+                    tool['product_lease_start_date'] = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $actDate.val());
+                }
+                for (let asset of prod?.['asset_data'] ? prod?.['asset_data'] : []) {
+                    asset['product_lease_start_date'] = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $actDate.val());
+                }
+            }
+            // if (!prodSub.length && $('#wrap-employee_inherit').attr('data-is_lead').toLowerCase() !== 'true') {
+            if (!prodSub.length) {
                 // ko co and ko fai lead
                 $.fn.notifyB({description: $trans.attr('data-error-done')}, 'failure')
                 return false

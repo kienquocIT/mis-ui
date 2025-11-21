@@ -175,10 +175,6 @@ $(document).ready(function () {
                 keyId: 'id',
                 keyText: 'title',
             }).on('change', function () {
-                $('#total-pipeline-spinner').prop('hidden', false);
-                $('#top-sale-spinner').prop('hidden', false);
-                $('#forecast-spinner').prop('hidden', false);
-                $('#activity-spinner').prop('hidden', false);
                 if (typeof SelectDDControl !== 'undefined') {
                     period_selected_Setting = SelectDDControl.get_data_from_idx(periodFiscalYearFilterEle, periodFiscalYearFilterEle.val());
                     fiscal_year_Setting = period_selected_Setting ? period_selected_Setting['fiscal_year'] : undefined;
@@ -301,7 +297,6 @@ $(document).ready(function () {
                 stage_list_for_colors
             ));
         }
-        $('#total-pipeline-spinner').prop('hidden', true);
     }
 
     function DrawTopSaleChart(is_init = false) {
@@ -322,7 +317,6 @@ $(document).ready(function () {
                 'y'
             ));
         }
-        $('#top-sale-spinner').prop('hidden', true);
     }
 
     function DrawForecastChart(is_init = false) {
@@ -343,7 +337,6 @@ $(document).ready(function () {
                 'x'
             ));
         }
-        $('#forecast-spinner').prop('hidden', true);
     }
 
     function DrawActivityChart(is_init = false) {
@@ -364,14 +357,10 @@ $(document).ready(function () {
                 'y'
             ));
         }
-        $('#activity-spinner').prop('hidden', true);
     }
 
     function DrawAllChart(is_init = false) {
-        $('#total-pipeline-spinner').prop('hidden', false);
-        $('#top-sale-spinner').prop('hidden', false);
-        $('#forecast-spinner').prop('hidden', false);
-        $('#activity-spinner').prop('hidden', false);
+        WindowControl.showLoading()
 
         // Check if we have callAjax2 function
         if (typeof $.fn.callAjax2 === 'function') {
@@ -400,6 +389,8 @@ $(document).ready(function () {
                         DrawTopSaleChart(is_init);
                         DrawForecastChart(is_init);
                         DrawActivityChart(is_init);
+
+                        WindowControl.hideLoading()
                     });
                 });
         } else {
@@ -410,6 +401,8 @@ $(document).ready(function () {
                 DrawTopSaleChart(is_init);
                 DrawForecastChart(is_init);
                 DrawActivityChart(is_init);
+
+                WindowControl.hideLoading()
             });
         }
     }
@@ -442,12 +435,14 @@ $(document).ready(function () {
     function TotalPipelineChartCfg(labelX, data_list, chart_title, titleX, titleY, indexAxis, stage_list_for_colors) {
         return {
             textStyle: {
+                color: '#000',
                 fontFamily: 'Arial, Helvetica, sans-serif'
             },
             title: {
                 text: chart_title,
                 left: 'center',
                 textStyle: {
+                    color: '#000',
                     fontSize: 14,
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
@@ -499,6 +494,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 35,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -513,6 +509,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 60,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -641,12 +638,14 @@ $(document).ready(function () {
     function TopSaleChartCfg(labelX, data_list, chart_title, titleX, titleY, indexAxis) {
         return {
             textStyle: {
+                color: '#000',
                 fontFamily: 'Arial, Helvetica, sans-serif'
             },
             title: {
                 text: chart_title,
                 left: 'center',
                 textStyle: {
+                    color: '#000',
                     fontSize: 14,
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
@@ -706,6 +705,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 35,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -720,6 +720,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 60,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -872,12 +873,14 @@ $(document).ready(function () {
     function ForecastChartCfg(labelX, data_list, chart_title, titleX, titleY, indexAxis) {
         return {
             textStyle: {
+                color: '#000',
                 fontFamily: 'Arial, Helvetica, sans-serif'
             },
             title: {
                 text: chart_title,
                 left: 'center',
                 textStyle: {
+                    color: '#000',
                     fontSize: 14,
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
@@ -944,6 +947,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 30,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 }
@@ -954,6 +958,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: 50,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 }
@@ -1072,12 +1077,14 @@ $(document).ready(function () {
     function ActivityChartCfg(labelX, data_list, chart_title, titleX, titleY, indexAxis) {
         return {
             textStyle: {
+                color: '#000',
                 fontFamily: 'Arial, Helvetica, sans-serif'
             },
             title: {
                 text: chart_title,
                 left: 'center',
                 textStyle: {
+                    color: '#000',
                     fontSize: 14,
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
@@ -1136,6 +1143,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: indexAxis === 'y' ? 35 : 45,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -1157,6 +1165,7 @@ $(document).ready(function () {
                 nameLocation: 'middle',
                 nameGap: indexAxis === 'y' ? 80 : 50,
                 nameTextStyle: {
+                    color: '#000',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -1301,6 +1310,14 @@ $(document).ready(function () {
                 callbackDataResp: function (resp, keyResp) {
                     return resp.data ? resp.data[keyResp] : [];
                 },
+                templateResult: function (state) {
+                    return $(`<div class="row w-100">
+                    <div class="col-12">
+                        <span>${state.data?.['title']}</span>
+                        <span class="bflow-mirrow-badge-sm">Level ${state.data?.['level'] || ''} ${state.data?.['parent_n']?.['title'] ? `(${$.fn.gettext('Parent')}: ${state.data?.['parent_n']?.['title']})` : ''}</span>
+                    </div>
+                </div>`);
+                },
                 data: (data ? data : null),
                 keyResp: 'group_list',
                 keyId: 'id',
@@ -1320,6 +1337,14 @@ $(document).ready(function () {
                 },
                 callbackDataResp: function (resp, keyResp) {
                     return resp.data ? resp.data[keyResp] : [];
+                },
+                templateResult: function (state) {
+                    return $(`<div class="row w-100">
+                        <div class="col-12">
+                            <span>${state.data?.['title']}</span>
+                            <span class="bflow-mirrow-badge-sm">Level ${state.data?.['level'] || ''} ${state.data?.['parent_n']?.['title'] ? `(${$.fn.gettext('Parent')}: ${state.data?.['parent_n']?.['title']})` : ''}</span>
+                        </div>
+                    </div>`);
                 },
                 data: (data ? data : null),
                 keyResp: 'group_list',

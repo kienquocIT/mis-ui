@@ -4,7 +4,7 @@ $(document).ready(function () {
     let txt_mode = {
         0: $('.wf-mode a:nth-child(1)').text(),
         1: $('.wf-mode a:nth-child(2)').text(),
-        2: $('.wf-mode a:nth-child(3)').text(),
+        // 2: $('.wf-mode a:nth-child(3)').text(),
     }
     let error_map = {
         0: 'danger',

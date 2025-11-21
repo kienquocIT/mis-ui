@@ -41,13 +41,13 @@ class NodeLoadDataHandle {
             'is_system': true,
             'order': 2,
         },
-        {
-            'title': NodeLoadDataHandle.transEle.attr('data-node-completed'),
-            'code': 'completed',
-            'code_node_system': 'completed',
-            'is_system': true,
-            'order': 3,
-        }
+        // {
+        //     'title': NodeLoadDataHandle.transEle.attr('data-node-completed'),
+        //     'code': 'completed',
+        //     'code_node_system': 'completed',
+        //     'is_system': true,
+        //     'order': 3,
+        // }
     ];
     static dataSystemNodeApproved = {
         'title': NodeLoadDataHandle.transEle.attr('data-node-approved'),
@@ -818,6 +818,7 @@ class NodeLoadDataHandle {
 
     // load detail
     static loadDetail(data) {
+        data = data.filter(item => !(item?.['is_system'] === true && item?.['code_node_system'] === "completed"));
         NodeLoadDataHandle.dataNode = data;
         NodeLoadDataHandle.loadModalNode();
 
@@ -1128,15 +1129,16 @@ class NodeStoreHandle {
         if (NodeLoadDataHandle.$btnSaveNode[0].getAttribute('data-save-type')) {
             if (NodeLoadDataHandle.$btnSaveNode[0].getAttribute('data-save-type') === '0') {  // new
                 let newData = NodeStoreHandle.storeSetup();
-                if (NodeLoadDataHandle.dataNode.length >= 3) {
-                    NodeLoadDataHandle.dataNode.splice(-2, 2);
+                if (NodeLoadDataHandle.dataNode.length >= 2) {
+                    // NodeLoadDataHandle.dataNode.splice(-2, 2);
+                    NodeLoadDataHandle.dataNode.pop();
                 }
                 newData['order'] = NodeLoadDataHandle.dataNode.length + 1;
                 NodeLoadDataHandle.dataNode.push(newData);
                 NodeLoadDataHandle.dataSystemNodeApproved['order'] = NodeLoadDataHandle.dataNode.length + 1;
-                NodeLoadDataHandle.dataSystemNodeCompleted['order'] = NodeLoadDataHandle.dataNode.length + 2;
+                // NodeLoadDataHandle.dataSystemNodeCompleted['order'] = NodeLoadDataHandle.dataNode.length + 2;
                 NodeLoadDataHandle.dataNode.push(NodeLoadDataHandle.dataSystemNodeApproved);
-                NodeLoadDataHandle.dataNode.push(NodeLoadDataHandle.dataSystemNodeCompleted);
+                // NodeLoadDataHandle.dataNode.push(NodeLoadDataHandle.dataSystemNodeCompleted);
             }
             if (NodeLoadDataHandle.$btnSaveNode[0].getAttribute('data-save-type') === '1') {  // edit
                 if (NodeLoadDataHandle.$btnSaveNode[0].getAttribute('data-order')) {

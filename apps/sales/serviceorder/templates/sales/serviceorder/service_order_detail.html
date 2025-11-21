@@ -23,7 +23,7 @@
                 <span class="icon">
                   <span class="feather-icon"><i class="bi bi-clipboard-data"></i></span>
                 </span>
-                <span>{% trans 'View dashboard' %}</span>
+                <span>{% trans 'Service order Dashboard' %}</span>
             </span>
         </button>
     </a>
@@ -34,6 +34,7 @@
 {% block pageSubAction %}
     <div class="nav-pills-bfl" role="group" aria-label="Button group with nested dropdown">
         <button type="button" class="btn nav-link text-green" id="open_indicator" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Indicator' %}"><span class="icon"><i class="fa-solid fa-arrow-trend-up"></i></span></button>
+        <button hidden type="button" class="btn nav-link text-blue" id="open_version_compare" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Compare Version' %}"><span class="icon"><i class="fa-solid fa-code-compare"></i></span></button>
     </div>
 {% endblock %}
 
@@ -81,4 +82,5 @@
     <script src="{% static 'assets/sales/serviceorder/js/tab_expense.js' %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/service_order_detail.js' %}"></script>
     <script src="{% static 'assets/js/extends/indicator/indicator_common.js' %}"></script>
+    <script src="{% static 'assets/sales/serviceorder/js/service_order_version_compare.js' %}"></script>
 {% endblock %}

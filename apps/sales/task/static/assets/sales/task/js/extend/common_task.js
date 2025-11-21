@@ -115,6 +115,7 @@ class checklistHandle {
 
 function logworkSubmit() {
     $('#save-logtime').off().on('click', function () {
+        document.activeElement.blur();
         const startDate = $('#startDateLogTime').val()
         const endDate = $('#endDateLogTime').val()
         const est = $('#EstLogtime').val()

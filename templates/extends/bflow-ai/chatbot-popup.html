@@ -1,0 +1,29 @@
+{% load static i18n %}
+
+<!-- Floating AI Chat Button -->
+<div class="ai-chat-button" id="aiChatButton" title="{% trans 'Bflow AI Assistant' %}" hidden>
+    <img src="{% static 'assets/images/brand/bflow/png/icon/icon-bflow-original.png' %}" alt="Bflow AI"
+         style="width: 24px; height: 24px; object-fit: contain;">
+</div>
+
+<!-- AI Chat Container -->
+<div class="ai-chat-container" id="aiChatContainer">
+    <div class="ai-chat-header">
+        <h5>BFlow AI</h5>
+        <span class="ai-chat-close" id="aiChatClose">Exit</span>
+    </div>
+    <div class="ai-chat-body" id="aiChatBody">
+        <div class="ai-message ai"></div>
+    </div>
+    <div class="typing-indicator" id="typingIndicator">
+        <div class="typing-bubble">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+        </div>
+    </div>
+    <div class="ai-chat-input">
+        <textarea id="aiChatInput" placeholder="{% trans 'Type your message' %}..." rows="1"></textarea>
+        <button class="ai-chat-send" id="aiChatSend">Send</button>
+    </div>
+</div>

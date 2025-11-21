@@ -107,6 +107,7 @@ class InitialBalanceHandler {
 
                     // load Tabs information
                     TabMoneyFunction.initMoneyTable(data?.['tab_money_data'] || []);
+                    TabAccountReceivableFunction.initAccountReceivableTable(data?.['tab_customer_receivable_data'] || []);
 
                     InitialBalancePageFunction.CalculateAccountBalance(data?.['tab_account_balance_data'] || [])
 

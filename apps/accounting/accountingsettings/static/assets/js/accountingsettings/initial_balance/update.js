@@ -40,6 +40,7 @@ $(document).ready(function () {
         dataForm["title"] = pageElements.$titleEle.val();
         dataForm["description"] = pageElements.$descriptionEle.val();
         dataForm["tab_money_data"] = TabMoneyFunction.combineTabCashData();
+        dataForm['tab_customer_receivable_data'] = TabAccountReceivableFunction.combineTabAccountReceivableData();
         return {
             url: frm.dataUrl,
             method: 'PUT',

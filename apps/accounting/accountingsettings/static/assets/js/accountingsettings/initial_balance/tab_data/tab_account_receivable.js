@@ -31,7 +31,7 @@ const tabAccountReceivableVariables = new TabAccountReceivableVariables();
 
 
 class TabAccountReceivableFunction {
-    static initAccountReceivableTable(data = [], option = 'create') {
+    static initAccountReceivableTable(data = []) {
         tabAccountReceivableElements.$tableAccountReceivable.DataTable().destroy();
         tabAccountReceivableElements.$tableAccountReceivable.DataTableDefault({
             data: data,
@@ -53,13 +53,12 @@ class TabAccountReceivableFunction {
                     render: (data, type, row) => {
                     return  `
                         <div class="input-group">
-                            <input type="text" class="form-control row-customer-account-receivable" 
+                            <input type="text" class="form-control row-customer-account-receivable row-access" 
                                 placeholder="Click to select..." readonly/>
                             <span class="input-group-text p-0">
-                                <button type="button" ${option === 'detail' ? 'disabled' : ''}
-                                    class="btn btn-primary btn-sm add-customer-btn"
+                                <button type="button" class="btn btn-primary btn-sm add-customer-btn row-access"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#customer-modal">
+                                    data-bs-target="#customer-modal" disabled>
                                     <i class="fa-solid fa-magnifying-glass"></i>
                                 </button>
                             </span>
@@ -69,35 +68,27 @@ class TabAccountReceivableFunction {
                 {
                     className: "w-30",
                     render: (data, type, row) => {
-                        return `<div class="input-group">
-                                    <input type="text" class="form-control row-detail-account-receivable"
-                                        placeholder="Click icon to add detail..." readonly/>
-                                    <span class="input-group-text p-0">
-                                        <button type="button" class="btn btn-primary btn-sm btn-account-receivable-modal" disabled
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#account_receivable_modal">
-                                            <i class="fa-solid fa-circle-info"></i>
-                                        </button>
-                                    </span>
-                                </div>`;
+                        return `
+                            <div class="input-group">
+                                <input type="text" class="form-control row-detail-account-receivable"
+                                    placeholder="Click icon to add detail..." readonly/>
+                                <span class="input-group-text p-0">
+                                    <button type="button" class="btn btn-primary btn-sm btn-account-receivable-modal" disabled
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#account_receivable_modal">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                    </button>
+                                </span>
+                            </div>`;
                     }
                 },
                 {
                     className: "w-20",
                     render: (data, type, row) => {
-                        return `<div class="input-group">
-                            <select class="form-select select2 row-account-receivable-code"></select>
-                            <span class="input-group-text p-0">
-                                <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa-regular fa-circle-question"></i>
-                                </a>
-                                <div class="dropdown-menu bflow-mirrow-card-80 p-3" style="min-width: 200px;">
-                                    <h5 class="row-account-receivable-code-detail fw-bold"></h5>
-                                    <h6 class="row-fk-account-receivable-name"></h6>
-                                    <h6 class="row-account-receivable-name"></h6>
-                                </div>
-                            </span>
-                        </div>`;
+                        let $ele = $(UsualLoadPageAccountingFunction.default_account_select2)
+                        $ele.find('.row-account').prop('disabled', true);
+                        $ele.find('.row-account').addClass('row-access');
+                        return $ele.prop('outerHTML')
                     }
                 },
                 {
@@ -113,19 +104,74 @@ class TabAccountReceivableFunction {
                     }
                 },
                 {
-                    className: "w-5 text-right",
+                    className: "w-5 text-center",
                     render: () => {
-                        return `<button ${option === 'detail' ? 'disabled' : ''}
+                        return `
+                           <button 
+                               type="button" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover update-account-receivable-row">
+                               <span class="icon"><i class="fa-solid fa-pen-to-square"></i></span>
+                           </button>
+                          <button 
                                type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-account-receivable-row">
                                <span class="icon"><i class="far fa-trash-alt"></i></span>
                           </button>`;
                     }
                 },
-            ]
+            ],
+            initComplete: function() {
+                tabAccountReceivableElements.$tableAccountReceivable.find('tbody tr').each(function(index, ele) {
+                    const rowData = data[index];
+                    if (!rowData) return;
+                    $(this).attr('data-id', rowData?.['id'] || '');    // set row attributes
+
+                    // load customer
+                    const customerData = rowData?.['customer_receivable_customer_data'];
+                    if (customerData) {
+                        const $customerInput = $(this).find('.row-customer-account-receivable');
+                        $customerInput.val(customerData?.['name'] || '');
+                        $customerInput.attr('data-customer-id', customerData?.['id'] || '');
+                        $customerInput.attr('data-customer-code', customerData?.['code'] || '');
+                    }
+
+                    // load account data
+                    if (rowData?.['account_data']) {
+                        UsualLoadPageAccountingFunction.LoadAccountingAccount({
+                            element: $(this).find('.row-account'),
+                            data_url: pageElements.$urlFactory.attr('data-url-accounting-account'),
+                            data_params: {'acc_type': 1, 'is_account': true},
+                            data: rowData['account_data'],
+                        });
+                    }
+
+                    // load debit and credit value
+                    $(this).find('.row-account-receivable-debit').attr('value', rowData?.['debit_value'] || 0);
+                    $(this).find('.row-account-receivable-credit').attr('value', rowData?.['credit_value'] || 0);
+
+                    // load and store detail data
+                    const detailData = rowData?.['customer_receivable_detail_data'];
+                    if (detailData) {
+                        $(this).find('.btn-account-receivable-modal').prop('disabled', false);
+                        const $detailInput = $(this).find('.row-detail-account-receivable');
+                        if (detailData?.['is_prepayment']) {
+                            const advancePayment = detailData?.['advanced_payment'] || 0;
+                            $detailInput.val(`Pre-payment: ${advancePayment.toLocaleString('vi-VN')} VND`);
+                        } else {
+                            const invoiceNumber = detailData?.['invoice_number'] || '';
+                            const unpaidAmount = detailData?.['unpaid_amount'] || 0;
+                            $detailInput.val(`HÐ: ${invoiceNumber} - ${unpaidAmount.toLocaleString('vi-VN')} VND`);
+                        }
+                    }
+                });
+                $.fn.initMaskMoney2();
+            }
         });
     }
 
     static loadCustomerList() {
+        const currentCustomerId = tabAccountReceivableVariables.currentAccountReceiableRow
+            ?.find('.row-customer-account-receivable')
+            ?.attr('data-customer-id');
+
         tabAccountReceivableElements.$tableCustomer.DataTable().clear().destroy();
         tabAccountReceivableElements.$tableCustomer.DataTableDefault({
             useDataServer: true,
@@ -149,11 +195,13 @@ class TabAccountReceivableFunction {
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
+                        const isChecked = currentCustomerId && currentCustomerId === String(row?.['id']);
                         return `<div class="form-check">
                                     <input type="radio" name="customer-checkbox" class="form-check-input customer-checkbox"
-                                        data-customer-id="${row?.['id'] || ''}" 
+                                        data-customer-id="${row?.['id'] || ''}"
                                         data-customer-code="${row?.['code'] || ''}"
-                                        data-customer-name="${row?.['name'] || ''}">
+                                        data-customer-name="${row?.['name'] || ''}"
+                                        ${isChecked ? 'checked' : ''}>
                                 </div>`;
                     }
                 },
@@ -172,6 +220,111 @@ class TabAccountReceivableFunction {
             ]
         });
     }
+
+    static loadDetailDataToModal($row) {
+        // Get detail data from row attribute
+        const detailJson = $row.attr('data-detail-json');
+
+        if (detailJson) {
+            try {
+                const detailData = JSON.parse(detailJson);
+                const isPrepayment = detailData?.['is_prepayment'];
+
+                // Set prepayment checkbox
+                tabAccountReceivableElements.$prepaymentCheckbox.prop('checked', isPrepayment);
+
+                if (isPrepayment) {
+                    // Show prepayment form, hide invoice form
+                    tabAccountReceivableElements.$prepaymentForm.show();
+                    tabAccountReceivableElements.$invoiceForm.hide();
+
+                    // Load prepayment data
+                    const advancePayment = detailData?.['advanced_payment'] || 0;
+                    tabAccountReceivableElements.$advancePayment.val(advancePayment);
+                    tabAccountReceivableElements.$advancePayment.attr('value', advancePayment);
+                    $('#note_account_receivable').val(detailData?.['note'] || '');
+                } else {
+                    // Show invoice form, hide prepayment form
+                    tabAccountReceivableElements.$prepaymentForm.hide();
+                    tabAccountReceivableElements.$invoiceForm.show();
+
+                    // Load invoice data
+                    tabAccountReceivableElements.$txtInvoiceNumber.val(detailData?.['invoice_number'] || '');
+
+                    const unpaidAmount = detailData?.['unpaid_amount'] || 0;
+                    tabAccountReceivableElements.$unpaidAmountEle.val(unpaidAmount);
+                    tabAccountReceivableElements.$unpaidAmountEle.attr('value', unpaidAmount);
+
+                    // Load dates
+                    if (detailData?.['invoice_date']) {
+                        const invoiceDate = moment(detailData['invoice_date'], 'YYYY-MM-DD');
+                        if (invoiceDate.isValid()) {
+                            tabAccountReceivableElements.$invoiceDate.val(invoiceDate.format('DD/MM/YYYY'));
+                        }
+                    }
+
+                    if (detailData?.['expected_payment_date']) {
+                        const expectedDate = moment(detailData['expected_payment_date'], 'YYYY-MM-DD');
+                        if (expectedDate.isValid()) {
+                            tabAccountReceivableElements.$expectedPaymentDate.val(expectedDate.format('DD/MM/YYYY'));
+                        }
+                    }
+                }
+
+                // Initialize mask money
+                $.fn.initMaskMoney2();
+            } catch (e) {
+                console.error('Error parsing detail data:', e);
+            }
+        } else {
+            // No existing data - reset modal to default state
+            tabAccountReceivableElements.$prepaymentCheckbox.prop('checked', false);
+            tabAccountReceivableElements.$prepaymentForm.hide();
+            tabAccountReceivableElements.$invoiceForm.show();
+
+            // Clear all fields
+            tabAccountReceivableElements.$txtInvoiceNumber.val('');
+            tabAccountReceivableElements.$unpaidAmountEle.val('0').attr('value', 0);
+            tabAccountReceivableElements.$invoiceDate.val('');
+            tabAccountReceivableElements.$expectedPaymentDate.val('');
+            tabAccountReceivableElements.$advancePayment.val('0').attr('value', 0);
+            $('#note_account_receivable').val('');
+        }
+    }
+
+    static combineTabAccountReceivableData() {
+        const accountReceivableDataList = [];
+
+        tabAccountReceivableElements.$tableAccountReceivable.find('tbody tr').each(function() {
+            const typeRow = $(this).attr('data-type-row');
+            const invoiceDate = moment(tabAccountReceivableElements.$invoiceDate.val(), "DD/MM/YYYY", true);
+            const expectedPaymentDate = moment(tabAccountReceivableElements.$expectedPaymentDate.val(), "DD/MM/YYYY", true);
+            if (typeRow === 'added' || typeRow === 'updated') {
+                const rowData = {
+                    id: typeRow === 'added' ? null : $(this).attr('data-id'),
+                    type_row: typeRow,
+                    account: $(this).find('.row-account').val(),
+                    debit_value: parseFloat($(this).find('.row-account-receivable-debit').attr('value') || 0),
+                    credit_value: parseFloat($(this).find('.row-account-receivable-credit').attr('value') || 0),
+                    detail_data: {
+                        customer_receivable_customer: $(this).find('.row-customer-account-receivable').attr('data-customer-id'),
+                        customer_receivable_detail_data: {
+                            is_prepayment: tabAccountReceivableElements.$prepaymentCheckbox.is(":checked"),
+                            invoice_number: tabAccountReceivableElements.$txtInvoiceNumber.val() || '',
+                            unpaid_amount: parseFloat(tabAccountReceivableElements.$unpaidAmountEle.attr('value') || 0),
+                            invoice_date: invoiceDate.isValid() ? invoiceDate.format('YYYY-MM-DD') : null,
+                            expected_payment_date: expectedPaymentDate.isValid() ? expectedPaymentDate.format('YYYY-MM-DD') : null,
+                            advanced_payment: parseFloat(tabAccountReceivableElements.$advancePayment.attr('value') || 0),
+                            note: $('#note_account_receivable').val() || ''
+                        },
+                    }
+                };
+                accountReceivableDataList.push(rowData);
+            }
+        });
+
+        return accountReceivableDataList;
+    }
 }
 
 
@@ -181,6 +334,8 @@ class TabAccountReceivableEventHandler {
         tabAccountReceivableElements.$btnAddAccountReceivable.on('click', function() {
             UsualLoadPageFunction.AddTableRow(tabAccountReceivableElements.$tableAccountReceivable);
             let row_added = tabAccountReceivableElements.$tableAccountReceivable.find('tbody tr:last-child');
+            row_added.attr('data-type-row', 'added');
+            row_added.find('.row-access').prop('disabled', false);
             UsualLoadPageAccountingFunction.LoadAccountingAccount({
                 element: row_added.find('.row-account-receivable-code'),
                 data_url: pageElements.$urlFactory.attr('data-url-accounting-account'),
@@ -224,13 +379,6 @@ class TabAccountReceivableEventHandler {
             }
         });
 
-        tabAccountReceivableElements.$tableAccountReceivable.on('change', '.row-account-receivable-code', function() {
-            let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
-            $(this).closest('tr').find('.row-account-receivable-code-detail').text(selected?.['acc_code'] || '')
-            $(this).closest('tr').find('.row-fk-account-receivable-name').text(selected?.['foreign_acc_name'] || '')
-            $(this).closest('tr').find('.row-account-receivable-name').text(`(${selected?.['acc_name'] || ''})`)
-        });
-
         // event for prepayment checkbox toggle
         tabAccountReceivableElements.$prepaymentCheckbox.on('change', function() {
             if ($(this).is(':checked')) {
@@ -272,6 +420,13 @@ class TabAccountReceivableEventHandler {
             tabAccountReceivableElements.$prepaymentForm.hide();
             tabAccountReceivableElements.$invoiceForm.show();
             tabAccountReceivableElements.$prepaymentCheckbox.prop('checked', false);  // uncheck prepayment checkbox
+        });
+
+        // event when click btn edit row
+        tabAccountReceivableElements.$tableAccountReceivable.on('click', '.update-account-receivable-row', function() {
+            const $row = $(this).closest('tr');
+            $row.find('.row-access').prop('disabled', false);
+            $row.attr('data-type-row', 'updated');
         });
     }
 }

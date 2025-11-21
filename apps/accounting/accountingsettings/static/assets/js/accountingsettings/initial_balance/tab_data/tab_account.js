@@ -27,7 +27,7 @@ class TabAccountFunction {
                 {
                     className: "w-40",
                     render: (data, type, row) => {
-                        return $(UsualLoadPageAccountingFunction.default_account_select2)
+                        return $(UsualLoadPageAccountingFunction.default_account_select2).prop('outerHTML')
                     }
                 },
                 {

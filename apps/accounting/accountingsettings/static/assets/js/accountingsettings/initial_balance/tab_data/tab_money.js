@@ -59,7 +59,7 @@ class TabMoneyFunction {
                         let $ele = $(UsualLoadPageAccountingFunction.default_account_select2)
                         $ele.find('.row-account').prop('disabled', true);
                         $ele.find('.row-account').addClass('row-access');
-                        return $ele
+                        return $ele.prop('outerHTML')
                     }
                 },
                 {

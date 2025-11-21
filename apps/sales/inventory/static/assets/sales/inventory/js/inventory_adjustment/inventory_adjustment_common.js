@@ -349,7 +349,7 @@ class IAHandle {
                             name: 'attachment'
                         })
 
-                        IAHandle.Disable(option);
+                        UsualLoadPageFunction.DisablePage(option === 'detail')
                     }
                 }
             })

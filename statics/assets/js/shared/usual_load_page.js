@@ -1250,13 +1250,33 @@ class UsualLoadPageAccountingFunction {
                     <i class="fa-regular fa-circle-question"></i>
                 </a>
                 <div class="dropdown-menu bflow-mirrow-card-80 p-3" style="min-width: 200px;">
-                    <h5 class="row-account-code fw-bold"></h5>
-                    <h6 class="row-fk-account-name"></h6>
-                    <h6 class="row-account-name"></h6>
                 </div>
             </span>
         </div>
     `;
+
+    static default_account_select2_multiple = `
+        <div class="input-group">
+            <select class="form-select select2 row-account" multiple></select>
+            <span class="input-group-text p-0">
+                <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-regular fa-circle-question"></i>
+                </a>
+                <div class="dropdown-menu bflow-mirrow-card-80 p-3" style="min-width: 200px;">
+                </div>
+            </span>
+        </div>
+    `;
+
+    static ParseInfoTemplate(data) {
+        let info_template = ``
+        for (let i = 0; i < data.length; i++) {
+            info_template += `<h5 class="row-account-code fw-bold">${data[i]?.['acc_code'] || ''}</h5>
+                <h6 class="row-fk-account-name small">${data[i]?.['foreign_acc_name'] || ''}</h6>
+                <h6 class="row-account-name small">(${data[i]?.['acc_name'] || ''})</h6>`
+        }
+        return info_template
+    }
 
     /**
      * Load ô AccountingAccount (expected-data-url = ChartOfAccountsListAPI)
@@ -1265,10 +1285,11 @@ class UsualLoadPageAccountingFunction {
      * @param {Boolean} [allow_clear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
+     * @param {Boolean} is_multiple - is_multiple
      * @param {Boolean} apply_default_on_change - apply_default_on_change
      * @returns {void}
      */
-    static LoadAccountingAccount({element, data=null, allow_clear=true, data_params = {}, data_url='', apply_default_on_change=true}) {
+    static LoadAccountingAccount({element, data=null, allow_clear=true, data_params = {}, data_url='', is_multiple=false, apply_default_on_change=true}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -1294,18 +1315,21 @@ class UsualLoadPageAccountingFunction {
         }).on('change', function () {
             if (apply_default_on_change) {
                 if ($(this).val()) {
-                    let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
-                    element.closest('.input-group').find('.row-account-code').text(selected?.['acc_code'] || '')
-                    element.closest('.input-group').find('.row-fk-account-name').text(selected?.['foreign_acc_name'] || '')
-                    element.closest('.input-group').find('.row-account-name').text(`(${selected?.['acc_name'] || ''})`)
+                    let info_template = `<h6>${$.fn.gettext('View the account information in dropdown')}</h6>`
+                    element.closest('.input-group').find('.dropdown-menu').html(info_template)
                 }
             }
         })
 
-        if (Object.keys(data).length > 0) {
-            element.closest('.input-group').find('.row-account-code').text(data?.['acc_code'] || '')
-            element.closest('.input-group').find('.row-fk-account-name').text(data?.['foreign_acc_name'] || '')
-            element.closest('.input-group').find('.row-account-name').text(`(${data?.['acc_name'] || ''})`)
-        }
+         if (is_multiple) {
+             let info_template = UsualLoadPageAccountingFunction.ParseInfoTemplate(data)
+             element.closest('.input-group').find('.dropdown-menu').html(info_template)
+         }
+         else {
+             if (Object.keys(data).length > 0) {
+                 let info_template = UsualLoadPageAccountingFunction.ParseInfoTemplate([data])
+                 element.closest('.input-group').find('.dropdown-menu').html(info_template)
+             }
+         }
     }
 }

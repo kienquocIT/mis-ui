@@ -1273,7 +1273,7 @@ class UsualLoadPageAccountingFunction {
         for (let i = 0; i < data.length; i++) {
             info_template += `<h5 class="row-account-code fw-bold">${data[i]?.['acc_code'] || ''}</h5>
                 <h6 class="row-fk-account-name small">${data[i]?.['foreign_acc_name'] || ''}</h6>
-                <h6 class="row-account-name small">(${data[i]?.['acc_name'] || ''})</h6>`
+                <h6 class="row-account-name small">${data[i]?.['acc_name'] || ''}</h6>`
         }
         return info_template
     }

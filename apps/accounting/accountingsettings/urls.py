@@ -1,9 +1,7 @@
 from django.urls import path
 from apps.accounting.accountingsettings.views import (
     ChartOfAccountsList, ChartOfAccountsListAPI,
-    AccountDeterminationList, AccountDeterminationListAPI, WarehouseAccountDeterminationListAPI,
-    ProductTypeAccountDeterminationListAPI, ProductAccountDeterminationListAPI, WarehouseAccountDeterminationDetailAPI,
-    ProductTypeAccountDeterminationDetailAPI, ProductAccountDeterminationDetailAPI, AccountDeterminationDetailAPI,
+    AccountDeterminationList, AccountDeterminationListAPI, AccountDeterminationDetailAPI,
     InitialBalanceList, InitialBalanceListAPI, DimensionDefinitionList, DimensionDefinitionListAPI,
     DimensionDefinitionDetailAPI, DimensionValueList, DimensionDefinitionWithValueAPI, DimensionValueListAPI,
     DimensionValueDetailAPI, DimensionSyncConfigApplicationListAPI, DimensionSyncConfigList, DimensionSyncConfigListAPI,

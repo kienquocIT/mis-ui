@@ -1249,7 +1249,7 @@ class UsualLoadPageAccountingFunction {
                 <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa-regular fa-circle-question"></i>
                 </a>
-                <div class="dropdown-menu bflow-mirrow-card-80 p-2" style="min-width: 250px;">
+                <div class="dropdown-menu bflow-mirrow-card-80 p-0" style="min-width: 250px;">
                 </div>
             </span>
         </div>
@@ -1262,7 +1262,7 @@ class UsualLoadPageAccountingFunction {
                 <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa-regular fa-circle-question"></i>
                 </a>
-                <div class="dropdown-menu bflow-mirrow-card-80 p-2" style="min-width: 250px; overflow-y: auto; max-height: 350px;">
+                <div class="dropdown-menu bflow-mirrow-card-80 p-0" style="min-width: 250px; overflow-y: auto; max-height: 350px;">
                 </div>
             </span>
         </div>
@@ -1271,11 +1271,25 @@ class UsualLoadPageAccountingFunction {
     static ParseInfoTemplate(data) {
         let info_template = ``
         for (let i = 0; i < data.length; i++) {
-            info_template += `<h5 class="row-account-code fw-bold">${data[i]?.['acc_code'] || ''}</h5>
-                <h6 class="row-fk-account-name small">${data[i]?.['foreign_acc_name'] || ''}</h6>
-                <h6 class="row-account-name small">${data[i]?.['acc_name'] || ''}</h6>`
+            info_template += `<tr>
+                <td>
+                    <h6 class="row-account-code fw-bold m-0">${data[i]?.['acc_code'] || ''}</h6>
+                </td>
+                <td>
+                    <h6 class="row-fk-account-name m-0">${data[i]?.['foreign_acc_name'] || ''}</h6>
+                    <h6 class="row-account-name m-0">${data[i]?.['acc_name'] || ''}</h6>
+                </td>
+            </tr>`
         }
-        return info_template
+        return `<table class="table table-sm nowrap w-100 m-0" style="background: none">
+                    <thead class="bg-primary-light-5">
+                        <tr>
+                            <th>${$.fn.gettext('Code')}</th>
+                            <th>${$.fn.gettext('Description')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>${info_template}</tbody>
+                </table>`
     }
 
     /**

@@ -14,13 +14,13 @@ $(document).ready(function() {
             }
         },
         {
-            className: 'w-30',
+            className: 'w-20',
             'render': (data, type, row) => {
                 return `<span class="text-muted fw-bold">${row?.['title']}</span><br><span class="text-primary">${row?.['foreign_title']}</span>`;
             }
         },
         {
-            className: 'w-20',
+            className: 'w-15',
             'render': (data, type, row) => {
                 let $ele = $(UsualLoadPageAccountingFunction.default_account_select2_multiple)
                 $ele.find('.row-account').prop('disabled', true);
@@ -29,7 +29,19 @@ $(document).ready(function() {
             }
         },
         {
-            className: 'text-right w-45',
+            className: 'w-25',
+            'render': (data, type, row) => {
+                return `<p>${row?.['description'] || ''}</p>`;
+            }
+        },
+        {
+            className: 'w-30',
+            'render': (data, type, row) => {
+                return `<p class="text-primary">${(row?.['example'] || '').replaceAll('. ', '.<br>')}</p>`;
+            }
+        },
+        {
+            className: 'text-right w-5',
             'render': (data, type, row) => {
                 let change_btn = `<a class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover btn-xs btn-change-account">
                    <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i class="fa-solid fa-pen-to-square"></i></span></span>
@@ -46,53 +58,52 @@ $(document).ready(function() {
     ]
 
     function loadAccountDeterminationTable() {
-        if (!$.fn.DataTable.isDataTable('#account-determination-table')) {
-            let frm = new SetupFormSubmit($account_determination_table);
-            $account_determination_table.DataTableDefault({
-                useDataServer: true,
-                rowIdx: true,
-                reloadCurrency: true,
-                paging: false,
-                scrollX: true,
-                scrollY: '65vh',
-                scrollCollapse: true,
-                ajax: {
-                    url: frm.dataUrl,
-                    data: {},
-                    type: frm.dataMethod,
-                    dataSrc: function (resp) {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            let data_list = resp.data['account_determination_list'] ? resp.data['account_determination_list'] : []
-                            return data_list ? data_list : [];
-                        }
-                        return [];
-                    },
-                },
-                columns: columns_cfg,
-                rowGroup: {
-                    dataSrc: 'account_determination_type_convert'
-                },
-                columnDefs: [
-                    {
-                        "visible": false,
-                        "targets": [1]
+        $account_determination_table.DataTable().clear().destroy()
+        let frm = new SetupFormSubmit($account_determination_table);
+        $account_determination_table.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            reloadCurrency: true,
+            paging: false,
+            scrollX: true,
+            scrollY: '70vh',
+            scrollCollapse: true,
+            ajax: {
+                url: frm.dataUrl,
+                data: {},
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        let data_list = resp.data['account_determination_list'] ? resp.data['account_determination_list'] : []
+                        return data_list ? data_list : [];
                     }
-                ],
-                initComplete: function () {
-                    $account_determination_table.find('tbody tr .row-account').each(function () {
-                        let account_determination_sub_list = $(this).attr('data-account-determination-sub-list') ? JSON.parse($(this).attr('data-account-determination-sub-list')) : []
-                        UsualLoadPageAccountingFunction.LoadAccountingAccount({
-                            element: $(this),
-                            data: account_determination_sub_list,
-                            data_url: $account_determination_table.attr('data-chart-of-account-url'),
-                            data_params: {'acc_type': 1, 'is_account': true},
-                            is_multiple: true
-                        });
-                    })
+                    return [];
+                },
+            },
+            columns: columns_cfg,
+            rowGroup: {
+                dataSrc: 'account_determination_type_convert'
+            },
+            columnDefs: [
+                {
+                    "visible": false,
+                    "targets": [1]
                 }
-            });
-        }
+            ],
+            initComplete: function () {
+                $account_determination_table.find('tbody tr .row-account').each(function () {
+                    let account_determination_sub_list = $(this).attr('data-account-determination-sub-list') ? JSON.parse($(this).attr('data-account-determination-sub-list')) : []
+                    UsualLoadPageAccountingFunction.LoadAccountingAccount({
+                        element: $(this),
+                        data: account_determination_sub_list,
+                        data_url: $account_determination_table.attr('data-chart-of-account-url'),
+                        data_params: {'acc_type': 1, 'is_account': true},
+                        is_multiple: true
+                    });
+                })
+            }
+        });
     }
 
     loadAccountDeterminationTable()
@@ -131,7 +142,7 @@ $(document).ready(function() {
             if (result.value) {
                 let ajax_update_account_prd = $.fn.callAjax2({
                     url: $account_determination_table.attr('data-url-detail').replace('/0', `/${row_id}`),
-                    data: {'replace_account': row_replace_account},
+                    data: {'replace_account_list': row_replace_account},
                     method: 'PUT'
                 }).then(
                     (resp) => {
@@ -148,7 +159,6 @@ $(document).ready(function() {
 
                 Promise.all([ajax_update_account_prd]).then(
                     (results) => {
-                        $account_determination_table.DataTable().clear().destroy()
                         loadAccountDeterminationTable()
                     }
                 )

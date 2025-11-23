@@ -225,7 +225,7 @@ $(document).ready(function () {
                 Promise.all([ajax_update_account_prd_type]).then(
                     (results) => {
                         delete account_determination_data_list[current_product_type_id]
-                        loadAccountDeterminationTable(current_product_type_id)
+                        // loadAccountDeterminationTable(current_product_type_id)
                     }
                 )
             }
@@ -807,7 +807,7 @@ $(document).ready(function () {
         let raw_url = frm_update_product_type.attr('data-url-raw')
         frm_update_product_type.attr('data-url', raw_url.replace('/0', `/${$(this).attr('data-id')}`))
         current_product_type_id = $(this).attr('data-id')
-        loadAccountDeterminationTable(current_product_type_id)
+        // loadAccountDeterminationTable(current_product_type_id)
     })
 
     new SetupFormSubmit(frm_create_product_type).validate({

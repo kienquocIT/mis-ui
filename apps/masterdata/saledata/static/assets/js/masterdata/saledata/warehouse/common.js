@@ -392,7 +392,7 @@ $(document).on('click', '.btn-save-change-account', function () {
             Promise.all([ajax_update_account_wh]).then(
                 (results) => {
                     $warehouse_account_determination_table.DataTable().clear().destroy()
-                    loadAccountDeterminationTable()
+                    // loadAccountDeterminationTable()
                 }
             )
         }
@@ -404,5 +404,5 @@ $(document).on('click', '.btn-change-account', function () {
 })
 
 $('#accounting-determination-tab').on('click', function () {
-    loadAccountDeterminationTable()
+    // loadAccountDeterminationTable()
 })

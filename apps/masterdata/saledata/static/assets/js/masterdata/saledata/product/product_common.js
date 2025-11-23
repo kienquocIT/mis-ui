@@ -2042,7 +2042,7 @@ class ProductHandler {
 
                     pageElements.$account_deter_referenced_by.val(product_detail?.['account_deter_referenced_by']).prop('disabled', true)
                     pageElements.$product_account_determination_table.closest('.row').prop('hidden', product_detail?.['account_deter_referenced_by'] !== 2)
-                    ProductPageFunction.LoadAccountDeterminationTable()
+                    // ProductPageFunction.LoadAccountDeterminationTable()
 
                     $.fn.initMaskMoney2();
 
@@ -2746,7 +2746,7 @@ class ProductEventHandler {
                         (results) => {
                             if (results.length === 1) {
                                 pageElements.$product_account_determination_table.DataTable().clear().destroy()
-                                ProductPageFunction.LoadAccountDeterminationTable()
+                                // ProductPageFunction.LoadAccountDeterminationTable()
                             }
                         }
                     )

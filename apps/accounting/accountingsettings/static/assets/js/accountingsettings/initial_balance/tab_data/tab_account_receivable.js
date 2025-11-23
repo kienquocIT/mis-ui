@@ -164,8 +164,8 @@ class TabAccountReceivableFunction {
                             $detailInput.val(`HÐ: ${invoiceNumber} - ${unpaidAmount.toLocaleString('vi-VN')} VND`);
                         }
                     }
+                    $.fn.initMaskMoney2();
                 });
-                $.fn.initMaskMoney2();
             }
         });
     }
@@ -250,7 +250,7 @@ class TabAccountReceivableFunction {
     static loadAccountReceivableDetail($row) {
         const $detailInput = $row.find('.row-detail-account-receivable');
 
-        // Reset modal first
+        // reset modal
         tabAccountReceivableElements.$prepaymentCheckbox.prop('checked', false);
         tabAccountReceivableElements.$txtInvoiceNumber.val('');
         tabAccountReceivableElements.$unpaidAmountEle.attr('value', 0);
@@ -296,7 +296,6 @@ class TabAccountReceivableFunction {
                 tabAccountReceivableElements.$expectedPaymentDate.val(formattedExpectedDate);
             }
         }
-
         $.fn.initMaskMoney2();
     }
 
@@ -314,7 +313,7 @@ class TabAccountReceivableEventHandler {
             UsualLoadPageAccountingFunction.LoadAccountingAccount({
                 element: row_added.find('.row-account'),
                 data_url: pageElements.$urlFactory.attr('data-url-accounting-account'),
-                data_params: {'acc_type': 1}
+                data_params: {'acc_type': 1, 'is_account': true}
             });
         });
 

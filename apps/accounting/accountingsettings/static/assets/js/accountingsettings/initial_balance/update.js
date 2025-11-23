@@ -34,13 +34,14 @@ $(document).ready(function () {
     TabAccountEventHandler.InitPageEvent();
 
 
-    function CombinesData(frmEle) {
+    function combineInitialBalanceData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
         let dataForm = {};
         dataForm["title"] = pageElements.$titleEle.val();
         dataForm["description"] = pageElements.$descriptionEle.val();
         dataForm["tab_money_data"] = TabMoneyFunction.combineTabCashData();
         dataForm['tab_customer_receivable_data'] = TabAccountReceivableFunction.combineTabAccountReceivableData();
+        dataForm['tab_supplier_payable_data'] = TabSupplierPayableFunction.combineTabSupplierPayableData();
         return {
             url: frm.dataUrl,
             method: 'PUT',
@@ -50,10 +51,10 @@ $(document).ready(function () {
 
     $('#frm_detail_initial_balance').submit(function (event) {
         event.preventDefault();
-        let combinesData = CombinesData($(this));
-        if (combinesData) {
+        let combinedData = combineInitialBalanceData($(this));
+        if (combinedData) {
             WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
-            $.fn.callAjax2(combinesData)
+            $.fn.callAjax2(combinedData)
                 .then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);

@@ -1249,20 +1249,20 @@ class UsualLoadPageAccountingFunction {
                 <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa-regular fa-circle-question"></i>
                 </a>
-                <div class="dropdown-menu bflow-mirrow-card-80 p-3" style="min-width: 200px;">
+                <div class="dropdown-menu bflow-mirrow-card-80 p-2" style="min-width: 250px;">
                 </div>
             </span>
         </div>
     `;
 
     static default_account_select2_multiple = `
-        <div class="input-group">
+        <div class="input-group flex-nowrap">
             <select class="form-select select2 row-account" multiple></select>
             <span class="input-group-text p-0">
                 <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa-regular fa-circle-question"></i>
                 </a>
-                <div class="dropdown-menu bflow-mirrow-card-80 p-3" style="min-width: 200px;">
+                <div class="dropdown-menu bflow-mirrow-card-80 p-2" style="min-width: 250px; overflow-y: auto; max-height: 350px;">
                 </div>
             </span>
         </div>
@@ -1315,7 +1315,12 @@ class UsualLoadPageAccountingFunction {
         }).on('change', function () {
             if (apply_default_on_change) {
                 if ($(this).val()) {
-                    let info_template = `<h6>${$.fn.gettext('View the account information in dropdown')}</h6>`
+                    let selected = $(this).select2('data') || []
+                    let data_list = []
+                    for (let i = 0; i < selected.length; i++) {
+                        data_list.push(selected[i]?.['data'])
+                    }
+                    let info_template = UsualLoadPageAccountingFunction.ParseInfoTemplate(data_list)
                     element.closest('.input-group').find('.dropdown-menu').html(info_template)
                 }
             }

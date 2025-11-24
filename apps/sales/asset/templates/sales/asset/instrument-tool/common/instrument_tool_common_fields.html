@@ -2,7 +2,7 @@
 
 <div class="row">
     <div class="col-12 col-lg-6 col-md-6">
-        <div class="row">
+        <div class="row" hidden>
             <div class="col-10">
                 <div class="form-group">
                     <label class="form-label required" for="classification">
@@ -36,12 +36,21 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row" hidden>
             <div class="col-10">
                 <div class="form-group">
                     <label class="form-label required" for="tool-product-code">{% trans 'Offset Item' %}</label>
                     <select name="product" class="form-select select2" id="tool-product-code" data-method="GET"
                             data-keyResp="product_list" data-url="{% url 'ProductListAPI' %}" required></select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-10">
+                <div class="form-group">
+                    <label class="form-label required" for="asset-category">{% trans 'Asset Category' %}</label>
+                    <select name="asset_category_id" class="form-select select2" id="asset-category" data-method="GET"
+                            data-keyResp="asset_category_list" data-url="{% url 'AssetCategoryListAPI' %}" required></select>
                 </div>
             </div>
         </div>

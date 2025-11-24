@@ -7612,8 +7612,8 @@ class QuotationSubmitHandle {
                 let dataUOM = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
                 if (dataUOM) {
                     rowData['unit_of_measure_id'] = dataUOM?.['id'];
-                    rowData['product_uom_title'] = dataUOM?.['title'];
-                    rowData['product_uom_code'] = dataUOM?.['code'];
+                    rowData['expense_uom_title'] = dataUOM?.['title'];
+                    rowData['expense_uom_code'] = dataUOM?.['code'];
                     rowData['uom_data'] = dataUOM;
                 }
             }
@@ -7622,17 +7622,18 @@ class QuotationSubmitHandle {
                 let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
                 if (dataTax) {
                     rowData['tax_id'] = dataTax?.['id'];
-                    rowData['product_tax_title'] = dataTax?.['title'];
-                    rowData['product_tax_value'] = dataTax?.['rate'];
+                    rowData['expense_tax_title'] = dataTax?.['title'];
+                    rowData['expense_tax_value'] = dataTax?.['rate'];
                     rowData['tax_data'] = dataTax;
                 } else {
-                    rowData['product_tax_value'] = 0;
+                    rowData['expense_tax_value'] = 0;
                 }
             }
             let eleTaxAmount = row.querySelector('.table-row-tax-amount');
             if (eleTaxAmount) {
+                rowData['expense_tax_amount'] = 0;
                 if ($(eleTaxAmount).valCurrency()) {
-                    rowData['product_tax_amount'] = parseFloat($(eleTaxAmount).valCurrency());
+                    rowData['expense_tax_amount'] = parseFloat($(eleTaxAmount).valCurrency());
                 }
             }
             let eleQuantity = row.querySelector('.table-row-quantity');

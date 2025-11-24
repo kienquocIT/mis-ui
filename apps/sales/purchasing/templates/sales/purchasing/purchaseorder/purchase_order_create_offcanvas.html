@@ -1,0 +1,260 @@
+{% load i18n %}
+
+<div class="offcanvas offcanvas-end w-95" tabindex="-1" id="purchaseRequestCanvas" aria-labelledby="offcanvasTopLabel">
+    <div class="modal-header">
+        <h5><b>{% trans 'Select items from purchase request' %}</b></h5>
+        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="row">
+            <div class="col-4 border-right">
+                <div data-simplebar class="h-500p nicescroll-bar">
+                    <table
+                        id="datable-purchase-request"
+                        class="table nowrap w-100"
+                        data-url="{% url "PurchaseRequestSaleListAPI" %}"
+                        data-method="GET"
+                    >
+                        <thead>
+                        <tr class="bg-light">
+                            <th class="w-5">#</th>
+                            <th class="w-80">{% trans 'Purchase request' %}</th>
+                            <th class="w-15">{% trans 'code' %}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-8">
+                <div data-simplebar class="h-500p nicescroll-bar" id="sroll-datable-purchase-request-product">
+                    <div id="table-purchase-request-product-area">
+                        <table
+                            id="datable-purchase-request-product"
+                            class="table nowrap min-w-800p w-100"
+                            data-url="{% url 'PurchaseRequestProductListAPI' %}"
+                            data-method="GET"
+                        >
+                            <thead>
+                            <tr class="bg-light">
+                                <th>#</th>
+                                <th>{% trans 'Product' %}</th>
+                                <th>{% trans 'PR code' %}</th>
+                                <th>{% trans 'UOM' %}</th>
+                                <th>{% trans 'Quantity' %}</th>
+                                <th>{% trans 'Remain' %}</th>
+                                <th>{% trans 'Quantity order' %}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="table-purchase-request-product-merge-area" hidden>
+                        <table
+                            id="datable-purchase-request-product-merge"
+                            class="table nowrap w-100"
+                            data-url="{% url 'SaleOrderListAPI' %}"
+                            data-method="get"
+                        >
+                            <thead>
+                            <tr class="bg-light">
+                                <th>#</th>
+                                <th>{% trans 'Product' %}</th>
+                                <th>{% trans 'PR code' %}</th>
+                                <th>{% trans 'UOM' %}</th>
+                                <th>{% trans 'Quantity' %}</th>
+                                <th>{% trans 'Remain' %}</th>
+                                <th>{% trans 'Quantity order' %}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-8">
+                        <div class="form-check form-check-lg">
+                            <input type="checkbox" class="form-check-input" id="merge-same-product">
+                            <label
+                                class="form-check-label"
+                                for="merge-same-product"
+                            >{% trans 'Merge same product in 1 line, convert to reference unit if there is more 1 UOM' %}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas">{% trans 'Close' %}</button>
+        <button type="button" class="btn btn-primary" id="btn-confirm-add-purchase-request" data-bs-dismiss="offcanvas">{% trans 'Save' %}</button>
+    </div>
+</div>
+
+<div class="modal fade" id="purchaseQuotationModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseQuotationModalCenter" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><b>{% trans 'Select purchase quotation' %}</b></h5>
+                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+            </div>
+            <div class="modal-body">
+                <div class="row" hidden>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="box-purchase-order-pqr" class="form-label">{% trans 'PQ Request' %}</label>
+                            <select class="form-select" id="box-purchase-order-pqr"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row expense-option-list" id="sroll-datable-purchase-quotation">
+                    <table
+                        id="datable-purchase-quotation"
+                        class="table nowrap w-100"
+                        data-url="{% url 'PurchaseQuotationSaleListAPI' %}"
+                        data-method="get"
+                    >
+                        <thead>
+                        <tr class="bg-light">
+                            <th class="w-5">#</th>
+                            <th class="w-30">{% trans 'Purchase quotation' %}</th>
+                            <th class="w-30">{% trans 'Supplier' %}</th>
+                            <th class="w-20">{% trans 'PQ request' %}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                <button type="button" class="btn btn-primary" id="btn-confirm-add-purchase-quotation" data-bs-dismiss="modal">{% trans 'Next' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div
+        class="modal fade" id="viewPriceModal" tabindex="-1"
+        role="dialog" aria-labelledby="viewPriceModal"
+>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><b>{% trans 'Price of purchase quotation' %}</b></h5>
+                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="quotation_products_data">{% trans 'Close' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div
+        class="modal fade" id="selectInvoiceModal" tabindex="-1"
+        role="dialog" aria-labelledby="selectInvoiceModal"
+>
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><b>{% trans 'Select invoice' %}</b></h5>
+                <button
+                        type="button"
+                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
+                        data-bs-dismiss="modal"
+                ><span class="icon"><i class="far fa-window-close"></i></span></button>
+            </div>
+            <div class="modal-body">
+                <table
+                        id="table-select-invoice"
+                        class="table nowrap w-100 mb-5"
+                >
+                    <thead>
+                    <tr class="bg-light">
+                        <th class="w-15">{% trans 'Invoice issue' %}</th>
+                        <th class="w-25">{% trans 'Description' %}</th>
+                        <th class="w-20">{% trans 'Percentage' %}</th>
+                        <th class="w-15">{% trans 'Tax' %}</th>
+                        <th class="w-25">{% trans 'Total value' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" class="btn btn-primary" id="btn-save-select-invoice" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div
+        class="modal fade" id="selectReconcileModal" tabindex="-1"
+        role="dialog" aria-labelledby="selectReconcileModal"
+>
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><b>{% trans 'Select invoice' %}</b></h5>
+                <button
+                        type="button"
+                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
+                        data-bs-dismiss="modal"
+                ><span class="icon"><i class="far fa-window-close"></i></span></button>
+            </div>
+            <div class="modal-body">
+                <table
+                        id="table-select-reconcile"
+                        class="table nowrap w-100 mb-5"
+                >
+                    <thead>
+                    <tr class="bg-light">
+                        <th class="w-15">{% trans 'Invoice issue' %}</th>
+                        <th class="w-25">{% trans 'Description' %}</th>
+                        <th class="w-20">{% trans 'Percentage' %}</th>
+                        <th class="w-15">{% trans 'Tax' %}</th>
+                        <th class="w-25">{% trans 'Total value' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" class="btn btn-primary" id="btn-save-select-reconcile" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button type="button" class="btn btn-primary" id="btn-warning-add-product" data-bs-toggle="modal" data-bs-target="#warningAddProductModalCenter" hidden></button>
+<div class="modal fade" id="warningAddProductModalCenter" tabindex="-1" role="dialog" aria-labelledby="warningAddProductModalCenter" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body modal-body-warning-add-product mb-2">
+                <h6 class="mb-3"><b>{% trans 'Warning' %}</b></h6>
+                <p>{% trans 'All selected purchase requests and related datas will be removed' %}</p>
+                <p>{% trans 'Do you wish to continue?' %}</p>
+            </div>
+            <div class="row modal-footer-warning-add-product">
+                <div class="col-6">
+                    <button type="button" class="btn btn-link btn-cancel-add-product" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                </div>
+                <div class="col-6">
+                    <button type="button" class="btn btn-link btn-continue-add-product" data-bs-dismiss="modal" id="btn-continue-add-product">{% trans 'Continue' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

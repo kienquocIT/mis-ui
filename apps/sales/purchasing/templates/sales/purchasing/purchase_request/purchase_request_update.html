@@ -48,6 +48,9 @@
 {% block modalData %}
     {% include 'sales/purchasing/purchase_request/common/modals.html' %}
 {% endblock %}
+{% block dataHiddenGroup %}
+    {{ data.app_id|json_script:'app_id_current' }}
+{% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
@@ -55,4 +58,5 @@
     <script src="{% static 'assets/sales/purchasing/js/purchase_request/purchase_request_common.js' %}"></script>
     <script src="{% static 'assets/sales/purchasing/js/purchase_request/purchase_request_update.js' %}"></script>
     <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
+{#    <script src="{% static 'assets/js/extends/budget/budget_common.js' %}"></script>#}
 {% endblock %}

@@ -33,8 +33,9 @@ class PurchaseRequestCreate(View):
     )
     def get(self, request, *args, **kwargs):
         return {
-            'data': {'employee_current': request.user.employee_current_data},
-        }, status.HTTP_200_OK
+                   'data': {'employee_current': request.user.employee_current_data},
+                   'app_id': 'fbff9b3f-f7c9-414f-9959-96d3ec2fb8bf',
+               }, status.HTTP_200_OK
 
 
 class PurchaseRequestDetail(View):
@@ -48,7 +49,7 @@ class PurchaseRequestDetail(View):
         icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        return {'app_id': 'fbff9b3f-f7c9-414f-9959-96d3ec2fb8bf',}, status.HTTP_200_OK
 
 
 class PurchaseRequestUpdate(View):
@@ -66,7 +67,8 @@ class PurchaseRequestUpdate(View):
         return {
             'data': {'employee_current': request.user.employee_current_data},
             'input_mapping_properties': input_mapping_properties,
-            'form_id': 'frm-detail-pr'
+            'form_id': 'frm-detail-pr',
+            'app_id': 'fbff9b3f-f7c9-414f-9959-96d3ec2fb8bf',
         }, status.HTTP_200_OK
 
 

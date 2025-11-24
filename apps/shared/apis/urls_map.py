@@ -930,6 +930,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DIMENSION_ACCOUNT_MAP_DETAIL = StringUrl('accounting-setting/dimension-account-map/detail/{pk}')
     DIMENSION_SPLIT_TEMPLATE_LIST = StringUrl('accounting-setting/dimension-split-template/list')
     DIMENSION_SPLIT_TEMPLATE_DETAIL = StringUrl('accounting-setting/dimension-split-template/detail/{pk}')
+    ASSET_CATEGORY_LIST = StringUrl('accounting-setting/asset-category/list')
+    ASSET_CATEGORY_DETAIL = StringUrl('accounting-setting/asset-category/detail/{pk}')
 
     JOURNAL_ENTRY_LIST = StringUrl('journal-entry/list')
     JOURNAL_ENTRY_DETAIL = StringUrl('journal-entry/detail/{pk}')
@@ -1053,3 +1055,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     INITIAL_BALANCE_LIST = StringUrl('accounting-setting/initial-balance/list')
     INITIAL_BALANCE_DETAIL = StringUrl('accounting-setting/initial-balance/detail/{pk}')
+
+    # accounting - budget
+    BUDGET_LIST = StringUrl('budget/list')
+    BUDGET_LINE_LIST = StringUrl('budget/budget-line/list')

@@ -1002,6 +1002,11 @@ class MenusFinancials:
                 view_name='DimensionSplitTemplateList',
                 icon='<i class="fa fa-link"></i>',
             ),
+            MenuCommon(
+                name='Asset Category', code='menu_asset_category_list',
+                view_name='AssetCategoryList',
+                icon='<i class="fas fa-car"></i>',
+            ),
         ],
     )
     ASSET = MenuCommon(

@@ -12363,3 +12363,39 @@ msgstr "Số serial này đã được chọn. Vui lòng chọn số serial khá
 #
 msgid "Auto remove background"
 msgstr "Tự động xóa nền"
+
+#
+msgid "1st Dimension"
+msgstr "Chiều thứ nhất"
+
+#
+msgid "1st Value"
+msgstr "Giá trị thứ nhất"
+
+#
+msgid "2nd Dimension"
+msgstr "Chiều thứ hai"
+
+#
+msgid "2nd Value"
+msgstr "Giá trị thứ hai"
+
+#
+msgid "Consumed"
+msgstr "Đã tiêu thụ"
+
+#
+msgid "Consume"
+msgstr "Tiêu thụ"
+
+#
+msgid "The consume value cannot be greater than the available value"
+msgstr "Giá trị tiêu thụ không thể lớn hơn giá trị khả dụng"
+
+#
+msgid "Dimensions must be different"
+msgstr "Các chiều phải khác nhau"
+
+#
+msgid "Dimension values must be different with other row"
+msgstr "Bộ giá trị ở mỗi dòng dòng phải khác nhau"

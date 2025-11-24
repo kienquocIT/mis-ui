@@ -32,10 +32,14 @@
 {% block modalData %}
     {% include 'sales/financialcashflow/cashoutflow/common/modals.html' %}
 {% endblock %}
+{% block dataHiddenGroup %}
+    {{ data.app_id|json_script:'app_id_current' }}
+{% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/sales/financialcashflow/js/cashoutflow/cashoutflow_common.js' %}"></script>
     <script src="{% static 'assets/sales/financialcashflow/js/cashoutflow/cashoutflow_update.js' %}"></script>
+    <script src="{% static 'assets/js/extends/budget/budget_common.js' %}"></script>
 {% endblock %}

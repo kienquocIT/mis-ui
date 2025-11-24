@@ -6,8 +6,9 @@ from apps.accounting.accountingsettings.views import (
     DimensionDefinitionDetailAPI, DimensionValueList, DimensionDefinitionWithValueAPI, DimensionValueListAPI,
     DimensionValueDetailAPI, DimensionSyncConfigApplicationListAPI, DimensionSyncConfigList, DimensionSyncConfigListAPI,
     DimensionSyncConfigDetailAPI, DimensionListForAccountingAccountAPI, DimensionAccountList, DimensionAccountListAPI,
-    DimensionAccountDetailAPI, DimensionSplitTemplateList, DimensionSplitTemplateListAPI,
-    DimensionSplitTemplateDetailAPI, InitialBalanceDetail, InitialBalanceDetailAPI, InitialBalanceUpdate,
+    DimensionAccountDetailAPI, InitialBalanceDetail, InitialBalanceUpdate, InitialBalanceDetailAPI, AssetCategoryList,
+    AssetCategoryListAPI, AssetCategoryDetailAPI, DimensionSplitTemplateList, DimensionSplitTemplateListAPI,
+    DimensionSplitTemplateDetailAPI
 )
 
 urlpatterns = [
@@ -24,8 +25,13 @@ urlpatterns = [
     path('initial-balance/detail/<str:pk>', InitialBalanceDetail.as_view(), name='InitialBalanceDetail'),
     path('initial-balance/update/<str:pk>', InitialBalanceUpdate.as_view(), name='InitialBalanceUpdate'),
     path('initial-balance/detail/api/<str:pk>', InitialBalanceDetailAPI.as_view(), name='InitialBalanceDetailAPI'),
+] + [
+    path('asset-category/list', AssetCategoryList.as_view(), name='AssetCategoryList'),
+    path('asset-category/list/api', AssetCategoryListAPI.as_view(), name='AssetCategoryListAPI'),
+    path('asset-category/detail/api/<str:pk>', AssetCategoryDetailAPI.as_view(), name='AssetCategoryDetailAPI'),
 ]
 
+# dimension
 urlpatterns += [
     # view url
     path('dimension-definition/list', DimensionDefinitionList.as_view(), name='DimensionDefinitionList'),

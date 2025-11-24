@@ -55,7 +55,18 @@ $(document).ready(function() {
                         <span>${$.fn.gettext('Save changes')}</span>
                     </span>
                 </button>`;
-                return !row?.['can_change_account'] ? change_btn + save_btn : ''
+                let add_special_rule_btn = `
+                    <a class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover btn-xs btn-add-special-rule"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modal-special-rule"
+                        title="${$.fn.gettext('Add special rule')}" 
+                        data-key="${row?.['transaction_key']}" 
+                        data-title="${row?.['title']}"
+                        data-foreign-title="${row?.['foreign_title']}">
+                       <span class="btn-icon-wrap"><span class="feather-icon text-blue"><i class="fa-solid fa-location-crosshairs"></i></span></span>
+                    </a>
+                `;
+                return (row?.['can_change_account'] ? change_btn + save_btn : '') + add_special_rule_btn
             }
         },
     ];
@@ -172,4 +183,40 @@ $(document).ready(function() {
     $(document).on('click', '.btn-change-account', function () {
         $(this).closest('tr').find('.row-account').prop('disabled', false)
     })
+
+    const $modal_special_rule = $('#modal-special-rule');
+    const $rule_warehouse = $('#rule-warehouse');
+    const $rule_product_type = $('#rule-product-type');
+    const $rule_product = $('#rule-product');
+    const $rule_account = $('#rule-account');
+
+    $(document).on('click', '.btn-add-special-rule', function() {
+        let key = $(this).attr('data-key');
+        let title = $(this).attr('data-title');
+        let fg_title = $(this).attr('data-foreign-title');
+
+        $('#form-special-rule')[0].reset();
+        $modal_special_rule.find('select').val(null).trigger('change');
+
+        $('#rule-transaction-key').val(key);
+        $('#rule-transaction-fg-title').text(fg_title);
+        $('#rule-transaction-title').text(title);
+
+        if (!$modal_special_rule.attr('data-init')) {
+            UsualLoadPageFunction.LoadWarehouse({
+                element: $rule_warehouse
+            })
+            UsualLoadPageFunction.LoadProductType({
+                element: $rule_product_type
+            })
+            UsualLoadPageFunction.LoadProduct({
+                element: $rule_product
+            })
+            UsualLoadPageAccountingFunction.LoadAccountingAccount({
+                element: $rule_account,
+                data_params: {'is_account': true},
+            })
+            $modal_special_rule.data('init', true);
+        }
+    });
 });

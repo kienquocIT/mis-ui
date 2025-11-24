@@ -16,3 +16,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#
+msgid "When the condition is satisfied"
+msgstr "Khi điều kiện sau được thỏa mãn"
+
+#
+msgid "Then account for it"
+msgstr "Thì hạch toán vào"
+
+#
+msgid "Adding special rule for"
+msgstr "Đang thêm quy tắc đặt biệt cho"
+
+#
+msgid "Add special rule"
+msgstr "Thêm quy tắc đặt biệt"

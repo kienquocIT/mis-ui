@@ -106,7 +106,7 @@ $(document).ready(function() {
         });
     }
 
-    // loadAccountDeterminationTable()
+    loadAccountDeterminationTable()
 
     $(document).on('change', '.row-account', function () {
         $(this).closest('tr').find('.btn-change-account').prop('hidden', true)

@@ -1249,14 +1249,48 @@ class UsualLoadPageAccountingFunction {
                 <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa-regular fa-circle-question"></i>
                 </a>
-                <div class="dropdown-menu bflow-mirrow-card-80 p-3" style="min-width: 200px;">
-                    <h5 class="row-account-code fw-bold"></h5>
-                    <h6 class="row-fk-account-name"></h6>
-                    <h6 class="row-account-name"></h6>
+                <div class="dropdown-menu bflow-mirrow-card-100 p-0" style="min-width: 250px;">
                 </div>
             </span>
         </div>
     `;
+
+    static default_account_select2_multiple = `
+        <div class="input-group flex-nowrap">
+            <select class="form-select select2 row-account" multiple></select>
+            <span class="input-group-text p-0">
+                <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-regular fa-circle-question"></i>
+                </a>
+                <div class="dropdown-menu bflow-mirrow-card-100 p-0" style="min-width: 250px; overflow-y: auto; max-height: 350px;">
+                </div>
+            </span>
+        </div>
+    `;
+
+    static ParseInfoTemplate(data) {
+        let info_template = ``
+        for (let i = 0; i < data.length; i++) {
+            info_template += `<tr>
+                <td>
+                    <h6 class="row-account-code fw-bold m-0">${data[i]?.['acc_code'] || ''}</h6>
+                </td>
+                <td>
+                    <h6 class="row-fk-account-name m-0">${data[i]?.['foreign_acc_name'] || ''}</h6>
+                    <h6 class="row-account-name m-0">${data[i]?.['acc_name'] || ''}</h6>
+                </td>
+            </tr>`
+        }
+        return `<table class="table table-sm nowrap w-100 m-0">
+                    <thead class="bg-primary-light-5">
+                        <tr>
+                            <th>${$.fn.gettext('Code')}</th>
+                            <th>${$.fn.gettext('Description')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>${info_template}</tbody>
+                </table>`
+    }
 
     /**
      * Load ô AccountingAccount (expected-data-url = ChartOfAccountsListAPI)
@@ -1265,10 +1299,11 @@ class UsualLoadPageAccountingFunction {
      * @param {Boolean} [allow_clear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
+     * @param {Boolean} is_multiple - is_multiple
      * @param {Boolean} apply_default_on_change - apply_default_on_change
      * @returns {void}
      */
-    static LoadAccountingAccount({element, data=null, allow_clear=true, data_params = {}, data_url='', apply_default_on_change=true}) {
+    static LoadAccountingAccount({element, data=null, allow_clear=true, data_params = {}, data_url='', is_multiple=false, apply_default_on_change=true}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -1294,18 +1329,26 @@ class UsualLoadPageAccountingFunction {
         }).on('change', function () {
             if (apply_default_on_change) {
                 if ($(this).val()) {
-                    let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
-                    element.closest('.input-group').find('.row-account-code').text(selected?.['acc_code'] || '')
-                    element.closest('.input-group').find('.row-fk-account-name').text(selected?.['foreign_acc_name'] || '')
-                    element.closest('.input-group').find('.row-account-name').text(`(${selected?.['acc_name'] || ''})`)
+                    let selected = $(this).select2('data') || []
+                    let data_list = []
+                    for (let i = 0; i < selected.length; i++) {
+                        data_list.push(selected[i]?.['data'])
+                    }
+                    let info_template = UsualLoadPageAccountingFunction.ParseInfoTemplate(data_list)
+                    element.closest('.input-group').find('.dropdown-menu').html(info_template)
                 }
             }
         })
 
-        if (Object.keys(data).length > 0) {
-            element.closest('.input-group').find('.row-account-code').text(data?.['acc_code'] || '')
-            element.closest('.input-group').find('.row-fk-account-name').text(data?.['foreign_acc_name'] || '')
-            element.closest('.input-group').find('.row-account-name').text(`(${data?.['acc_name'] || ''})`)
-        }
+         if (is_multiple) {
+             let info_template = UsualLoadPageAccountingFunction.ParseInfoTemplate(data)
+             element.closest('.input-group').find('.dropdown-menu').html(info_template)
+         }
+         else {
+             if (Object.keys(data).length > 0) {
+                 let info_template = UsualLoadPageAccountingFunction.ParseInfoTemplate([data])
+                 element.closest('.input-group').find('.dropdown-menu').html(info_template)
+             }
+         }
     }
 }

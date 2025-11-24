@@ -917,13 +917,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/account-determination/list')
     ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/account-determination/detail/{pk}')
-    WAREHOUSE_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/warehouse-account-determination/list')
-    WAREHOUSE_ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/warehouse-account-determination/detail/{pk}')
-    PRODUCT_TYPE_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/product-type-account-determination/list')
-    PRODUCT_TYPE_ACCOUNT_DETERMINATION_DETAIL = StringUrl(
-        'accounting-setting/product-type-account-determination/detail/{pk}')
-    PRODUCT_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/product-account-determination/list')
-    PRODUCT_ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/product-account-determination/detail/{pk}')
     DIMENSION_DEFINITION_LIST = StringUrl('accounting-setting/dimension-definition/list')
     DIMENSION_DEFINITION_DETAIL = StringUrl('accounting-setting/dimension-definition/detail/{pk}')
     DIMENSION_DEFINITION_WITH_VALUES = StringUrl('accounting-setting/dimension-definition-values/{pk}')
@@ -937,6 +930,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DIMENSION_ACCOUNT_MAP_DETAIL = StringUrl('accounting-setting/dimension-account-map/detail/{pk}')
     DIMENSION_SPLIT_TEMPLATE_LIST = StringUrl('accounting-setting/dimension-split-template/list')
     DIMENSION_SPLIT_TEMPLATE_DETAIL = StringUrl('accounting-setting/dimension-split-template/detail/{pk}')
+    ASSET_CATEGORY_LIST = StringUrl('accounting-setting/asset-category/list')
+    ASSET_CATEGORY_DETAIL = StringUrl('accounting-setting/asset-category/detail/{pk}')
 
     JOURNAL_ENTRY_LIST = StringUrl('journal-entry/list')
     JOURNAL_ENTRY_DETAIL = StringUrl('journal-entry/detail/{pk}')
@@ -1060,3 +1055,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     INITIAL_BALANCE_LIST = StringUrl('accounting-setting/initial-balance/list')
     INITIAL_BALANCE_DETAIL = StringUrl('accounting-setting/initial-balance/detail/{pk}')
+
+    # accounting - budget
+    BUDGET_LIST = StringUrl('budget/list')
+    BUDGET_LINE_LIST = StringUrl('budget/budget-line/list')

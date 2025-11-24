@@ -811,7 +811,17 @@ class COFHandler {
         else if (pageElements.$cof_type.val() === '3') {
         }
 
-        frm.dataForm['payment_method_data'] = pageElements.$btn_modal_payment_method.attr('data-payment-method') ? JSON.parse(pageElements.$btn_modal_payment_method.attr('data-payment-method')) : {}
+        // frm.dataForm['payment_method_data'] = pageElements.$btn_modal_payment_method.attr('data-payment-method') ? JSON.parse(pageElements.$btn_modal_payment_method.attr('data-payment-method')) : {}
+        frm.dataForm['payment_method_data'] = {
+            'cash_value': pageElements.$cash_value.attr('value'),
+            'bank_value': pageElements.$bank_value.attr('value'),
+            'account_bank_account_id': pageElements.$account_bank_account.val(),
+            'banking_information': pageElements.$banking_information.val(),
+        }
+
+        // budget line data
+        frm.dataForm['total_value'] = BudgetControl.dtbTotalConsume();
+        frm.dataForm['budget_line_data'] = BudgetControl.setupSubmitTblBudget();
 
         // console.log(frm)
         return frm
@@ -835,6 +845,40 @@ class COFHandler {
                     pageElements.$posting_date.val(moment(data?.['posting_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
                     pageElements.$document_date.val(moment(data?.['document_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
                     pageElements.$description.val(data?.['description'])
+
+                    const data_inherit = Object.keys(data?.['employee_inherit'] || {}).length > 0 ? [{
+                        "id": data?.['employee_inherit']?.['id'],
+                        "full_name": data?.['employee_inherit']?.['full_name'] || '',
+                        "first_name": data?.['employee_inherit']?.['first_name'] || '',
+                        "last_name": data?.['employee_inherit']?.['last_name'] || '',
+                        "email": data?.['employee_inherit']?.['email'] || '',
+                        "is_active": data?.['employee_inherit']?.['is_active'] || false,
+                        "selected": true,
+                    }] : [];
+                    const data_opp = Object.keys(data?.['opportunity'] || {}).length > 0 ? [{
+                        "id": data?.['opportunity']?.['id'] || '',
+                        "title": data?.['opportunity']?.['title'] || '',
+                        "code": data?.['opportunity']?.['code'] || '',
+                        "selected": true,
+                    }] : [];
+                    const data_process = Object.keys(data?.['process'] || {}).length > 0 ? [{
+                        ...data?.['process'],
+                        "selected": true,
+                    }] : [];
+                    const data_process_stage_app = Object.keys(data?.['process_stage_app'] || []).length > 0 ? [{
+                        ...data['process_stage_app'],
+                        'selected': true,
+                    }] : [];
+
+                    new $x.cls.bastionField({
+                        has_opp: true,
+                        has_inherit: true,
+                        has_process: true,
+                        data_opp: data_opp,
+                        data_inherit: data_inherit,
+                        data_process: data_process,
+                        data_process_stage_app: data_process_stage_app,
+                    }).init();
 
                     if (pageElements.$cof_type.val() === '0') {
                         let supplier_data = data?.['supplier_data'] || {}
@@ -907,6 +951,9 @@ class COFHandler {
                         ['#btn-modal-payment-method']
                     );
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
+
+                    // budget line data
+                    BudgetControl.dtbRenderDetail(data?.['budget_line_data'] ? data?.['budget_line_data'] : []);
                 }
             })
     }
@@ -935,6 +982,8 @@ class COFEventHandler {
                 pageElements.$customer_space.prop('hidden', true)
                 pageElements.$employee_space.prop('hidden', false)
                 // pageElements.$account_space.prop('hidden', true)
+
+                BudgetControl.loadReInitDtbBudget();
             }
             else if (Number($(this).val()) === 3) {
                 pageElements.$supplier_space.prop('hidden', true)
@@ -1014,8 +1063,8 @@ class COFEventHandler {
         })
         pageElements.$save_changes_payment_method.on('click', function () {
             if (
-                parseFloat(pageElements.$cash_value.attr('value')) + parseFloat(pageElements.$bank_value.attr('value')) === parseFloat(pageElements.$total_payment_modal.attr('value'))
-                && parseFloat(pageElements.$total_payment_modal.attr('value')) !== 0
+                parseFloat(pageElements.$cash_value.attr('value')) + parseFloat(pageElements.$bank_value.attr('value')) === BudgetControl.dtbTotalConsume()
+                // && parseFloat(pageElements.$total_payment_modal.attr('value')) !== 0
             ) {
                 if (parseFloat(pageElements.$bank_value.attr('value')) > 0 && !pageElements.$account_bank_account.val()) {
                     if (!pageElements.$banking_information.val()) {
@@ -1107,7 +1156,7 @@ class COFEventHandler {
         pageElements.$opportunity_id.on('change', function () {
             let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
             if (selected) {
-                console.log(selected)
+                // console.log(selected)
                 COFPageFunction.LoadSaleOrder(selected?.['sale_order'] || {})
                 COFPageFunction.LoadLeaseOrder(selected?.['lease_order'] || {})
                 pageElements.$so_mapped.prop('disabled', true)

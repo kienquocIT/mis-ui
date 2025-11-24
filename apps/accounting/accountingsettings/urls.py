@@ -1,15 +1,14 @@
 from django.urls import path
 from apps.accounting.accountingsettings.views import (
     ChartOfAccountsList, ChartOfAccountsListAPI,
-    AccountDeterminationList, AccountDeterminationListAPI, WarehouseAccountDeterminationListAPI,
-    ProductTypeAccountDeterminationListAPI, ProductAccountDeterminationListAPI, WarehouseAccountDeterminationDetailAPI,
-    ProductTypeAccountDeterminationDetailAPI, ProductAccountDeterminationDetailAPI, AccountDeterminationDetailAPI,
+    AccountDeterminationList, AccountDeterminationListAPI, AccountDeterminationDetailAPI,
     InitialBalanceList, InitialBalanceListAPI, DimensionDefinitionList, DimensionDefinitionListAPI,
     DimensionDefinitionDetailAPI, DimensionValueList, DimensionDefinitionWithValueAPI, DimensionValueListAPI,
     DimensionValueDetailAPI, DimensionSyncConfigApplicationListAPI, DimensionSyncConfigList, DimensionSyncConfigListAPI,
     DimensionSyncConfigDetailAPI, DimensionListForAccountingAccountAPI, DimensionAccountList, DimensionAccountListAPI,
-    DimensionAccountDetailAPI, DimensionSplitTemplateList, DimensionSplitTemplateListAPI,
-    DimensionSplitTemplateDetailAPI, InitialBalanceDetail, InitialBalanceDetailAPI, InitialBalanceUpdate,
+    DimensionAccountDetailAPI, InitialBalanceDetail, InitialBalanceUpdate, InitialBalanceDetailAPI, AssetCategoryList,
+    AssetCategoryListAPI, AssetCategoryDetailAPI, DimensionSplitTemplateList, DimensionSplitTemplateListAPI,
+    DimensionSplitTemplateDetailAPI
 )
 
 urlpatterns = [
@@ -20,23 +19,19 @@ urlpatterns = [
     path('account-determination/list/api', AccountDeterminationListAPI.as_view(), name='AccountDeterminationListAPI'),
     path('account-determination/detail/api/<str:pk>', AccountDeterminationDetailAPI.as_view(), name='AccountDeterminationDetailAPI'),
 ] + [
-    path('warehouse-account-determination/list/api', WarehouseAccountDeterminationListAPI.as_view(), name='WarehouseAccountDeterminationListAPI'),
-    path('warehouse-account-determination/detail/api/<str:pk>', WarehouseAccountDeterminationDetailAPI.as_view(), name='WarehouseAccountDeterminationDetailAPI'),
-] + [
-    path('product-type-account-determination/list/api', ProductTypeAccountDeterminationListAPI.as_view(), name='ProductTypeAccountDeterminationListAPI'),
-    path('product-type-account-determination/detail/api/<str:pk>', ProductTypeAccountDeterminationDetailAPI.as_view(), name='ProductTypeAccountDeterminationDetailAPI'),
-] + [
-    path('product-account-determination/list/api', ProductAccountDeterminationListAPI.as_view(), name='ProductAccountDeterminationListAPI'),
-    path('product-account-determination/detail/api/<str:pk>', ProductAccountDeterminationDetailAPI.as_view(), name='ProductAccountDeterminationDetailAPI'),
     # initial balance
-] + [
     path('initial-balance/list', InitialBalanceList.as_view(), name='InitialBalanceList'),
     path('initial-balance/list/api', InitialBalanceListAPI.as_view(), name='InitialBalanceListAPI'),
     path('initial-balance/detail/<str:pk>', InitialBalanceDetail.as_view(), name='InitialBalanceDetail'),
     path('initial-balance/update/<str:pk>', InitialBalanceUpdate.as_view(), name='InitialBalanceUpdate'),
     path('initial-balance/detail/api/<str:pk>', InitialBalanceDetailAPI.as_view(), name='InitialBalanceDetailAPI'),
+] + [
+    path('asset-category/list', AssetCategoryList.as_view(), name='AssetCategoryList'),
+    path('asset-category/list/api', AssetCategoryListAPI.as_view(), name='AssetCategoryListAPI'),
+    path('asset-category/detail/api/<str:pk>', AssetCategoryDetailAPI.as_view(), name='AssetCategoryDetailAPI'),
 ]
 
+# dimension
 urlpatterns += [
     # view url
     path('dimension-definition/list', DimensionDefinitionList.as_view(), name='DimensionDefinitionList'),

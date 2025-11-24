@@ -3,20 +3,21 @@ $(document).ready(function() {
     const columns_cfg = [
         {
             className: 'w-5',
-            'render': () => {
-                return ``;
-            }
+            render: () => ''
         },
         {
-            className: 'wrap-text',
-            'render': (data, type, row) => {
-                return `<span class="text-muted">${row?.['account_determination_type_convert']}</span>`;
+            render: (data, type, row) => {
+                return `<span class="text-muted">${row?.['account_determination_type_convert'] || ''}</span>`;
             }
         },
         {
             className: 'w-20',
-            'render': (data, type, row) => {
-                return `<span class="text-muted fw-bold">${row?.['title']}</span><br><span class="text-primary">${row?.['foreign_title']}</span>`;
+            render: (data, type, row) => {
+                return `<div class="d-flex flex-column">
+                            <span class="fw-bold">${row?.['foreign_title'] || ''}</span>
+                            <span>${row?.['title'] || ''}</span>
+                            <span class="small">${row?.['transaction_key'] || ''}</span>
+                        </div>`;
             }
         },
         {
@@ -29,15 +30,17 @@ $(document).ready(function() {
             }
         },
         {
-            className: 'w-25',
-            'render': (data, type, row) => {
-                return `<p>${row?.['description'] || ''}</p>`;
+            className: 'w-20',
+            render: (data, type, row) => {
+                let badge = row?.['is_custom'] ? `<span class="badge badge-soft-primary mb-1">${$.fn.gettext('Custom rule')}</span><br>` : ``;
+                return `<div>${badge}<span>${row?.['description'] || ''}</span></div>`;
             }
         },
         {
-            className: 'w-30',
-            'render': (data, type, row) => {
-                return `<p class="text-primary">${(row?.['example'] || '').replaceAll('. ', '.<br>')}</p>`;
+            className: 'w-20',
+            render: (data, type, row) => {
+                let ex = row?.['example'] || '';
+                return `<span class="text-primary">${ex.replaceAll('. ', '.<br>')}</span>`;
             }
         },
         {
@@ -52,10 +55,10 @@ $(document).ready(function() {
                         <span>${$.fn.gettext('Save changes')}</span>
                     </span>
                 </button>`;
-                return row?.['can_change_account'] ? change_btn + save_btn : ''
+                return !row?.['can_change_account'] ? change_btn + save_btn : ''
             }
         },
-    ]
+    ];
 
     function loadAccountDeterminationTable() {
         $account_determination_table.DataTable().clear().destroy()
@@ -159,7 +162,7 @@ $(document).ready(function() {
 
                 Promise.all([ajax_update_account_prd]).then(
                     (results) => {
-                        // loadAccountDeterminationTable()
+                        loadAccountDeterminationTable()
                     }
                 )
             }

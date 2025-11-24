@@ -9,12 +9,6 @@
                     <span class="nav-link-text">{% trans 'Bin Location' %}</span>
                 </a>
             </li>
-            <li class="nav-item" id="accounting-determination-tab">
-                <a class="nav-link" data-bs-toggle="tab" href="#tab_account_determination">
-                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-book"></i></span></span>
-                    <span class="nav-link-text">{% trans 'Account determination' %}</span>
-                </a>
-            </li>
         </ul>
     </div>
 </div>
@@ -54,39 +48,6 @@
         <div hidden class="row bin-location-area mt-3">
             <div class="col-12">
                 <div id="shelf-map" class="p-2 w-100 border rounded-3 min-h-350p"></div>
-            </div>
-        </div>
-    </div>
-    <div class="tab-pane fade" id="tab_account_determination">
-        <div class="row">
-            <div class="col-12">
-                {% if pk %}
-                    <table class="table nowrap w-100"
-                           id="warehouse-account-determination-table"
-                           data-method="GET"
-                           data-trans-change-confirm="{% trans 'Confirm this change?' %}"
-                           data-trans-change-noti="{% trans 'This action can not be undo!' %}"
-                           data-chart-of-account-url="{% url 'ChartOfAccountsListAPI' %}"
-{#                           data-url-detail="{% url 'WarehouseAccountDeterminationDetailAPI' pk=0 %}"#}
-{#                           data-url="{% url 'WarehouseAccountDeterminationListAPI' %}"#}
-                    >
-                        <thead class="bg-secondary-light-5">
-                        <tr>
-                            <th></th>
-                            <th>{% trans 'Type' %}</th>
-                            <th>{% trans 'Trading type defined' %}</th>
-                            <th>{% trans 'Account' %}</th>
-                            <th>{% trans 'Description' %}</th>
-                            <th>{% trans 'Change' %}</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                {% else %}
-                    <div class="alert alert-warning alert-wth-icon alert-dismissible fade show" role="alert">
-                        <span class="alert-icon-wrap"><i class="fa-solid fa-triangle-exclamation"></i></span> {% trans 'Transactions referencing this warehouse will use the accounts here to create Journal Entry. By default, the accounts are taken from Setting, you can update it.' %}
-                    </div>
-                {% endif %}
             </div>
         </div>
     </div>

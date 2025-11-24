@@ -45,12 +45,6 @@
                     <span class="nav-link-text">{% trans 'Variants' %}</span>
                 </a>
             </li>
-            <li class="nav-item" id="accounting-determination-tab">
-                <a class="nav-link" data-bs-toggle="tab" href="#tab_account_determination">
-                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-book"></i></span></span>
-                    <span class="nav-link-text">{% trans 'Account determination' %}</span>
-                </a>
-            </li>
         </ul>
     </div>
 </div>
@@ -485,51 +479,6 @@
                     </thead>
                     <tbody></tbody>
                 </table>
-            </div>
-        </div>
-    </div>
-    <div class="tab-pane fade" id="tab_account_determination">
-        <div class="row">
-            <div class="col-12 col-md-3 col-lg-3">
-                <div class="form-group">
-                    <label for="account-deter-referenced-by" class="form-label required">{% trans "Referenced by" %}</label>
-                    <select id="account-deter-referenced-by" class="form-select">
-                        <option value="0">{% trans 'Warehouse' %}</option>
-                        <option value="1">{% trans 'Product type' %}</option>
-                        <option value="2">{% trans 'This product' %}</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="row" hidden>
-            <div class="col-12">
-                {% if pk %}
-                    <table class="table nowrap w-100"
-                           id="product-account-determination-table"
-                           data-method="GET"
-                           data-trans-change-confirm="{% trans 'Confirm this change?' %}"
-                           data-trans-change-noti="{% trans 'This action can not be undo!' %}"
-                           data-chart-of-account-url="{% url 'ChartOfAccountsListAPI' %}"
-{#                           data-url-detail="{% url 'ProductAccountDeterminationDetailAPI' pk=0 %}"#}
-{#                           data-url="{% url 'ProductAccountDeterminationListAPI' %}"#}
-                    >
-                        <thead class="bg-secondary-light-5">
-                        <tr>
-                            <th></th>
-                            <th>{% trans 'Type' %}</th>
-                            <th>{% trans 'Trading type defined' %}</th>
-                            <th>{% trans 'Account' %}</th>
-                            <th>{% trans 'Description' %}</th>
-                            <th>{% trans 'Change' %}</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                {% else %}
-                    <div hidden class="alert alert-warning alert-wth-icon alert-dismissible fade show" id="account-deter-create-noti" role="alert">
-                        <span class="alert-icon-wrap"><i class="fa-solid fa-triangle-exclamation"></i></span> {% trans 'Transactions referencing this product will use the accounts here to create Journal Entry. By default, the accounts are taken by Warehouse, you can update it.' %}
-                    </div>
-                {% endif %}
             </div>
         </div>
     </div>

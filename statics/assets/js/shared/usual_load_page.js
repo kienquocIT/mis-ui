@@ -1249,7 +1249,7 @@ class UsualLoadPageAccountingFunction {
                 <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa-regular fa-circle-question"></i>
                 </a>
-                <div class="dropdown-menu bflow-mirrow-card-80 p-0" style="min-width: 250px;">
+                <div class="dropdown-menu bflow-mirrow-card-100 p-0" style="min-width: 250px;">
                 </div>
             </span>
         </div>
@@ -1262,7 +1262,7 @@ class UsualLoadPageAccountingFunction {
                 <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa-regular fa-circle-question"></i>
                 </a>
-                <div class="dropdown-menu bflow-mirrow-card-80 p-0" style="min-width: 250px; overflow-y: auto; max-height: 350px;">
+                <div class="dropdown-menu bflow-mirrow-card-100 p-0" style="min-width: 250px; overflow-y: auto; max-height: 350px;">
                 </div>
             </span>
         </div>
@@ -1281,7 +1281,7 @@ class UsualLoadPageAccountingFunction {
                 </td>
             </tr>`
         }
-        return `<table class="table table-sm nowrap w-100 m-0" style="background: none">
+        return `<table class="table table-sm nowrap w-100 m-0">
                     <thead class="bg-primary-light-5">
                         <tr>
                             <th>${$.fn.gettext('Code')}</th>

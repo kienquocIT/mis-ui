@@ -31,7 +31,7 @@ const tabSupplierPayableVariables = new TabSupplierPayableVariables();
 
 
 class TabSupplierPayableFunction {
-    static initSupplierPayableTable(data = [], option = 'create') {
+    static initSupplierPayableTable(data = []) {
         tabSupplierPayableElements.$tableSupplierPayable.DataTable().destroy();
         tabSupplierPayableElements.$tableSupplierPayable.DataTableDefault({
             data: data,

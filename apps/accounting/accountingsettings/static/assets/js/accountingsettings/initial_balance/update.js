@@ -42,6 +42,7 @@ $(document).ready(function () {
         dataForm["tab_money_data"] = TabMoneyFunction.combineTabCashData();
         dataForm['tab_customer_receivable_data'] = TabAccountReceivableFunction.combineTabAccountReceivableData();
         dataForm['tab_supplier_payable_data'] = TabSupplierPayableFunction.combineTabSupplierPayableData();
+        dataForm['tab_employee_payable_data'] = TabEmployeePayableFunction.combineTabEmployeePayableData();
         return {
             url: frm.dataUrl,
             method: 'PUT',

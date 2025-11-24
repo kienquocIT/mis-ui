@@ -27,23 +27,26 @@ class TabAccountFunction {
                 {
                     className: "w-40",
                     render: (data, type, row) => {
-                        return $(UsualLoadPageAccountingFunction.default_account_select2).prop('outerHTML')
+                        let $ele = $(UsualLoadPageAccountingFunction.default_account_select2);
+                        $ele.find('.row-account').prop('disabled', true);
+                        $ele.find('.row-account').addClass('row-access');
+                        return $ele.prop('outerHTML');
                     }
                 },
                 {
                     className: "w-25",
                     render: (data, type, row) => {
-                        return `<input class="form-control mask-money row-account-debit">`;
+                        return `<input class="form-control mask-money row-account-debit row-access">`;
                     }
                 },
                 {
                     className: "w-25",
                     render: (data, type, row) => {
-                        return `<input class="form-control mask-money row-account-credit">`;
+                        return `<input class="form-control mask-money row-account-credit row-access">`;
                     }
                 },
                 {
-                    className: "w-5 text-right",
+                    className: "w-5 text-center",
                     render: () => {
                         return `<button ${option === 'detail' ? 'disabled' : ''}
                                type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-account-row">

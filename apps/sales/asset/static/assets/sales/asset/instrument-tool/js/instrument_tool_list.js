@@ -49,13 +49,13 @@ $(document).ready(function () {
                         return `<div>${row?.['asset_code']}</div>`
                     }
                 },
-                {
-                    targets: 4,
-                    width: '10%',
-                    render: (data, type, row) => {
-                        return `<div>${row?.['product']?.['title']}</div>`
-                    }
-                },
+                // {
+                //     targets: 4,
+                //     width: '10%',
+                //     render: (data, type, row) => {
+                //         return `<div>${row?.['product']?.['title']}</div>`
+                //     }
+                // },
                 {
                     targets: 5,
                     width: '10%',

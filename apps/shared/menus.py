@@ -977,30 +977,35 @@ class MenusFinancials:
                 view_name='InitialBalanceList',
                 icon='<i class="fas fa-chart-bar"></i>',
             ),
+            # MenuCommon(
+            #     name='Dimension Definition', code='menu_dimension_definition_list',
+            #     view_name='DimensionDefinitionList',
+            #     icon='<i class="fa fa-pen-ruler"></i>',
+            # ),
+            # MenuCommon(
+            #     name='Dimension Value', code='menu_dimension_value_list',
+            #     view_name='DimensionValueList',
+            #     icon='<i class="fa fa-table"></i>',
+            # ),
+            # MenuCommon(
+            #     name='Dimension Sync Config', code='menu_dimension_sync_config_list',
+            #     view_name='DimensionSyncConfigList',
+            #     icon='<i class="fa fa-rotate"></i>',
+            # ),
+            # MenuCommon(
+            #     name='Dimension Account Mapping', code='menu_dimension_account_list',
+            #     view_name='DimensionAccountList',
+            #     icon='<i class="fa fa-link"></i>',
+            # ),
+            # MenuCommon(
+            #     name='Dimension Split Template', code='menu_dimension_split_template_list',
+            #     view_name='DimensionSplitTemplateList',
+            #     icon='<i class="fa fa-link"></i>',
+            # ),
             MenuCommon(
-                name='Dimension Definition', code='menu_dimension_definition_list',
-                view_name='DimensionDefinitionList',
-                icon='<i class="fa fa-pen-ruler"></i>',
-            ),
-            MenuCommon(
-                name='Dimension Value', code='menu_dimension_value_list',
-                view_name='DimensionValueList',
-                icon='<i class="fa fa-table"></i>',
-            ),
-            MenuCommon(
-                name='Dimension Sync Config', code='menu_dimension_sync_config_list',
-                view_name='DimensionSyncConfigList',
-                icon='<i class="fa fa-rotate"></i>',
-            ),
-            MenuCommon(
-                name='Dimension Account Mapping', code='menu_dimension_account_list',
-                view_name='DimensionAccountList',
-                icon='<i class="fa fa-link"></i>',
-            ),
-            MenuCommon(
-                name='Dimension Split Template', code='menu_dimension_split_template_list',
-                view_name='DimensionSplitTemplateList',
-                icon='<i class="fa fa-link"></i>',
+                name='Asset Category', code='menu_asset_category_list',
+                view_name='AssetCategoryList',
+                icon='<i class="fas fa-car"></i>',
             ),
         ],
     )

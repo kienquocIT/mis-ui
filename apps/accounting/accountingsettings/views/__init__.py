@@ -5,3 +5,4 @@ from .product_type_account_determination import *
 from .warehouse_account_determination import *
 from .initial_balance import *
 from .dimension import *
+from .asset_category import *

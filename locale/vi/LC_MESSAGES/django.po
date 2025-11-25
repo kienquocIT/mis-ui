@@ -9905,7 +9905,7 @@ msgid "Related Product Categories"
 msgstr "Danh sách loại sản phẩm liên quan"
 
 #
-msgid "Consulting name"
+msgid "Consulting Name"
 msgstr "Tên tư vấn"
 
 #
@@ -12359,3 +12359,7 @@ msgstr "Trạm chấp thuận là bắt buộc"
 #
 msgid "Serial is selected in other row. Please select another"
 msgstr "Số serial này đã được chọn. Vui lòng chọn số serial khác"
+
+#
+msgid "Estimated Value"
+msgstr "Giá trị ước tính"

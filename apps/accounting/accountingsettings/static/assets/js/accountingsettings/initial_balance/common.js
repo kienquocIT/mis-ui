@@ -19,25 +19,46 @@ const pageElements = new InitialBalanceElements();
  */
 class InitialBalancePageFunction {
     static CalculateAccountBalance(tab_account_balance_data=[]) {
+        let total_value = 0;
+
         // tab Money
         let tab_money_item = tab_account_balance_data.find(item => item?.['tab_type'] === 0)
         let tab_money_value = tab_money_item ? tab_money_item?.['tab_value'] || 0 : 0
         $('#balanceMoney span:eq(0)').attr('data-init-money', tab_money_value)
+        total_value += tab_money_value;
 
         // tab Goods
         let tab_goods_item = tab_account_balance_data.find(item => item?.['tab_type'] === 1)
         let tab_goods_value = tab_goods_item ? tab_goods_item?.['tab_value'] || 0 : 0
         $('#balanceGoods span:eq(0)').attr('data-init-money', tab_goods_value)
+        total_value += tab_goods_value;
 
         // tab Customer Receivable
         let tab_customer_receivable_item = tab_account_balance_data.find(item => item?.['tab_type'] === 2);
         let tab_customer_receivable_value = tab_customer_receivable_item ? tab_customer_receivable_item?.['tab_value'] || 0 : 0;
-        $('#balanceAccountReceivable span:eq(0)').attr('data-init-money', tab_customer_receivable_value)
+        $('#balanceAccountReceivable span:eq(0)').attr('data-init-money', tab_customer_receivable_value);
+        total_value += tab_customer_receivable_value;
+
+        // tab Supplier Payable
+        let tab_supplier_payable_item = tab_account_balance_data.find(item => item?.['tab_type'] === 3);
+        let tab_supplier_payable_value = tab_supplier_payable_item ? tab_supplier_payable_item?.['tab_value'] || 0 : 0;
+        $('#balanceSupplierPayable span:eq(0)').attr('data-init-money', tab_supplier_payable_value);
+        total_value += tab_supplier_payable_value;
+
+        // tab Employee Payable
+        let tab_employee_payable_item = tab_account_balance_data.find(item => item?.['tab_type'] === 4);
+        let tab_employee_payable_value = tab_employee_payable_item ? tab_employee_payable_item?.['tab_value'] || 0 : 0;
+        $('#balanceEmployeePayable span:eq(0)').attr('data-init-money', tab_employee_payable_value);
+        total_value += tab_employee_payable_value;
+
+        // tab Accounts
+        let tab_accounts_item = tab_account_balance_data.find(item => item?.['tab_type'] === 7);
+        let tab_accounts_value = tab_accounts_item ? tab_accounts_item?.['tab_value'] || 0 : 0;
+        $('#balanceAccounts span:eq(0)').attr('data-init-money', tab_accounts_value);
+        total_value += tab_accounts_value;
 
         // total
-        let total_value = tab_money_value + tab_goods_value + tab_customer_receivable_value
         $('#totalBalance span:eq(0)').attr('data-init-money', total_value)
-
         $.fn.initMaskMoney2();
     }
     static UpdateTabAccountBalance($row) {
@@ -73,9 +94,60 @@ class InitialBalancePageFunction {
                     new_credit_added += parseFloat($(ele).find('.row-account-receivable-credit').attr('value') || 0);
                 });
                 receivable_debit_added.prop('hidden', new_debit_added <= 0);
-                receivable_debit_added.attr('data-init-money', receivable_debit_added);
-                receivable_credit_added.prop('hidden', receivable_credit_added <= 0);
-                receivable_credit_added.attr('data-init-money', receivable_credit_added);
+                receivable_debit_added.attr('data-init-money', new_debit_added);
+                receivable_credit_added.prop('hidden', new_credit_added <= 0);
+                receivable_credit_added.attr('data-init-money', new_credit_added);
+                total_debit += new_debit_added
+                total_credit += new_credit_added
+            }
+            else if (table.attr('id') === 'tbl_supplier_payable') {
+                let tab_row = pageElements.$table_account_balance.find('tbody tr:eq(0');
+                let supplier_payable_debit_added = tab_row.find('span:eq(1)');
+                let supplier_payable_credit_added = tab_row.find('span:eq(2)');
+                let new_debit_added = 0;
+                let new_credit_added = 0;
+                table.find('tbody tr').each(function (index, ele) {
+                    new_debit_added +=  parseFloat($(ele).find('.row-supplier-payable-debit').attr('value') || 0);
+                    new_credit_added += parseFloat($(ele).find('.row-supplier-payable-credit').attr('value') || 0);
+                });
+                supplier_payable_debit_added.prop('hidden', new_debit_added <= 0);
+                supplier_payable_debit_added.attr('data-init-money', new_debit_added);
+                supplier_payable_credit_added.prop('hidden', new_credit_added <= 0);
+                supplier_payable_credit_added.attr('data-init-money', new_credit_added);
+                total_debit += new_debit_added
+                total_credit += new_credit_added
+            }
+            else if (table.attr('id') === 'tbl_employee_payable') {
+                let tab_row = pageElements.$table_account_balance.find('tbody tr:eq(0');
+                let employee_payable_debit_added = tab_row.find('span:eq(1)');
+                let employee_payable_credit_added = tab_row.find('span:eq(2)');
+                let new_debit_added = 0;
+                let new_credit_added = 0;
+                table.find('tbody tr').each(function (index, ele) {
+                    new_debit_added +=  parseFloat($(ele).find('.row-employee-payable-debit').attr('value') || 0);
+                    new_credit_added += parseFloat($(ele).find('.row-employee-payable-credit').attr('value') || 0);
+                });
+                employee_payable_debit_added.prop('hidden', new_debit_added <= 0);
+                employee_payable_debit_added.attr('data-init-money', new_debit_added);
+                employee_payable_credit_added.prop('hidden', new_credit_added <= 0);
+                employee_payable_credit_added.attr('data-init-money', new_credit_added);
+                total_debit += new_debit_added
+                total_credit += new_credit_added
+            }
+            else if (table.attr('id') === 'tbl_account') {
+                let tab_row = pageElements.$table_account_balance.find('tbody tr:eq(0');
+                let account_debit_added = tab_row.find('span:eq(1)');
+                let account_credit_added = tab_row.find('span:eq(2)');
+                let new_debit_added = 0;
+                let new_credit_added = 0;
+                table.find('tbody tr').each(function (index, ele) {
+                    new_debit_added +=  parseFloat($(ele).find('.row-account-debit').attr('value') || 0);
+                    new_credit_added += parseFloat($(ele).find('.row-account-credit').attr('value') || 0);
+                });
+                account_debit_added.prop('hidden', new_debit_added <= 0);
+                account_debit_added.attr('data-init-money', new_debit_added);
+                account_credit_added.prop('hidden', new_credit_added <= 0);
+                account_credit_added.attr('data-init-money', new_credit_added);
                 total_debit += new_debit_added
                 total_credit += new_credit_added
             }

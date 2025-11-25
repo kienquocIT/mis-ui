@@ -107,16 +107,22 @@ $(document).ready(function() {
                     render: () => ''
                 },
                 {
-                    className: 'w-40',
+                    className: 'w-30',
+                    render: (data, type, row) => {
+                        let badge = row?.['is_custom'] ? `<span class="badge badge-soft-primary mb-1">${$.fn.gettext('Custom rule')}</span><br>` : ``;
+                        return `<div>${badge}<span>${row?.['description'] || ''}</span></div>`;
+                    }
+                },
+                {
+                    className: 'w-30',
                     render: (data, type, row) => {
                         return $(UsualLoadPageAccountingFunction.default_account_select2).prop('outerHTML')
                     }
                 },
                 {
-                    className: 'w-50',
+                    className: 'w-30',
                     render: (data, type, row) => {
-                        let badge = row?.['is_custom'] ? `<span class="badge badge-soft-primary mb-1">${$.fn.gettext('Custom rule')}</span><br>` : ``;
-                        return `<div>${badge}<span>${row?.['description'] || ''}</span></div>`;
+                        return `<span class="text-primary">${row?.['example'] || ''}</span>`;
                     }
                 },
                 {

@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    let current_account_deter_id = null
+
     const $account_determination_table = $('#account-determination-table')
     function loadAccountDeterminationTable() {
         $account_determination_table.DataTable().clear().destroy()
@@ -59,7 +61,7 @@ $(document).ready(function() {
                     className: 'text-right w-10',
                     'render': (data, type, row) => {
                         let detail_btn = `
-                            <a class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover btn-xs btn-detail"
+                            <a class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover btn-detail"
                                 data-bs-toggle="modal"
                                 data-bs-target="#modal-detail-rule"
                                 title="${$.fn.gettext('Detail')}"
@@ -93,6 +95,7 @@ $(document).ready(function() {
     function loadDetailTable(data_list=[]) {
         $account_determination_sub_table.DataTable().clear().destroy()
         $account_determination_sub_table.DataTableDefault({
+            styleDom: 'hide-foot',
             useDataServer: false,
             rowIdx: true,
             reloadCurrency: true,
@@ -107,39 +110,55 @@ $(document).ready(function() {
                     render: () => ''
                 },
                 {
-                    className: 'w-30',
+                    className: 'w-15',
                     render: (data, type, row) => {
-                        let badge = row?.['is_custom'] ? `<span class="badge badge-soft-primary mb-1">${$.fn.gettext('Custom rule')}</span><br>` : ``;
-                        return `<div>${badge}<span>${row?.['description'] || ''}</span></div>`;
+                        return `<span>${row?.['transaction_key_sub'] || ''}</span>`;
                     }
                 },
                 {
-                    className: 'w-30',
+                    className: 'w-20',
+                    render: (data, type, row) => {
+                        return row?.['is_custom'] ? `<span>${row?.['description'] || ''}</span><br><span class="text-primary">${$.fn.gettext('Special rule')}<br>${row?.['context_description']}</span>` : `<span>${row?.['description'] || ''}</span>`;
+                    }
+                },
+                {
+                    className: 'w-20',
                     render: (data, type, row) => {
                         let $ele = $(UsualLoadPageAccountingFunction.default_account_select2)
-                        $ele.prop('disabled', true)
+                        $ele.find('.row-account').prop('disabled', true);
                         return $ele.prop('outerHTML')
                     }
                 },
                 {
-                    className: 'w-30',
+                    className: 'w-35',
                     render: (data, type, row) => {
-                        return `<span class="text-primary">${row?.['example'] || ''}</span>`;
+                        return `<span>${(row?.['example'] || '')}</span>`;
                     }
                 },
                 {
                     className: 'text-right w-5',
                     'render': (data, type, row) => {
-                        let change_btn = `<a class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover btn-xs btn-change-account">
+                        let change_btn = row?.['can_change_account'] ? `<a class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover btn-change-account">
                            <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i class="fa-solid fa-pen-to-square"></i></span></span>
-                        </a>`;
-                        let save_btn = `<button type="button" data-id="${row?.['id']}" hidden class="btn btn-custom btn-primary btn-xs btn-save-change-account">
+                        </a>` : ''
+                        let save_btn = row?.['can_change_account'] ? `<button type="button" data-id="${row?.['id']}" hidden class="btn btn-custom btn-primary btn-save-change-account">
                             <span>
                                 <span class="icon"><span class="feather-icon"><i class="fa-solid fa-file-pen"></i></span></span>
                                 <span>${$.fn.gettext('Save changes')}</span>
                             </span>
-                        </button>`;
-                        return row?.['can_change_account'] ? change_btn + save_btn : ''
+                        </button>` : ''
+                        let add_special_rule_btn = !row?.['is_custom'] ? `<button type="button"
+                                class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover btn-add-special-rule"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modal-special-rule"
+                                data-id-sub="${row?.['id'] || ''}"
+                                data-key-sub="${row?.['transaction_key_sub'] || ''}"
+                                data-des-sub="${row?.['description'] || ''}"
+                                title="${$.fn.gettext('Add special rule')}"
+                            >
+                            <span><i class="fa-regular fa-square-plus"></i></span>
+                        </button>` : ''
+                        return change_btn + save_btn + add_special_rule_btn
                     }
                 },
             ],
@@ -163,7 +182,6 @@ $(document).ready(function() {
     })
 
     $(document).on('click', '.btn-save-change-account', function () {
-        let row_id = $(this).attr('data-id')
         let rule_data = $(this).closest('tr').find('.row-account').val()
         Swal.fire({
             html:
@@ -189,7 +207,7 @@ $(document).ready(function() {
         }).then((result) => {
             if (result.value) {
                 let ajax_update_account_prd = $.fn.callAjax2({
-                    url: $account_determination_table.attr('data-url-detail').replace('/0', `/${row_id}`),
+                    url: $account_determination_table.attr('data-url-detail').replace('/0', `/${current_account_deter_id}`),
                     data: {'rule_data': rule_data},
                     method: 'PUT'
                 }).then(
@@ -224,50 +242,60 @@ $(document).ready(function() {
     const $rule_product_type = $('#rule-product-type');
     const $rule_product = $('#rule-product');
     const $rule_account = $('#rule-account');
+    const $rule_description = $('#rule-description');
+    const $rule_example = $('#rule-example');
     const $btn_save_special_rule = $('#btn-save-special-rule');
 
     $(document).on('click', '.btn-detail', function() {
-        $modal_detail_rule.find('.modal-title').text(`${$(this).attr('data-foreign-title')} - ${$(this).attr('data-title')} - ${$(this).attr('data-key')}`)
+        current_account_deter_id = $(this).attr('data-id')
+        $modal_detail_rule.find('.modal-title').text(`${$(this).attr('data-foreign-title')} (${$(this).attr('data-title')}) - ${$(this).attr('data-key')}`)
         let acc_deter_sub_list = JSON.parse($(this).closest('td').find('.acc_deter_sub').text() || '[]')
         loadDetailTable(acc_deter_sub_list)
+    })
 
-        $btn_save_special_rule.attr('data-id', $(this).attr('data-id'))
-        let key = $(this).attr('data-key');
-        let title = $(this).attr('data-title');
-        let fg_title = $(this).attr('data-foreign-title');
+    $(document).on('click', '.btn-add-special-rule', function() {
+        let id = $(this).attr('data-id-sub')
+        let key = $(this).attr('data-key-sub')
+        let description = $(this).attr('data-des-sub')
+
+        $btn_save_special_rule.attr('data-id-sub', id)
 
         $('#form-special-rule')[0].reset();
         $modal_special_rule.find('select').val(null).trigger('change');
 
-        $('#rule-transaction-key').val(key);
-        $('#rule-transaction-fg-title').text(fg_title);
-        $('#rule-transaction-title').text(title);
+        $('#rule-transaction-key').text(key);
+        $('#rule-transaction-des').text(description);
 
         if (!$modal_special_rule.attr('data-init')) {
             UsualLoadPageFunction.LoadWarehouse({
+                allowClear: true,
                 element: $rule_warehouse
             })
             UsualLoadPageFunction.LoadProductType({
+                allowClear: true,
                 element: $rule_product_type
             })
             UsualLoadPageFunction.LoadProduct({
+                allowClear: true,
                 element: $rule_product
             })
             UsualLoadPageAccountingFunction.LoadAccountingAccount({
                 element: $rule_account,
-                data_params: {'is_account': true},
+                data_params: {'is_account': true}
             })
             $modal_special_rule.data('init', true);
         }
     });
 
     $btn_save_special_rule.on('click', function () {
-        let row_id = $(this).attr('data-id')
         let special_rule_data = {
             'warehouse_id': $rule_warehouse.val(),
             'product_type_id': $rule_product_type.val(),
             'product_id': $rule_product.val(),
             'account_mapped': $rule_account.val(),
+            'description_sub': $rule_description.val(),
+            'example_sub': $rule_example.val(),
+            'id_sub': $(this).attr('data-id-sub'),
         }
         Swal.fire({
             html:
@@ -293,7 +321,7 @@ $(document).ready(function() {
         }).then((result) => {
             if (result.value) {
                 let ajax_update_account_prd = $.fn.callAjax2({
-                    url: $account_determination_table.attr('data-url-detail').replace('/0', `/${row_id}`),
+                    url: $account_determination_table.attr('data-url-detail').replace('/0', `/${current_account_deter_id}`),
                     data: {'special_rule_data': special_rule_data},
                     method: 'PUT'
                 }).then(
@@ -312,6 +340,7 @@ $(document).ready(function() {
                 Promise.all([ajax_update_account_prd]).then(
                     (results) => {
                         loadAccountDeterminationTable()
+                        $modal_special_rule.modal('hide')
                     }
                 )
             }

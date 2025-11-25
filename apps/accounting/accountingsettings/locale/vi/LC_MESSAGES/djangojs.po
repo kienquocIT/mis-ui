@@ -18,5 +18,13 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #
+msgid "Special rule"
+msgstr "Quy tắc đặt biệt"
+
+#
 msgid "Add special rule"
 msgstr "Thêm quy tắc đặt biệt"
+
+#
+msgid "standard"
+msgstr "tiêu chuẩn"

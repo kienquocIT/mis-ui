@@ -32,3 +32,11 @@ msgstr "Đang thêm quy tắc đặt biệt cho"
 #
 msgid "Add special rule"
 msgstr "Thêm quy tắc đặt biệt"
+
+#
+msgid "Transaction key"
+msgstr "Mã nghiệp vụ"
+
+#
+msgid "Transaction key sub"
+msgstr "Mã nghiệp vụ con"

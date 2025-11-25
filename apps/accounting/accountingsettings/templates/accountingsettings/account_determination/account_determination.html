@@ -29,7 +29,6 @@
                     <th style="min-width: 50px"></th>
                     <th style="min-width: 100px">{% trans 'Type' %}</th>
                     <th style="min-width: 250px">{% trans 'Trading type defined' %}</th>
-                    <th style="min-width: 300px">{% trans 'Account' %}</th>
                     <th style="min-width: 250px">{% trans 'Description' %}</th>
                     <th style="min-width: 300px">{% trans 'Example' %}</th>
                     <th style="min-width: 100px"></th>
@@ -41,6 +40,44 @@
     </div>
 {% endblock %}
 {% block modalData %}
+    <div class="modal fade" id="modal-detail-rule" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg" style="min-width: 60%">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table nowrap w-100"
+                                   id="account-determination-sub-table"
+                                   data-method="GET"
+                                   data-trans-change-confirm="{% trans 'Confirm this change?' %}"
+                                   data-trans-change-noti="{% trans 'This action can not be undo!' %}"
+                                   data-chart-of-account-url="{% url 'ChartOfAccountsListAPI' %}"
+                                   data-url-detail="{% url 'AccountDeterminationDetailAPI' pk=0 %}"
+                                   data-url="{% url 'AccountDeterminationListAPI' %}">
+                                <thead class="bg-secondary-light-5">
+                                <tr>
+                                    <th style="min-width: 50px"></th>
+                                    <th style="min-width: 250px">{% trans 'Account' %}</th>
+                                    <th style="min-width: 250px">{% trans 'Description' %}</th>
+                                    <th style="min-width: 100px"></th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="modal-special-rule" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">

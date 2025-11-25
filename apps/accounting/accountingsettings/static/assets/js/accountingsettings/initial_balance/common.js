@@ -19,17 +19,24 @@ const pageElements = new InitialBalanceElements();
  */
 class InitialBalancePageFunction {
     static CalculateAccountBalance(tab_account_balance_data=[]) {
-        // Money
+        // tab Money
         let tab_money_item = tab_account_balance_data.find(item => item?.['tab_type'] === 0)
         let tab_money_value = tab_money_item ? tab_money_item?.['tab_value'] || 0 : 0
         $('#balanceMoney span:eq(0)').attr('data-init-money', tab_money_value)
-        // Goods
+
+        // tab Goods
         let tab_goods_item = tab_account_balance_data.find(item => item?.['tab_type'] === 1)
         let tab_goods_value = tab_goods_item ? tab_goods_item?.['tab_value'] || 0 : 0
         $('#balanceGoods span:eq(0)').attr('data-init-money', tab_goods_value)
 
+        // tab Customer Receivable
+        let tab_customer_receivable_item = tab_account_balance_data.find(item => item?.['tab_type'] === 2);
+        let tab_customer_receivable_value = tab_customer_receivable_item ? tab_customer_receivable_item?.['tab_value'] || 0 : 0;
+        $('#balanceAccountReceivable span:eq(0)').attr('data-init-money', tab_customer_receivable_value)
+
         // total
-        $('#totalBalance span:eq(0)').attr('data-init-money', tab_money_value + tab_goods_value)
+        let total_value = tab_money_value + tab_goods_value + tab_customer_receivable_value
+        $('#totalBalance span:eq(0)').attr('data-init-money', total_value)
 
         $.fn.initMaskMoney2();
     }
@@ -52,6 +59,23 @@ class InitialBalancePageFunction {
                 money_debit_added.attr('data-init-money', new_debit_added)
                 money_credit_added.prop('hidden', new_credit_added <= 0)
                 money_credit_added.attr('data-init-money', new_credit_added)
+                total_debit += new_debit_added
+                total_credit += new_credit_added
+            }
+            else if (table.attr('id') === 'tbl_account_receivable') {
+                let tab_row = pageElements.$table_account_balance.find('tbody tr:eq(0');
+                let receivable_debit_added = tab_row.find('span:eq(1)');
+                let receivable_credit_added = tab_row.find('span:eq(2)');
+                let new_debit_added = 0;
+                let new_credit_added = 0;
+                table.find('tbody tr').each(function (index, ele) {
+                    new_debit_added +=  parseFloat($(ele).find('.row-account-receivable-debit').attr('value') || 0);
+                    new_credit_added += parseFloat($(ele).find('.row-account-receivable-credit').attr('value') || 0);
+                });
+                receivable_debit_added.prop('hidden', new_debit_added <= 0);
+                receivable_debit_added.attr('data-init-money', receivable_debit_added);
+                receivable_credit_added.prop('hidden', receivable_credit_added <= 0);
+                receivable_credit_added.attr('data-init-money', receivable_credit_added);
                 total_debit += new_debit_added
                 total_credit += new_credit_added
             }

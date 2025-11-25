@@ -59,8 +59,6 @@ $(document).ready(function() {
             if (data) {
                 data = data['initial_balance_list'];
 
-                // console.log(data)
-
                 for (let i = 0; i < data.length; i++) {
                     let item = data[i]
                     let tab_html = ``

@@ -41,7 +41,7 @@
 {% endblock %}
 {% block modalData %}
     <div class="modal fade" id="modal-detail-rule" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg" style="min-width: 70%">
+        <div class="modal-dialog modal-lg" style="min-width: 85%">
             <div class="modal-content">
                 <div class="modal-header bg-light">
                     <h5 class="modal-title"></h5>
@@ -61,9 +61,10 @@
                                 <thead class="bg-secondary-light-5">
                                 <tr>
                                     <th style="min-width: 50px"></th>
-                                    <th style="min-width: 250px">{% trans 'Description' %}</th>
-                                    <th style="min-width: 250px">{% trans 'Account' %}</th>
-                                    <th style="min-width: 250px">{% trans 'Example' %}</th>
+                                    <th style="min-width: 150px">{% trans 'Transaction key sub' %}</th>
+                                    <th style="min-width: 200px">{% trans 'Description' %}</th>
+                                    <th style="min-width: 200px">{% trans 'Account' %}</th>
+                                    <th style="min-width: 300px">{% trans 'Example' %}</th>
                                     <th style="min-width: 100px"></th>
                                 </tr>
                                 </thead>
@@ -90,11 +91,26 @@
                 </div>
                 <div class="modal-body">
                     <form id="form-special-rule">
-                        <input type="hidden" id="rule-transaction-key" name="transaction_key">
-                        <h5 class="text-primary"><span class="mr-1">{% trans 'Adding special rule for' %}</span><span class="fw-bold mr-1" id="rule-transaction-fg-title"></span>(<span class="fw-bold" id="rule-transaction-title"></span>)</h5>
+                        <h5 class="text-primary"><span class="mr-1">{% trans 'Adding special rule for' %}</span><span class="fw-bold mr-1" id="rule-transaction-des"></span>(<span class="fw-bold" id="rule-transaction-key"></span>)</h5>
                         <div class="row mt-5">
-                            <div class="col-12">
-                                <h6 class="fw-bold">1. {% trans 'When the condition is satisfied' %}</h6>
+                            <div class="col-12 mb-2">
+                                <div class="row">
+                                    <label for="rule-description" class="form-label col-form-label col-3">{% trans 'Description' %}</label>
+                                    <div class="col-9">
+                                        <textarea class="form-control" id="rule-description"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-2">
+                                <div class="row">
+                                    <label for="rule-example" class="form-label col-form-label col-3">{% trans 'Example' %}</label>
+                                    <div class="col-9">
+                                        <textarea class="form-control" id="rule-example"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-5">
+                                <h6 class="fw-bold">{% trans 'When the condition is satisfied' %}</h6>
                             </div>
                             <div class="col-12 mb-2">
                                 <div class="row">
@@ -120,14 +136,12 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row mt-5">
-                            <div class="col-12">
-                                <h6 class="fw-bold">2. {% trans 'Then account for it' %}</h6>
+                            <div class="col-12 mt-5">
+                                <h6 class="fw-bold">{% trans 'Then account for it' %}</h6>
                             </div>
                             <div class="col-12">
                                 <div class="row">
-                                    <label for="rule-account" class="form-label col-form-label col-3">{% trans 'Account' %}</label>
+                                    <label for="rule-account" class="form-label col-form-label col-3 required">{% trans 'Account' %}</label>
                                     <div class="col-9">
                                         <div class="input-group">
                                             <select class="form-select select2" id="rule-account" data-url="{% url 'ChartOfAccountsListAPI' %}"></select>
@@ -135,7 +149,7 @@
                                                 <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
                                                     <i class="fa-regular fa-circle-question"></i>
                                                 </a>
-                                                <div class="dropdown-menu bflow-mirrow-card-100 p-0" style="min-width: 250px;">
+                                                <div class="dropdown-menu bflow-mirrow-card-100 p-2" style="min-width: 250px;">
                                                 </div>
                                             </span>
                                         </div>

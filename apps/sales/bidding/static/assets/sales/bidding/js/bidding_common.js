@@ -67,7 +67,7 @@ class BiddingLoadDataHandle {
         if ($(BiddingLoadDataHandle.$opportunitySelectEle).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx(BiddingLoadDataHandle.$opportunitySelectEle, $(BiddingLoadDataHandle.$opportunitySelectEle).val());
             if (dataSelected) {
-                BiddingLoadDataHandle.$customerEle.val(dataSelected?.['customer']?.['title'])
+                BiddingLoadDataHandle.$customerEle.val(dataSelected?.['customer']?.['name'])
             }
         }
     };
@@ -165,13 +165,11 @@ class BiddingLoadDataHandle {
         for (let mediaBody of BiddingLoadDataHandle.$attachment[0].querySelectorAll('.media-body')) {
             let fileName = mediaBody.querySelector('.f-item-name');
             let fileSize = mediaBody.querySelector('.f-item-info');
-            let fileRemark = mediaBody.querySelector('.file-txt-remark');
-            if (fileName && fileSize && fileRemark) {
+            if (fileName && fileSize) {
                 let dataAdd = {
                     'attachment': {
                         'file_name': fileName.innerHTML,
                         'file_size': parseFloat(fileSize.innerHTML.replace(" KB", "")),
-                        'remarks': fileRemark.value,
                     },
                     'date_created': BiddingCommonHandle.getCurrentDate(),
                     'order': order,
@@ -783,14 +781,12 @@ class BiddingStoreHandle {
                 for (let mediaBody of BiddingLoadDataHandle.$attachment[0].querySelectorAll('.media-body')) {
                     let fileName = mediaBody.querySelector('.f-item-name');
                     let fileSize = mediaBody.querySelector('.f-item-info');
-                    let fileRemark = mediaBody.querySelector('.file-txt-remark');
-                    if (fileName && fileSize && fileRemark) {
+                    if (fileName && fileSize) {
                         let dataAdd = {
                             'attachment': {
                                 'id': ids[order - 1],
                                 'file_name': fileName.innerHTML,
                                 'file_size': parseFloat(fileSize.innerHTML.replace(" KB", "")),
-                                'remarks': fileRemark.value,
                             },
                             'date_created': BiddingCommonHandle.getCurrentDate(),
                             'order': order,

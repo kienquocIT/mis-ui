@@ -112,10 +112,7 @@ $(document).ready(function() {
                 {
                     className: 'w-15',
                     render: (data, type, row) => {
-                        if (row?.['search_rule'] === 'default') {
-                            return row?.['transaction_key_sub'] ? `<span>${row?.['transaction_key_sub'] || ''}</span>` : `<span>${row?.['transaction_key'] || ''}<br>(${$.fn.gettext('standard')})</span>`;
-                        }
-                        return row?.['transaction_key_sub'] ? `<span>${row?.['transaction_key_sub'] || ''}</span>` : `<span>${row?.['transaction_key'] || ''}</span>`;
+                        return `<span>${row?.['transaction_key_sub'] || ''}</span>`;
                     }
                 },
                 {
@@ -135,7 +132,7 @@ $(document).ready(function() {
                 {
                     className: 'w-35',
                     render: (data, type, row) => {
-                        return `<span>${(row?.['example'] || '').replaceAll('. ', '<br>')}</span>`;
+                        return `<span>${(row?.['example'] || '')}</span>`;
                     }
                 },
                 {

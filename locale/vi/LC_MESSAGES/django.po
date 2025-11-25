@@ -10878,7 +10878,7 @@ msgstr "Thêm kệ"
 
 #
 msgid "Account determination"
-msgstr "Xác định TK kế toán"
+msgstr "Định khoản tự động"
 
 #
 msgid "Transactions referencing this warehouse will use the accounts here to create Journal Entry. By default, the accounts are taken from Setting, you can update it."

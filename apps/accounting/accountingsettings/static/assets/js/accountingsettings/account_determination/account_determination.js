@@ -118,7 +118,7 @@ $(document).ready(function() {
                 {
                     className: 'w-20',
                     render: (data, type, row) => {
-                        return row?.['is_custom'] ? `<span>${row?.['description'] || ''}</span><br><span class="text-primary">${$.fn.gettext('Special rule')}<br>${row?.['context_description']}</span>` : `<span>${row?.['description'] || ''}</span>`;
+                        return row?.['is_custom'] ? `${row?.['description'] ? `<span>${row?.['description'] || ''}</span><br>` : ''}<span class="text-primary">${$.fn.gettext('Special rule')}<br>${row?.['context_description']}</span>` : `<span>${row?.['description'] || ''}</span>`;
                     }
                 },
                 {

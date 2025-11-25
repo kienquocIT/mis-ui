@@ -35,37 +35,34 @@ $(document).ready(function() {
                     }
                 },
                 {
-                    className: 'w-20',
+                    className: 'w-15',
                     render: (data, type, row) => {
-                        return `<div class="d-flex flex-column">
-                                    <span class="fw-bold">${row?.['foreign_title'] || ''}</span>
-                                    <span>${row?.['title'] || ''}</span>
-                                    <span class="small">${row?.['transaction_key'] || ''}</span>
-                                </div>`;
-                    }
-                },
-                {
-                    className: 'w-25',
-                    render: (data, type, row) => {
-                        let badge = row?.['is_custom'] ? `<span class="badge badge-soft-primary mb-1">${$.fn.gettext('Custom rule')}</span><br>` : ``;
-                        return `<div>${badge}<span>${row?.['description'] || ''}</span></div>`;
+                        return `<span>${row?.['transaction_key'] || ''}</span>`;
                     }
                 },
                 {
                     className: 'w-30',
                     render: (data, type, row) => {
-                        let ex = row?.['example'] || '';
-                        return `<span class="text-primary">${ex.replaceAll('. ', '.<br>')}</span>`;
+                        return `<div class="d-flex flex-column">
+                                    <span class="fw-bold">${row?.['foreign_title'] || ''}</span>
+                                    <span>${row?.['title'] || ''}</span>
+                                </div>`;
                     }
                 },
                 {
-                    className: 'text-right w-5',
+                    className: 'w-35',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['description'] || ''}</span>`;
+                    }
+                },
+                {
+                    className: 'text-right w-10',
                     'render': (data, type, row) => {
                         let detail_btn = `
                             <a class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover btn-xs btn-detail"
                                 data-bs-toggle="modal"
                                 data-bs-target="#modal-detail-rule"
-                                title="${$.fn.gettext('Add special rule')}" 
+                                title="${$.fn.gettext('Detail')}"
                                 data-id="${row?.['id']}" 
                                 data-key="${row?.['transaction_key']}" 
                                 data-title="${row?.['title']}"
@@ -213,6 +210,7 @@ $(document).ready(function() {
         $(this).closest('tr').find('.row-account').prop('disabled', false)
     })
 
+    const $modal_detail_rule = $('#modal-detail-rule');
     const $modal_special_rule = $('#modal-special-rule');
     const $rule_warehouse = $('#rule-warehouse');
     const $rule_product_type = $('#rule-product-type');
@@ -221,6 +219,7 @@ $(document).ready(function() {
     const $btn_save_special_rule = $('#btn-save-special-rule');
 
     $(document).on('click', '.btn-detail', function() {
+        $modal_detail_rule.find('.modal-title').text(`${$(this).attr('data-foreign-title')} - ${$(this).attr('data-title')} - ${$(this).attr('data-key')}`)
         let acc_deter_sub_list = JSON.parse($(this).closest('td').find('.acc_deter_sub').text() || '[]')
         loadDetailTable(acc_deter_sub_list)
 

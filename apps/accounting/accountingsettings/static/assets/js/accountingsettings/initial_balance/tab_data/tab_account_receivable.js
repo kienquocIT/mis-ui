@@ -150,16 +150,10 @@ class TabAccountReceivableFunction {
                     // load and store detail data
                     const detailData = rowData?.['customer_receivable_detail_data'];
                     if (detailData) {
-                        $(this).find('.btn-account-receivable-modal').prop('disabled', false);
                         const $detailInput = $(this).find('.row-detail-account-receivable');
-
-                        $detailInput.attr('data-is-prepayment', detailData?.['is_prepayment'] || false);
-                        $detailInput.attr('data-invoice-number', detailData?.['invoice_number'] || '');
-                        $detailInput.attr('data-unpaid-amount', detailData?.['unpaid_amount'] || 0);
-                        $detailInput.attr('data-invoice-date', detailData?.['invoice_date'] || '');
-                        $detailInput.attr('data-expected-payment-date', detailData?.['expected_payment_date'] || '');
-                        $detailInput.attr('data-advanced-payment', detailData?.['advanced_payment'] || 0);
-                        $detailInput.attr('data-note', detailData?.['note'] || '');
+                        // assign detail information to Json variable
+                        $detailInput.attr('data-detail-info', JSON.stringify(detailData));
+                        $(this).find('.btn-account-receivable-modal').prop('disabled', false);
 
                         if (detailData?.['is_prepayment']) {
                             const advancePayment = detailData?.['advanced_payment'] || 0;
@@ -170,8 +164,8 @@ class TabAccountReceivableFunction {
                             $detailInput.val(`HÐ: ${invoiceNumber} - ${unpaidAmount.toLocaleString('vi-VN')} VND`);
                         }
                     }
+                    $.fn.initMaskMoney2();
                 });
-                $.fn.initMaskMoney2();
             }
         });
     }
@@ -235,8 +229,6 @@ class TabAccountReceivableFunction {
 
         tabAccountReceivableElements.$tableAccountReceivable.find('tbody tr').each(function() {
             const typeRow = $(this).attr('data-type-row');
-            const invoiceDate = moment(tabAccountReceivableElements.$invoiceDate.val(), "DD/MM/YYYY", true);
-            const expectedPaymentDate = moment(tabAccountReceivableElements.$expectedPaymentDate.val(), "DD/MM/YYYY", true);
             if (typeRow === 'added' || typeRow === 'updated') {
                 const rowData = {
                     id: typeRow === 'added' ? null : $(this).attr('data-id'),
@@ -246,28 +238,19 @@ class TabAccountReceivableFunction {
                     credit_value: parseFloat($(this).find('.row-account-receivable-credit').attr('value') || 0),
                     detail_data: {
                         customer_receivable_customer: $(this).find('.row-customer-account-receivable').attr('data-customer-id'),
-                        customer_receivable_detail_data: {
-                            is_prepayment: tabAccountReceivableElements.$prepaymentCheckbox.is(":checked"),
-                            invoice_number: tabAccountReceivableElements.$txtInvoiceNumber.val() || '',
-                            unpaid_amount: parseFloat(tabAccountReceivableElements.$unpaidAmountEle.attr('value') || 0),
-                            invoice_date: invoiceDate.isValid() ? invoiceDate.format('YYYY-MM-DD') : null,
-                            expected_payment_date: expectedPaymentDate.isValid() ? expectedPaymentDate.format('YYYY-MM-DD') : null,
-                            advanced_payment: parseFloat(tabAccountReceivableElements.$advancePayment.attr('value') || 0),
-                            note: $('#note_account_receivable').val() || ''
-                        },
+                        customer_receivable_detail_data: $(this).find('.row-detail-account-receivable').data('detailInfo') || {}
                     }
                 };
                 accountReceivableDataList.push(rowData);
             }
         });
-
         return accountReceivableDataList;
     }
 
     static loadAccountReceivableDetail($row) {
         const $detailInput = $row.find('.row-detail-account-receivable');
 
-        // Reset modal first
+        // reset modal
         tabAccountReceivableElements.$prepaymentCheckbox.prop('checked', false);
         tabAccountReceivableElements.$txtInvoiceNumber.val('');
         tabAccountReceivableElements.$unpaidAmountEle.attr('value', 0);
@@ -276,55 +259,43 @@ class TabAccountReceivableFunction {
         tabAccountReceivableElements.$advancePayment.attr('value', 0);
         $('#note_account_receivable').val('');
 
-        // Check if there's existing detail data
-        const isPrepayment = $detailInput.attr('data-is-prepayment') === 'true';
 
-        if (!$detailInput.attr('data-invoice-number') && !$detailInput.attr('data-advanced-payment')) {
-            // No data, show default invoice form
+        const detailDataStr = $detailInput.attr('data-detail-info');
+        if (!detailDataStr) {
             tabAccountReceivableElements.$prepaymentForm.hide();
             tabAccountReceivableElements.$invoiceForm.show();
             return;
         }
+        const detailData = JSON.parse(detailDataStr);
+        const isPrepayment = detailData?.['is_prepayment'] === true;
 
         if (isPrepayment) {
-            // Load prepayment data from attributes
+            // load prepayment data from attributes
             tabAccountReceivableElements.$prepaymentCheckbox.prop('checked', true);
             tabAccountReceivableElements.$prepaymentForm.show();
             tabAccountReceivableElements.$invoiceForm.hide();
 
-            const advancePayment = parseFloat($detailInput.attr('data-advanced-payment') || 0);
-            tabAccountReceivableElements.$advancePayment.attr('value', advancePayment);
+            tabAccountReceivableElements.$advancePayment.attr('value', parseFloat(detailData?.['advanced_payment'] || 0));
+            $('#note_account_receivable').val(detailData?.['note'] || '');
 
         } else {
-            // Load invoice data from attributes
+            // load invoice data from attributes
             tabAccountReceivableElements.$prepaymentCheckbox.prop('checked', false);
             tabAccountReceivableElements.$invoiceForm.show();
             tabAccountReceivableElements.$prepaymentForm.hide();
 
-            const invoiceNumber = $detailInput.attr('data-invoice-number') || '';
-            const unpaidAmount = parseFloat($detailInput.attr('data-unpaid-amount') || 0);
-            const invoiceDate = $detailInput.attr('data-invoice-date') || '';
-            const expectedPaymentDate = $detailInput.attr('data-expected-payment-date') || '';
+            tabAccountReceivableElements.$txtInvoiceNumber.val(detailData?.['invoice_number'] || '');
+            tabAccountReceivableElements.$unpaidAmountEle.attr('value', parseFloat(detailData?.['unpaid_amount'] || 0));
 
-            tabAccountReceivableElements.$txtInvoiceNumber.val(invoiceNumber);
-            tabAccountReceivableElements.$unpaidAmountEle.attr('value', unpaidAmount);
-
-            // Format dates to DD/MM/YYYY
-            if (invoiceDate) {
-                const formattedInvoiceDate = moment(invoiceDate, 'YYYY-MM-DD').format('DD/MM/YYYY');
+            if (detailData?.['invoice_date']) {
+                const formattedInvoiceDate = moment(detailData['invoice_date'], 'YYYY-MM-DD').format('DD/MM/YYYY');
                 tabAccountReceivableElements.$invoiceDate.val(formattedInvoiceDate);
             }
-            if (expectedPaymentDate) {
-                const formattedExpectedDate = moment(expectedPaymentDate, 'YYYY-MM-DD').format('DD/MM/YYYY');
+            if (detailData?.['expected_payment_date']) {
+                const formattedExpectedDate = moment(detailData['expected_payment_date'], 'YYYY-MM-DD').format('DD/MM/YYYY');
                 tabAccountReceivableElements.$expectedPaymentDate.val(formattedExpectedDate);
             }
         }
-
-        // Load note (common for both types)
-        const note = $detailInput.attr('data-note') || '';
-        $('#note_account_receivable').val(note);
-
-        // Trigger mask money update
         $.fn.initMaskMoney2();
     }
 
@@ -340,9 +311,9 @@ class TabAccountReceivableEventHandler {
             row_added.attr('data-type-row', 'added');
             row_added.find('.row-access').prop('disabled', false);
             UsualLoadPageAccountingFunction.LoadAccountingAccount({
-                element: row_added.find('.row-account-receivable-code'),
+                element: row_added.find('.row-account'),
                 data_url: pageElements.$urlFactory.attr('data-url-accounting-account'),
-                data_params: {'acc_type': 1}
+                data_params: {'acc_type': 1, 'is_account': true}
             });
         });
 
@@ -400,46 +371,48 @@ class TabAccountReceivableEventHandler {
             const $currentRow = tabAccountReceivableVariables.currentAccountReceiableRow;
             const $detailInput = $currentRow.find('.row-detail-account-receivable');
 
+            const detailData = {
+                is_prepayment: tabAccountReceivableElements.$prepaymentCheckbox.is(':checked'),
+                note: $('#note_account_receivable').val() || ''
+            };
+
             if (tabAccountReceivableElements.$invoiceForm.is(':visible')) {
-                const invoiceNumber = tabAccountReceivableElements.$txtInvoiceNumber.val();
-                const unpaidAmount = tabAccountReceivableElements.$unpaidAmountEle.attr('value') || 0;
+                const invoiceNumber = tabAccountReceivableElements.$txtInvoiceNumber.val() || '';
+                const unpaidAmount = parseFloat(tabAccountReceivableElements.$unpaidAmountEle.attr('value') || 0);
                 const invoiceDate = tabAccountReceivableElements.$invoiceDate.val();
                 const expectedPaymentDate = tabAccountReceivableElements.$expectedPaymentDate.val();
-                const note = $('#note_account_receivable').val();
 
-                // Update attributes
-                $detailInput.attr('data-is-prepayment', false);
-                $detailInput.attr('data-invoice-number', invoiceNumber);
-                $detailInput.attr('data-unpaid-amount', unpaidAmount);
-                $detailInput.attr('data-invoice-date', invoiceDate ? moment(invoiceDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
-                $detailInput.attr('data-expected-payment-date', expectedPaymentDate ? moment(expectedPaymentDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
-                $detailInput.attr('data-note', note);
-                $detailInput.attr('data-advanced-payment', 0);
+                detailData.is_prepayment = false;
+                detailData.invoice_number = invoiceNumber;
+                detailData.unpaid_amount = unpaidAmount;
+                detailData.invoice_date = invoiceDate ? moment(invoiceDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '';
+                detailData.expected_payment_date = expectedPaymentDate ? moment(expectedPaymentDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '';
+                detailData.advanced_payment = 0;
 
                 // Update display text
-                $detailInput.val(`HÐ: ${invoiceNumber} - ${parseFloat(unpaidAmount).toLocaleString('vi-VN')} VND`);
+                $detailInput.val(`HÐ: ${invoiceNumber} - ${unpaidAmount.toLocaleString('vi-VN')} VND`);
                 $currentRow.find('.row-account-receivable-debit').attr('value', unpaidAmount);
                 $currentRow.find('.row-account-receivable-credit').attr('value', 0);
 
             } else if (tabAccountReceivableElements.$prepaymentForm.is(':visible')) {
-                const advancePayment = tabAccountReceivableElements.$advancePayment.attr('value') || 0;
-                const note = $('#note_account_receivable').val();
+                const advancePayment = parseFloat(tabAccountReceivableElements.$advancePayment.attr('value') || 0);
 
-                // Update attributes
-                $detailInput.attr('data-is-prepayment', true);
-                $detailInput.attr('data-advanced-payment', advancePayment);
-                $detailInput.attr('data-note', note);
-                $detailInput.attr('data-invoice-number', '');
-                $detailInput.attr('data-unpaid-amount', 0);
-                $detailInput.attr('data-invoice-date', '');
-                $detailInput.attr('data-expected-payment-date', '');
+                detailData.is_prepayment = true;
+                detailData.advanced_payment = advancePayment;
+                detailData.invoice_number = '';
+                detailData.unpaid_amount = 0;
+                detailData.invoice_date = '';
+                detailData.expected_payment_date = '';
 
                 // Update display text
-                $detailInput.val(`Pre-payment: ${parseFloat(advancePayment).toLocaleString('vi-VN')} VND`);
+                $detailInput.val(`Pre-payment: ${advancePayment.toLocaleString('vi-VN')} VND`);
                 $currentRow.find('.row-account-receivable-debit').attr('value', 0);
                 $currentRow.find('.row-account-receivable-credit').attr('value', advancePayment);
             }
+            $detailInput.data('detailInfo', detailData);
+            $currentRow.find('.btn-account-receivable-modal').prop('disabled', false);  // enable detail button
             $.fn.initMaskMoney2();
+            $('#account_receivable_modal').modal('hide');
         });
 
         // event when modal is opened - reset to default state

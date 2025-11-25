@@ -116,7 +116,9 @@ $(document).ready(function() {
                 {
                     className: 'w-30',
                     render: (data, type, row) => {
-                        return $(UsualLoadPageAccountingFunction.default_account_select2).prop('outerHTML')
+                        let $ele = $(UsualLoadPageAccountingFunction.default_account_select2)
+                        $ele.prop('disabled', true)
+                        return $ele.prop('outerHTML')
                     }
                 },
                 {

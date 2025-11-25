@@ -780,14 +780,12 @@ class ConsultingHandler{
                     let $mediaBody = $(mediaBody);
                     let fileName = $mediaBody.find('.f-item-name');
                     let fileSize = $mediaBody.find('.f-item-info');
-                    let fileRemark = $mediaBody.find('.file-txt-remark');
-                    if (fileName && fileSize && fileRemark) {
+                    if (fileName && fileSize) {
                         let dataAdd = {
                             'attachment': {
                                 'id': ids[order - 1],
                                 'file_name': fileName.text(),
                                 'file_size': parseFloat(fileSize.text().replace(" KB", "")),
-                                'remarks': fileRemark.val(),
                             },
                             'date_created': this.getCurrentDate(),
                             'order': order,
@@ -1008,7 +1006,7 @@ class ConsultingHandler{
                         keyResp: 'consulting_account_list',
                         keyId: 'id',
                         keyText: 'name'
-                    }, [{id: dataSelected['customer']['id'], name: dataSelected['customer']['title']}])
+                    }, [{id: dataSelected['customer']['id'], name: dataSelected['customer']['name']}])
                 }
                 customerSelector.prop('disabled', true);
             } else {

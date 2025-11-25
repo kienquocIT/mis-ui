@@ -9905,7 +9905,7 @@ msgid "Related Product Categories"
 msgstr "Danh sách loại sản phẩm liên quan"
 
 #
-msgid "Consulting name"
+msgid "Consulting Name"
 msgstr "Tên tư vấn"
 
 #
@@ -12399,3 +12399,7 @@ msgstr "Các chiều phải khác nhau"
 #
 msgid "Dimension values must be different with other row"
 msgstr "Bộ giá trị ở mỗi dòng dòng phải khác nhau"
+
+#
+msgid "Estimated Value"
+msgstr "Giá trị ước tính"

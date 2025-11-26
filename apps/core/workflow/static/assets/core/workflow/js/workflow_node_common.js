@@ -1421,7 +1421,28 @@ class NodeFormulaHandle {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (data.hasOwnProperty('application_property_list') && Array.isArray(data.application_property_list)) {
-                        let param_list = ``;
+                        let dataTrue = JSON.stringify({ 'is_property': false, 'title': 'true', 'code': 'true', 'syntax': 'true', 'syntax_show': 'true' }).replace(/"/g, "&quot;");
+                        let dataFalse = JSON.stringify({ 'is_property': false, 'title': 'false', 'code': 'false', 'syntax': 'false', 'syntax_show': 'false' }).replace(/"/g, "&quot;");
+                        let param_list = `<div class="row param-item mb-2">
+                                                <button type="button" class="btn btn-flush-light">
+                                                    <div class="float-left">
+                                                        <div class="d-flex justify-content-between">
+                                                            <span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title mr-2">true</span></span>
+                                                        </div>
+                                                    </div>
+                                                    <input type="hidden" class="data-show" value="${dataTrue}">
+                                                </button>
+                                            </div>
+                                            <div class="row param-item mb-2">
+                                                <button type="button" class="btn btn-flush-light">
+                                                    <div class="float-left">
+                                                        <div class="d-flex justify-content-between">
+                                                            <span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title mr-2">false</span></span>
+                                                        </div>
+                                                    </div>
+                                                    <input type="hidden" class="data-show" value="${dataFalse}">
+                                                </button>
+                                            </div>`;
                         data.application_property_list.map(function (item) {
                             item['is_property'] = true;
                             item['syntax'] = "prop(" + item.title + ")";

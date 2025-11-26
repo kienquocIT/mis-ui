@@ -3968,21 +3968,10 @@ class WFAssociateControl {
         let right = null;
         if (typeof condition === 'object' && condition !== null) {
             if (condition?.['left_cond']) {
-                // left = WFAssociateControl.findKey(dataForm, condition?.['left_cond']?.['code']);
                 left = WFAssociateControl.calculateParam(dataForm, condition?.['left_cond']);
             }
             if (condition?.['right_cond']) {
                 right = WFAssociateControl.calculateParam(dataForm, condition?.['right_cond']);
-
-                // right = condition?.['right_cond'];
-                // if (condition?.['left_cond']?.['type'] === 5) {
-                //     if (condition?.['right_cond']?.['id']) {
-                //         right = condition?.['right_cond']?.['id'];
-                //     }
-                // }
-                // if (condition?.['left_cond']?.['type'] === 6) {
-                //     right = parseFloat(condition?.['right_cond']);
-                // }
             }
             if (left !== null && right !== null) {
                 let isMatch = false;
@@ -3992,6 +3981,10 @@ class WFAssociateControl {
                         return isMatch;
                     }
                     if (typeof left === 'string') {
+                        isMatch = left === right;
+                        return isMatch;
+                    }
+                    if (typeof left === "boolean") {
                         isMatch = left === right;
                         return isMatch;
                     }
@@ -4100,6 +4093,9 @@ class WFAssociateControl {
                                 parse_formula += functionData;
                             } else if (item?.['code'] === 'sumItemIf') {
                                 let functionData = WFAssociateControl.functionSumItemIf(item, dataForm);
+                                parse_formula += functionData;
+                            } else if (item?.['code'] === 'contains') {
+                                let functionData = WFAssociateControl.functionContains(item, dataForm);
                                 parse_formula += functionData;
                             }
                         }
@@ -4225,28 +4221,41 @@ class WFAssociateControl {
         return functionBody;
     };
 
-    static checkSpecialCaseIndicator(data_form) {
-        // check if product data has promotion gift then => += vào total_cost_pretax_amount
-        if (data_form.hasOwnProperty('total_cost_pretax_amount')) {
-            let promotion = document.getElementById('datable-quotation-create-product').querySelector('.table-row-promotion');
-            if (promotion) {
-                if (promotion.closest('tr').querySelector('.table-row-description').value === '(Gift)') {
-                    let productGift = promotion.getAttribute('data-id-product');
-                    let product_data_list = [];
-                    if (data_form.hasOwnProperty('quotation_costs_data')) {
-                        product_data_list = data_form['quotation_costs_data'];
-                    } else if (data_form.hasOwnProperty('sale_order_costs_data')) {
-                        product_data_list = data_form['sale_order_costs_data'];
-                    }
-                    for (let product of product_data_list) {
-                        if (product.product === productGift) {
-                            data_form['total_cost_pretax_amount'] += product.product_cost_price;
-                            break;
-                        }
-                    }
+    static functionContains(item, data_form) {
+        let leftValueJSON = null;
+        let rightValue = null;
+        let operator_list = ['===', '!==', '<', '>', '<=', '>='];
+        let condition_operator = operator_list.filter((element) => item?.['function_data'].includes(element))[0];
+        let operatorIndex = item?.['function_data'].indexOf(condition_operator);
+        if (operatorIndex !== -1 && operatorIndex > 0 && operatorIndex < item?.['function_data'].length - 1) {
+            leftValueJSON = item?.['function_data'][operatorIndex - 1];
+            rightValue = item?.['function_data'][operatorIndex + 1];
+        }
+        return WFAssociateControl.extractDataToContains(data_form, leftValueJSON, condition_operator, rightValue);
+    };
+
+    static extractDataToContains(data, leftValueJSON, condition_operator, rightValue) {
+        if (typeof leftValueJSON === 'object' && leftValueJSON !== null) {
+            let val = WFAssociateControl.findKey(data, leftValueJSON?.['code']);
+            if (val) {
+                // TH val là danh sách => loop kiểm tra
+                if (Array.isArray(val)) {
+                    val = val.map(item =>
+                        typeof item === 'string'
+                            ? item.replace(/\s/g, "").toLowerCase()
+                            : item
+                    );
+                    return String(val.includes(rightValue));
+                }
+                // TH val là 1 giá trị => kiểm tra trực tiếp
+                if (typeof val === 'string') {
+                    let leftValue = val.replace(/\s/g, "").toLowerCase();
+                    let checkExpression = `"${leftValue}" ${condition_operator} "${rightValue}"`;
+                    return String(val.includes(WFAssociateControl.evaluateFormula(checkExpression)));
                 }
             }
         }
+        return 'false';
     };
 
     static formatExpression(input) {
@@ -10239,4 +10248,32 @@ var DataTableAction = {
         }
         return htmlContent
     }
+}
+
+
+/**
+ * common logic math functions
+ */
+function max(container) {
+    return Math.max(...container);
+}
+
+function min(container) {
+    return Math.min(...container);
+}
+
+function sum() {
+    return Array.prototype.reduce.call(arguments, function (acc, val) {
+        return acc + val;
+    }, 0);
+}
+
+function contains(container, value) {
+    if (Array.isArray(container)) {
+        return container.includes(value);
+    }
+    if (typeof container === "string") {
+        return container.includes(value);
+    }
+    return false; // unsupported type
 }

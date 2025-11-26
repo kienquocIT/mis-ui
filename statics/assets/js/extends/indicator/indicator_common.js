@@ -563,19 +563,29 @@ class IndicatorControl {
 }
 
 // math functions
-function max(data_list) {
-    return Math.max(...data_list);
-}
-
-function min(data_list) {
-    return Math.min(...data_list);
-}
-
-function sum() {
-    return Array.prototype.reduce.call(arguments, function (acc, val) {
-        return acc + val;
-    }, 0);
-}
+// function max(container) {
+//     return Math.max(...container);
+// }
+//
+// function min(container) {
+//     return Math.min(...container);
+// }
+//
+// function sum() {
+//     return Array.prototype.reduce.call(arguments, function (acc, val) {
+//         return acc + val;
+//     }, 0);
+// }
+//
+// function contains(container, value) {
+//     if (Array.isArray(container)) {
+//         return container.includes(value);
+//     }
+//     if (typeof container === "string") {
+//         return container.includes(value);
+//     }
+//     return false; // unsupported type
+// }
 
 $(document).ready(function () {
 

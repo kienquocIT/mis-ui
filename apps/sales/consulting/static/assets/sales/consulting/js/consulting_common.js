@@ -1133,11 +1133,19 @@ class ConsultingHandler{
             let eleOption = row.find('.product-select');
             let eleValueInput = row.find('input[type="text"]')
             let eleOrd = row.find('.table-row-order')
+            let title = "";
+            if (eleOption.val()) {
+                let data = SelectDDControl.get_data_from_idx(eleOption, eleOption.val());
+                if (data) {
+                    title = data?.['title'] ? data?.['title'] : '';
+                }
+            }
             if (eleOption && eleValueInput) {
                 result.push({
                     'product_category': eleOption.val(),
                     'value': eleValueInput.valCurrency(),
                     'order': parseInt(eleOrd.text()),
+                    'title': title,
                 })
             }
 

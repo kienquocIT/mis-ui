@@ -149,21 +149,23 @@ class JEHandle {
                     pageElements.$je_doc_date.val(moment(data?.['je_document_date'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     pageElements.$je_des.val(data?.['je_transaction_data']?.['title'])
 
-                    const je_lines_sum = {};
-                    (data?.['je_lines'] || []).forEach(item => {
-                        const accId = item?.['account_data']?.['id'];
-                        if (!accId) return;
+                    // gom tk
+                    // const je_lines_sum = {};
+                    // (data?.['je_lines'] || []).forEach(item => {
+                    //     const accId = item?.['account_data']?.['id'];
+                    //     if (!accId) return;
+                    //
+                    //     if (!je_lines_sum[accId]) {
+                    //         je_lines_sum[accId] = { ...item };
+                    //         je_lines_sum[accId]['debit'] = 0;
+                    //         je_lines_sum[accId]['credit'] = 0;
+                    //     }
+                    //
+                    //     je_lines_sum[accId]['debit'] += item?.['debit'] || 0;
+                    //     je_lines_sum[accId]['credit'] += item?.['credit'] || 0;
+                    // });
 
-                        if (!je_lines_sum[accId]) {
-                            je_lines_sum[accId] = { ...item };
-                            je_lines_sum[accId]['debit'] = 0;
-                            je_lines_sum[accId]['credit'] = 0;
-                        }
-
-                        je_lines_sum[accId]['debit'] += item?.['debit'] || 0;
-                        je_lines_sum[accId]['credit'] += item?.['credit'] || 0;
-                    });
-
+                    const je_lines_sum = data?.['je_lines'] || []
                     JELoadPage.LoadJETable(Object.values(je_lines_sum) || [])
 
                     $('#total-debit').attr('data-init-money', data?.['total_debit'] || 0)

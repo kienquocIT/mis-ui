@@ -110,63 +110,63 @@ $(document).ready(function() {
                     render: () => ''
                 },
                 {
-                    className: 'w-15',
+                    className: 'w-20',
                     render: (data, type, row) => {
-                        return `<span>${row?.['transaction_key_sub'] || ''}</span>`;
+                        return `<span>${row?.['role_key'] || ''}</span>`;
                     }
                 },
                 {
                     className: 'w-20',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['amount_source'] || ''}</span>`;
+                    }
+                },
+                {
+                    className: 'w-30',
                     render: (data, type, row) => {
                         return row?.['is_custom'] ? `${row?.['description'] ? `<span>${row?.['description'] || ''}</span><br>` : ''}<span class="text-primary">${$.fn.gettext('Special rule')}<br>${row?.['context_description']}</span>` : `<span>${row?.['description'] || ''}</span>`;
                     }
                 },
                 {
-                    className: 'w-20',
+                    className: 'w-25',
                     render: (data, type, row) => {
                         let $ele = $(UsualLoadPageAccountingFunction.default_account_select2)
                         $ele.find('.row-account').prop('disabled', true);
                         return $ele.prop('outerHTML')
                     }
                 },
-                {
-                    className: 'w-35',
-                    render: (data, type, row) => {
-                        return `<span>${(row?.['example'] || '')}</span>`;
-                    }
-                },
-                {
-                    className: 'text-right w-5',
-                    'render': (data, type, row) => {
-                        let change_btn = row?.['can_change_account'] ? `<a class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover btn-change-account">
-                           <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i class="fa-solid fa-pen-to-square"></i></span></span>
-                        </a>` : ''
-                        let save_btn = row?.['can_change_account'] ? `<button type="button" data-id="${row?.['id']}" hidden class="btn btn-custom btn-primary btn-save-change-account">
-                            <span>
-                                <span class="icon"><span class="feather-icon"><i class="fa-solid fa-file-pen"></i></span></span>
-                                <span>${$.fn.gettext('Save changes')}</span>
-                            </span>
-                        </button>` : ''
-                        let add_special_rule_btn = !row?.['is_custom'] ? `<button type="button"
-                                class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover btn-add-special-rule"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modal-special-rule"
-                                data-id-sub="${row?.['id'] || ''}"
-                                data-key-sub="${row?.['transaction_key_sub'] || ''}"
-                                data-des-sub="${row?.['description'] || ''}"
-                                title="${$.fn.gettext('Add special rule')}"
-                            >
-                            <span><i class="fa-regular fa-square-plus"></i></span>
-                        </button>` : ''
-                        return change_btn + save_btn + add_special_rule_btn
-                    }
-                },
+                // {
+                //     className: 'text-right w-5',
+                //     'render': (data, type, row) => {
+                //         let change_btn = row?.['can_change_account'] ? `<a class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover btn-change-account">
+                //            <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i class="fa-solid fa-pen-to-square"></i></span></span>
+                //         </a>` : ''
+                //         let save_btn = row?.['can_change_account'] ? `<button type="button" data-id="${row?.['id']}" hidden class="btn btn-custom btn-primary btn-save-change-account">
+                //             <span>
+                //                 <span class="icon"><span class="feather-icon"><i class="fa-solid fa-file-pen"></i></span></span>
+                //                 <span>${$.fn.gettext('Save changes')}</span>
+                //             </span>
+                //         </button>` : ''
+                //         let add_special_rule_btn = !row?.['is_custom'] ? `<button type="button"
+                //                 class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover btn-add-special-rule"
+                //                 data-bs-toggle="modal"
+                //                 data-bs-target="#modal-special-rule"
+                //                 data-id-sub="${row?.['id'] || ''}"
+                //                 data-key-sub="${row?.['transaction_key_sub'] || ''}"
+                //                 data-des-sub="${row?.['description'] || ''}"
+                //                 title="${$.fn.gettext('Add special rule')}"
+                //             >
+                //             <span><i class="fa-regular fa-square-plus"></i></span>
+                //         </button>` : ''
+                //         return change_btn + save_btn + add_special_rule_btn
+                //     }
+                // },
             ],
             initComplete: function () {
                 $account_determination_sub_table.find('tbody tr').each(function (index, ele) {
                     UsualLoadPageAccountingFunction.LoadAccountingAccount({
                         element: $(ele).find('.row-account'),
-                        data: data_list[index]?.['account_mapped_data'],
+                        data: data_list[index]?.['fixed_account_data'],
                         data_url: $account_determination_sub_table.attr('data-chart-of-account-url'),
                         data_params: {'is_account': true}
                     })

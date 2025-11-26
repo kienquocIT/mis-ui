@@ -36,3 +36,15 @@ msgstr "Nợ"
 #
 msgid "Credit"
 msgstr "Có"
+
+#
+msgid "Active"
+msgstr "Kích hoạt"
+
+#
+msgid "Click here to config"
+msgstr "Cấu hình ngay tại đây"
+
+#
+msgid "Are you sure you want to enable automatic journal entries for this transaction?"
+msgstr "Bạn có chắc chắn muốn bật tính năng tự động sinh bút toán cho giao dịch này không?"

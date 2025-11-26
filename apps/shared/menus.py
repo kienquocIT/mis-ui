@@ -1047,8 +1047,17 @@ class MenusFinancials:
         ],
     )
     JOURNAL_ENTRY = MenuCommon(
-        name='Journal entry', code='menu_journal_entry_list', view_name='JournalEntryList',
-        icon='<i class="fas bi bi-journal-text"></i>',
+        name='Journal entry', code='', view_name='', icon='<i class="fa-solid fa-scale-balanced"></i>',
+        child=[
+            MenuCommon(
+                name='Auto journal entry configuration', code='menu_allowed_app_auto_je_list', view_name='AllowedAppAutoJEList',
+                icon='<i class="fa-solid fa-infinity"></i>',
+            ),
+            MenuCommon(
+                name='Journal entry list', code='menu_journal_entry_list', view_name='JournalEntryList',
+                icon='<i class="fas bi bi-journal-text"></i>',
+            ),
+        ],
     )
     RECONCILIATION = MenuCommon(
         name='Reconciliation', code='menu_reconciliation', view_name='ReconList',

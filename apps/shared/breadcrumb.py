@@ -498,6 +498,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     ASSET_CATEGORY_LIST_PAGE = BreadcrumbChildren(_('Asset category'), 'AssetCategoryList')
 
     # Journal entry
+    ALLOWED_APP_AUTO_JE_LIST_PAGE = BreadcrumbChildren(_('Journal entry automatic'), 'AllowedAppAutoJEList')
     JOURNAL_ENTRY_LIST_PAGE = BreadcrumbChildren(_('Journal entry'), 'JournalEntryList')
     JOURNAL_ENTRY_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'JournalEntryCreate')
     JOURNAL_ENTRY_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))

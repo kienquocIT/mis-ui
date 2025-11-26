@@ -933,6 +933,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ASSET_CATEGORY_LIST = StringUrl('accounting-setting/asset-category/list')
     ASSET_CATEGORY_DETAIL = StringUrl('accounting-setting/asset-category/detail/{pk}')
 
+    ALLOWED_APP_AUTO_JE_LIST = StringUrl('journal-entry/allow-app-auto-je/list')
+    ALLOWED_APP_AUTO_JE_DETAIL = StringUrl('journal-entry/allow-app-auto-je/detail/{pk}')
+    JOURNAL_ENTRY_LIST = StringUrl('journal-entry/list')
     JOURNAL_ENTRY_LIST = StringUrl('journal-entry/list')
     JOURNAL_ENTRY_DETAIL = StringUrl('journal-entry/detail/{pk}')
     JOURNAL_ENTRY_SUMMARIZE = StringUrl('journal-entry/get-je-summarize')

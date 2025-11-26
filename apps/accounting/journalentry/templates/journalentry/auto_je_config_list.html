@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Auto journal entry configuration' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    <script id="script-url"
+            data-url-list="{% url 'AllowedAppAutoJEListAPI' %}"
+            data-url-detail="{% url 'AllowedAppAutoJEDetailAPI' '0' %}"
+    ></script>
+    <div class="row" id="app-container"></div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/journalentry/auto_je_config_list.js' %}"></script>
+{% endblock %}

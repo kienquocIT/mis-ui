@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Journal entry report' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    <div class="row">
+        <div class="col-12 col-md-3 col-lg-3">
+            <div class="bflow-mirrow-card">
+                <div class="text-center">
+                    <h5 class="text-muted mt-3">{% trans 'Total Entries' %}</h5>
+                    <span id="total_je_entries" class="text-blue fw-bold h3"></span><br>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3">
+            <div class="bflow-mirrow-card">
+                <div class="text-center">
+                    <h5 class="text-muted mt-3">{% trans 'Total Debit' %}</h5>
+                    <span id="total_je_debit" class="text-blue mask-money fw-bold h3"></span><br>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3">
+            <div class="bflow-mirrow-card">
+                <div class="text-center">
+                    <h5 class="text-muted mt-3">{% trans 'Total Credit' %}</h5>
+                    <span id="total_je_credit" class="text-blue mask-money fw-bold h3"></span><br>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3">
+            <div class="bflow-mirrow-card">
+                <div class="text-center">
+                    <h5 class="text-muted mt-3">{% trans 'Status' %}</h5>
+                    <span id="je_status" class="text-blue fw-bold h3"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <table class="table nowrap w-100" id="je_table_report" data-method="GET"
+                   data-url="{% url 'JournalEntryListAPI' %}"
+                   data-url-detail="{% url 'JournalEntryDetail' '0' %}"
+                   data-url-summarize="{% url 'JournalEntrySummarizeAPI' %}">
+                    <thead>
+                        <tr class="bg-light border-right">
+                            <th style="min-width: 50px"></th>
+                            <th style="min-width: 150px">{% trans "Code" %}</th>
+                            <th style="min-width: 150px">{% trans 'Account' %}</th>
+                            <th style="min-width: 200px">{% trans 'Description' %}</th>
+                            <th style="min-width: 150px">{% trans 'Dimensions' %}</th>
+                            <th style="min-width: 150px">{% trans 'Debit' %}</th>
+                            <th style="min-width: 150px">{% trans 'Credit' %}</th>
+                            <th style="min-width: 150px">{% trans 'Employee created' %}</th>
+                            <th style="min-width: 150px">{% trans 'Approved date' %}</th>
+                            <th style="min-width: 100px">{% trans 'State' %}</th>
+                            <th style="min-width: 150px">{% trans 'System status' %}</th>
+                        </tr>
+                    </thead>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/accounting/journalentry_report/js/journal_entry_report.js' %}"></script>
+{% endblock %}

@@ -488,8 +488,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Accounting
     CHART_OF_ACCOUNTS_LIST_PAGE = BreadcrumbChildren(_('Chart of account'), 'ChartOfAccountsList')
-    ACCOUNT_DETERMINATION_LIST_PAGE = BreadcrumbChildren(_('Account determination'),
-                                                                 'AccountDeterminationList')
+    ACCOUNT_DETERMINATION_LIST_PAGE = BreadcrumbChildren(
+        _('Account determination'),
+        'AccountDeterminationList'
+    )
     INITIAL_BALANCE_LIST_PAGE = BreadcrumbChildren(_('Initial Balance'), 'InitialBalanceList')
     DIMENSION_DEFINITION_LIST_PAGE = BreadcrumbChildren(_('Dimension definition'), 'DimensionDefinitionList')
     DIMENSION_VALUE_LIST_PAGE = BreadcrumbChildren(_('Dimension value'), 'DimensionValueList')
@@ -567,7 +569,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Service order
     SERVICE_ORDER_PAGE = BreadcrumbChildren(_('Service order'), 'ServiceOrderList')
-    SERVICE_ORDER_DETAIL_DASHBOARD_PAGE = BreadcrumbChildren(_('Service order detail dashboard'), 'ServiceOrderDetailDashboard')
+    SERVICE_ORDER_DETAIL_DASHBOARD_PAGE = BreadcrumbChildren(
+        _('Service order detail dashboard'), 'ServiceOrderDetailDashboard'
+    )
 
     # shipment
     SHIPMENT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master data shipment'), 'ShipmentMasterDataList')
@@ -577,6 +581,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Payroll configuration
     PAYROLL_CONFIG_PAGE = BreadcrumbChildren(_('Payroll config'), 'PayrollConfigDetail')
+
+    # Accounting report
+    REPORT_JOURNAL_ENTRY_LIST_PAGE = BreadcrumbChildren(_('Journal entry report'), 'ReportJournalEntryList')
 
 
 class BreadcrumbView:
@@ -1571,10 +1578,14 @@ class BreadcrumbView:
     ]
     DIMENSION_ACCOUNT_MAP_LIST_PAGE = [BreadcrumbItem.DIMENSION_ACCOUNT_MAP_LIST_PAGE]
 
-
     # JOURNAL ENTRY
     JOURNAL_ENTRY_LIST_PAGE = [BreadcrumbItem.JOURNAL_ENTRY_LIST_PAGE]
     JOURNAL_ENTRY_CREATE_PAGE = JOURNAL_ENTRY_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     JOURNAL_ENTRY_DETAIL_PAGE = JOURNAL_ENTRY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     JOURNAL_ENTRY_UPDATE_PAGE = JOURNAL_ENTRY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    # Report
+    REPORT_JOURNAL_ENTRY_LIST_PAGE = [
+        BreadcrumbItem.REPORT_JOURNAL_ENTRY_LIST_PAGE
+    ]
     # /////////////////////////// END SPACE ///////////////////////////

@@ -56,7 +56,7 @@ class JELoadPage {
                         if (!row?.['is_fc'] && row?.['debit'] !== 0) {
                             return `<span class="text-primary mask-money" data-init-money="${row?.['debit']}"></span>`;
                         }
-                        return ``;
+                        return `--`;
                     }
                 },
                 {
@@ -65,7 +65,7 @@ class JELoadPage {
                         if (!row?.['is_fc'] && row?.['credit'] !== 0) {
                             return `<span class="text-primary mask-money" data-init-money="${row?.['credit']}"></span>`;
                         }
-                        return ``;
+                        return `--`;
                     }
                 },
                 {
@@ -74,7 +74,7 @@ class JELoadPage {
                         if (row?.['taxable_value'] !== 0) {
                             return `<span class="text-muted mask-money" data-init-money="${row?.['taxable_value']}"></span>`;
                         }
-                        return ''
+                        return ``
                     }
                 },
                 {

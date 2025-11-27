@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.views import View
 from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
-from apps.shared import mask_view
+from apps.shared import mask_view, ApiURL, ServerAPI
 
 
 # Create your views here.
@@ -17,3 +19,13 @@ class ReportJournalEntryList(View):
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
+
+
+class ReportJournalEntryListAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.JOURNAL_ENTRY_LINE_LIST).get(params)
+        return resp.auto_return(key_success='report_journal_entry_list')

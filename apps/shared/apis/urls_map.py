@@ -936,7 +936,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ALLOWED_APP_AUTO_JE_LIST = StringUrl('journal-entry/allow-app-auto-je/list')
     ALLOWED_APP_AUTO_JE_DETAIL = StringUrl('journal-entry/allow-app-auto-je/detail/{pk}')
     JOURNAL_ENTRY_LIST = StringUrl('journal-entry/list')
-    JOURNAL_ENTRY_LIST = StringUrl('journal-entry/list')
+    JOURNAL_ENTRY_LINE_LIST = StringUrl('journal-entry/line/list')
     JOURNAL_ENTRY_DETAIL = StringUrl('journal-entry/detail/{pk}')
     JOURNAL_ENTRY_SUMMARIZE = StringUrl('journal-entry/get-je-summarize')
 

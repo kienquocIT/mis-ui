@@ -1,5 +1,5 @@
-$('document').ready(function () {
-    function loadJournalEntryReportList() {
+class loadJournalEntryReportInfo {
+    static loadJournalEntryReportList() {
         if (!$.fn.DataTable.isDataTable('#je_table_report')) {
             const $tb = $('#je_table_report');
             let frm = new SetupFormSubmit($tb);
@@ -17,7 +17,7 @@ $('document').ready(function () {
                     dataSrc: function(resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            return resp.data['journal_entry_list'] ? resp.data['journal_entry_list'] : [];
+                            return resp.data['report_journal_entry_list'] ? resp.data['report_journal_entry_list'] : [];
                         }
                         return [];
                     }
@@ -32,16 +32,14 @@ $('document').ready(function () {
                     {
                         className: 'w-10',
                         render: (data, type, row) => {
-                            const link = $tb.attr('data-url-detail').replace('0', row?.['id']);
-                            let je_state_class = [
-                                'badge badge-pill badge-outline badge-soft-secondary',
-                                'badge badge-pill badge-outline badge-soft-success',
-                                'badge badge-pill badge-outline badge-soft-orange'
-                            ][data?.['je_state']];
+                            const jeId = row?.['journal_entry_data']?.['id'];
+                            const jeCode = row?.['journal_entry_data']?.['code'] || '--';
+                            const jeState = row?.['journal_entry_data']?.['je_state']
+                            const link = $tb.attr('data-url-detail').replace('0', jeId);
                             return ` <div class="d-flex">
-                                <a title="${row?.['code'] || '--'}"  href="${link}" 
-                                class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>
-                                <h5><span class="ml-1 badge-sm ${je_state_class}">${data?.['je_state_parsed']}</span></h5>
+                                <a title="${jeCode}"  href="${link}"
+                                class="link-primary underline_hover fw-bold">${jeCode}</a>
+                             
                             </div>`;
                         }
                     },
@@ -108,6 +106,9 @@ $('document').ready(function () {
             })
         }
     }
+}
 
-    loadJournalEntryReportList();
+
+$('document').ready(function () {
+    loadJournalEntryReportInfo.loadJournalEntryReportList();
 });

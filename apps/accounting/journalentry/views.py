@@ -42,6 +42,7 @@ class AllowedAppAutoJEDetailAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.ALLOWED_APP_AUTO_JE_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return()
 
+
 # JE
 class JournalEntryList(View):
     @mask_view(

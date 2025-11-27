@@ -90,8 +90,8 @@ class JELoadPage {
                         for (let i=0; i < row?.['dimensions']?.length; i++) {
                             let item = row?.['dimensions'][i]
                             if (Object.keys(item).length > 0) {
-                                dimension_html += `<h5><span class="badge badge-pill badge-outline badge-soft-blue mr-1" title="${item?.['name']}">${item?.['code']}</span></h5>
-                                                    <h5><span class="badge badge-pill badge-outline badge-soft-warning">100%</span></h5><br>`;
+                                dimension_html += `<h5><span class="badge badge-sm badge-pill badge-outline badge-soft-blue mr-1" title="${item?.['name'] || item?.['title'] || ''}">${item?.['code']}</span></h5>
+                                                    <h5><span class="badge badge-sm badge-pill badge-outline badge-soft-warning">100%</span></h5><br>`;
                             }
                         }
                         return `<div class="d-flex">${dimension_html}</div>`;

@@ -110,25 +110,37 @@ $(document).ready(function() {
                     render: () => ''
                 },
                 {
-                    className: 'w-20',
-                    render: (data, type, row) => {
-                        return `<span>${row?.['role_key'] || ''}</span>`;
-                    }
-                },
-                {
-                    className: 'w-20',
+                    className: 'w-15',
                     render: (data, type, row) => {
                         return `<span>${row?.['amount_source'] || ''}</span>`;
                     }
                 },
                 {
-                    className: 'w-30',
+                    className: 'w-15',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['role_key'] || ''}</span>`;
+                    }
+                },
+                {
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['side'] || ''}</span>`;
+                    }
+                },
+                {
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['rule_level'] || ''}</span>`;
+                    }
+                },
+                {
+                    className: 'w-25',
                     render: (data, type, row) => {
                         return row?.['is_custom'] ? `${row?.['description'] ? `<span>${row?.['description'] || ''}</span><br>` : ''}<span class="text-primary">${$.fn.gettext('Special rule')}<br>${row?.['context_description']}</span>` : `<span>${row?.['description'] || ''}</span>`;
                     }
                 },
                 {
-                    className: 'w-25',
+                    className: 'w-250',
                     render: (data, type, row) => {
                         let $ele = $(UsualLoadPageAccountingFunction.default_account_select2)
                         $ele.find('.row-account').prop('disabled', true);
@@ -248,7 +260,7 @@ $(document).ready(function() {
 
     $(document).on('click', '.btn-detail', function() {
         current_account_deter_id = $(this).attr('data-id')
-        $modal_detail_rule.find('.modal-title').text(`${$(this).attr('data-foreign-title')} (${$(this).attr('data-title')}) - ${$(this).attr('data-key')}`)
+        $modal_detail_rule.find('.modal-title').text(`${$(this).attr('data-foreign-title')} - ${$(this).attr('data-title')} - ${$(this).attr('data-key')}`)
         let acc_deter_sub_list = JSON.parse($(this).closest('td').find('.acc_deter_sub').text() || '[]')
         loadDetailTable(acc_deter_sub_list)
     })

@@ -91,7 +91,7 @@ class JELoadPage {
                             let item = row?.['dimensions'][i]
                             if (Object.keys(item).length > 0) {
                                 dimension_html += `<h5><span class="badge badge-sm badge-pill badge-outline badge-soft-blue mr-1" title="${item?.['name'] || item?.['title'] || item?.['full_name'] || ''}">${item?.['code']}</span></h5>
-                                                    <h5><span class="badge badge-sm badge-pill badge-outline badge-soft-warning">100%</span></h5><br>`;
+                                                   <h5><span class="badge badge-sm badge-pill badge-outline badge-soft-warning">100%</span></h5><br>`;
                             }
                         }
                         return `<div class="d-flex">${dimension_html}</div>`;

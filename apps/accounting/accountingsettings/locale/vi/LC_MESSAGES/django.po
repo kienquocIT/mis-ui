@@ -34,9 +34,29 @@ msgid "Add special rule"
 msgstr "Thêm quy tắc đặt biệt"
 
 #
-msgid "Transaction key"
-msgstr "Mã nghiệp vụ"
+msgid "JE auto create"
+msgstr "Tạo bút toán tự động"
 
 #
-msgid "Transaction key sub"
-msgstr "Mã nghiệp vụ con"
+msgid "JE document type"
+msgstr "Giao dịch sinh bút toán"
+
+#
+msgid "JE posting rule"
+msgstr "Quy tắc hạch toán"
+
+#
+msgid "Rule level"
+msgstr "Cấp độ quy tắc"
+
+#
+msgid "Role key"
+msgstr "Mã vai trò"
+
+#
+msgid "Account mapped"
+msgstr "Tài khoản ánh xạ"
+
+#
+msgid "View automation process"
+msgstr "Xem quá trình tự động"

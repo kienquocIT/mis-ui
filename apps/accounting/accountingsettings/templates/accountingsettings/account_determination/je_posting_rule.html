@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'JE posting rule' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    <script id="script-url"
+            data-url-list="{% url 'JEPostingRuleListAPI' %}"
+    ></script>
+    <div class="row">
+        <div class="col-12">
+            <table class="table nowrap w-100"
+                   id="je-posting-rule-table"
+                   data-chart-of-account-url="{% url 'ChartOfAccountsListAPI' %}"
+                   data-method="GET">
+                <thead class="bg-secondary-light-5">
+                <tr>
+                    <th style="min-width: 50px"></th>
+                    <th style="min-width: 150px">{% trans 'Transaction code' %}</th>
+                    <th style="min-width: 250px">{% trans 'Transaction name' %}</th>
+                    <th style="min-width: 150px">{% trans 'Rule level' %}</th>
+                    <th style="min-width: 150px">{% trans 'Role key' %}</th>
+                    <th style="min-width: 150px">{% trans 'Amount source' %}</th>
+                    <th style="min-width: 100px">{% trans 'Side' %}</th>
+                    <th style="min-width: 200px">{% trans 'Description' %}</th>
+                    <th style="min-width: 100px">{% trans 'Priority' %}</th>
+                    <th style="min-width: 250px">{% trans 'Account mapped' %}</th>
+                    <th style="min-width: 100px">{% trans 'Active' %}</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
+    <script src="{% static 'assets/js/accountingsettings/account_determination/je_posting_rule.js' %}"></script>
+{% endblock %}

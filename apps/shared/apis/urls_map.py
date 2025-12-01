@@ -915,6 +915,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     INSTRUMENT_TOOL_FOR_LEASE_LIST = StringUrl('asset/instrument-tool-for-lease/list')
     INSTRUMENT_TOOL_STATUS_LEASE_LIST = StringUrl('asset/instrument-tool-status-lease/list')
 
+    JE_DOCUMENT_TYPE_LIST = StringUrl('accounting-setting/je-document-type/list')
+    JE_DOCUMENT_TYPE_DETAIL = StringUrl('accounting-setting/je-document-type/detail/{pk}')
+    JE_POSTING_RULE_LIST = StringUrl('accounting-setting/je-posting-rule/list')
+    JE_POSTING_RULE_DETAIL = StringUrl('accounting-setting/je-posting-rule/detail/{pk}')
     ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/account-determination/list')
     ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/account-determination/detail/{pk}')
     DIMENSION_DEFINITION_LIST = StringUrl('accounting-setting/dimension-definition/list')
@@ -933,9 +937,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ASSET_CATEGORY_LIST = StringUrl('accounting-setting/asset-category/list')
     ASSET_CATEGORY_DETAIL = StringUrl('accounting-setting/asset-category/detail/{pk}')
 
-    ALLOWED_APP_AUTO_JE_LIST = StringUrl('journal-entry/allow-app-auto-je/list')
-    ALLOWED_APP_AUTO_JE_DETAIL = StringUrl('journal-entry/allow-app-auto-je/detail/{pk}')
-    JOURNAL_ENTRY_LIST = StringUrl('journal-entry/list')
     JOURNAL_ENTRY_LIST = StringUrl('journal-entry/list')
     JOURNAL_ENTRY_DETAIL = StringUrl('journal-entry/detail/{pk}')
     JOURNAL_ENTRY_SUMMARIZE = StringUrl('journal-entry/get-je-summarize')

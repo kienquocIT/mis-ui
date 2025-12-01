@@ -34,10 +34,6 @@ msgid "Journal entry list"
 msgstr "Danh sách bút toán"
 
 #
-msgid "Auto journal entry configuration"
-msgstr "Cấu hình bút toán tự động"
-
-#
 msgid "Debit"
 msgstr "Nợ"
 

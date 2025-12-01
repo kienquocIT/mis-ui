@@ -87,10 +87,11 @@ class JELoadPage {
                     className: 'w-10',
                     render: (data, type, row) => {
                         let dimension_html = ``
+                        console.log(row?.['dimensions'])
                         for (let i=0; i < row?.['dimensions']?.length; i++) {
                             let item = row?.['dimensions'][i]
                             if (Object.keys(item).length > 0) {
-                                dimension_html += `<h5><span class="badge badge-sm badge-pill badge-outline badge-soft-blue mr-1" title="${item?.['name'] || item?.['title'] || ''}">${item?.['code']}</span></h5>
+                                dimension_html += `<h5><span class="badge badge-sm badge-pill badge-outline badge-soft-blue mr-1" title="${item?.['name'] || item?.['title'] || item?.['full_name'] || ''}">${item?.['code']}</span></h5>
                                                     <h5><span class="badge badge-sm badge-pill badge-outline badge-soft-warning">100%</span></h5><br>`;
                             }
                         }
@@ -127,7 +128,7 @@ class JEHandle {
                     data = data['journal_entry_detail'];
                     $x.fn.renderCodeBreadcrumb(data);
 
-                    console.log(data)
+                    // console.log(data)
 
                     pageElements.$je_state.attr(
                         'class',

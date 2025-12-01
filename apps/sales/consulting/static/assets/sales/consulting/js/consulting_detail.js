@@ -8,7 +8,7 @@ $(document).ready(function () {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                $x.fn.renderCodeBreadcrumb(data),
+                $x.fn.renderCodeBreadcrumb(data)
                 $.fn.compareStatusShowPageAction(data)
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
                 let consultingClassInstance = new ConsultingHandler()

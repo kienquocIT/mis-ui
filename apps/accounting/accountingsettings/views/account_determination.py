@@ -4,22 +4,21 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from apps.shared import mask_view, ApiURL, ServerAPI
 
-
-class AccountDeterminationList(View):
-
+# JE document type
+class JEDocumentTypeList(View):
     @mask_view(
         auth_require=True,
-        template='accountingsettings/account_determination/account_determination.html',
-        breadcrumb='ACCOUNT_DETERMINATION_LIST_PAGE',
-        menu_active='menu_account_determination_list',
-        icon_cls='fas bi bi-journal-text',
+        template='accountingsettings/account_determination/je_document_type.html',
+        breadcrumb='JE_DOCUMENT_TYPE_LIST_PAGE',
+        menu_active='menu_je_document_type',
+        icon_cls='fa-solid fa-infinity',
         icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
 
-class AccountDeterminationListAPI(APIView):
+class JEDocumentTypeListAPI(APIView):
     permission_classes = [IsAuthenticated]  # noqa
 
     @mask_view(
@@ -28,16 +27,44 @@ class AccountDeterminationListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_DETERMINATION_LIST).get(params)
-        return resp.auto_return(key_success='account_determination_list')
+        resp = ServerAPI(user=request.user, url=ApiURL.JE_DOCUMENT_TYPE_LIST).get(params)
+        return resp.auto_return(key_success='je_document_type')
 
 
-class AccountDeterminationDetailAPI(APIView):
+class JEDocumentTypeDetailAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
     @mask_view(
-        login_require=True,
         auth_require=True,
         is_api=True,
     )
-    def put(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_DETERMINATION_DETAIL.fill_key(pk=pk)).put(request.data)
-        return resp.auto_return(key_success='account_determination_detail')
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.JE_DOCUMENT_TYPE_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return()
+
+
+# JE posting Rule
+class JEPostingRuleList(View):
+    @mask_view(
+        auth_require=True,
+        template='accountingsettings/account_determination/je_posting_rule.html',
+        breadcrumb='JE_POSTING_RULE_LIST_PAGE',
+        menu_active='menu_je_posting_rule',
+        icon_cls='fa-solid fa-pen-ruler',
+        icon_bg='bg-primary',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class JEPostingRuleListAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.JE_POSTING_RULE_LIST).get(params)
+        return resp.auto_return(key_success='je_posting_rule')

@@ -1247,7 +1247,7 @@ class UsualLoadPageAccountingFunction {
             <select class="form-select select2 row-account"></select>
             <span class="input-group-text p-0">
                 <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa-regular fa-circle-question"></i>
+                    <i class="fa-solid fa-info"></i>
                 </a>
                 <div class="dropdown-menu bflow-mirrow-card-100 p-2" style="min-width: 250px;">
                 </div>
@@ -1260,7 +1260,7 @@ class UsualLoadPageAccountingFunction {
             <select class="form-select select2 row-account" multiple></select>
             <span class="input-group-text p-0">
                 <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa-regular fa-circle-question"></i>
+                    <i class="fa-solid fa-info"></i>
                 </a>
                 <div class="dropdown-menu bflow-mirrow-card-100 p-2" style="min-width: 250px; overflow-y: auto; max-height: 350px;">
                 </div>

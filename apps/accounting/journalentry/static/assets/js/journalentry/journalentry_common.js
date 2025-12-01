@@ -87,7 +87,6 @@ class JELoadPage {
                     className: 'w-10',
                     render: (data, type, row) => {
                         let dimension_html = ``
-                        console.log(row?.['dimensions'])
                         for (let i=0; i < row?.['dimensions']?.length; i++) {
                             let item = row?.['dimensions'][i]
                             if (Object.keys(item).length > 0) {

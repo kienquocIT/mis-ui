@@ -2,10 +2,56 @@
 {% load static i18n %}
 {% block title %}{% trans 'Journal entry report' %}{% endblock %}
 {% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
 {% endblock %}
 {% block pageContent %}
+    <div class="card shadow-sm p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="mb-0"><i class="fas fa-filter"></i>{% trans 'Apply filter' %}</h4>
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="reset_filter">
+                <i class="fas fa-redo"></i>{% trans ' Reset' %}
+            </button>
+        </div>
+
+        <div class="row">
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="form-group">
+                    <label class="form-label required" for="start_date_filter">{% trans 'Start Date' %}</label>
+                    <div class="input-group mb-3">
+                        <span class="input-affix-wrapper">
+                            <span class="input-prefix">📅</span>
+                            <input required type="text" name="start_date" class="form-control" autocomplete="off"
+                                   id="start_date_filter" placeholder="DD/MM/YYYY">
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="form-group">
+                    <label class="form-label required" for="end_date_filter">{% trans 'End Date' %}</label>
+                    <div class="input-group mb-3">
+                        <span class="input-affix-wrapper">
+                            <span class="input-prefix">📅</span>
+                            <input required type="text" name="end_date" class="form-control" autocomplete="off"
+                                   id="end_date_filter" placeholder="DD/MM/YYYY">
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Apply Button -->
+        <div class="row">
+            <div class="col-12 text-end">
+                <button type="button" class="btn btn-primary" id="apply_filter">
+                    <i class="fas fa-check-circle"></i>
+                    {% trans 'Apply Filters' %}
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-12 col-md-3 col-lg-3">
             <div class="bflow-mirrow-card">
@@ -50,16 +96,14 @@
                     <thead>
                         <tr class="bg-light border-right">
                             <th style="min-width: 50px"></th>
+                            <th style="min-width: 150px">{% trans 'Date' %}</th>
                             <th style="min-width: 150px">{% trans "JE code" %}</th>
                             <th style="min-width: 150px">{% trans 'Account' %}</th>
                             <th style="min-width: 200px">{% trans 'Description' %}</th>
-                            <th style="min-width: 150px">{% trans 'Dimensions' %}</th>
+                            <th style="min-width: 200px">{% trans 'Dimensions' %}</th>
                             <th style="min-width: 150px">{% trans 'Debit' %}</th>
                             <th style="min-width: 150px">{% trans 'Credit' %}</th>
-{#                            <th style="min-width: 150px">{% trans 'Employee created' %}</th>#}
-                            <th style="min-width: 150px">{% trans 'Approved date' %}</th>
-                            <th style="min-width: 100px">{% trans 'State' %}</th>
-{#                            <th style="min-width: 150px">{% trans 'System status' %}</th>#}
+                            <th style="min-width: 150px">{% trans 'State' %}</th>
                         </tr>
                     </thead>
             </table>
@@ -67,5 +111,8 @@
     </div>
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/js/xlsx-0.18.5.full.min.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/accounting/journalentry_report/js/journal_entry_report.js' %}"></script>
 {% endblock %}

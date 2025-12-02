@@ -220,7 +220,7 @@ class ReturnAPHandle {
                 'expense_description': $(this).find('.row-expense').text(),
                 'expense_type_id': $(this).find('.row-expense-type').data('id'),
                 'remain_value': parseFloat($(this).find('.remain-price').attr('data-init-money')),
-                'return_value': $(this).find('.return-price').attr('value'),
+                'return_value': parseFloat($(this).find('.return-price').attr('value')),
             })
         })
         frm.dataForm['returned_list'] = returned_list;

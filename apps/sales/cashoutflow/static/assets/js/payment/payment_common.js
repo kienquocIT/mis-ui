@@ -1840,7 +1840,7 @@ class PaymentHandler {
                 let expense_type = pageElements.$table_line_detail.find(row_id + ' .expense-type-select-box').val();
                 let expense_description = pageElements.$table_line_detail.find(row_id + ' .expense-des-input').val();
                 let expense_uom_name = pageElements.$table_line_detail.find(row_id + ' .expense-uom-input').val();
-                let expense_quantity = pageElements.$table_line_detail.find(row_id + ' .expense_quantity').val();
+                let expense_quantity = parseFloat(pageElements.$table_line_detail.find(row_id + ' .expense_quantity').val());
                 let expense_tax = pageElements.$table_line_detail.find(row_id + ' .expense-tax-select-box option:selected').attr('value');
                 let expense_unit_price = parseFloat(pageElements.$table_line_detail.find(row_id + ' .expense-unit-price-input').attr('value'));
                 let expense_subtotal_price = parseFloat(pageElements.$table_line_detail.find(row_id + ' .expense-subtotal-price').attr('value'));

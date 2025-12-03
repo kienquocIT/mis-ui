@@ -1246,11 +1246,9 @@ class UsualLoadPageAccountingFunction {
         <div class="input-group">
             <select class="form-select select2 row-account"></select>
             <span class="input-group-text p-0">
-                <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                <a href="#">
                     <i class="fa-solid fa-info"></i>
                 </a>
-                <div class="dropdown-menu bflow-mirrow-card-100 p-2" style="min-width: 250px;">
-                </div>
             </span>
         </div>
     `;
@@ -1269,15 +1267,36 @@ class UsualLoadPageAccountingFunction {
     `;
 
     static ParseInfoTemplate(data) {
-        let info_template = ``
+        let info_template = ``;
+        info_template += `<div class="text-left">`;
         for (let i = 0; i < data.length; i++) {
             info_template += `
-                <h5 class="row-account-code fw-bold">${data[i]?.['acc_code'] || ''}</h5>
-                <h6 class="row-fk-account-name">${data[i]?.['foreign_acc_name'] || ''}</h6>
-                <h6 class="row-account-name">${data[i]?.['acc_name'] || ''}</h6>
-            `
+                <div class="p-2" style="min-width: 250px">
+                    <h5 class="row-account-code fw-bold">${data[i]?.['acc_code'] || ''}</h5>
+                    <h6 class="row-fk-account-name">${data[i]?.['foreign_acc_name'] || ''}</h6>
+                    <h6 class="row-account-name">${data[i]?.['acc_name'] || ''}</h6>
+                </div>
+            `;
         }
-        return `${info_template}`
+        info_template += `</div>`;
+        return info_template;
+    }
+
+    static ParsePopover($targetGroup, data) {
+        let info_template = UsualLoadPageAccountingFunction.ParseInfoTemplate(data);
+        if (!$targetGroup.data('bs.popover')) {
+            $targetGroup.popover({
+                html: true,                // QUAN TRỌNG: Cho phép render HTML (thẻ h5, h6)
+                content: info_template,    // Nội dung
+                trigger: 'hover',          // Hoặc 'click' tùy bạn
+                placement: 'auto',         // Tự động tìm chỗ trống
+                container: 'body',         // QUAN TRỌNG: Đẩy ra ngoài body để không bị DataTable che khuất
+                template: '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body p-2"></div></div>' // Tùy chỉnh CSS nếu cần
+            });
+            $targetGroup.addClass('popover-rendered');
+        } else {
+            $targetGroup.attr('data-content', info_template);
+        }
     }
 
     /**
@@ -1322,21 +1341,21 @@ class UsualLoadPageAccountingFunction {
                     for (let i = 0; i < selected.length; i++) {
                         data_list.push(selected[i]?.['data'])
                     }
-                    let info_template = UsualLoadPageAccountingFunction.ParseInfoTemplate(data_list)
-                    element.closest('.input-group').find('.dropdown-menu').html(info_template)
+                    let $targetGroup = element.closest('.input-group');
+                    UsualLoadPageAccountingFunction.ParsePopover($targetGroup, data_list);
                 }
             }
         })
 
          if (is_multiple) {
-             let info_template = UsualLoadPageAccountingFunction.ParseInfoTemplate(data)
-             element.closest('.input-group').find('.dropdown-menu').html(info_template)
+             let $targetGroup = element.closest('.input-group');
+             UsualLoadPageAccountingFunction.ParsePopover($targetGroup, data);
          }
          else {
              if (data) {
                  if (Object.keys(data).length > 0) {
-                     let info_template = UsualLoadPageAccountingFunction.ParseInfoTemplate([data])
-                     element.closest('.input-group').find('.dropdown-menu').html(info_template)
+                     let $targetGroup = element.closest('.input-group');
+                     UsualLoadPageAccountingFunction.ParsePopover($targetGroup, [data]);
                  }
              }
          }

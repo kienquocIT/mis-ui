@@ -36,18 +36,11 @@ class JELoadPage {
                     }
                 },
                 {
-                    className: 'w-10',
+                    className: 'w-20',
                     render: (data, type, row) => {
-                        return `
-                            <span class="text-muted fw-bold h5">${row?.['account_data']?.['acc_code']}</span><br>
-                            <span class="text-muted">${row?.['account_data']?.['foreign_acc_name']}</span>
-                        `
-                    }
-                },
-                {
-                    className: 'w-10',
-                    render: (data, type, row) => {
-                        return `<span class="text-muted">${row?.['account_data']?.['acc_name']}</span>`
+                        let $ele = $(UsualLoadPageAccountingFunction.default_account_select2)
+                        $ele.find('.row-account').prop('disabled', true);
+                        return $ele.prop('outerHTML')
                     }
                 },
                 {
@@ -78,23 +71,9 @@ class JELoadPage {
                     }
                 },
                 {
-                    className: 'w-15',
+                    className: 'w-25',
                     render: (data, type, row) => {
-                        return `<span>${row?.['business_partner_data']?.['name'] || ''}</span>`;
-                    }
-                },
-                {
-                    className: 'w-10',
-                    render: (data, type, row) => {
-                        let dimension_html = ``
-                        for (let i=0; i < row?.['dimensions']?.length; i++) {
-                            let item = row?.['dimensions'][i]
-                            if (Object.keys(item).length > 0) {
-                                dimension_html += `<h5><span class="badge badge-sm badge-pill badge-outline badge-soft-blue mr-1" title="${item?.['name'] || item?.['title'] || item?.['full_name'] || ''}">${item?.['code']}</span></h5>
-                                                   <h5><span class="badge badge-sm badge-pill badge-outline badge-soft-warning">100%</span></h5><br>`;
-                            }
-                        }
-                        return `<div class="d-flex">${dimension_html}</div>`;
+                        return `<span>${row?.['business_partner_data']?.['name'] || row?.['business_employee_data']?.['fullname'] || row?.['product_mapped_data']?.['title'] || ''}</span>`;
                     }
                 },
             ],
@@ -106,9 +85,18 @@ class JELoadPage {
                 if (textFilter$.length > 0) {
                     textFilter$.css('display', 'flex');
                     textFilter$.append(
-                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="h5 text-primary fw-bold">📊 ${$.fn.gettext('Journal lines')}</span>`)
+                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="h5 text-primary fw-bold">${$.fn.gettext('Journal lines')}</span>`)
                     )
                 }
+
+                pageElements.$journal_entry_table.find('tbody tr').each(function (index, ele) {
+                    UsualLoadPageAccountingFunction.LoadAccountingAccount({
+                        element: $(this).find('.row-account'),
+                        data_url: pageElements.$url_script.attr('data-url-accounting-account'),
+                        data_params: {'acc_type': 1, 'is_account': true},
+                        data: datalist[index]?.['account_data'] || {},
+                    });
+                })
             }
         });
     }

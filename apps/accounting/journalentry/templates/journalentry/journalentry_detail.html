@@ -12,7 +12,9 @@
     <script id="trans-script"
             data-trans-all="{% trans 'Default all' %}"
     ></script>
-    <script id="url-script"></script>
+    <script id="url-script"
+            data-url-accounting-account="{% url 'ChartOfAccountsListAPI' %}"
+    ></script>
 
     <form id="form-detail-je" data-url="{% url 'JournalEntryDetailAPI' pk=pk %}" data-method="GET">
         {% csrf_token %}

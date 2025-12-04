@@ -1016,6 +1016,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # masterdata/shift
     SHIFT_LIST = StringUrl('hrm/attendance/shift/list')
     SHIFT_DETAIL = StringUrl('hrm/attendance/shift/detail/{pk}')
+    SHIFT_IMPORT = StringUrl('hrm/attendance/shift/import')
 
     # attendance/shift assignment
     SHIFT_ASSIGNMENT_LIST = StringUrl('hrm/attendance/shift-assignment/list')

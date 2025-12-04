@@ -7361,7 +7361,9 @@ class DateTimeControl {
                 dateFormat: "d/m/Y",
                 allowInput: true,
                 disableMobile: true,
-                locale: 'vn',
+                locale: globeLanguage === 'vi' ? 'vn' : 'default',
+                'shorthandCurrentMonth': true,
+                defaultDate: null,
                 onChange: function (selectedDates, dateStr, instance) {
                     if (selectedDates.length > 0) {
                         const d = selectedDates[0];
@@ -7371,7 +7373,6 @@ class DateTimeControl {
                         $(ele).val(formatted).trigger('change');
                     }
                 },
-                defaultDate: null
             });
 
             $(ele).val('').trigger('change');
@@ -7390,7 +7391,8 @@ class DateTimeControl {
             dateFormat: "d/m/Y",
             allowInput: true,
             disableMobile: true,
-            locale: 'vn',
+            locale: globeLanguage === 'vi' ? 'vn' : 'default',
+            'shorthandCurrentMonth': true,
             defaultDate: startDate,
             minDate: startDate,
             maxDate: endDate,

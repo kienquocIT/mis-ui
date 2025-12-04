@@ -929,7 +929,7 @@ class LeaseOrderLoadDataHandle {
             "order": order,
             "product_id": data?.['id'],
             "product_data": data,
-            "asset_type": 3,
+            "asset_type": 1,
 
             "uom_time_id": dataUOMTime?.['id'],
             "uom_time_data": dataUOMTime,
@@ -2746,6 +2746,9 @@ class LeaseOrderLoadDataHandle {
             if (leaseStartDateEle && $leaseStartDateEle.length > 0) {
                 $leaseStartDateEle.val("").trigger('change');
                 $leaseStartDateEle.removeAttr('disabled');
+                if (LeaseOrderLoadDataHandle.$leaseFrom.val()) {
+                    $leaseStartDateEle.val(LeaseOrderLoadDataHandle.$leaseFrom.val());
+                }
                 if ($(leaseStartDateEle).val()) {
                     $leaseStartDateEle.val(moment($(leaseStartDateEle).val()).format('DD/MM/YYYY'));
                 }
@@ -2755,6 +2758,9 @@ class LeaseOrderLoadDataHandle {
             if (leaseEndDateEle && $leaseEndDateEle.length > 0) {
                 $leaseEndDateEle.val("").trigger('change');
                 $leaseEndDateEle.removeAttr('disabled');
+                if (LeaseOrderLoadDataHandle.$leaseTo.val()) {
+                    $leaseEndDateEle.val(LeaseOrderLoadDataHandle.$leaseTo.val());
+                }
                 if ($(leaseEndDateEle).val()) {
                     $leaseEndDateEle.val(moment($(leaseEndDateEle).val()).format('DD/MM/YYYY'));
                 }
@@ -5328,24 +5334,6 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<textarea class="form-control table-row-code" rows="3" readonly>${row?.['code'] ? row?.['code'] : ''}</textarea>`;
-                    }
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
-                        return `<textarea class="form-control table-row-description" rows="3" readonly>${row?.['description'] ? row?.['description'] : ''}</textarea>`
-                    }
-                },
-                {
-                    targets: 3,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-uom">${row?.['sale_information']?.['default_uom']?.['title'] ? row?.['sale_information']?.['default_uom']?.['title'] : ''}</span>`;
-                    }
-                },
-                {
-                    targets: 4,
-                    render: (data, type, row) => {
                         let value = 0;
                         let targetEle = LeaseOrderDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${LeaseOrderLoadDataHandle.$btnSaveSelectOffset.attr('data-product-id')}"]`);
                         if (targetEle) {
@@ -5366,6 +5354,24 @@ class LeaseOrderDataTableHandle {
                             }
                         }
                         return `<input type="text" class="form-control table-row-quantity valid-num" value="${value}">`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<textarea class="form-control table-row-code" rows="3" readonly>${row?.['code'] ? row?.['code'] : ''}</textarea>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<textarea class="form-control table-row-description" rows="3" readonly>${row?.['description'] ? row?.['description'] : ''}</textarea>`
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-uom">${row?.['sale_information']?.['default_uom']?.['title'] ? row?.['sale_information']?.['default_uom']?.['title'] : ''}</span>`;
                     }
                 },
             ],

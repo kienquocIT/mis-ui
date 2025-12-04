@@ -130,16 +130,19 @@ $(function () {
     function ExportEmployeeList() {
         let parseData = []
         export_employee_list.forEach(function (data, index) {
-            let role_list = ''
+            let role_list = []
             data?.['role'].forEach(function (role, index) {
-                role_list += `${role?.['title']}, `
+                role_list.push(role?.['title'])
             })
 
             parseData.push({
                 "Mã": data?.['code'] || '',
                 "Tên đầy đủ": data?.['full_name'] || '',
+                "Ngày sinh": data?.['dob'] ? moment(data?.['dob'], 'YYYY-MM-DD').format('DD/MM/YYYY') : '',
+                "Email": data?.['email'] || '',
+                "Số điện thoại": data?.['phone'] || '',
                 "Phòng ban": data?.['group']?.['title'] || '',
-                "Vai trò": role_list,
+                "Vai trò": role_list.join(', '),
                 "Ngày tham gia": data?.['date_joined'] ? moment(data?.['date_joined'], 'YYYY-MM-DD').format('DD/MM/YYYY') : '',
                 "Trạng thái": data?.['is_active'] ? 'Hoạt động' : 'Không hoạt động',
                 "QTV": data?.['is_admin_company'] ? 'QTV' : ''

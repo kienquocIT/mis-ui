@@ -66,7 +66,7 @@
         <link href="{% static 'assets/css/loading-spinner.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/my-style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/bflow_mirrow.css' %}" rel="stylesheet" type="text/css">
-{#        <link href="{% static 'assets/css/bflow-ai/chatbot-popup.css' %}" rel="stylesheet">#}
+        <link href="{% static 'assets/css/bflow-ai/chatbot-popup.css' %}" rel="stylesheet">
         <link href="{% static 'assets/css/notify.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/plugins/drawer.css' %}" rel="stylesheet" type="text/css">
         <link
@@ -408,7 +408,7 @@
 <!-- // Bubble -->
 
 {#<!-- Chatbot -->#}
-{#{% include 'extends/bflow-ai/chatbot-popup.html' %}#}
+{% include 'extends/bflow-ai/chatbot-popup.html' %}
 <!-- Wrapper -->
 <!-- /Wrapper -->
 
@@ -830,13 +830,13 @@
 {% if is_ga_enabled %}
     <script async src="{{ ga_config.script }}"></script>
 {% endif %}
-{##}
-{#<script src="{% static 'assets/js/bflow-ai/ask-accounting.js' %}"></script>#}
-{#<script src="{% static 'assets/js/bflow-ai/bflow_chatbot_main.js' %}"></script>#}
-{#<script>#}
-{#    $(document).ready(function () {#}
-{#        $('#aiChatButton').prop('hidden', $('#menu-tenant').attr('data-space-selected') !== 'financials')#}
-{#    })#}
-{#</script>#}
+
+<script src="{% static 'assets/js/bflow-ai/ask-accounting.js' %}"></script>
+<script src="{% static 'assets/js/bflow-ai/bflow_chatbot_main.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $('#aiChatButton').prop('hidden', $('#menu-tenant').attr('data-space-selected') !== 'financials')
+    })
+</script>
 </body>
 </html>

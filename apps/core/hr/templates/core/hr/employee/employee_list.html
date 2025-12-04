@@ -19,6 +19,13 @@
 {% endblock %}
 
 {% block pageContent %}
+    <div class="row">
+        <div class="col-12 text-right">
+            <button type="button" class="btn btn-sm border-secondary bg-secondary text-white" id="btn-export-to-excel">
+                <i class="fa-solid fa-file-excel"></i>&nbsp;{% trans 'Export to Excel' %}
+            </button>
+        </div>
+    </div>
     <table id="datable_employee_list" class="table nowrap w-100 mb-5"
            data-url="{% url 'EmployeeListAPI' %}"
            data-method="GET"
@@ -26,21 +33,20 @@
     >
         <thead>
         <tr>
-            <th></th>
-            <th>{% trans 'Code' %}</th>
-            <th>{% trans 'Full Name' %}</th>
-            <th>{% trans 'Department' %}</th>
-            <th>{% trans 'Roles' %}</th>
-            <th>{% trans 'Date Joined' %}</th>
-            <th>{% trans 'Status' %}</th>
-            <th>{% trans 'Is admin' %}</th>
-{#            <th>{% trans 'Actions' %}</th>#}
+            <th style="min-width: 50px"></th>
+            <th style="min-width: 150px">{% trans 'Code' %}</th>
+            <th style="min-width: 250px">{% trans 'Full Name' %}</th>
+            <th style="min-width: 200px">{% trans 'Department' %}</th>
+            <th style="min-width: 250px">{% trans 'Roles' %}</th>
+            <th style="min-width: 150px">{% trans 'Date Joined' %}</th>
+            <th style="min-width: 100px">{% trans 'Status' %}</th>
+            <th style="min-width: 50px">{% trans 'Is admin' %}</th>
         </tr>
         </thead>
         <tbody></tbody>
     </table>
 {% endblock %}
-
 {% block jsFooter %}
+    <script src="{% static 'vendors/xlsx/dist/xlsx.full.min.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/employee/employee_data.js' %}"></script>
 {% endblock %}

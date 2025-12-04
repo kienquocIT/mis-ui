@@ -1510,7 +1510,7 @@ class AdvancePaymentHandler {
             let expense_description = row.find('.expense-des-input').val();
             let expense_type = row.find('.expense-type-select-box').val();
             let expense_uom_name = row.find('.expense-uom-input').val();
-            let expense_quantity = row.find('.expense_quantity').val();
+            let expense_quantity = parseFloat(row.find('.expense_quantity').val());
             let expense_tax = row.find('.expense-tax-select-box').val();
             let expense_unit_price = parseFloat(row.find('.expense-unit-price-input').attr('value'));
             let expense_subtotal_price = parseFloat(row.find('.expense-subtotal-price').attr('value'));

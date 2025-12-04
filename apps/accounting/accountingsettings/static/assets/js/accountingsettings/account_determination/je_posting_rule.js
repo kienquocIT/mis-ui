@@ -115,6 +115,19 @@ $(document).ready(function() {
                         })
                     }
                 })
+
+                let wrapper$ = $je_posting_rule_table.closest('.dataTables_wrapper');
+                const headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+                const textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+                headerToolbar$.prepend(textFilter$);
+                if (textFilter$.length > 0) {
+                    textFilter$.css('display', 'flex');
+                    textFilter$.append(
+                        $(`<div class="d-inline-block mr-3"></div>`).append(`
+                            <button type="button" class="btn btn-outline-blue" data-bs-target="#modal-configure-guide" data-bs-toggle="modal">${$.fn.gettext('Configure guide')}</button>
+                        `)
+                    )
+                }
             }
         });
     }

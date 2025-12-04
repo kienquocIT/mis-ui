@@ -60,3 +60,7 @@ msgstr "Tài khoản ánh xạ"
 #
 msgid "View automation process"
 msgstr "Xem quá trình tự động"
+
+#
+msgid "Configure guide"
+msgstr "Hướng dẫn cấu hình"

@@ -39,6 +39,148 @@
         </div>
     </div>
 {% endblock %}
+{% block modalData %}
+    <div class="modal fade" id="modal-configure-guide" tabindex="-1" role="dialog" aria-labelledby="modal-configure-guide" aria-hidden="true">
+        <div class="modal-dialog modal-lg" style="min-width: 70%" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{% trans 'Configure guide' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: auto; max-height: 72vh">
+                    <div class="container-fluid mb-2">
+                        <h5 class="text-primary fw-bold">{% trans 'Nguyên lý hoạt động' %}</h5>
+                        <p class="mb-5">{% trans 'Để tạo ra một bút toán, Hệ thống sẽ tự động đặt ra 3 câu hỏi. Nhiệm vụ của bạn là cấu hình câu trả lời cho nó.' %}</p>
+
+                        <div class="alert alert-secondary">
+                            <span class="badge rounded-pill bg-primary px-2 py-2 mb-2">{% trans 'CÂU HỎI 1' %}</span>
+                            <span class="text-primary fw-bold h4">{% trans 'Lấy số tiền nào?' %} <small class="text-muted fs-6">({% trans 'Amount Source' %})</small></span>
+                            <p class="text-muted">{% trans 'Trên một tờ phiếu có rất nhiều con số. Bạn muốn máy lấy con số nào?' %}</p>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="p-2 rounded border bg-white h-100">
+                                        <strong class="d-block text-dark mb-2"><i class="fa-solid fa-layer-group"></i> {% trans '1. Phạm vi lấy (Level)' %}</strong>
+                                        <ul class="list-unstyled mb-0 ms-2">
+                                            <li class="mb-3">
+                                                <span class="badge bg-secondary">HEADER</span>
+                                                <strong>{% trans 'Lấy Tổng Cộng:' %}</strong> <br>
+                                                {% trans 'Chỉ lấy 1 con số tổng cuối cùng của phiếu.' %}
+                                            </li>
+                                            <li>
+                                                <span class="badge bg-secondary">LINE</span>
+                                                <strong>{% trans 'Lấy Chi Tiết:' %}</strong> <br>
+                                                {% trans 'Phiếu có 10 dòng hàng -> Máy lấy 10 con số chi tiết.' %}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-2 rounded border bg-white h-100">
+                                        <strong class="d-block text-dark mb-2"><i class="fa-solid fa-money-bill-wave"></i> {% trans '2. Loại tiền (Source)' %}</strong>
+                                        <ul class="list-unstyled mb-0 ms-2">
+                                            <li><i class="fa-solid fa-check text-success me-2"></i><strong>COST:</strong> {% trans 'Giá vốn / Giá trị kho' %}</li>
+                                            <li><i class="fa-solid fa-check text-success me-2"></i><strong>SALES:</strong> {% trans 'Doanh thu / Giá bán' %}</li>
+                                            <li><i class="fa-solid fa-check text-success me-2"></i><strong>TAX:</strong> {% trans 'Tiền thuế' %}</li>
+                                            <li><i class="fa-solid fa-check text-success me-2"></i><strong>TOTAL:</strong> {% trans 'Tổng thanh toán' %}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-secondary">
+                            <span class="badge rounded-pill bg-primary px-2 py-2 mb-2">{% trans 'CÂU HỎI 2' %}</span>
+                            <span class="text-primary fw-bold h4">{% trans 'Ghi vào Tài khoản nào?' %} <small class="text-muted fs-6">({% trans 'Account' %})</small></span>
+                            <p class="text-muted">{% trans 'Máy sẽ tìm số tài khoản kế toán theo cách nào?' %}</p>
+                            <div class="table-responsive">
+                                <table class="table nowrap w-100 bg-white">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">{% trans 'Lựa chọn' %}</th>
+                                            <th>{% trans 'Ý nghĩa' %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-center">
+                                                <strong class="text-primary fs-5">FIXED</strong><br>
+                                                <small>({% trans 'Cố định' %})</small>
+                                            </td>
+                                            <td>
+                                                <p class="mb-1 fw-bold">{% trans 'Ghi cứng vào 1 số tài khoản.' %}</p>
+                                                <span class="text-muted">{% trans 'Dù là ai, dù mua cái gì, cũng chỉ ghi vào TK này.' %}</span><br>
+                                                <em>{% trans 'VD: Tiền mặt luôn là 1111.' %}</em>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-center">
+                                                <strong class="text-primary fs-5">LOOKUP</strong><br>
+                                                <small>({% trans 'Động' %})</small>
+                                            </td>
+                                            <td>
+                                                <p class="mb-1 fw-bold">{% trans 'Tìm TK dựa theo Sản phẩm/Đối tác.' %}</p>
+                                                <span class="text-muted">{% trans 'Bạn chỉ cần chọn Vai trò (Role). Máy sẽ tự tra cứu xem sản phẩm đó thuộc nhóm nào để lấy TK tương ứng.' %}</span><br>
+                                                <em>{% trans 'VD: Bán Laptop -> 1561. Bán Dịch vụ -> 5113.' %}</em>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-secondary">
+                            <span class="badge rounded-pill bg-primary px-2 py-2 mb-2">{% trans 'CÂU HỎI 3' %}</span>
+                            <span class="text-primary fw-bold h4">{% trans 'Ghi bên Nợ hay Có?' %} <small class="text-muted fs-6">({% trans 'Side' %})</small></span>
+                            <div class="d-flex align-items-center p-2 rounded bg-white border">
+                                <div class="flex-grow-1 text-center border-end">
+                                    <strong class="fs-4 text-primary">DEBIT</strong><br>
+                                    <span>{% trans 'Ghi Nợ' %}</span>
+                                </div>
+                                <div class="flex-grow-1 text-center">
+                                    <strong class="fs-4 text-primary">CREDIT</strong><br>
+                                    <span>{% trans 'Ghi Có' %}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <h5 class="alert-heading fw-bold"><i class="fa-solid fa-star text-warning me-2"></i> {% trans 'Ví dụ thực tế: Phiếu Xuất Kho' %}</h5>
+                            <p>{% trans 'Bạn xuất kho 1 chiếc' %} <strong>Laptop</strong> {% trans 'giá vốn' %} <strong>10.000.000đ</strong>.</p>
+                            <div class="row mt-3">
+                                <div class="col-md-4">
+                                    <div class="card h-100 border-0 bg-white p-2">
+                                        <small class="text-muted">{% trans 'Bước 1: Lấy tiền' %}</small><br>
+                                        <strong>LINE + COST</strong> <br>
+                                        <span class="text-success">&rarr; 10.000.000đ</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card h-100 border-0 bg-white p-2">
+                                        <small class="text-muted">{% trans 'Bước 2: Tìm TK' %}</small><br>
+                                        <strong>LOOKUP + KHO</strong> <br>
+                                        <span class="text-success">&rarr; Laptop là Hàng hóa => 1561</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card h-100 border-0 bg-white p-2">
+                                        <small class="text-muted">{% trans 'Bước 3: Ghi sổ' %}</small><br>
+                                        <strong>CREDIT (Có)</strong> <br>
+                                        <span class="text-danger fw-bold">&rarr; Có 1561: 10tr</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>

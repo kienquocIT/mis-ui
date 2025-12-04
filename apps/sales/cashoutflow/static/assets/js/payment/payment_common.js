@@ -56,7 +56,7 @@ class PaymentPageFunction {
             data: data_list,
             columns: [
                 {
-                    className: 'w-5',
+                    className: 'w-5 text-center',
                     render: () => {
                         return ''
                     }
@@ -71,14 +71,14 @@ class PaymentPageFunction {
                     className: 'w-90',
                     render: (data, type, row) => {
                         if (row?.['manual']) {
-                            return `<div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Bank name')}:</label><div class="col-9"><input class="form-control fw-bold bank_name"></div></div>
-                                    <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Account name')}:</label><div class="col-9"><input class="form-control fw-bold bank_account_name"></div></div>
-                                    <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Account number')}:</label><div class="col-9"><input class="form-control fw-bold bank_account_number"></div></div>`
+                            return `<div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Bank name')}:</label><div class="col-9"><textarea rows="1" class="form-control bank_name"></textarea></div></div>
+                                    <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Account name')}:</label><div class="col-9"><textarea rows="1" class="form-control bank_account_name"></textarea></div></div>
+                                    <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Account number')}:</label><div class="col-9"><textarea rows="1" class="form-control bank_account_number"></textarea></div></div>`
                         }
                         return `${row?.['is_default'] ? `<span class="text-blue small">(${$.fn.gettext('Default')})</span><br>` : ''}
-                                    <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Bank name')}:</label><div class="col-9"><input disabled readonly class="form-control fw-bold bank_name" value="${row?.['bank_name'] || ''}"></div></div>
-                                    <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Account name')}:</label><div class="col-9"><input disabled readonly class="form-control fw-bold bank_account_name" value="${row?.['bank_account_name'] || ''}"></div></div>
-                                    <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Account number')}:</label><div class="col-9"><input disabled readonly class="form-control fw-bold bank_account_number" value="${row?.['bank_account_number'] || ''}"></div></div>`
+                                    <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Bank name')}:</label><div class="col-9"><textarea rows="1" disabled readonly class="form-control bank_name" value="${row?.['bank_name'] || ''}"></textarea></div></div>
+                                    <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Account name')}:</label><div class="col-9"><textarea rows="1" disabled readonly class="form-control bank_account_name" value="${row?.['bank_account_name'] || ''}"></textarea></div></div>
+                                    <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Account number')}:</label><div class="col-9"><textarea rows="1" disabled readonly class="form-control bank_account_number" value="${row?.['bank_account_number'] || ''}"></textarea></div></div>`
                     }
                 },
             ],
@@ -176,6 +176,10 @@ class PaymentPageFunction {
             keyResp: 'employee_list',
             keyId: 'id',
             keyText: 'full_name',
+        }).on('change', function () {
+            if ($(this).val()) {
+                PaymentPageFunction.LoadTableBankAccount()
+            }
         })
     }
     static LoadSupplier(data) {
@@ -1840,7 +1844,7 @@ class PaymentHandler {
                 let expense_type = pageElements.$table_line_detail.find(row_id + ' .expense-type-select-box').val();
                 let expense_description = pageElements.$table_line_detail.find(row_id + ' .expense-des-input').val();
                 let expense_uom_name = pageElements.$table_line_detail.find(row_id + ' .expense-uom-input').val();
-                let expense_quantity = pageElements.$table_line_detail.find(row_id + ' .expense_quantity').val();
+                let expense_quantity = parseFloat(pageElements.$table_line_detail.find(row_id + ' .expense_quantity').val());
                 let expense_tax = pageElements.$table_line_detail.find(row_id + ' .expense-tax-select-box option:selected').attr('value');
                 let expense_unit_price = parseFloat(pageElements.$table_line_detail.find(row_id + ' .expense-unit-price-input').attr('value'));
                 let expense_subtotal_price = parseFloat(pageElements.$table_line_detail.find(row_id + ' .expense-subtotal-price').attr('value'));
@@ -2045,6 +2049,7 @@ class PaymentHandler {
                     pageElements.$supplier_id.closest('.form-group').prop('hidden', data?.['is_internal_payment'])
                     PaymentPageFunction.LoadEmployee(data?.['employee_payment'])
                     PaymentPageFunction.LoadSupplier(data?.['supplier'])
+                    PaymentPageFunction.LoadTableBankAccount()
 
                     pageElements.$payment_method.val(data?.['method']).trigger('change')
 

@@ -66,9 +66,6 @@ class ProductPageElements {
         this.$btn_add_product_attribute = $('#btn-add-product-attribute')
         this.$table_select_attribute = $('#table-select-attribute')
         this.$table_selected_attribute = $('#table-selected-attribute')
-        // account determination tab
-        this.$product_account_determination_table = $('#product-account-determination-table')
-        this.$account_deter_referenced_by = $('#account-deter-referenced-by')
     }
 }
 const pageElements = new ProductPageElements()
@@ -1386,78 +1383,6 @@ class ProductPageFunction {
             });
         }
     }
-    // account determination tab
-    static LoadAccountDeterminationTable(option='create') {
-        if (!$.fn.DataTable.isDataTable('#product-account-determination-table')) {
-            let frm = new SetupFormSubmit(pageElements.$product_account_determination_table);
-            pageElements.$product_account_determination_table.DataTableDefault({
-                useDataServer: true,
-                rowIdx: true,
-                reloadCurrency: true,
-                paging: false,
-                scrollX: true,
-                scrollY: '62vh',
-                scrollCollapse: true,
-                ajax: {
-                    url: frm.dataUrl,
-                    data: {'product_mapped_id': $.fn.getPkDetail()},
-                    type: frm.dataMethod,
-                    dataSrc: function (resp) {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            let data_list = resp.data['product_account_determination_list'] ? resp.data['product_account_determination_list'] : []
-                            data_list.sort((a, b) => {
-                                const typeA = a?.['account_determination_type_convert'];
-                                const typeB = b?.['account_determination_type_convert'];
-                                if (typeA < typeB) return -1;
-                                if (typeA > typeB) return 1;
-
-                                const accCodeA = parseInt(a?.['account_mapped']?.['acc_code'], 10);
-                                const accCodeB = parseInt(b?.['account_mapped']?.['acc_code'], 10);
-                                return accCodeA - accCodeB;
-                            });
-                            return data_list ? data_list : [];
-                        }
-                        return [];
-                    },
-                },
-                columns: pageVariables.account_deter_columns_cfg,
-                rowGroup: {
-                    dataSrc: 'account_determination_type_convert'
-                },
-                columnDefs: [
-                    {
-                        "visible": false,
-                        "targets": [1]
-                    }
-                ],
-                initComplete: function () {
-                    pageElements.$product_account_determination_table.find('tbody tr .selected-accounts').each(function () {
-                        let account_mapped = $(this).attr('data-account-mapped') ? JSON.parse($(this).attr('data-account-mapped')) : []
-                        $(this).initSelect2({
-                            data: (account_mapped ? account_mapped : null),
-                            ajax: {
-                                url: pageElements.$product_account_determination_table.attr('data-chart-of-account-url'),
-                                method: 'GET',
-                            },
-                            keyResp: 'chart_of_accounts_list',
-                            keyId: 'id',
-                            keyText: 'acc_code',
-                            templateResult: function (state) {
-                                return $(`<span class="badge badge-light">${state.data?.['acc_code']}</span> <span>${state.data?.['acc_name']}</span> <span class="small">(${state.data?.['foreign_acc_name']})</span>`);
-                            },
-                        })
-
-                        for (let i = 0; i < account_mapped.length; i++) {
-                            $(this).closest('tr').find('.selected-accounts-des').append(
-                                `<h6 class="text-muted">${account_mapped[i]?.['acc_name']}</h6><h6 class="small text-primary">${account_mapped[i]?.['foreign_acc_name']}</h6>`
-                            )
-                        }
-                    })
-                }
-            });
-        }
-    }
     // init upload image ele
     static initImgUpload(data) {
         let $avatarEle = $('#avatar-img-input');
@@ -1703,8 +1628,6 @@ class ProductHandler {
             data['purchase_default_uom'] = null
             data['purchase_tax'] = null
         }
-
-        data['account_deter_referenced_by'] = pageElements.$account_deter_referenced_by.val()
 
         if (!data['product_types_mapped_list'].length > 0 || !data['general_product_category'] || !data['general_uom_group']) {
             $.fn.notifyB({description: 'Some fields in General tab is missing'}, 'failure');
@@ -2039,10 +1962,6 @@ class ProductHandler {
                     if (product_detail?.['product_variant_item_list'].length > 0) {
                      $('#table-variant-items-div').prop('hidden', false);
                     }
-
-                    pageElements.$account_deter_referenced_by.val(product_detail?.['account_deter_referenced_by']).prop('disabled', true)
-                    pageElements.$product_account_determination_table.closest('.row').prop('hidden', product_detail?.['account_deter_referenced_by'] !== 2)
-                    ProductPageFunction.LoadAccountDeterminationTable()
 
                     $.fn.initMaskMoney2();
 
@@ -2683,78 +2602,5 @@ class ProductEventHandler {
                 $(this).attr('data-is-show', '0');
             }
         });
-        // for account determination
-        pageElements.$account_deter_referenced_by.on('change', function () {
-            $('#account-deter-create-noti').prop('hidden', $(this).val() !== '2')
-        })
-        $(document).on('change', '.selected-accounts', function () {
-            let account_mapped = [SelectDDControl.get_data_from_idx($(this), $(this).val())]
-            $(this).closest('tr').find('.selected-accounts-des').html('')
-            for (let i = 0; i < account_mapped.length; i++) {
-                $(this).closest('tr').find('.selected-accounts-des').append(
-                    `<h6 class="text-muted">${account_mapped[i]?.['acc_name']}</h6><h6 class="small text-primary">${account_mapped[i]?.['foreign_acc_name']}</h6>`
-                )
-            }
-            $(this).closest('tr').find('.btn-change-account').prop('hidden', true)
-            $(this).closest('tr').find('.btn-save-change-account').prop('hidden', false)
-            $(this).closest('tr').addClass('bg-primary-light-5')
-        })
-        $(document).on('click', '.btn-save-change-account', function () {
-            let row_id = $(this).attr('data-id')
-            let row_replace_account = $(this).closest('tr').find('.selected-accounts').val()
-            Swal.fire({
-                html:
-                `<div class="d-flex align-items-center">
-                    <div class="avatar avatar-icon avatar-soft-blue me-3"><span class="initial-wrap"><i class="fa-solid fa-repeat"></i></span></div>
-                    <div>
-                        <h4 class="text-blue">${pageElements.$product_account_determination_table.attr('data-trans-change-confirm')}</h4>
-                        <p>${pageElements.$product_account_determination_table.attr('data-trans-change-noti')}</p>
-                    </div>
-                </div>`,
-                customClass: {
-                    confirmButton: 'btn btn-outline-secondary text-blue',
-                    cancelButton: 'btn btn-outline-secondary text-gray',
-                    container: 'swal2-has-bg',
-                    htmlContainer: 'bg-transparent text-start',
-                    actions:'w-100'
-                },
-                showCancelButton: true,
-                buttonsStyling: false,
-                confirmButtonText: $.fn.gettext('Confirm'),
-                cancelButtonText: $.fn.gettext('Cancel'),
-                reverseButtons: true
-            }).then((result) => {
-                if (result.value) {
-                    let ajax_update_account_prd = $.fn.callAjax2({
-                        url: pageElements.$product_account_determination_table.attr('data-url-detail').replace('/0', `/${row_id}`),
-                        data: {'replace_account': row_replace_account},
-                        method: 'PUT'
-                    }).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && typeof data === 'object' && data.hasOwnProperty('detail')) {
-                                $.fn.notifyB({description: 'Update account determination successfully!'}, 'success');
-                                return data?.['detail'];
-                            }
-                        },
-                        (errs) => {
-                            $.fn.notifyB({description: errs.data.errors}, 'failure');
-                        }
-                    )
-
-                    Promise.all([ajax_update_account_prd]).then(
-                        (results) => {
-                            if (results.length === 1) {
-                                pageElements.$product_account_determination_table.DataTable().clear().destroy()
-                                ProductPageFunction.LoadAccountDeterminationTable()
-                            }
-                        }
-                    )
-                }
-            })
-        })
-        $(document).on('click', '.btn-change-account', function () {
-            $(this).closest('tr').find('.selected-accounts').prop('disabled', false)
-        })
     }
 }

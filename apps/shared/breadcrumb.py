@@ -488,8 +488,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Accounting
     CHART_OF_ACCOUNTS_LIST_PAGE = BreadcrumbChildren(_('Chart of account'), 'ChartOfAccountsList')
-    ACCOUNT_DETERMINATION_LIST_PAGE = BreadcrumbChildren(_('Account determination'),
-                                                                 'AccountDeterminationList')
+    JE_DOCUMENT_TYPE_LIST_PAGE = BreadcrumbChildren(_('JE document type'), 'JEDocumentTypeList')
+    JE_POSTING_RULE_LIST_PAGE = BreadcrumbChildren(_('JE posting rule'), 'JEPostingRuleList')
+
     INITIAL_BALANCE_LIST_PAGE = BreadcrumbChildren(_('Initial Balance'), 'InitialBalanceList')
     DIMENSION_DEFINITION_LIST_PAGE = BreadcrumbChildren(_('Dimension definition'), 'DimensionDefinitionList')
     DIMENSION_VALUE_LIST_PAGE = BreadcrumbChildren(_('Dimension value'), 'DimensionValueList')
@@ -1555,7 +1556,9 @@ class BreadcrumbView:
     PERIODS_CONFIG_PAGE = [BreadcrumbItem.PERIODS_CONFIG_PAGE]
     ACCOUNTING_POLICIES_PAGE = [BreadcrumbItem.ACCOUNTING_POLICIES_PAGE]
     CHART_OF_ACCOUNTS_LIST_PAGE = [BreadcrumbItem.CHART_OF_ACCOUNTS_LIST_PAGE]
-    ACCOUNT_DETERMINATION_LIST_PAGE = [BreadcrumbItem.ACCOUNT_DETERMINATION_LIST_PAGE]
+    JE_DOCUMENT_TYPE_LIST_PAGE = [BreadcrumbItem.JE_DOCUMENT_TYPE_LIST_PAGE]
+    JE_POSTING_RULE_LIST_PAGE = [BreadcrumbItem.JE_POSTING_RULE_LIST_PAGE]
+
     INITIAL_BALANCE_LIST_PAGE = [BreadcrumbItem.INITIAL_BALANCE_LIST_PAGE]
     INITIAL_BALANCE_DETAIL_PAGE = INITIAL_BALANCE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     INITIAL_BALANCE_UPDATE_PAGE = INITIAL_BALANCE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]

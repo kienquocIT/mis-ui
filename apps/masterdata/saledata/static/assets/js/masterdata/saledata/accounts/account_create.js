@@ -16,14 +16,14 @@ $(document).ready(function () {
     })
     UsualLoadPageFunction.LoadIndustry({
         element: pageElements.$industry,
-        allow_clear: true
+        allowClear: true
     })
     UsualLoadPageFunction.LoadAccountGroup({
         element: pageElements.$account_group
     })
     UsualLoadPageFunction.LoadAccount({
         element: pageElements.$parent_account,
-        allow_clear: true
+        allowClear: true
     })
     UsualLoadPageFunction.LoadEmployee({
         element: $('#slb-contact-owner')

@@ -969,10 +969,6 @@ class MenusFinancials:
                 icon='<i class="fas fa-list-alt"></i>',
             ),
             MenuCommon(
-                name='Account determination', code='menu_account_determination_list', view_name='AccountDeterminationList',
-                icon='<i class="fas bi bi-journal-text"></i>',
-            ),
-            MenuCommon(
                 name='Initial balance', code='menu_initial_balance',
                 view_name='InitialBalanceList',
                 icon='<i class="fas fa-chart-bar"></i>',
@@ -1047,8 +1043,21 @@ class MenusFinancials:
         ],
     )
     JOURNAL_ENTRY = MenuCommon(
-        name='Journal entry', code='menu_journal_entry_list', view_name='JournalEntryList',
-        icon='<i class="fas bi bi-journal-text"></i>',
+        name='Journal entry', code='', view_name='', icon='<i class="fa-solid fa-scale-balanced"></i>',
+        child=[
+            MenuCommon(
+                name='JE document type', code='menu_je_document_type', view_name='JEDocumentTypeList',
+                icon='<i class="fa-solid fa-infinity"></i>',
+            ),
+            MenuCommon(
+                name='JE posting rule', code='menu_je_posting_rule', view_name='JEPostingRuleList',
+                icon='<i class="fa-solid fa-pen-ruler"></i>',
+            ),
+            MenuCommon(
+                name='Journal entry list', code='menu_journal_entry_list', view_name='JournalEntryList',
+                icon='<i class="fas bi bi-journal-text"></i>',
+            ),
+        ],
     )
     RECONCILIATION = MenuCommon(
         name='Reconciliation', code='menu_reconciliation', view_name='ReconList',

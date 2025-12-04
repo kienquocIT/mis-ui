@@ -18,7 +18,7 @@ const tabEmployeePayableVariables = new TabEmployeePayableVariables();
 
 
 class TabEmployeePayableFunction {
-    static initEmployeePayableTable(data=[], option='create') {
+    static initEmployeePayableTable(data=[]) {
         tabEmployeePayableElements.$tableEmployeePayable.DataTable().destroy();
         tabEmployeePayableElements.$tableEmployeePayable.DataTableDefault({
             data: data,
@@ -40,11 +40,10 @@ class TabEmployeePayableFunction {
                     render: (data, type, row) => {
                         return  `
                             <div class="input-group">
-                                <input type="text" class="form-control row-employee-info" 
+                                <input type="text" class="form-control row-employee-info row-access" 
                                     placeholder="Click to select..." readonly/>
                                 <span class="input-group-text p-0">
-                                    <button type="button" ${option === 'detail' ? 'disabled' : ''}
-                                        class="btn btn-primary btn-sm add-employee-btn"
+                                    <button type="button" class="btn btn-primary btn-sm add-employee-btn row-access"
                                         data-bs-toggle="modal"
                                         data-bs-target="#employee-modal">
                                         <i class="fa-solid fa-magnifying-glass"></i>
@@ -56,36 +55,27 @@ class TabEmployeePayableFunction {
                 {
                     className: "w-20",
                     render: (data, type, row) => {
-                    return  `<select ${option === 'detail' ? 'disabled' : ''} class="form-select row-payable-type">
+                    return  `<select class="form-select row-payable-type row-access" disabled>
                             <option value=""></option>
-                            <option value="1">${$.fn.gettext('Advance Payment')}</option>
-                            <option value="2">${$.fn.gettext('Payable')}</option>
-                            <option value="3">${$.fn.gettext('Advance Salary')}</option>
+                            <option value="0">${$.fn.gettext('Advance Payment')}</option>
+                            <option value="1">${$.fn.gettext('Payable')}</option>
+                            <option value="2">${$.fn.gettext('Advance Salary')}</option>
                         </select>`;
                     }
                 },
                 {
                     className: "w-20",
                     render: (data, type, row) => {
-                        return `<div class="input-group">
-                            <select class="form-select select2 row-employee-payable-code"></select>
-                            <span class="input-group-text p-0">
-                                <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa-regular fa-circle-question"></i>
-                                </a>
-                                <div class="dropdown-menu bflow-mirrow-card-80 p-3" style="min-width: 200px;">
-                                    <h5 class="row-employee-payable-code-detail fw-bold"></h5>
-                                    <h6 class="row-fk-employee-payable-name"></h6>
-                                    <h6 class="row-employee-payable-name"></h6>
-                                </div>
-                            </span>
-                        </div>`;
+                        let $ele = $(UsualLoadPageAccountingFunction.default_account_select2);
+                        $ele.find('.row-account').prop('disabled', true);
+                        $ele.find('.row-account').addClass('row-access');
+                        return $ele.prop('outerHTML');
                     }
                 },
                 {
                     className: "w-10",
                     render: (data, type, row) => {
-                        return `<input class="form-control mask-money row-employee-payable-amount" value="0">`;
+                        return `<input class="form-control mask-money row-employee-payable-amount row-access" value="0" disabled>`;
                     }
                 },
                 {
@@ -101,19 +91,59 @@ class TabEmployeePayableFunction {
                     }
                 },
                 {
-                    className: "w-5 text-right",
+                    className: "w-5 text-center",
                     render: () => {
-                        return `<button ${option === 'detail' ? 'disabled' : ''}
-                               type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-employee-payable-row">
-                               <span class="icon"><i class="far fa-trash-alt"></i></span>
-                          </button>`;
+                        return `
+                            <button 
+                               type="button" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover update-employee-payable-row">
+                               <span class="icon"><i class="fa-solid fa-pen-to-square"></i></span>
+                            </button>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-employee-payable-row">
+                                   <span class="icon"><i class="far fa-trash-alt"></i></span>
+                            </button>`;
                     }
                 },
-            ]
+            ],
+            initComplete: function() {
+                tabEmployeePayableElements.$tableEmployeePayable.find('tbody tr').each(function(index, ele) {
+                    const rowData = data[index];
+                    if (!rowData) return;
+                    $(this).attr('data-id', rowData?.['id'] || '');
+
+                    // load employee
+                    const employeeData = rowData?.['employee_payable_employee_data'];
+                    if (employeeData) {
+                        const $employeeInput = $(this).find('.row-employee-info');
+                        $employeeInput.val(employeeData?.['name'] || '');
+                        $employeeInput.attr('data-employee-id', employeeData?.['id'] || '');
+                        $employeeInput.attr('data-employee-code', employeeData?.['code'] || '');
+                    }
+
+                    // load employee type
+                    $(this).find('.row-payable-type').val(rowData?.['employee_payable_type']?.toString() || '');
+
+                    // load account data
+                    if (rowData?.['account_data']) {
+                        UsualLoadPageAccountingFunction.LoadAccountingAccount({
+                            element: $(this).find('.row-account'),
+                            data_url: pageElements.$urlFactory.attr('data-url-accounting-account'),
+                            data_params: {'acc_type': 1, 'is_account': true},
+                            data: rowData['account_data'],
+                        });
+                    }
+
+                    // load debit and credit value
+                    $(this).find('.row-employee-payable-amount').attr('value', rowData?.['employee_payable_value'] || 0);
+                    $(this).find('.row-employee-payable-debit').attr('value', rowData?.['debit_value'] || 0);
+                    $(this).find('.row-employee-payable-credit').attr('value', rowData?.['credit_value'] || 0);
+                    $.fn.initMaskMoney2();
+                });
+            }
         });
     }
 
     static loadEmployeeList() {
+        const currentEmployeeId = tabEmployeePayableVariables.currentEmployeePayableRow?.find('.row-employee-info')?.attr('data-employee-id');
         tabEmployeePayableElements.$tableEmployee.DataTable().clear().destroy();
         tabEmployeePayableElements.$tableEmployee.DataTableDefault({
             useDataServer: true,
@@ -137,11 +167,13 @@ class TabEmployeePayableFunction {
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
+                        const isChecked = currentEmployeeId && currentEmployeeId == String(row?.['id']);
                         return `<div class="form-check">
                                     <input type="radio" name="customer-checkbox" class="form-check-input employee-checkbox"
                                         data-employee-id="${row?.['id'] || ''}"
                                         data-employee-code="${row?.['code'] || ''}"
-                                        data-employee-name="${row?.['full_name'] || ''}">
+                                        data-employee-name="${row?.['full_name'] || ''}"
+                                        ${isChecked ? 'checked': ''}>
                                 </div>`;
                     }
                 },
@@ -160,6 +192,30 @@ class TabEmployeePayableFunction {
             ]
         });
     }
+
+    static combineTabEmployeePayableData() {
+        const employeePayableDataList = [];
+        tabEmployeePayableElements.$tableEmployeePayable.find('tbody tr').each(function() {
+            const typeRow = $(this).attr('data-type-row');
+            if (typeRow === 'added' || typeRow === 'updated') {
+                const rowData = {
+                    id: typeRow === 'added' ? null : $(this).attr('data-id'),
+                    type_row: typeRow,
+                    account: $(this).find('.row-account').val(),
+                    debit_value: parseFloat($(this).find('.row-employee-payable-debit').attr('value') || 0),
+                    credit_value: parseFloat($(this).find('.row-employee-payable-credit').attr('value') || 0),
+                    detail_data: {
+                        employee_payable_type: $(this).find('.row-payable-type').val(),
+                        employee_payable_value: parseFloat($(this).find('.row-employee-payable-amount').attr('value') || 0),
+                        employee_payable_employee: $(this).find('.row-employee-info').attr('data-employee-id'),
+                        employee_payable_detail_data: {}
+                    }
+                };
+                employeePayableDataList.push(rowData);
+            }
+        });
+        return employeePayableDataList;
+    }
 }
 
 
@@ -169,10 +225,12 @@ class TabEmployeePayableEventHandler {
         tabEmployeePayableElements.$btnAddEmployeePayable.on('click', function() {
             UsualLoadPageFunction.AddTableRow(tabEmployeePayableElements.$tableEmployeePayable);
             let row_added = tabEmployeePayableElements.$tableEmployeePayable.find('tbody tr:last-child');
+            row_added.attr('data-type-row', 'added');
+            row_added.find('.row-access').prop('disabled', false);
             UsualLoadPageAccountingFunction.LoadAccountingAccount({
-                element: row_added.find('.row-employee-payable-code'),
+                element: row_added.find('.row-account'),
                 data_url: pageElements.$urlFactory.attr('data-url-accounting-account'),
-                data_params: {'acc_type': 1}
+                data_params: {'acc_type': 1, 'is_account': true}
             });
         });
 
@@ -225,6 +283,13 @@ class TabEmployeePayableEventHandler {
         tabEmployeePayableElements.$tableEmployeePayable.on('change', '.row-employee-payable-amount', function() {
             TabEmployeePayableEventHandler.updateDebitCredit($(this).closest('tr'));
         });
+
+        // event when click btn edit row
+        tabEmployeePayableElements.$tableEmployeePayable.on('click', '.update-employee-payable-row', function() {
+            const $row = $(this).closest('tr');
+            $row.find('.row-access').prop('disabled', false);
+            $row.attr('data-type-row', 'updated');
+        });
     }
 
     // helper function to update debit and credit based on payable type and amount
@@ -232,15 +297,13 @@ class TabEmployeePayableEventHandler {
         const payableType = $row.find('.row-payable-type').val();
         const amount = $row.find('.row-employee-payable-amount').attr('value') || 0;
 
-        if (payableType === '1' || payableType === '3') {
-            // Advance Payment (1) or Advance Salary (3)
+        if (payableType === '0' || payableType === '2') {
             $row.find('.row-employee-payable-debit').attr('value', amount);
             $row.find('.row-employee-payable-credit').attr('value', 0);
-        } else if (payableType === '2') {
+        } else if (payableType === '1') {
             $row.find('.row-employee-payable-debit').attr('value', 0);
             $row.find('.row-employee-payable-credit').attr('value', amount);
         }
-
         $.fn.initMaskMoney2();
     }
 }

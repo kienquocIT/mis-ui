@@ -69,12 +69,8 @@ $(document).ready(function() {
                     {
                         className: 'w-20',
                         render: (data, type, row) => {
-                            let expand_btn = `<button data-acc-id="${row?.['id']}" class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-sm btn-collapse-acc-sub-list">
-                                <span class="icon"><i class="bi bi-caret-up-fill"></i></span>
-                            </button>`
                             return `
-                                <span data-root-id="${row?.['parent_account'] ? row?.['parent_account'] : ''}" class="acc-title-span ${row?.['parent_account'] ? 'text-primary' : 'text-secondary fw-bold'} ${row?.['parent_account'] ? `ml-${(row?.['level'] - 1) * 2}` : ''}">${row?.['acc_code'] ? row?.['acc_code'] : ''}</span>
-                                ${row?.['has_child'] ? expand_btn : ''}
+                                <span data-root-id="${row?.['parent_account'] ? row?.['parent_account'] : ''}" class="acc-title-span ${row?.['parent_account'] ? 'text-primary' : 'text-secondary fw-bold'} ${row?.['parent_account'] ? `ml-${(row?.['level']) * 2}` : ''}">${row?.['acc_code'] ? row?.['acc_code'] : ''}</span>
                             `;
                         }
                     },
@@ -152,12 +148,8 @@ $(document).ready(function() {
                     {
                         className: 'w-20',
                         render: (data, type, row) => {
-                            let expand_btn = `<button data-acc-id="${row?.['id']}" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm btn-collapse-acc-sub-list">
-                                <span class="icon"><i class="bi bi-caret-up-fill"></i></span>
-                            </button>`
                             return `
-                                <span data-root-id="${row?.['parent_account'] ? row?.['parent_account'] : ''}" class="acc-title-span text-primary ${row?.['parent_account'] ? `ml-${(row?.['level'] - 1) * 2}` : 'fw-bold'}">${row?.['acc_code'] ? row?.['acc_code'] : ''}</span>
-                                ${row?.['parent_account'] ? '' : expand_btn}
+                                <span data-root-id="${row?.['parent_account'] ? row?.['parent_account'] : ''}" class="acc-title-span text-primary ${row?.['parent_account'] ? `ml-${(row?.['level']) * 2}` : 'fw-bold'}">${row?.['acc_code'] ? row?.['acc_code'] : ''}</span>
                             `;
                         }
                     },
@@ -253,22 +245,6 @@ $(document).ready(function() {
         $('#add-new-sub').prop('disabled', true)
         let index = parseInt($(this).attr('id').split('-')[1])
         InitTable(list_table[index-1], {'acc_type': index}, url_script.attr('data-url-get-account-list'), 'GET')
-    })
-
-    function HiddenRow(data_root_id) {
-        $(`span[data-root-id="${data_root_id}"]`).each(function () {
-            $(this).closest('tr').toggleClass('hidden')
-            $(this).closest('tr').find('.btn-collapse-acc-sub-list').trigger('click')
-        })
-    }
-
-    $(document).on('click', '.btn-collapse-acc-sub-list', function () {
-        HiddenRow($(this).attr('data-acc-id'))
-        if ($(this).find('i').attr('class') === 'bi bi-caret-up-fill') {
-            $(this).find('i').attr('class', 'bi bi-caret-down-fill')
-        } else {
-            $(this).find('i').attr('class', 'bi bi-caret-up-fill')
-        }
     })
 
     $(document).on('click', '.btn-detail-account', function () {

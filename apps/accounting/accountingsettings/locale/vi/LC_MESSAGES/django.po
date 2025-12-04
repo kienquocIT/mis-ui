@@ -16,3 +16,47 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#
+msgid "When the condition is satisfied"
+msgstr "Khi điều kiện sau được thỏa mãn"
+
+#
+msgid "Then account for it"
+msgstr "Thì hạch toán vào"
+
+#
+msgid "Adding special rule for"
+msgstr "Đang thêm quy tắc đặt biệt cho"
+
+#
+msgid "Add special rule"
+msgstr "Thêm quy tắc đặt biệt"
+
+#
+msgid "JE auto create"
+msgstr "Tạo bút toán tự động"
+
+#
+msgid "JE document type"
+msgstr "Giao dịch sinh bút toán"
+
+#
+msgid "JE posting rule"
+msgstr "Quy tắc hạch toán"
+
+#
+msgid "Rule level"
+msgstr "Cấp độ quy tắc"
+
+#
+msgid "Role key"
+msgstr "Mã vai trò"
+
+#
+msgid "Account mapped"
+msgstr "Tài khoản ánh xạ"
+
+#
+msgid "View automation process"
+msgstr "Xem quá trình tự động"

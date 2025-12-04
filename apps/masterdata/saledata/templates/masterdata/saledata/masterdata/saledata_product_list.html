@@ -188,7 +188,7 @@
 {% endblock %}
 {% block modalData %}
     <div class="modal fade" id="modal-new-product-type" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
-        <div class="modal-dialog" style="min-width: 75%" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{% trans "Product Type" %}</h5>
@@ -199,24 +199,6 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12">
-                            <ul class="nav nav-pills-bfl">
-                                <li class="nav-item">
-                                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_info_create">
-                                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-info-circle"></i></span></span>
-                                        <span class="nav-link-text">{% trans 'Information' %}</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#tab_account_determination_create">
-                                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-book"></i></span></span>
-                                        <span class="nav-link-text">{% trans 'Account determination' %}</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="tab-content">
-                        <div class="tab-pane fade show active" id="tab_info_create">
                             <form id="form-create-product-type" data-method="POST" data-url="{% url "ProductTypeListAPI" %}">
                                 {% csrf_token %}
                                 <div class="row">
@@ -240,11 +222,6 @@
                                     </div>
                                 </div>
                             </form>
-                        </div>
-                        <div class="tab-pane fade" id="tab_account_determination_create">
-                            <div class="alert alert-warning alert-wth-icon alert-dismissible fade show" role="alert">
-                                <span class="alert-icon-wrap"><i class="fa-solid fa-triangle-exclamation"></i></span> {% trans 'Transactions referencing this product type will use the accounts here to create Journal Entry. By default, the accounts are taken from Setting, you can update it.' %}
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -444,7 +421,7 @@
     </div>
 
     <div class="modal fade" id="modal-update-product-type" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
-        <div class="modal-dialog" style="min-width: 80%" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{% trans "Edit" %}</h5>
@@ -455,24 +432,6 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12">
-                            <ul class="nav nav-pills-bfl">
-                                <li class="nav-item">
-                                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_info_detail">
-                                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-info-circle"></i></span></span>
-                                        <span class="nav-link-text">{% trans 'Information' %}</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item" id="accounting-determination-tab">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#tab_account_determination_detail">
-                                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-book"></i></span></span>
-                                        <span class="nav-link-text">{% trans 'Account determination' %}</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="tab-content">
-                        <div class="tab-pane fade show active" id="tab_info_detail">
                             <form id="form-update-product-type"
                                   data-method="PUT"
                                   data-url-raw="{% url "ProductTypeDetailAPI" pk=0 %}"
@@ -499,32 +458,6 @@
                                     </div>
                                 </div>
                             </form>
-                        </div>
-                        <div class="tab-pane fade" id="tab_account_determination_detail">
-                            <div class="row">
-                                <div class="col-12">
-                                    <table class="table nowrap w-100"
-                                           id="product-type-account-determination-table"
-                                           data-method="GET"
-                                           data-trans-change-confirm="{% trans 'Confirm this change?' %}"
-                                           data-trans-change-noti="{% trans 'This action can not be undo!' %}"
-                                           data-chart-of-account-url="{% url 'ChartOfAccountsListAPI' %}"
-                                           data-url-detail="{% url 'ProductTypeAccountDeterminationDetailAPI' pk=0 %}"
-                                           data-url="{% url 'ProductTypeAccountDeterminationListAPI' %}">
-                                        <thead class="bg-secondary-light-5">
-                                        <tr>
-                                            <th></th>
-                                            <th>{% trans 'Type' %}</th>
-                                            <th>{% trans 'Trading type defined' %}</th>
-                                            <th>{% trans 'Account' %}</th>
-                                            <th>{% trans 'Description' %}</th>
-                                            <th>{% trans 'Change' %}</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>

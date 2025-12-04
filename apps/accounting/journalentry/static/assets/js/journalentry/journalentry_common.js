@@ -36,18 +36,11 @@ class JELoadPage {
                     }
                 },
                 {
-                    className: 'w-10',
+                    className: 'w-20',
                     render: (data, type, row) => {
-                        return `
-                            <span class="text-muted fw-bold h5">${row?.['account_data']?.['acc_code']}</span><br>
-                            <span class="text-muted">${row?.['account_data']?.['foreign_acc_name']}</span>
-                        `
-                    }
-                },
-                {
-                    className: 'w-10',
-                    render: (data, type, row) => {
-                        return `<span class="text-muted">${row?.['account_data']?.['acc_name']}</span>`
+                        let $ele = $(UsualLoadPageAccountingFunction.default_account_select2)
+                        $ele.find('.row-account').prop('disabled', true);
+                        return $ele.prop('outerHTML')
                     }
                 },
                 {
@@ -56,7 +49,7 @@ class JELoadPage {
                         if (!row?.['is_fc'] && row?.['debit'] !== 0) {
                             return `<span class="text-primary mask-money" data-init-money="${row?.['debit']}"></span>`;
                         }
-                        return ``;
+                        return `--`;
                     }
                 },
                 {
@@ -65,7 +58,7 @@ class JELoadPage {
                         if (!row?.['is_fc'] && row?.['credit'] !== 0) {
                             return `<span class="text-primary mask-money" data-init-money="${row?.['credit']}"></span>`;
                         }
-                        return ``;
+                        return `--`;
                     }
                 },
                 {
@@ -74,27 +67,13 @@ class JELoadPage {
                         if (row?.['taxable_value'] !== 0) {
                             return `<span class="text-muted mask-money" data-init-money="${row?.['taxable_value']}"></span>`;
                         }
-                        return ''
+                        return ``
                     }
                 },
                 {
-                    className: 'w-15',
+                    className: 'w-25',
                     render: (data, type, row) => {
-                        return `<span>${row?.['business_partner_data']?.['name'] || ''}</span>`;
-                    }
-                },
-                {
-                    className: 'w-10',
-                    render: (data, type, row) => {
-                        let dimension_html = ``
-                        for (let i=0; i < row?.['dimensions']?.length; i++) {
-                            let item = row?.['dimensions'][i]
-                            if (Object.keys(item).length > 0) {
-                                dimension_html += `<h5><span class="badge badge-pill badge-outline badge-soft-blue mr-1" title="${item?.['name']}">${item?.['code']}</span></h5>
-                                                    <h5><span class="badge badge-pill badge-outline badge-soft-warning">100%</span></h5><br>`;
-                            }
-                        }
-                        return `<div class="d-flex">${dimension_html}</div>`;
+                        return `<span>${row?.['business_partner_data']?.['name'] || row?.['business_employee_data']?.['fullname'] || row?.['product_mapped_data']?.['title'] || ''}</span>`;
                     }
                 },
             ],
@@ -106,9 +85,18 @@ class JELoadPage {
                 if (textFilter$.length > 0) {
                     textFilter$.css('display', 'flex');
                     textFilter$.append(
-                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="h5 text-primary fw-bold">📊 ${$.fn.gettext('Journal lines')}</span>`)
+                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="h5 text-primary fw-bold">${$.fn.gettext('Journal lines')}</span>`)
                     )
                 }
+
+                pageElements.$journal_entry_table.find('tbody tr').each(function (index, ele) {
+                    UsualLoadPageAccountingFunction.LoadAccountingAccount({
+                        element: $(this).find('.row-account'),
+                        data_url: pageElements.$url_script.attr('data-url-accounting-account'),
+                        data_params: {'acc_type': 1, 'is_account': true},
+                        data: datalist[index]?.['account_data'] || {},
+                    });
+                })
             }
         });
     }
@@ -127,7 +115,7 @@ class JEHandle {
                     data = data['journal_entry_detail'];
                     $x.fn.renderCodeBreadcrumb(data);
 
-                    console.log(data)
+                    // console.log(data)
 
                     pageElements.$je_state.attr(
                         'class',
@@ -149,21 +137,23 @@ class JEHandle {
                     pageElements.$je_doc_date.val(moment(data?.['je_document_date'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     pageElements.$je_des.val(data?.['je_transaction_data']?.['title'])
 
-                    const je_lines_sum = {};
-                    (data?.['je_lines'] || []).forEach(item => {
-                        const accId = item?.['account_data']?.['id'];
-                        if (!accId) return;
+                    // gom tk
+                    // const je_lines_sum = {};
+                    // (data?.['je_lines'] || []).forEach(item => {
+                    //     const accId = item?.['account_data']?.['id'];
+                    //     if (!accId) return;
+                    //
+                    //     if (!je_lines_sum[accId]) {
+                    //         je_lines_sum[accId] = { ...item };
+                    //         je_lines_sum[accId]['debit'] = 0;
+                    //         je_lines_sum[accId]['credit'] = 0;
+                    //     }
+                    //
+                    //     je_lines_sum[accId]['debit'] += item?.['debit'] || 0;
+                    //     je_lines_sum[accId]['credit'] += item?.['credit'] || 0;
+                    // });
 
-                        if (!je_lines_sum[accId]) {
-                            je_lines_sum[accId] = { ...item };
-                            je_lines_sum[accId]['debit'] = 0;
-                            je_lines_sum[accId]['credit'] = 0;
-                        }
-
-                        je_lines_sum[accId]['debit'] += item?.['debit'] || 0;
-                        je_lines_sum[accId]['credit'] += item?.['credit'] || 0;
-                    });
-
+                    const je_lines_sum = data?.['je_lines'] || []
                     JELoadPage.LoadJETable(Object.values(je_lines_sum) || [])
 
                     $('#total-debit').attr('data-init-money', data?.['total_debit'] || 0)

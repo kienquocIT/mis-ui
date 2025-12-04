@@ -5,7 +5,11 @@
         <table class="table nowrap w-100" id="tbl_account">
             <thead class="bg-secondary-light-5">
                 <tr>
-                    <th style="min-width: 50px"></th>
+                    <th style="min-width: 50px">
+                        <button type="button" class="btn btn-sm btn-primary btn-rounded" id="add_tab_account" title="{% trans 'Add new row' %}">
+                            <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                        </button>
+                    </th>
                     <th style="min-width: 200px">{% trans 'Account Code' %}</th>
                     <th style="min-width: 200px">{% trans 'Debit' %}</th>
                     <th style="min-width: 200px">{% trans 'Credit' %}</th>
@@ -14,12 +18,5 @@
             </thead>
             <tbody></tbody>
         </table>
-    </div>
-</div>
-<div class="row">
-    <div class="col-12">
-        <button class="btn btn-primary mt-4" type="button" id="add_tab_account" aria-expanded="false">
-            <i class="fas fa-plus-circle me-2"></i>{% trans 'Add' %}
-        </button>
     </div>
 </div>

@@ -9,7 +9,7 @@ $(document).ready(function() {
             reloadCurrency: true,
             paging: false,
             scrollX: true,
-            scrollY: '70vh',
+            scrollY: '68vh',
             scrollCollapse: true,
             ajax: {
                 url: $('#script-url').attr('data-url-list'),
@@ -82,7 +82,7 @@ $(document).ready(function() {
                     render: (data, type, row) => {
                         let $ele = $(UsualLoadPageAccountingFunction.default_account_select2)
                         $ele.find('.row-account').prop('disabled', true);
-                        $ele.find('.row-account').attr('data-account-mapped', JSON.stringify(row?.['fixed_account'] ||{}));
+                        $ele.find('.row-account').attr('data-account-mapped', JSON.stringify(row?.['fixed_account_data'] ||{}));
                         return $ele.prop('outerHTML')
                     }
                 },
@@ -115,19 +115,6 @@ $(document).ready(function() {
                         })
                     }
                 })
-
-                let wrapper$ = $je_posting_rule_table.closest('.dataTables_wrapper');
-                const headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
-                const textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
-                headerToolbar$.prepend(textFilter$);
-                if (textFilter$.length > 0) {
-                    textFilter$.css('display', 'flex');
-                    textFilter$.append(
-                        $(`<div class="d-inline-block mr-3"></div>`).append(`
-                            <button type="button" class="btn btn-outline-blue" data-bs-target="#modal-configure-guide" data-bs-toggle="modal">${$.fn.gettext('Configure guide')}</button>
-                        `)
-                    )
-                }
             }
         });
     }

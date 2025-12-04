@@ -919,8 +919,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     JE_DOCUMENT_TYPE_DETAIL = StringUrl('accounting-setting/je-document-type/detail/{pk}')
     JE_POSTING_RULE_LIST = StringUrl('accounting-setting/je-posting-rule/list')
     JE_POSTING_RULE_DETAIL = StringUrl('accounting-setting/je-posting-rule/detail/{pk}')
-    ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/account-determination/list')
-    ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/account-determination/detail/{pk}')
+    JE_POSTING_GROUP_LIST = StringUrl('accounting-setting/je-posting-group/list')
+    JE_GROUP_ASSIGNMENT_LIST = StringUrl('accounting-setting/je-group-assignment/list')
+    JE_GL_ACCOUNT_MAPPING_LIST = StringUrl('accounting-setting/je-gl-account-mapping/list')
+
     DIMENSION_DEFINITION_LIST = StringUrl('accounting-setting/dimension-definition/list')
     DIMENSION_DEFINITION_DETAIL = StringUrl('accounting-setting/dimension-definition/detail/{pk}')
     DIMENSION_DEFINITION_WITH_VALUES = StringUrl('accounting-setting/dimension-definition-values/{pk}')

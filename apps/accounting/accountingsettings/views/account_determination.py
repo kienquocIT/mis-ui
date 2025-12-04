@@ -43,7 +43,86 @@ class JEDocumentTypeDetailAPI(APIView):
         return resp.auto_return()
 
 
-# JE posting Rule
+# JE group mapping
+class JEPostingGroupList(View):
+    @mask_view(
+        auth_require=True,
+        template='accountingsettings/account_determination/je_posting_group.html',
+        breadcrumb='JE_POSTING_GROUP_LIST_PAGE',
+        menu_active='menu_je_posting_group',
+        icon_cls='fa-solid fa-layer-group',
+        icon_bg='bg-primary',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class JEPostingGroupListAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.JE_POSTING_GROUP_LIST).get(params)
+        return resp.auto_return(key_success='je_posting_group')
+
+# JE group assigment
+class JEGroupAssignmentList(View):
+    @mask_view(
+        auth_require=True,
+        template='accountingsettings/account_determination/je_group_assignment.html',
+        breadcrumb='JE_GROUP_ASSIGNMENT_LIST_PAGE',
+        menu_active='menu_je_group_assignment',
+        icon_cls='fa-solid fa-handshake-angle',
+        icon_bg='bg-primary',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class JEGroupAssignmentListAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.JE_GROUP_ASSIGNMENT_LIST).get(params)
+        return resp.auto_return(key_success='je_group_assignment')
+
+# JE account mapping
+class JEGLAccountMappingList(View):
+    @mask_view(
+        auth_require=True,
+        template='accountingsettings/account_determination/je_gl_account_mapping.html',
+        breadcrumb='JE_GL_ACCOUNT_MAPPING_LIST_PAGE',
+        menu_active='menu_je_gl_account_mapping',
+        icon_cls='fa-solid fa-circle-nodes',
+        icon_bg='bg-primary',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class JEGLAccountMappingListAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.JE_GL_ACCOUNT_MAPPING_LIST).get(params)
+        return resp.auto_return(key_success='je_gl_account_mapping')
+
+
+# JE posting rule
 class JEPostingRuleList(View):
     @mask_view(
         auth_require=True,
@@ -68,3 +147,17 @@ class JEPostingRuleListAPI(APIView):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.JE_POSTING_RULE_LIST).get(params)
         return resp.auto_return(key_success='je_posting_rule')
+
+
+# Auto JE Configure Guide
+class JEConfigureGuidePage(View):
+    @mask_view(
+        auth_require=True,
+        template='accountingsettings/account_determination/guide.html',
+        breadcrumb='AUTO_JE_CONFIGURE_GUIDE_PAGE',
+        menu_active='menu_auto_je_guide_page',
+        icon_cls='fa-regular fa-circle-question',
+        icon_bg='bg-primary',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK

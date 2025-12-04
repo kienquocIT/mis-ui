@@ -490,6 +490,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     CHART_OF_ACCOUNTS_LIST_PAGE = BreadcrumbChildren(_('Chart of account'), 'ChartOfAccountsList')
     JE_DOCUMENT_TYPE_LIST_PAGE = BreadcrumbChildren(_('JE document type'), 'JEDocumentTypeList')
     JE_POSTING_RULE_LIST_PAGE = BreadcrumbChildren(_('JE posting rule'), 'JEPostingRuleList')
+    JE_POSTING_GROUP_LIST_PAGE = BreadcrumbChildren(_('JE posting group'), 'JEPostingGroupList')
+    JE_GROUP_ASSIGNMENT_LIST_PAGE = BreadcrumbChildren(_('JE group assignment'), 'JEGroupAssignmentList')
+    JE_GL_ACCOUNT_MAPPING_LIST_PAGE = BreadcrumbChildren(_('JE GL account mapping'), 'JEGLAccountMappingList')
+    AUTO_JE_CONFIGURE_GUIDE_PAGE = BreadcrumbChildren(_('Auto JE configure guide'), 'JEConfigureGuidePage')
 
     INITIAL_BALANCE_LIST_PAGE = BreadcrumbChildren(_('Initial Balance'), 'InitialBalanceList')
     DIMENSION_DEFINITION_LIST_PAGE = BreadcrumbChildren(_('Dimension definition'), 'DimensionDefinitionList')
@@ -1558,6 +1562,10 @@ class BreadcrumbView:
     CHART_OF_ACCOUNTS_LIST_PAGE = [BreadcrumbItem.CHART_OF_ACCOUNTS_LIST_PAGE]
     JE_DOCUMENT_TYPE_LIST_PAGE = [BreadcrumbItem.JE_DOCUMENT_TYPE_LIST_PAGE]
     JE_POSTING_RULE_LIST_PAGE = [BreadcrumbItem.JE_POSTING_RULE_LIST_PAGE]
+    JE_POSTING_GROUP_LIST_PAGE = [BreadcrumbItem.JE_POSTING_GROUP_LIST_PAGE]
+    JE_GROUP_ASSIGNMENT_LIST_PAGE = [BreadcrumbItem.JE_GROUP_ASSIGNMENT_LIST_PAGE]
+    JE_GL_ACCOUNT_MAPPING_LIST_PAGE = [BreadcrumbItem.JE_GL_ACCOUNT_MAPPING_LIST_PAGE]
+    AUTO_JE_CONFIGURE_GUIDE_PAGE = [BreadcrumbItem.AUTO_JE_CONFIGURE_GUIDE_PAGE]
 
     INITIAL_BALANCE_LIST_PAGE = [BreadcrumbItem.INITIAL_BALANCE_LIST_PAGE]
     INITIAL_BALANCE_DETAIL_PAGE = INITIAL_BALANCE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]

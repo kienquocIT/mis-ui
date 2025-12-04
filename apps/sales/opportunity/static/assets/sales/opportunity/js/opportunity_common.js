@@ -57,11 +57,11 @@ class OpportunityPageFunction {
         let [
             is_close_lost,
             is_delivery,
-            is_deal_close
+            is_deal_closed
         ] = [
             pageVariables.opp_detail_data?.['is_close_lost'],
             Object.keys((pageVariables.opp_detail_data?.['sale_order'] || {})?.['delivery'] || {}).length > 0,
-            pageVariables.opp_detail_data?.['is_deal_close']
+            pageVariables.opp_detail_data?.['is_deal_closed']
         ]
         let stages_list_data = OpportunityPageFunction.SortOppStageByWinrate(pageVariables.opp_stage_data);
 
@@ -87,10 +87,10 @@ class OpportunityPageFunction {
             else if (item?.['is_deal_closed']) {
                 $opp_stage_pipeline.append(`<li class="stage-child stage-close2" data-id="${item?.['id']}">
                     <div class="dropdown dropend">
-                        <a href="#" data-bs-toggle="dropdown"><span title="${item?.['indicator']} (${item?.['win_rate']}%): ${item?.['description']}">${item?.['indicator']} (${item?.['win_rate']}%)</span></a>
+                        <a href="#" data-bs-toggle="dropdown"><span class="text-uppercase" title="${item?.['indicator']} (${item?.['win_rate']}%): ${item?.['description']}">${item?.['indicator']}</span></a>
                         <div class="dropdown-menu position-absolute" style="z-index: 999;">
                             <div class="form-check form-switch">
-                                <input type="checkbox" class="form-check-input" id="input-close-deal" ${is_deal_close ? 'checked' : ''}>
+                                <input type="checkbox" class="form-check-input" id="input-close-deal" ${is_deal_closed ? 'checked' : ''}>
                                 <label for="input-close-deal" class="form-label">Close Deal</label>
                             </div>
                         </div>
@@ -129,10 +129,8 @@ class OpportunityPageFunction {
                 item?.['is_delivery']
             ))
         }
-        if (is_deal_close) {
-            passed_stages = passed_stages.concat(stages_list_data.filter(item =>
-                item?.['is_deal_close']
-            ))
+        if (is_deal_closed) {
+            passed_stages = stages_list_data.filter(item => item?.['is_deal_closed'])
         }
 
         passed_stages.forEach(function (item, index) {
@@ -1622,7 +1620,7 @@ class OpportunityHandler {
         })
         data_form['list_stage'] = list_stage
 
-        data_form['is_deal_close'] = $('#input-close-deal').prop('checked')
+        data_form['is_deal_closed'] = $('#input-close-deal').prop('checked')
 
         data_form['lost_by_other_reason'] = $check_lost_reason.prop('checked')
 

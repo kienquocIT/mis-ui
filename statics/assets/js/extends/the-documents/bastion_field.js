@@ -313,7 +313,7 @@ class BastionFieldControl {
             'dataParams': {
                 'list_from_app': this.list_from_app,
                 'is_close_lost': false,
-                'is_deal_close': false,
+                'is_deal_closed': false,
                 ...this.ajaxOpp?.['dataParams'],
             },
             templateResult: function (state) {

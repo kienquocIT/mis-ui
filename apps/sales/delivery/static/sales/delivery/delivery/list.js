@@ -166,7 +166,7 @@ $(document).ready(function () {
                 data: function (params) {
                     params['delivery_call'] = true;
                     params['system_status__in'] = [2, 3].join(',');
-                    // params['opportunity__is_deal_close'] = false;
+                    // params['opportunity__is_deal_closed'] = false;
                 },
                 dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
@@ -174,7 +174,7 @@ $(document).ready(function () {
                             let fnData = [];
                             for (let dataSO of resp.data['sale_order_list']) {
                                 if (Object.keys(dataSO?.['opportunity']).length > 0) {
-                                    if (dataSO?.['opportunity']?.['is_deal_close'] === false) {
+                                    if (dataSO?.['opportunity']?.['is_deal_closed'] === false) {
                                         fnData.push(dataSO);
                                     }
                                 } else {

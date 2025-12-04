@@ -9,8 +9,14 @@
 <!-- AI Chat Container -->
 <div class="ai-chat-container" id="aiChatContainer">
     <div class="ai-chat-header">
-        <h5>BFlow AI</h5>
-        <span class="ai-chat-close" id="aiChatClose">{% trans 'Exit' %}</span>
+        <h6 style="display: flex; align-items: center; gap: 8px; margin: 0;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z" fill="white" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M18 16L19.5 19.5L23 21L19.5 22.5L18 26L16.5 22.5L13 21L16.5 19.5L18 16Z" fill="white" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
+            </svg>
+            BFlow AI
+        </h6>
+        <span class="ai-chat-close" id="aiChatClose">{% trans 'Close' %}</span>
     </div>
     <div class="ai-chat-body" id="aiChatBody">
         <div class="ai-message ai"></div>

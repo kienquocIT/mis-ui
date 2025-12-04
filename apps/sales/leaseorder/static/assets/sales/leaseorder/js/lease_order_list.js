@@ -148,7 +148,7 @@ $(function () {
                             if ([2, 3, 4].includes(row?.['system_status'])) {
                                 disabledEdit = 'disabled';
                             }
-                            if (row?.['delivery_call'] === true || ![2, 3].includes(row?.['system_status']) || row?.['opportunity']?.['is_deal_close'] === true) {
+                            if (row?.['delivery_call'] === true || ![2, 3].includes(row?.['system_status']) || row?.['opportunity']?.['is_deal_closed'] === true) {
                                 disabledDeli = 'disabled';
                             }
                             return `<div class="dropdown">

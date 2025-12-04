@@ -67,11 +67,11 @@
   border-left-color: #00ab57;
 }
 #opp-stage-pipeline li.lost {
-  background: #ff7676;
+  background: #ff5454;
   color: #fff;
 }
 #opp-stage-pipeline li.lost:after {
-  border-left-color: #ff7676;
+  border-left-color: #ff5454;
 }
 #opp-stage-pipeline li.cancel {
   background: #706f6f;
@@ -84,6 +84,14 @@
 #opp-stage-pipeline li.completed:last-child {
   background: rgb(72, 133, 225);
   color: #fff;
+}
+
+#opp-stage-pipeline li.stage-close2.active {
+  background: #474747;
+  color: #fff;
+}
+#opp-stage-pipeline li.stage-close2.active:after {
+  border-left-color: #474747;
 }
 
 #opp-stage-pipeline li > span {

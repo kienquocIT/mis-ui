@@ -1,6 +1,8 @@
 $(function () {
     let tb = $('#datable_employee_list');
     let urlDetail = tb.attr('data-url-detail');
+    let export_employee_list = []
+
     tb.DataTableDefault({
         useDataServer: true,
         rowIdx: true,
@@ -17,6 +19,8 @@ $(function () {
             dataSrc: function (resp) {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
+                    // console.log(data)
+                    export_employee_list = data["employee_list"]
                     if (data.hasOwnProperty('employee_list')) return data.employee_list;
                 }
                 return [];
@@ -118,4 +122,46 @@ $(function () {
             },
         ]
     });
+
+    $('#btn-export-to-excel').on('click', function () {
+        ExportEmployeeList()
+    })
+
+    function ExportEmployeeList() {
+        let parseData = []
+        export_employee_list.forEach(function (data, index) {
+            let role_list = ''
+            data?.['role'].forEach(function (role, index) {
+                role_list += `${role?.['title']}, `
+            })
+
+            parseData.push({
+                "Mã": data?.['code'] || '',
+                "Tên đầy đủ": data?.['full_name'] || '',
+                "Phòng ban": data?.['group']?.['title'] || '',
+                "Vai trò": role_list,
+                "Ngày tham gia": data?.['date_joined'] ? moment(data?.['date_joined'], 'YYYY-MM-DD').format('DD/MM/YYYY') : '',
+                "Trạng thái": data?.['is_active'] ? 'Hoạt động' : 'Không hoạt động',
+                "QTV": data?.['is_admin_company'] ? 'QTV' : ''
+            })
+        })
+
+        const worksheet = XLSX.utils.json_to_sheet(parseData);
+
+        const colWidths = Object.keys(parseData[0]).map(key => {
+            const maxLength = Math.max(
+                key.length,
+                ...parseData.map(row => String(row[key] || "").length)
+            );
+            return {wch: maxLength + 2};
+        });
+        worksheet['!cols'] = colWidths;
+
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Inventory Report");
+
+        const now = new Date();
+        const timestamp = now.toISOString().replace(/[:.]/g, "_");
+        XLSX.writeFile(workbook, `employee_list_${timestamp}.xlsx`);
+    }
 });

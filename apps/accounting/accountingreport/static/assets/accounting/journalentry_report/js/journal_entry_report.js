@@ -40,7 +40,7 @@ class loadJournalEntryReportInfo {
                     }
                 },
                 {
-                    className: "w-10",
+                    className: "w-15",
                     render: (data, type, row) => {
                         return $x.fn.displayRelativeTime(row?.['journal_entry_info']?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                     }
@@ -71,7 +71,7 @@ class loadJournalEntryReportInfo {
                     }
                 },
                 {
-                    className: "w-20",
+                    className: "w-15",
                     render: (data, type, row) => {
                         const dimensions = row?.dimensions;
                         return dimensions?.[dimensions.length - 1]?.title || '--';

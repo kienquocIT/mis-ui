@@ -7,7 +7,6 @@ from rest_framework.permissions import IsAuthenticated
 from apps.shared import mask_view, ApiURL, ServerAPI
 
 
-# Create your views here.
 class ReportJournalEntryList(View):
     @mask_view(
         auth_require=True,
@@ -29,3 +28,16 @@ class ReportJournalEntryListAPI(APIView):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.JOURNAL_ENTRY_LINE_LIST).get(params)
         return resp.auto_return(key_success='report_journal_entry_list')
+
+
+class ReportGeneralLedgerList(View):
+    @mask_view(
+        auth_require=True,
+        template='accounting/generalledger_report/general_ledger_report.html',
+        menu_active='menu_report_general_ledger',
+        breadcrumb='REPORT_GENERAL_LEDGER_LIST_PAGE',
+        icon_cls='fas fa-book-open',
+        icon_bg='bg-blue',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK

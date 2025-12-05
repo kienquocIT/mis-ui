@@ -1090,6 +1090,10 @@ class MenusFinancials:
                 name='Journal Entry report', code='menu_report_journal_entry', view_name='ReportJournalEntryList',
                 icon='<i class="fas bi bi-journal-text"></i>',
             ),
+            MenuCommon(
+                name='General Ledger report', code='menu_report_general_ledger', view_name='ReportGeneralLedgerList',
+                icon='<i class="fas fa-book-open"></i>',
+            ),
         ],
     )
 

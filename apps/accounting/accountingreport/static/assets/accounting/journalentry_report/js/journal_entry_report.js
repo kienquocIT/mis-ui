@@ -118,14 +118,26 @@ class JEReportEventHandler {
 }
 
 $('document').ready(function () {
+    const today = moment();
+    const firstDayOfMonth = moment().startOf('month');
+
     UsualLoadPageFunction.LoadDate({
         element: $('#start_date_filter'),
-        empty: true
+        empty: false
     });
     UsualLoadPageFunction.LoadDate({
         element: $('#end_date_filter'),
-        empty: true
+        empty: false
     });
-    loadJournalEntryReportInfo.loadJournalEntryReportList();
+
+    // set default values
+    $('#start_date_filter').val(firstDayOfMonth.format('DD/MM/YYYY'));
+    $('#end_date_filter').val(today.format('DD/MM/YYYY'));
+
+    // load data with default date range
+    const dayStart = firstDayOfMonth.format('YYYY-MM-DD');
+    const dayEnd = today.format('YYYY-MM-DD');
+    loadJournalEntryReportInfo.loadJournalEntryReportList(dayStart, dayEnd);
+
     JEReportEventHandler.initPageEvent();
 });

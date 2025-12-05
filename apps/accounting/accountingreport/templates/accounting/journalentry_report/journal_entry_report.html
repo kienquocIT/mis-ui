@@ -9,44 +9,42 @@
 {% block pageContent %}
     <div class="card shadow-sm p-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="mb-0"><i class="fas fa-filter"></i>{% trans 'Apply filter' %}</h4>
+            <h4 class="mb-0"><i class="fas fa-filter"></i> {% trans 'Apply filter' %}</h4>
             <button type="button" class="btn btn-sm btn-outline-secondary" id="reset_filter">
-                <i class="fas fa-redo"></i>{% trans ' Reset' %}
+                <i class="fas fa-redo"></i> {% trans 'Reset' %}
             </button>
         </div>
 
-        <div class="row">
-            <div class="col-12 col-md-3 col-lg-3">
-                <div class="form-group">
+        <div class="row align-items-end">
+            <div class="col-12 col-md-4">
+                <div class="form-group mb-3 mb-md-0">
                     <label class="form-label required" for="start_date_filter">{% trans 'Start Date' %}</label>
-                    <div class="input-group mb-3">
-                        <span class="input-affix-wrapper">
-                            <span class="input-prefix">📅</span>
-                            <input required type="text" name="start_date" class="form-control" autocomplete="off"
-                                   id="start_date_filter" placeholder="DD/MM/YYYY">
-                        </span>
+                    <div class="input-group">
+                    <span class="input-affix-wrapper w-100">
+                        <span class="input-prefix">📅</span>
+                        <input required type="text" name="start_date" class="form-control"
+                               autocomplete="off" id="start_date_filter" placeholder="DD/MM/YYYY">
+                    </span>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-3 col-lg-3">
-                <div class="form-group">
+
+            <div class="col-12 col-md-4">
+                <div class="form-group mb-3 mb-md-0">
                     <label class="form-label required" for="end_date_filter">{% trans 'End Date' %}</label>
-                    <div class="input-group mb-3">
-                        <span class="input-affix-wrapper">
-                            <span class="input-prefix">📅</span>
-                            <input required type="text" name="end_date" class="form-control" autocomplete="off"
-                                   id="end_date_filter" placeholder="DD/MM/YYYY">
-                        </span>
+                    <div class="input-group">
+                    <span class="input-affix-wrapper w-100">
+                        <span class="input-prefix">📅</span>
+                        <input required type="text" name="end_date" class="form-control"
+                               autocomplete="off" id="end_date_filter" placeholder="DD/MM/YYYY">
+                    </span>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Apply Button -->
-        <div class="row">
-            <div class="col-12 text-end">
-                <button type="button" class="btn btn-primary" id="apply_filter">
-                    <i class="fas fa-check-circle"></i>
-                    {% trans 'Apply' %}
+
+            <div class="col-12 col-md-4">
+                <button type="button" class="btn btn-primary w-100" id="apply_filter">
+                    <i class="fas fa-check-circle"></i> {% trans 'Apply' %}
                 </button>
             </div>
         </div>

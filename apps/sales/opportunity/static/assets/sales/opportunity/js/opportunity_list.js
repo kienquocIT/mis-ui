@@ -78,10 +78,10 @@ $(document).ready(function () {
                     },
                     {
                         targets: 7,
-                        className: 'w-10',
+                        className: 'w-10 text-center',
                         render: (data, type, row) => {
                             let stage_current = row?.['stage'] || {}
-                            return `<span class="badge badge-pill text-dark ${stage_current?.['win_rate'] === 100 ? 'bg-success-light-4' : 'bg-secondary-light-4'} w-100">${stage_current?.['indicator']} (${stage_current?.['win_rate']}%)</span>`
+                            return `<span title="${stage_current?.['win_rate']}%" class="bflow-mirrow-badge ${stage_current?.['win_rate'] === 100 ? 'bg-success-light-4' : 'bg-secondary-light-4'} w-100">${stage_current?.['indicator']}</span>`
                         }
                     },
                 ],

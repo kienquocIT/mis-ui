@@ -12406,4 +12406,4 @@ msgstr "Giá trị ước tính"
 
 #
 msgid "Lead"
-msgstr "Tiềm năng"
+msgstr "Lead"

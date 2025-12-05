@@ -144,6 +144,7 @@ $(function () {
                 "Phòng ban": data?.['group']?.['title'] || '',
                 "Vai trò": role_list.join(', '),
                 "Ngày tham gia": data?.['date_joined'] ? moment(data?.['date_joined'], 'YYYY-MM-DD').format('DD/MM/YYYY') : '',
+                "Tên người dùng": data?.['user']?.['username'] || '',
                 "Trạng thái": data?.['is_active'] ? 'Hoạt động' : 'Không hoạt động',
                 "QTV": data?.['is_admin_company'] ? 'QTV' : ''
             })

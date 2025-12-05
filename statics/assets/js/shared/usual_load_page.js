@@ -62,12 +62,12 @@ class UsualLoadPageFunction {
      * Load ô Employee (expected-data-url = EmployeeListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
-     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Boolean} [allowClear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
      * @returns {void}
      */
-    static LoadEmployee({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+    static LoadEmployee({element, data=null, allowClear=true, data_params = {}, data_url=''}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -78,7 +78,7 @@ class UsualLoadPageFunction {
             queryString = '?' + new URLSearchParams(data_params).toString();
         }
         element.initSelect2({
-            allow_clear: allow_clear,
+            allowClear: allowClear,
             ajax: {
                 url: data_url + queryString,
                 method: 'GET',
@@ -157,12 +157,12 @@ class UsualLoadPageFunction {
      * Load ô Industry (expected-data-url = IndustryListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
-     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Boolean} [allowClear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
      * @returns {void}
      */
-    static LoadIndustry({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+    static LoadIndustry({element, data=null, allowClear=true, data_params = {}, data_url=''}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -173,7 +173,7 @@ class UsualLoadPageFunction {
             queryString = '?' + new URLSearchParams(data_params).toString();
         }
         element.initSelect2({
-            allow_clear: allow_clear,
+            allowClear: allowClear,
             ajax: {
                 url: data_url + queryString,
                 method: 'GET',
@@ -189,12 +189,12 @@ class UsualLoadPageFunction {
      * Load ô Contact (expected-data-url = ContactListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
-     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Boolean} [allowClear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
      * @returns {void}
      */
-    static LoadContact({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+    static LoadContact({element, data=null, allowClear=true, data_params = {}, data_url=''}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -205,7 +205,7 @@ class UsualLoadPageFunction {
             queryString = '?' + new URLSearchParams(data_params).toString();
         }
         element.initSelect2({
-            allow_clear: allow_clear,
+            allowClear: allowClear,
             ajax: {
                 url: data_url + queryString,
                 method: 'GET',
@@ -221,12 +221,12 @@ class UsualLoadPageFunction {
      * Load ô Account (expected-data-url = AccountListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
-     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Boolean} [allowClear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
      * @returns {void}
      */
-    static LoadAccount({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+    static LoadAccount({element, data=null, allowClear=true, data_params = {}, data_url=''}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -237,7 +237,7 @@ class UsualLoadPageFunction {
             queryString = '?' + new URLSearchParams(data_params).toString();
         }
         element.initSelect2({
-            allow_clear: allow_clear,
+            allowClear: allowClear,
             ajax: {
                 url: data_url + queryString,
                 method: 'GET',
@@ -253,12 +253,12 @@ class UsualLoadPageFunction {
      * Load ô Account Group (expected-data-url = AccountGroupListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
-     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Boolean} [allowClear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
      * @returns {void}
      */
-    static LoadAccountGroup({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+    static LoadAccountGroup({element, data=null, allowClear=true, data_params = {}, data_url=''}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -269,7 +269,7 @@ class UsualLoadPageFunction {
             queryString = '?' + new URLSearchParams(data_params).toString();
         }
         element.initSelect2({
-            allow_clear: allow_clear,
+            allowClear: allowClear,
             ajax: {
                 url: data_url + queryString,
                 method: 'GET',
@@ -285,12 +285,12 @@ class UsualLoadPageFunction {
      * Load ô Customer (expected-data-url = CustomerListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
-     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Boolean} [allowClear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
      * @returns {void}
      */
-    static LoadCustomer({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+    static LoadCustomer({element, data=null, allowClear=true, data_params = {}, data_url=''}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -301,7 +301,7 @@ class UsualLoadPageFunction {
             queryString = '?' + new URLSearchParams(data_params).toString();
         }
         element.initSelect2({
-            allow_clear: allow_clear,
+            allowClear: allowClear,
             ajax: {
                 url: data_url + queryString,
                 method: 'GET',
@@ -376,12 +376,12 @@ class UsualLoadPageFunction {
      * Load ô Supplier (expected-data-url = SupplierListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
-     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Boolean} [allowClear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
      * @returns {void}
      */
-    static LoadSupplier({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+    static LoadSupplier({element, data=null, allowClear=true, data_params = {}, data_url=''}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -392,7 +392,7 @@ class UsualLoadPageFunction {
             queryString = '?' + new URLSearchParams(data_params).toString();
         }
         element.initSelect2({
-            allow_clear: allow_clear,
+            allowClear: allowClear,
             ajax: {
                 url: data_url + queryString,
                 method: 'GET',
@@ -467,12 +467,12 @@ class UsualLoadPageFunction {
      * Load ô Warehouse (expected-data-url = WareHouseListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
-     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Boolean} [allowClear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
      * @returns {void}
      */
-    static LoadWarehouse({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+    static LoadWarehouse({element, data=null, allowClear=true, data_params = {}, data_url=''}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -483,7 +483,7 @@ class UsualLoadPageFunction {
             queryString = '?' + new URLSearchParams(data_params).toString();
         }
         element.initSelect2({
-            allow_clear: allow_clear,
+            allowClear: allowClear,
             ajax: {
                 url: data_url + queryString,
                 method: 'GET',
@@ -499,12 +499,12 @@ class UsualLoadPageFunction {
      * Load ô Product (expected-data-url = ProductListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
-     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Boolean} [allowClear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
      * @returns {void}
      */
-    static LoadProduct({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+    static LoadProduct({element, data=null, allowClear=true, data_params = {}, data_url=''}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -515,7 +515,7 @@ class UsualLoadPageFunction {
             queryString = '?' + new URLSearchParams(data_params).toString();
         }
         element.initSelect2({
-            allow_clear: allow_clear,
+            allowClear: allowClear,
             ajax: {
                 url: data_url + queryString,
                 method: 'GET',
@@ -531,12 +531,12 @@ class UsualLoadPageFunction {
      * Load ô Expense (expected-data-url = ExpenseListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
-     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Boolean} [allowClear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
      * @returns {void}
      */
-    static LoadExpense({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+    static LoadExpense({element, data=null, allowClear=true, data_params = {}, data_url=''}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -547,7 +547,7 @@ class UsualLoadPageFunction {
             queryString = '?' + new URLSearchParams(data_params).toString();
         }
         element.initSelect2({
-            allow_clear: allow_clear,
+            allowClear: allowClear,
             ajax: {
                 url: data_url + queryString,
                 method: 'GET',
@@ -563,12 +563,12 @@ class UsualLoadPageFunction {
      * Load ô ExpenseItem (expected-data-url = ExpenseItemListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
-     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Boolean} [allowClear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
      * @returns {void}
      */
-    static LoadExpenseItem({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+    static LoadExpenseItem({element, data=null, allowClear=true, data_params = {}, data_url=''}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -579,7 +579,7 @@ class UsualLoadPageFunction {
             queryString = '?' + new URLSearchParams(data_params).toString();
         }
         element.initSelect2({
-            allow_clear: allow_clear,
+            allowClear: allowClear,
             ajax: {
                 url: data_url + queryString,
                 method: 'GET',
@@ -595,12 +595,12 @@ class UsualLoadPageFunction {
      * Load ô ProductType (expected-data-url = ProductTypeListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
-     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Boolean} [allowClear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
      * @returns {void}
      */
-    static LoadProductType({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+    static LoadProductType({element, data=null, allowClear=true, data_params = {}, data_url=''}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -611,7 +611,7 @@ class UsualLoadPageFunction {
             queryString = '?' + new URLSearchParams(data_params).toString();
         }
         element.initSelect2({
-            allow_clear: allow_clear,
+            allowClear: allowClear,
             ajax: {
                 url: data_url + queryString,
                 method: 'GET',
@@ -627,12 +627,12 @@ class UsualLoadPageFunction {
      * Load ô ProductCategory (expected-data-url = ProductCategoryListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
-     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Boolean} [allowClear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
      * @returns {void}
      */
-    static LoadProductCategory({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+    static LoadProductCategory({element, data=null, allowClear=true, data_params = {}, data_url=''}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -643,7 +643,7 @@ class UsualLoadPageFunction {
             queryString = '?' + new URLSearchParams(data_params).toString();
         }
         element.initSelect2({
-            allow_clear: allow_clear,
+            allowClear: allowClear,
             ajax: {
                 url: data_url + queryString,
                 method: 'GET',
@@ -659,12 +659,12 @@ class UsualLoadPageFunction {
      * Load ô Tax (expected-data-url = TaxListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
-     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Boolean} [allowClear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
      * @returns {void}
      */
-    static LoadTax({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+    static LoadTax({element, data=null, allowClear=true, data_params = {}, data_url=''}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -675,7 +675,7 @@ class UsualLoadPageFunction {
             queryString = '?' + new URLSearchParams(data_params).toString();
         }
         element.initSelect2({
-            allow_clear: allow_clear,
+            allowClear: allowClear,
             ajax: {
                 url: data_url + queryString,
                 method: 'GET',
@@ -691,12 +691,12 @@ class UsualLoadPageFunction {
      * Load ô UOM Group (expected-data-url = UnitOfMeasureGroupListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
-     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Boolean} [allowClear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
      * @returns {void}
      */
-    static LoadUOMGroup({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+    static LoadUOMGroup({element, data=null, allowClear=true, data_params = {}, data_url=''}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -707,7 +707,7 @@ class UsualLoadPageFunction {
             queryString = '?' + new URLSearchParams(data_params).toString();
         }
         element.initSelect2({
-            allow_clear: allow_clear,
+            allowClear: allowClear,
             ajax: {
                 url: data_url + queryString,
                 method: 'GET',
@@ -728,12 +728,12 @@ class UsualLoadPageFunction {
      * Load ô Account Type (expected-data-url = AccountTypeListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
-     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Boolean} [allowClear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
      * @returns {void}
      */
-    static LoadAccountType({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+    static LoadAccountType({element, data=null, allowClear=true, data_params = {}, data_url=''}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -744,7 +744,7 @@ class UsualLoadPageFunction {
             queryString = '?' + new URLSearchParams(data_params).toString();
         }
         element.initSelect2({
-            allow_clear: allow_clear,
+            allowClear: allowClear,
             ajax: {
                 url: data_url + queryString,
                 method: 'GET',
@@ -760,12 +760,12 @@ class UsualLoadPageFunction {
      * Load ô UOM (expected-data-url = UnitOfMeasureListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
-     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Boolean} [allowClear=true] - select allow clear
      * @param {Object} data_params - data_params (truyền vào 'group_id' để lọc theo Group UOM)
      * @param {string} data_url - data_url
      * @returns {void}
      */
-    static LoadUOM({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+    static LoadUOM({element, data=null, allowClear=true, data_params = {}, data_url=''}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -776,7 +776,7 @@ class UsualLoadPageFunction {
             queryString = '?' + new URLSearchParams(data_params).toString();
         }
         element.initSelect2({
-            allow_clear: allow_clear,
+            allowClear: allowClear,
             ajax: {
                 url: data_url + queryString,
                 method: 'GET',
@@ -792,13 +792,13 @@ class UsualLoadPageFunction {
      * Load ô Period (expected-data-url = PeriodsConfigListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
-     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Boolean} [allowClear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
      * @param {Boolean} apply_default_on_change - apply_default_on_change
      * @returns {void}
      */
-    static LoadPeriod({element, data=null, allow_clear=true, data_params = {}, data_url='', apply_default_on_change=false}) {
+    static LoadPeriod({element, data=null, allowClear=true, data_params = {}, data_url='', apply_default_on_change=false}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -809,7 +809,7 @@ class UsualLoadPageFunction {
             queryString = '?' + new URLSearchParams(data_params).toString();
         }
         element.initSelect2({
-            allow_clear: allow_clear,
+            allowClear: allowClear,
             ajax: {
                 url: data_url + queryString,
                 method: 'GET',
@@ -848,12 +848,12 @@ class UsualLoadPageFunction {
      * Load ô Period (expected-data-url = CurrencyListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
-     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Boolean} [allowClear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
      * @returns {void}
      */
-    static LoadCurrency({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+    static LoadCurrency({element, data=null, allowClear=true, data_params = {}, data_url=''}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -864,7 +864,7 @@ class UsualLoadPageFunction {
             queryString = '?' + new URLSearchParams(data_params).toString();
         }
         element.initSelect2({
-            allow_clear: allow_clear,
+            allowClear: allowClear,
             ajax: {
                 url: data_url + queryString,
                 method: 'GET',
@@ -1243,32 +1243,56 @@ class UsualLoadPageFunction {
  */
 class UsualLoadPageAccountingFunction {
     static default_account_select2 = `
-        <div class="input-group">
+        <div class="account-popover">
             <select class="form-select select2 row-account"></select>
-            <span class="input-group-text p-0">
-                <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa-regular fa-circle-question"></i>
-                </a>
-                <div class="dropdown-menu bflow-mirrow-card-80 p-3" style="min-width: 200px;">
-                    <h5 class="row-account-code fw-bold"></h5>
-                    <h6 class="row-fk-account-name"></h6>
-                    <h6 class="row-account-name"></h6>
-                </div>
-            </span>
         </div>
     `;
+
+    static ParseInfoTemplate(data) {
+        let info_template = ``;
+        info_template += `<div class="text-left">`;
+        for (let i = 0; i < data.length; i++) {
+            info_template += `
+                <div class="p-2" style="min-width: 250px">
+                    <h5 class="row-account-code fw-bold">${data[i]?.['acc_code'] || ''}</h5>
+                    <h6 class="row-fk-account-name">${data[i]?.['foreign_acc_name'] || ''}</h6>
+                    <h6 class="row-account-name">${data[i]?.['acc_name'] || ''}</h6>
+                </div>
+            `;
+        }
+        info_template += `</div>`;
+        return info_template;
+    }
+
+    static ParsePopover($targetGroup, data) {
+        let info_template = UsualLoadPageAccountingFunction.ParseInfoTemplate(data);
+        if (!$targetGroup.data('bs.popover')) {
+            $targetGroup.popover({
+                html: true,                // QUAN TRỌNG: Cho phép render HTML (thẻ h5, h6)
+                content: info_template,    // Nội dung
+                trigger: 'hover',          // Hoặc 'click' tùy bạn
+                placement: 'auto',         // Tự động tìm chỗ trống
+                container: 'body',         // QUAN TRỌNG: Đẩy ra ngoài body để không bị DataTable che khuất
+                template: '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body p-2"></div></div>' // Tùy chỉnh CSS nếu cần
+            });
+            $targetGroup.addClass('popover-rendered');
+        } else {
+            $targetGroup.attr('data-content', info_template);
+        }
+    }
 
     /**
      * Load ô AccountingAccount (expected-data-url = ChartOfAccountsListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
-     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Boolean} [allowClear=true] - select allow clear
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
+     * @param {Boolean} is_multiple - is_multiple
      * @param {Boolean} apply_default_on_change - apply_default_on_change
      * @returns {void}
      */
-    static LoadAccountingAccount({element, data=null, allow_clear=true, data_params = {}, data_url='', apply_default_on_change=true}) {
+    static LoadAccountingAccount({element, data=null, allowClear=true, data_params = {}, data_url='', is_multiple=false, apply_default_on_change=true}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -1279,7 +1303,7 @@ class UsualLoadPageAccountingFunction {
             queryString = '?' + new URLSearchParams(data_params).toString();
         }
         element.initSelect2({
-            allow_clear: allow_clear,
+            allowClear: allowClear,
             ajax: {
                 url: data_url + queryString,
                 method: 'GET',
@@ -1294,18 +1318,28 @@ class UsualLoadPageAccountingFunction {
         }).on('change', function () {
             if (apply_default_on_change) {
                 if ($(this).val()) {
-                    let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
-                    element.closest('.input-group').find('.row-account-code').text(selected?.['acc_code'] || '')
-                    element.closest('.input-group').find('.row-fk-account-name').text(selected?.['foreign_acc_name'] || '')
-                    element.closest('.input-group').find('.row-account-name').text(`(${selected?.['acc_name'] || ''})`)
+                    let selected = $(this).select2('data') || []
+                    let data_list = []
+                    for (let i = 0; i < selected.length; i++) {
+                        data_list.push(selected[i]?.['data'])
+                    }
+                    let $targetGroup = element.closest('.account-popover');
+                    UsualLoadPageAccountingFunction.ParsePopover($targetGroup, data_list);
                 }
             }
         })
 
-        if (Object.keys(data).length > 0) {
-            element.closest('.input-group').find('.row-account-code').text(data?.['acc_code'] || '')
-            element.closest('.input-group').find('.row-fk-account-name').text(data?.['foreign_acc_name'] || '')
-            element.closest('.input-group').find('.row-account-name').text(`(${data?.['acc_name'] || ''})`)
-        }
+         if (is_multiple) {
+             let $targetGroup = element.closest('.account-popover');
+             UsualLoadPageAccountingFunction.ParsePopover($targetGroup, data);
+         }
+         else {
+             if (data) {
+                 if (Object.keys(data).length > 0) {
+                     let $targetGroup = element.closest('.account-popover');
+                     UsualLoadPageAccountingFunction.ParsePopover($targetGroup, [data]);
+                 }
+             }
+         }
     }
 }

@@ -2636,7 +2636,7 @@ class QuotationLoadDataHandle {
             // check remove hidden btnDelivery (SO)
             if (data?.['delivery_call'] === false && data?.['system_status'] === 3 && $(form).attr('data-method').toLowerCase() === 'get' && form.classList.contains('sale-order')) {
                 if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
-                    if (data?.['opportunity']?.['is_deal_close'] === false) {
+                    if (data?.['opportunity']?.['is_deal_closed'] === false) {
                         QuotationDeliveryHandle.$btnDeliveryInfo[0].removeAttribute('hidden');
                     }
                 } else {

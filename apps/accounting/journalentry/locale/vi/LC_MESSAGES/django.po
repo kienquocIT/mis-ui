@@ -30,6 +30,10 @@ msgid "Journal entry"
 msgstr "Bút toán"
 
 #
+msgid "Journal entry list"
+msgstr "Danh sách bút toán"
+
+#
 msgid "Debit"
 msgstr "Nợ"
 

@@ -1156,7 +1156,7 @@ class COFEventHandler {
         pageElements.$opportunity_id.on('change', function () {
             let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
             if (selected) {
-                console.log(selected)
+                // console.log(selected)
                 COFPageFunction.LoadSaleOrder(selected?.['sale_order'] || {})
                 COFPageFunction.LoadLeaseOrder(selected?.['lease_order'] || {})
                 pageElements.$so_mapped.prop('disabled', true)

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Account determination' %}{% endblock %}
+{% block title %}{% trans 'JE GL account mapping' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
@@ -10,27 +10,23 @@
 {% block pageAction %}
 {% endblock %}
 {% block pageContent %}
-    <script id="trans-script"
-    ></script>
-    <script id="url-script"
+    <script id="script-url"
+            data-url-list="{% url 'JEGLAccountMappingListAPI' %}"
     ></script>
     <div class="row">
         <div class="col-12">
             <table class="table nowrap w-100"
-                   id="account-determination-table"
-                   data-method="GET"
-                   data-trans-change-confirm="{% trans 'Confirm this change?' %}"
-                   data-trans-change-noti="{% trans 'This action can not be undo!' %}"
+                   id="je-gl-account-mapping-table"
                    data-chart-of-account-url="{% url 'ChartOfAccountsListAPI' %}"
-                   data-url-detail="{% url 'AccountDeterminationDetailAPI' pk=0 %}"
-                   data-url="{% url 'AccountDeterminationListAPI' %}">
+            >
                 <thead class="bg-secondary-light-5">
                 <tr>
-                    <th></th>
-                    <th>{% trans 'Type' %}</th>
-                    <th>{% trans 'Trading type defined' %}</th>
-                    <th>{% trans 'Account' %}</th>
-                    <th>{% trans 'Action' %}</th>
+                    <th style="min-width: 50px"></th>
+                    <th style="min-width: 250px">{% trans 'Posting group code' %}</th>
+                    <th style="min-width: 250px">{% trans 'Posting group title' %}</th>
+                    <th style="min-width: 150px">{% trans 'Role key' %}</th>
+                    <th style="min-width: 250px">{% trans 'Account mapped' %}</th>
+                    <th style="min-width: 100px">{% trans 'Active' %}</th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -38,10 +34,8 @@
         </div>
     </div>
 {% endblock %}
-{% block modalData %}
-{% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
-    <script src="{% static 'assets/js/accountingsettings/account_determination/account_determination.js' %}"></script>
+    <script src="{% static 'assets/js/accountingsettings/account_determination/je_gl_account_mapping.js' %}"></script>
 {% endblock %}

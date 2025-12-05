@@ -807,7 +807,7 @@ class AccountHandler {
                     UsualLoadPageFunction.LoadIndustry({
                         element: pageElements.$industry,
                         data: account_detail?.['industry'],
-                        allow_clear: true
+                        allowClear: true
                     })
 
                     UsualLoadPageFunction.LoadEmployee({
@@ -818,7 +818,7 @@ class AccountHandler {
                     UsualLoadPageFunction.LoadAccount({
                         element: pageElements.$parent_account,
                         data: account_detail?.['parent_account_mapped'],
-                        allow_clear: true
+                        allowClear: true
                     })
 
                     for (let i = 0; i < (account_detail?.['contact_mapped'] || []).length; i++) {

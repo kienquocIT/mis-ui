@@ -3590,7 +3590,7 @@ class LeaseOrderLoadDataHandle {
             // check remove hidden btnDelivery
             if (data?.['delivery_call'] === false && data?.['system_status'] === 3 && $(form).attr('data-method').toLowerCase() === 'get') {
                 if (LeaseOrderLoadDataHandle.opportunitySelectEle.val()) {
-                    if (data?.['opportunity']?.['is_deal_close'] === false) {
+                    if (data?.['opportunity']?.['is_deal_closed'] === false) {
                         LeaseOrderDeliveryHandle.$btnDeliveryInfo[0].removeAttribute('hidden');
                     }
                 } else {

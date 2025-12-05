@@ -30,9 +30,15 @@ $(document).ready(function() {
                     render: () => ''
                 },
                 {
-                    className: 'w-40',
+                    className: 'w-20',
                     render: (data, type, row) => {
-                        return `<span class="fw-bold">${row?.['posting_group']?.['code'] || ''}</span><br><span>${row?.['posting_group']?.['title'] || ''}</span>`;
+                        return `<button type="button" class="btn bflow-mirrow-btn bg-blue-light-4">${row?.['posting_group']?.['code'] || ''}</span>`;
+                    }
+                },
+                {
+                    className: 'w-25',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['posting_group']?.['title'] || ''}</span>`;
                     }
                 },
                 {
@@ -42,7 +48,7 @@ $(document).ready(function() {
                     }
                 },
                 {
-                    className: 'w-25',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         let $ele = $(UsualLoadPageAccountingFunction.default_account_select2)
                         $ele.find('.row-account').prop('disabled', true);

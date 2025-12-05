@@ -36,9 +36,15 @@ $(document).ready(function() {
                     }
                 },
                 {
-                    className: 'w-55',
+                    className: 'w-20',
                     render: (data, type, row) => {
-                        return `<span class="fw-bold">${row?.['posting_group']?.['code'] || ''}</span><br><span>${row?.['posting_group']?.['title'] || ''}</span>`;
+                        return `<button type="button" class="btn bflow-mirrow-btn bg-blue-light-4">${row?.['posting_group']?.['code'] || ''}</span>`;
+                    }
+                },
+                {
+                    className: 'w-35',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['posting_group']?.['title'] || ''}</span>`;
                     }
                 },
                 {

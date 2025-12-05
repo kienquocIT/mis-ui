@@ -38,13 +38,13 @@ $(document).ready(function() {
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn bflow-mirrow-btn btn-rounded bg-primary-light-5">${row?.['document_type_code'] || ''}</button>`;
+                        return `<button type="button" class="btn bflow-mirrow-btn bg-primary-light-4">${row?.['document_type_code'] || ''}</button>`;
                     }
                 },
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn bflow-mirrow-btn btn-rounded bg-secondary-light-5">${row?.['rule_level'] || ''}</span>`;
+                        return `<span>${row?.['rule_level'] || ''}</span>`;
                     }
                 },
                 {

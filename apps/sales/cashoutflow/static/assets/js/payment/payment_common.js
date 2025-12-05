@@ -1836,6 +1836,7 @@ class PaymentHandler {
 
         frm.dataForm['free_input'] = $('#free-input').prop('checked')
         let payment_item_list = [];
+        let expense_items = [];
         if (pageElements.$table_line_detail.find('tr').length > 0) {
             let row_count = pageElements.$table_line_detail.find('tr').length / 2;
             for (let i = 1; i <= row_count; i++) {
@@ -1893,6 +1894,12 @@ class PaymentHandler {
                         'sum_value': sum_value,
                         'ap_cost_converted_list': expense_items_detail_list
                     })
+                    if (expense_type) {
+                        let dataExpense = SelectDDControl.get_data_from_idx(pageElements.$table_line_detail.find(row_id + ' .expense-type-select-box'), expense_type);
+                        expense_items.push({
+                            'expense_type': dataExpense,
+                        })
+                    }
                 })
 
                 if (parseFloat(expense_after_tax_price) !== parseFloat(expense_detail_value)) {
@@ -1902,6 +1909,7 @@ class PaymentHandler {
             }
         }
         frm.dataForm['payment_item_list'] = payment_item_list
+        frm.dataForm['expense_items'] = expense_items;
 
         frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
 

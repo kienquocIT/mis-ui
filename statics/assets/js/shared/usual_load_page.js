@@ -1243,26 +1243,8 @@ class UsualLoadPageFunction {
  */
 class UsualLoadPageAccountingFunction {
     static default_account_select2 = `
-        <div class="input-group">
+        <div class="account-popover">
             <select class="form-select select2 row-account"></select>
-            <span class="input-group-text p-0">
-                <a href="#">
-                    <i class="fa-solid fa-info"></i>
-                </a>
-            </span>
-        </div>
-    `;
-
-    static default_account_select2_multiple = `
-        <div class="input-group flex-nowrap">
-            <select class="form-select select2 row-account" multiple></select>
-            <span class="input-group-text p-0">
-                <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa-solid fa-info"></i>
-                </a>
-                <div class="dropdown-menu bflow-mirrow-card-100 p-2" style="min-width: 250px; overflow-y: auto; max-height: 350px;">
-                </div>
-            </span>
         </div>
     `;
 
@@ -1341,20 +1323,20 @@ class UsualLoadPageAccountingFunction {
                     for (let i = 0; i < selected.length; i++) {
                         data_list.push(selected[i]?.['data'])
                     }
-                    let $targetGroup = element.closest('.input-group');
+                    let $targetGroup = element.closest('.account-popover');
                     UsualLoadPageAccountingFunction.ParsePopover($targetGroup, data_list);
                 }
             }
         })
 
          if (is_multiple) {
-             let $targetGroup = element.closest('.input-group');
+             let $targetGroup = element.closest('.account-popover');
              UsualLoadPageAccountingFunction.ParsePopover($targetGroup, data);
          }
          else {
              if (data) {
                  if (Object.keys(data).length > 0) {
-                     let $targetGroup = element.closest('.input-group');
+                     let $targetGroup = element.closest('.account-popover');
                      UsualLoadPageAccountingFunction.ParsePopover($targetGroup, [data]);
                  }
              }

@@ -28,3 +28,7 @@ msgstr "Thêm quy tắc đặt biệt"
 #
 msgid "standard"
 msgstr "tiêu chuẩn"
+
+#
+msgid "Configure guide"
+msgstr "Hướng dẫn cấu hình"

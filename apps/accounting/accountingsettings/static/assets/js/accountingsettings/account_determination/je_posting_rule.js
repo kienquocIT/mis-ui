@@ -9,7 +9,7 @@ $(document).ready(function() {
             reloadCurrency: true,
             paging: false,
             scrollX: true,
-            scrollY: '70vh',
+            scrollY: '68vh',
             scrollCollapse: true,
             ajax: {
                 url: $('#script-url').attr('data-url-list'),
@@ -38,13 +38,13 @@ $(document).ready(function() {
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn bflow-mirrow-btn btn-rounded bg-primary-light-5">${row?.['document_type_code'] || ''}</button>`;
+                        return `<button type="button" class="btn bflow-mirrow-btn bg-primary-light-4">${row?.['document_type_code'] || ''}</button>`;
                     }
                 },
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn bflow-mirrow-btn btn-rounded bg-secondary-light-5">${row?.['rule_level'] || ''}</span>`;
+                        return `<span>${row?.['rule_level'] || ''}</span>`;
                     }
                 },
                 {
@@ -82,7 +82,7 @@ $(document).ready(function() {
                     render: (data, type, row) => {
                         let $ele = $(UsualLoadPageAccountingFunction.default_account_select2)
                         $ele.find('.row-account').prop('disabled', true);
-                        $ele.find('.row-account').attr('data-account-mapped', JSON.stringify(row?.['fixed_account'] ||{}));
+                        $ele.find('.row-account').attr('data-account-mapped', JSON.stringify(row?.['fixed_account_data'] ||{}));
                         return $ele.prop('outerHTML')
                     }
                 },

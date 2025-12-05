@@ -39,11 +39,23 @@ msgstr "Tạo bút toán tự động"
 
 #
 msgid "JE document type"
-msgstr "Giao dịch sinh bút toán"
+msgstr "Loại chứng từ hạch toán"
 
 #
 msgid "JE posting rule"
 msgstr "Quy tắc hạch toán"
+
+#
+msgid "JE posting group"
+msgstr "Nhóm định khoản"
+
+#
+msgid "JE group assignment"
+msgstr "Gán nhóm định khoản"
+
+#
+msgid "JE GL account mapping"
+msgstr "Thiết lập tài khoản kế toán"
 
 #
 msgid "Rule level"
@@ -60,3 +72,7 @@ msgstr "Tài khoản ánh xạ"
 #
 msgid "View automation process"
 msgstr "Xem quá trình tự động"
+
+#
+msgid "Auto JE configure guide"
+msgstr "Hướng dẫn cấu hình bút toán tự động"

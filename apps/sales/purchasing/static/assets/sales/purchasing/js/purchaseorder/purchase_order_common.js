@@ -1765,7 +1765,7 @@ class PODataTableHandle {
                                 fnData.push(prData);
                             }
                             if (prData?.['request_for'] === 0) {
-                                if (prData?.['sale_order']?.['is_deal_close'] === false) {
+                                if (prData?.['sale_order']?.['is_deal_closed'] === false) {
                                     fnData.push(prData);
                                 }
                             }

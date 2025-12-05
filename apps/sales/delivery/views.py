@@ -1,5 +1,6 @@
 from functools import reduce
 
+from django.contrib.auth.models import AnonymousUser
 from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
@@ -236,6 +237,9 @@ class OrderDeliveryEdit(View):
     def get(self, request, *args, pk, **kwargs):
         input_mapping_properties = InputMappingProperties.DELIVERY_ORDER_DELIVERY
         is_lead, lead, person_list = check_config_lead(request.user, 'delivery')
+        employee_current = {}
+        if request.user and not isinstance(request.user, AnonymousUser):
+            employee_current = getattr(request.user, 'employee_current_data', {})
         result = {
             'pk': pk,
             'state_choices': {key: value for key, value in DELIVERY_STATE},
@@ -243,7 +247,8 @@ class OrderDeliveryEdit(View):
             'form_id': 'delivery_form',
             'is_lead': is_lead,
             'lead': lead,
-            'person_list': person_list
+            'person_list': person_list,
+            'employee_current': employee_current,
         }
         return result, status.HTTP_200_OK
 

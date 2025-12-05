@@ -105,16 +105,26 @@
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group" id="wrap-employee_inherit" data-is_lead="{{ data.is_lead }}">
                             <label for="selectEmployeeInherit" class="form-label">{% trans 'Employee inherit' %}</label>
-                            <select class="form-select" name="employee_inherit" id="selectEmployeeInherit"
-                                    {% if not data.is_lead %}disabled{% endif %}>
-                                <option value=""></option>
-                                {% if data.lead %}
-                                    <option value="{{ data.lead.id }}">{{ data.lead.full_name }}</option>
-                                {% endif %}
-                                {% for item in data.person_list %}
-                                    <option value="{{ item.id }}">{{ item.full_name }}</option>
-                                {% endfor %}
-                            </select>
+{#                            <select class="form-select" name="employee_inherit" id="selectEmployeeInherit"#}
+{#                                    {% if not data.is_lead %}disabled{% endif %}>#}
+{#                                <option value=""></option>#}
+{#                                {% if data.lead %}#}
+{#                                    <option value="{{ data.lead.id }}">{{ data.lead.full_name }}</option>#}
+{#                                {% endif %}#}
+{#                                {% for item in data.person_list %}#}
+{#                                    <option value="{{ item.id }}">{{ item.full_name }}</option>#}
+{#                                {% endfor %}#}
+{#                            </select>#}
+                            <select
+                                    class="form-select"
+                                    id="selectEmployeeInherit"
+                                    data-url="{% url "EmployeeListAllAPI" %}"
+                                    data-method="GET"
+                                    name="employee_inherit"
+                                    data-keyResp="employee_list"
+                                    data-keyText="full_name"
+                                    disabled
+                            ></select>
                         </div>
                     </div>
                 </div>
@@ -400,6 +410,8 @@
         <span>{% trans 'Done' %}</span>
     </div>
     </div>
+
+    {{ data.employee_current|json_script:'employee_current' }}
 {% endblock %}
 
 {% block jsFooter %}

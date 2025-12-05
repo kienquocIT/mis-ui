@@ -25,7 +25,7 @@ $(function () {
         autoWidth: false,
         columns: [
             {
-                width: '5%',
+                width: '1%',
                 'render': (data, type, row, meta) => {
                     return '';
                 }
@@ -33,6 +33,7 @@ $(function () {
             {
                 width: '10%',
                 'data': 'code',
+                orderable: true,
                 render: (data, type, row, meta) => {
                     const link = urlDetail.replace('0', row.id);
                     return `<a href="${link}"><span class="badge badge-primary">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
@@ -69,24 +70,24 @@ $(function () {
                 }
             },
             {
-                width: '10%',
+                width: '15%',
                 data: 'group',
                 'render': (data, type, row, meta) => {
                     if (row.hasOwnProperty('group') && typeof row.group === "object") {
                         if (Object.keys(row.group).length !== 0) {
-                            return `<span class="badge badge-soft-blue">` + row.group.title + `</span>`;
+                            return `<span class="badge text-dark-10 fs-8 bg-yellow-light-4">` + row.group.title + `</span>`;
                         }
                     }
                     return '';
                 }
             },
             {
-                width: '30%',
+                width: '25%',
                 data: 'role',
                 'render': (data, type, row, meta) => {
                     if (row.hasOwnProperty('role') && Array.isArray(row.role)) {
                         let result = [];
-                        row.role.map(item => item.title ? result.push(`<span class="badge badge-outline badge-soft-pumpkin mb-1 mr-1">` + item.title + `</span>`) : null);
+                        row.role.map(item => item.title ? result.push(`<span class="badge text-dark-10 fs-8 bg-red-light-4 mb-1 mr-1">` + item.title + `</span>`) : null);
                         return result.join(" ");
                     }
                     return '';
@@ -117,7 +118,7 @@ $(function () {
                 }
             },
             {
-                width: '10%',
+                width: '8%',
                 data: 'is_admin_company',
                 render: (data, type, row, meta) => {
                     return `

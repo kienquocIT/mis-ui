@@ -68,32 +68,32 @@
         <div class="col-12 col-md-3 col-lg-3">
             <div class="bflow-mirrow-card">
                 <div class="text-center">
-                    <h5 class="text-muted mt-3">{% trans 'Total Entries' %}</h5>
-                    <span id="total_je_entries" class="text-blue fw-bold h3"></span><br>
+                    <h5 class="text-muted mt-3">{% trans 'Opening Balance' %}</h5>
+                    <span id="total_opening_balance" class="text-blue mask-money fw-bold h3"></span><br>
                 </div>
             </div>
         </div>
         <div class="col-12 col-md-3 col-lg-3">
             <div class="bflow-mirrow-card">
                 <div class="text-center">
-                    <h5 class="text-muted mt-3">{% trans 'Total Debit' %}</h5>
-                    <span id="total_je_debit" class="text-blue mask-money fw-bold h3"></span><br>
+                    <h5 class="text-muted mt-3">{% trans 'Period Debit' %}</h5>
+                    <span id="total_period_debit" class="text-blue mask-money fw-bold h3"></span><br>
                 </div>
             </div>
         </div>
         <div class="col-12 col-md-3 col-lg-3">
             <div class="bflow-mirrow-card">
                 <div class="text-center">
-                    <h5 class="text-muted mt-3">{% trans 'Total Credit' %}</h5>
-                    <span id="total_je_credit" class="text-blue mask-money fw-bold h3"></span><br>
+                    <h5 class="text-muted mt-3">{% trans 'Period Credit' %}</h5>
+                    <span id="total_period_credit" class="text-blue mask-money fw-bold h3"></span><br>
                 </div>
             </div>
         </div>
         <div class="col-12 col-md-3 col-lg-3">
             <div class="bflow-mirrow-card">
                 <div class="text-center">
-                    <h5 class="text-muted mt-3">{% trans 'Status' %}</h5>
-                    <span id="je_status" class="text-blue fw-bold h3"></span>
+                    <h5 class="text-muted mt-3">{% trans 'Closing Balance' %}</h5>
+                    <span id="total_closing_balance" class="text-blue mask-money fw-bold h3"></span><br>
                 </div>
             </div>
         </div>
@@ -110,12 +110,10 @@
                             <th style="min-width: 50px"></th>
                             <th style="min-width: 150px">{% trans 'Date' %}</th>
                             <th style="min-width: 150px">{% trans "JE code" %}</th>
-                            <th style="min-width: 150px">{% trans 'Account' %}</th>
-                            <th style="min-width: 200px">{% trans 'Description' %}</th>
                             <th style="min-width: 200px">{% trans 'Dimensions' %}</th>
                             <th style="min-width: 150px">{% trans 'Debit' %}</th>
                             <th style="min-width: 150px">{% trans 'Credit' %}</th>
-                            <th style="min-width: 150px">{% trans 'State' %}</th>
+                            <th style="min-width: 150px">{% trans 'Balance' %}</th>
                         </tr>
                     </thead>
             </table>

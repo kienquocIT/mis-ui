@@ -60,7 +60,7 @@ class GeneralLedgerReportFunction {
                     }
                 },
                 {
-                    className: 'w-10',
+                    className: 'w-15',
                     render: (data, type, row) => {
                         const jeId = row?.['journal_entry_info']?.['id'];
                         const jeCode = row?.['journal_entry_info']?.['code'] || '--';
@@ -72,41 +72,28 @@ class GeneralLedgerReportFunction {
                     }
                 },
                 {
-                    className: "w-10",
-                    render: (data, type, row) => {
-                        const accCode = row?.['account_data']?.['acc_code'] || '--';
-                        return `<span class="badge bg-primary">${accCode}</span>`;
-                    }
-                },
-                {
-                    className: "w-15",
-                    render: (data, type, row) => {
-                        return row?.['account_data']?.['acc_name'] || '--';
-                    }
-                },
-                {
-                    className: "w-15",
+                    className: "w-20",
                     render: (data, type, row) => {
                         const dimensions = row?.dimensions;
                         return dimensions?.[dimensions.length - 1]?.title || '--';
                     }
                 },
                 {
-                    className: "w-10",
+                    className: "w-15",
                     render: (data, type, row) => {
                         let total_debit = parseFloat(row?.['debit'] || 0);
                         return `<span class="mask-money text-danger" data-init-money="${total_debit}"></span>`;
                     }
                 },
                 {
-                    className: "w-10",
+                    className: "w-15",
                     render: (data, type, row) => {
                         let total_credit = parseFloat(row?.['credit'] || 0);
                         return `<span class="mask-money text-indigo" data-init-money="${total_credit}"></span>`;
                     }
                 },
                 {
-                    className: 'ellipsis-cell-sm w-10',
+                    className: 'ellipsis-cell-sm w-15',
                     render: (data, type, row) => {
                         let total_debit = parseFloat(row?.['debit'] || 0);
                         let total_credit = parseFloat(row?.['credit'] || 0);

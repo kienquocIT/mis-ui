@@ -12403,3 +12403,7 @@ msgstr "Bộ giá trị ở mỗi dòng dòng phải khác nhau"
 #
 msgid "Estimated Value"
 msgstr "Giá trị ước tính"
+
+#
+msgid "Lead"
+msgstr "Tiềm năng"

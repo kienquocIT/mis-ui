@@ -130,7 +130,9 @@ class OpportunityPageFunction {
             ))
         }
         if (is_deal_closed) {
-            passed_stages = stages_list_data.filter(item => item?.['is_deal_closed'])
+            passed_stages = passed_stages.concat(stages_list_data.filter(item =>
+                item?.['is_deal_closed']
+            ))
         }
 
         passed_stages.forEach(function (item, index) {
@@ -281,7 +283,7 @@ class OpportunityPageFunction {
                     }
                 },
                 {
-                    className: 'w-25',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         if (row?.['app_code'] && [0, 1].includes(row?.['log_type'])) {
                             if (row?.['log_type'] === 0 && (row?.['doc_data']?.['system_status'] || row?.['doc_data']?.['system_status'] === 0)) {
@@ -295,7 +297,7 @@ class OpportunityPageFunction {
                     }
                 },
                 {
-                    className: 'w-15 text-right',
+                    className: 'w-20 text-right',
                     render: (data, type, row) => {
                         return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                     }

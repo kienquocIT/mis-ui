@@ -27,40 +27,45 @@ $(document).ready(function () {
                 }
             },
             {
-                className: 'ellipsis-cell-xs w-5',
+                className: 'w-5',
                 render: (data, type, row) => {
                     const link = baseUrlDetail.replace(0, row?.['id']);
                     return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                 },
             },
             {
-                className: 'w-30',
+                className: 'ellipsis-cell-lg w-25',
                 render: (data, type, row) => {
                     let link = baseUrlDetail.replace("0", row?.['id']);
                     return `<a href="${link}" class="link-primary underline_hover" title="${row?.['fullname']}">${row?.['fullname']}</a>`
                 }
-            }, {
+            },
+            {
                 className: 'w-10',
                 render: (data, type, row) => {
                     return `<span class="text-muted">${row?.['job_title']}</span>`
                 }
-            }, {
+            },
+            {
                 className: 'ellipsis-cell-lg w-20',
                 'render': (data, type, row) => {
                     return `<span class="text-muted">${row?.['account_name']?.['name'] ? row['account_name']['name'] : ''}</span>`
                 }
-            }, {
+            },
+            {
                 className: 'ellipsis-cell-sm w-15',
                 'render': (data, type, row) => {
                     return WFRTControl.displayEmployeeWithGroup(row?.['owner'], 'fullname');
                 }
-            }, {
-                className: 'ellipsis-cell-sm w-15',
+            },
+            {
+                className: 'ellipsis-cell-sm w-10',
                 'render': (data, type, row) => {
                     return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
                 }
-            }, {
-                className: 'ellipsis-cell-sm w-15',
+            },
+            {
+                className: 'ellipsis-cell-sm w-10',
                 'render': (data, type, row) => {
                     return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                 }

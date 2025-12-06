@@ -1,7 +1,7 @@
 // AI Chat Functionality with jQuery - Streaming Version
 $(document).ready(function () {
     // CẤU HÌNH URL API (Hãy đảm bảo port khớp với FastAPI server của bạn)
-    const API_URL = "http://127.0.0.1:8010/api/v1/ask";
+    const API_URL = "/api/ai-bflow/accounting-ask";
 
     const $chatButton = $('#aiChatButton');
     const $chatContainer = $('#aiChatContainer');

@@ -32,7 +32,7 @@ $(document).ready(function() {
                 {
                     className: 'w-15',
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn bflow-mirrow-btn bg-primary-light-4">${row?.['code'] || ''}</button>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-primary-light-5">${row?.['code'] || ''}</span>`;
                     }
                 },
                 {

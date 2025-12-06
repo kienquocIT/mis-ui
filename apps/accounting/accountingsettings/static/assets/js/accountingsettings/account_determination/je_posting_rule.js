@@ -38,31 +38,31 @@ $(document).ready(function() {
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn bflow-mirrow-btn bg-primary-light-4">${row?.['document_type_code'] || ''}</button>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-primary-light-5">${row?.['document_type_code'] || ''}</span>`;
                     }
                 },
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<span>${row?.['rule_level'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-secondary-light-5">${row?.['rule_level'] || ''}</span>`;
                     }
                 },
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn bflow-mirrow-btn btn-rounded bg-secondary-light-5">${row?.['role_key'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-secondary-light-5">${row?.['role_key'] || ''}</span>`;
                     }
                 },
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn bflow-mirrow-btn btn-rounded bg-secondary-light-5">${row?.['amount_source'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-secondary-light-5">${row?.['amount_source'] || ''}</span>`;
                     }
                 },
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<span>${row?.['side'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-secondary-light-5">${row?.['side'] || ''}</span>`;
                     }
                 },
                 {
@@ -74,16 +74,21 @@ $(document).ready(function() {
                 {
                     className: 'w-5 text-center',
                     render: (data, type, row) => {
-                        return `<span class="bg-warning-light-4 text-dark border-0 bflow-mirrow-badge">${row?.['priority']}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 bg-warning-light-4">${row?.['priority']}</span>`;
                     }
                 },
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        let $ele = $(UsualLoadPageAccountingFunction.default_account_select2)
-                        $ele.find('.row-account').prop('disabled', true);
-                        $ele.find('.row-account').attr('data-account-mapped', JSON.stringify(row?.['fixed_account_data'] ||{}));
-                        return $ele.prop('outerHTML')
+                        if (row?.['account_source_type'] === "FIXED") {
+                            let $ele = $(UsualLoadPageAccountingFunction.default_account_select2)
+                            $ele.find('.row-account').prop('disabled', true);
+                            $ele.find('.row-account').attr('data-account-mapped', JSON.stringify(row?.['fixed_account_data'] || {}));
+                            return $ele.prop('outerHTML')
+                        }
+                        else {
+                            return `<button type="button" class="bflow-mirrow-btn">LOOK UP</button></i>`
+                        }
                     }
                 },
                 {

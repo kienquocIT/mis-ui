@@ -164,58 +164,19 @@
                                 >
                                     <thead>
                                     <tr class="bg-light">
-                                        <th></th>
-                                        <th>{% trans 'Product' %}</th>
-                                        <th>{% trans 'Description' %}</th>
+                                        <th>#</th>
+                                        <th>{% trans 'Name' %}</th>
+                                        <th>{% trans 'Code' %}</th>
                                         <th>{% trans 'UOM' %}</th>
                                         <th>{% trans 'Quantity' %}</th>
-                                        <th>{% trans 'Unit Price' %}</th>
-                                        <th>{% trans 'Tax' %}</th>
-                                        <th>{% trans 'Subtotal Price' %}</th>
-                                        <th></th>
+                                        <th>{% trans 'Lease time' %}</th>
+                                        <th>{% trans 'Unit cost' %}</th>
+                                        <th>{% trans 'Depreciation' %}</th>
+                                        <th>{% trans 'Final cost' %}</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     </tbody>
-                                    <tfoot hidden>
-                                    <tr>
-                                        <th colspan="5"></th>
-                                        <th colspan="4">
-                                            <div class="row mb-2">
-                                                <div class="col-6">
-                                                    <p style="text-align: right">{% trans 'Pretax Amount' %}:</p>
-                                                </div>
-                                                <div class="col-1"></div>
-                                                <div class="col-5">
-                                                    <span class="mask-money font-3 good-receipt-product-pretax-amount" data-init-money="0"></span>
-                                                    <input type="text" class="form-control good-receipt-product-pretax-amount-raw" value="0" hidden>
-                                                    <input type="hidden" class="good-receipt-final-revenue-before-tax">
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-6">
-                                                    <p style="text-align: right">{% trans 'Taxes' %}:</p>
-                                                </div>
-                                                <div class="col-1"></div>
-                                                <div class="col-5">
-                                                    <span class="mask-money font-3 good-receipt-product-taxes" data-init-money="0"></span>
-                                                    <input type="text" class="form-control good-receipt-product-taxes-raw" value="0" hidden>
-                                                </div>
-                                            </div>
-                                            <hr class="bg-teal">
-                                            <div class="row">
-                                                <div class="col-6">
-                                                    <b><p style="text-align: right">{% trans 'Total' %}:</p></b>
-                                                </div>
-                                                <div class="col-1"></div>
-                                                <div class="col-5">
-                                                    <b><span class="mask-money font-3 good-receipt-product-total" data-init-money="0"></span></b>
-                                                    <input type="text" class="form-control good-receipt-product-total-raw" value="0" hidden>
-                                                </div>
-                                            </div>
-                                        </th>
-                                    </tr>
-                                    </tfoot>
                                 </table>
                             </div>
                         </div>

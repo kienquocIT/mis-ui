@@ -2,7 +2,6 @@ $(document).ready(function() {
     const $je_posting_rule_table = $('#je-posting-rule-table')
     function LoadJEPostingRuleTable() {
         $je_posting_rule_table.DataTable().clear().destroy()
-        let frm = new SetupFormSubmit($je_posting_rule_table);
         $je_posting_rule_table.DataTableDefault({
             useDataServer: true,
             rowIdx: true,
@@ -14,7 +13,7 @@ $(document).ready(function() {
             ajax: {
                 url: $('#script-url').attr('data-url-list'),
                 data: {},
-                type: frm.dataMethod,
+                type: 'GET',
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
@@ -30,39 +29,33 @@ $(document).ready(function() {
                     render: () => ''
                 },
                 {
-                    className: 'w-10',
+                    className: 'w-20',
                     render: (data, type, row) => {
-                        return `<span>${row?.['document_type_app_code_parsed'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-primary-light-5" title="${row?.['document_type_app_code_parsed'] || ''}">${row?.['document_type_code'] || ''}</span>`;
                     }
                 },
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn bflow-mirrow-btn bg-primary-light-4">${row?.['document_type_code'] || ''}</button>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-secondary-light-5" title="${row?.['rule_level_parsed'] || ''}">${row?.['rule_level'] || ''}</span>`;
                     }
                 },
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<span>${row?.['rule_level'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-secondary-light-5" title="${row?.['role_key_parsed'] || ''}">${row?.['role_key'] || ''}</span>`;
                     }
                 },
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn bflow-mirrow-btn btn-rounded bg-secondary-light-5">${row?.['role_key'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-secondary-light-5" title="${row?.['amount_source_parsed'] || ''}">${row?.['amount_source'] || ''}</span>`;
                     }
                 },
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn bflow-mirrow-btn btn-rounded bg-secondary-light-5">${row?.['amount_source'] || ''}</span>`;
-                    }
-                },
-                {
-                    className: 'w-10',
-                    render: (data, type, row) => {
-                        return `<span>${row?.['side'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-secondary-light-5" title="${row?.['side_parsed'] || ''}">${row?.['side'] || ''}</span>`;
                     }
                 },
                 {
@@ -74,16 +67,21 @@ $(document).ready(function() {
                 {
                     className: 'w-5 text-center',
                     render: (data, type, row) => {
-                        return `<span class="bg-warning-light-4 text-dark border-0 bflow-mirrow-badge">${row?.['priority']}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 bg-warning-light-4">${row?.['priority']}</span>`;
                     }
                 },
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        let $ele = $(UsualLoadPageAccountingFunction.default_account_select2)
-                        $ele.find('.row-account').prop('disabled', true);
-                        $ele.find('.row-account').attr('data-account-mapped', JSON.stringify(row?.['fixed_account_data'] ||{}));
-                        return $ele.prop('outerHTML')
+                        if (row?.['account_source_type'] === "FIXED") {
+                            let $ele = $(UsualLoadPageAccountingFunction.default_account_select2)
+                            $ele.find('.row-account').prop('disabled', true);
+                            $ele.find('.row-account').attr('data-account-mapped', JSON.stringify(row?.['fixed_account_data'] || {}));
+                            return $ele.prop('outerHTML')
+                        }
+                        else {
+                            return `<button type="button" class="bflow-mirrow-btn">LOOK UP</button></i>`
+                        }
                     }
                 },
                 {
@@ -98,12 +96,6 @@ $(document).ready(function() {
             rowGroup: {
                 dataSrc: 'document_type_app_code_parsed'
             },
-            columnDefs: [
-                {
-                    "visible": false,
-                    "targets": [1]
-                }
-            ],
             initComplete: function () {
                 $je_posting_rule_table.find('tbody tr').each(function (index, ele) {
                     if ($(ele).find('.row-account').length) {

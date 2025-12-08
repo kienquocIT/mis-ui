@@ -2,7 +2,6 @@ $(document).ready(function() {
     const $je_document_type_table = $('#je-document-type-table')
     function LoadJEDocumentTypeTable() {
         $je_document_type_table.DataTable().clear().destroy()
-        let frm = new SetupFormSubmit($je_document_type_table);
         $je_document_type_table.DataTableDefault({
             useDataServer: true,
             rowIdx: true,
@@ -14,7 +13,7 @@ $(document).ready(function() {
             ajax: {
                 url: $('#script-url').attr('data-url-list'),
                 data: {},
-                type: frm.dataMethod,
+                type: 'GET',
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
@@ -30,15 +29,9 @@ $(document).ready(function() {
                     render: () => ''
                 },
                 {
-                    className: 'w-15',
+                    className: 'w-60',
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn bflow-mirrow-btn bg-primary-light-4">${row?.['code'] || ''}</button>`;
-                    }
-                },
-                {
-                    className: 'w-45',
-                    render: (data, type, row) => {
-                        return `<span>${row?.['app_code_parsed'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-primary-light-5">${row?.['code'] || ''}</span> - <span>${row?.['app_code_parsed'] || ''}</span>`;
                     }
                 },
                 {
@@ -68,7 +61,7 @@ $(document).ready(function() {
             columnDefs: [
                 {
                     "visible": false,
-                    "targets": [3]
+                    "targets": [2]
                 }
             ],
         });

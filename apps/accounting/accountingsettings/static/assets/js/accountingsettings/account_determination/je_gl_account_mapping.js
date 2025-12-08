@@ -2,7 +2,6 @@ $(document).ready(function() {
     const $je_gl_account_mapping_table = $('#je-gl-account-mapping-table')
     function LoadJEAccountMappingTable() {
         $je_gl_account_mapping_table.DataTable().clear().destroy()
-        let frm = new SetupFormSubmit($je_gl_account_mapping_table);
         $je_gl_account_mapping_table.DataTableDefault({
             useDataServer: true,
             rowIdx: true,
@@ -30,21 +29,15 @@ $(document).ready(function() {
                     render: () => ''
                 },
                 {
-                    className: 'w-20',
+                    className: 'w-35',
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn bflow-mirrow-btn bg-blue-light-4">${row?.['posting_group']?.['code'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-blue-light-5">${row?.['posting_group']?.['code'] || ''}</span> - <span>${row?.['posting_group']?.['title'] || ''}</span>`;
                     }
                 },
                 {
-                    className: 'w-25',
+                    className: 'w-30',
                     render: (data, type, row) => {
-                        return `<span>${row?.['posting_group']?.['title'] || ''}</span>`;
-                    }
-                },
-                {
-                    className: 'w-20',
-                    render: (data, type, row) => {
-                        return `<button type="button" class="btn bflow-mirrow-btn btn-rounded bg-secondary-light-5">${row?.['role_key'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-secondary-light-5">${row?.['role_key'] || ''}</span> - <span>${row?.['role_key_parsed'] || ''}</span>`;
                     }
                 },
                 {

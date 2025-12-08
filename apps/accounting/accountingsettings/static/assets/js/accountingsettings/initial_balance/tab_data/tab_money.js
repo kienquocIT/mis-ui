@@ -64,7 +64,7 @@ class TabMoneyFunction {
                 {
                     className: "w-10",
                     render: (data, type, row) => {
-                        return `<input class="form-control mask-money row-amount row-amount-changed row-access" value="0" disabled>`;
+                        return `<input class="form-control mask-money row-amount row-amount-changed row-access" value="0" data-other-abbreviation="" disabled>`;
                     }
                 },
                 {
@@ -132,6 +132,7 @@ class TabMoneyFunction {
                             data_url: pageElements.$urlFactory.attr('data-url-currency'),
                             data: rowData['currency_mapped_data'],
                         });
+                        $row.find('.row-amount').attr('data-other-abbreviation', rowData['currency_mapped_data']?.['abbreviation']);
                     }
 
                     // load account data
@@ -256,7 +257,6 @@ class TabMoneyFunction {
         tabMoneyElements.$tableMoney.find('tbody tr').each(function() {
             const typeRow = $(this).attr('data-type-row');
             const $currencyItem = $(this).find('.row-currency');
-            const $currencyMappedData = $currencyItem.length ? SelectDDControl.get_data_from_idx($currencyItem, $currencyItem.val()) : {};
 
             // Parse bank detail data
             const bankDataStr = $(this).find('.bank-info-script').text().trim();
@@ -267,7 +267,6 @@ class TabMoneyFunction {
                     id: typeRow === 'added' ? null : $(this).attr('data-id'),
                     type_row: typeRow,
                     currency_mapped: $currencyItem.val(),
-                    currency_mapped_data: $currencyMappedData,
                     account: $(this).find('.row-account').val(),
                     debit_value: parseFloat($(this).find('.row-debit').attr('value') || 0),
                     credit_value: parseFloat($(this).find('.row-credit').attr('value') || 0),
@@ -278,7 +277,7 @@ class TabMoneyFunction {
                         money_detail_data: bankDetailData
                     },
                 }
-                moneyDataList.push(rowData)
+                moneyDataList.push(rowData);
             }
         });
         return moneyDataList;

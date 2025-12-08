@@ -2,7 +2,6 @@ $(document).ready(function() {
     const $je_group_assignment_table = $('#je-group-assignment-table')
     function LoadJEGroupAssignmentTable() {
         $je_group_assignment_table.DataTable().clear().destroy()
-        let frm = new SetupFormSubmit($je_group_assignment_table);
         $je_group_assignment_table.DataTableDefault({
             useDataServer: true,
             rowIdx: true,
@@ -32,19 +31,19 @@ $(document).ready(function() {
                 {
                     className: 'w-30',
                     render: (data, type, row) => {
-                        return `<span>${row?.['code'] || ''}</span>`;
+                        return `<span class="badge badge-soft-primary">${row?.['item_app_data']?.['code'] || ''}</span><br><span>${row?.['item_app_data']?.['title'] || ''}</span>`;
                     }
                 },
                 {
-                    className: 'w-20',
+                    className: 'w-40',
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn bflow-mirrow-btn bg-blue-light-4">${row?.['posting_group']?.['code'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-blue-light-5">${row?.['posting_group']?.['code'] || ''}</span> - <span>${row?.['posting_group']?.['title'] || ''}</span>`;
                     }
                 },
                 {
-                    className: 'w-35',
+                    className: 'w-15',
                     render: (data, type, row) => {
-                        return `<span>${row?.['posting_group']?.['title'] || ''}</span>`;
+                        return `<span>${row?.['posting_group_type_parsed'] || ''}</span>`;
                     }
                 },
                 {

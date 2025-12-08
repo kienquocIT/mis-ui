@@ -2,7 +2,6 @@ $(document).ready(function() {
     const $je_posting_group_table = $('#je-posting-group-table')
     function LoadJEPostingGroupTable() {
         $je_posting_group_table.DataTable().clear().destroy()
-        let frm = new SetupFormSubmit($je_posting_group_table);
         $je_posting_group_table.DataTableDefault({
             useDataServer: true,
             rowIdx: true,
@@ -30,15 +29,9 @@ $(document).ready(function() {
                     render: () => ''
                 },
                 {
-                    className: 'w-20',
+                    className: 'w-65',
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn bflow-mirrow-btn bg-blue-light-4">${row?.['code'] || ''}</span>`;
-                    }
-                },
-                {
-                    className: 'w-45',
-                    render: (data, type, row) => {
-                        return `<span>${row?.['title'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-blue-light-5">${row?.['code'] || ''}</span> - <span>${row?.['title'] || ''}</span>`;
                     }
                 },
                 {
@@ -55,6 +48,15 @@ $(document).ready(function() {
                         </div>`;
                     }
                 },
+            ],
+            rowGroup: {
+                dataSrc: 'posting_group_type_parsed'
+            },
+            columnDefs: [
+                {
+                    "visible": false,
+                    "targets": [2]
+                }
             ],
         });
     }

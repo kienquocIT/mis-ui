@@ -2,7 +2,6 @@ $(document).ready(function() {
     const $je_gl_account_mapping_table = $('#je-gl-account-mapping-table')
     function LoadJEAccountMappingTable() {
         $je_gl_account_mapping_table.DataTable().clear().destroy()
-        let frm = new SetupFormSubmit($je_gl_account_mapping_table);
         $je_gl_account_mapping_table.DataTableDefault({
             useDataServer: true,
             rowIdx: true,

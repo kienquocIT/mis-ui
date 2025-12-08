@@ -2,7 +2,6 @@ $(document).ready(function() {
     const $je_document_type_table = $('#je-document-type-table')
     function LoadJEDocumentTypeTable() {
         $je_document_type_table.DataTable().clear().destroy()
-        let frm = new SetupFormSubmit($je_document_type_table);
         $je_document_type_table.DataTableDefault({
             useDataServer: true,
             rowIdx: true,
@@ -14,7 +13,7 @@ $(document).ready(function() {
             ajax: {
                 url: $('#script-url').attr('data-url-list'),
                 data: {},
-                type: frm.dataMethod,
+                type: 'GET',
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {

@@ -2,7 +2,6 @@ $(document).ready(function() {
     const $je_posting_group_table = $('#je-posting-group-table')
     function LoadJEPostingGroupTable() {
         $je_posting_group_table.DataTable().clear().destroy()
-        let frm = new SetupFormSubmit($je_posting_group_table);
         $je_posting_group_table.DataTableDefault({
             useDataServer: true,
             rowIdx: true,

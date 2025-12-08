@@ -2,7 +2,6 @@ $(document).ready(function() {
     const $je_group_assignment_table = $('#je-group-assignment-table')
     function LoadJEGroupAssignmentTable() {
         $je_group_assignment_table.DataTable().clear().destroy()
-        let frm = new SetupFormSubmit($je_group_assignment_table);
         $je_group_assignment_table.DataTableDefault({
             useDataServer: true,
             rowIdx: true,

@@ -2,7 +2,6 @@ $(document).ready(function() {
     const $je_posting_rule_table = $('#je-posting-rule-table')
     function LoadJEPostingRuleTable() {
         $je_posting_rule_table.DataTable().clear().destroy()
-        let frm = new SetupFormSubmit($je_posting_rule_table);
         $je_posting_rule_table.DataTableDefault({
             useDataServer: true,
             rowIdx: true,
@@ -14,7 +13,7 @@ $(document).ready(function() {
             ajax: {
                 url: $('#script-url').attr('data-url-list'),
                 data: {},
-                type: frm.dataMethod,
+                type: 'GET',
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {

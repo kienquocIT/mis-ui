@@ -26,7 +26,7 @@ class GeneralLedgerReportFunction {
             useDataServer: true,
             rowIdx: true,
             scrollX: true,
-            scrollY: '64vh',
+            scrollY: '56vh',
             autoWidth: true,
             scrollCollapse: true,
             reloadCurrency: true,
@@ -36,7 +36,8 @@ class GeneralLedgerReportFunction {
                 data: {
                     'journal_entry__date_created__lte': endDate,
                     'journal_entry__date_created__gte': startDate,
-                    'account_id': accountId ? accountId : null
+                    'account_id': accountId,
+                    'is_general_ledger': true,
                 },
                 dataSrc: function(resp) {
                     let data = $.fn.switcherResp(resp);
@@ -56,11 +57,11 @@ class GeneralLedgerReportFunction {
                 {
                     className: "w-15",
                     render: (data, type, row) => {
-                        return $x.fn.displayRelativeTime(row?.['journal_entry_info']?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
+                        return $x.fn.displayRelativeTime(row?.['journal_entry_info']?.['date_created'], {'outputFormat': 'DD/MM/YYYY'}, true);
                     }
                 },
                 {
-                    className: 'w-15',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         const jeId = row?.['journal_entry_info']?.['id'];
                         const jeCode = row?.['journal_entry_info']?.['code'] || '--';
@@ -72,35 +73,31 @@ class GeneralLedgerReportFunction {
                     }
                 },
                 {
-                    className: "w-20",
+                    className: 'w-15',
                     render: (data, type, row) => {
-                        const dimensions = row?.dimensions;
-                        return dimensions?.[dimensions.length - 1]?.title || '--';
-                    }
-                },
-                {
-                    className: "w-15",
-                    render: (data, type, row) => {
-                        let total_debit = parseFloat(row?.['debit'] || 0);
-                        return `<span class="mask-money text-danger" data-init-money="${total_debit}"></span>`;
-                    }
-                },
-                {
-                    className: "w-15",
-                    render: (data, type, row) => {
-                        let total_credit = parseFloat(row?.['credit'] || 0);
-                        return `<span class="mask-money text-indigo" data-init-money="${total_credit}"></span>`;
+                        return `<span class="mr-1">${row?.['journal_entry_info']?.['original_transaction_parsed']}</span><span class="fw-bold bflow-mirrow-badge-sm">${(row?.['journal_entry_info']?.['je_transaction_data'] || {})?.['code'] || ''}</span>`
                     }
                 },
                 {
                     className: 'ellipsis-cell-sm w-15',
                     render: (data, type, row) => {
-                        let total_debit = parseFloat(row?.['debit'] || 0);
-                        let total_credit = parseFloat(row?.['credit'] || 0);
-                        return total_debit === total_credit ? `<span class="text-success h6">${$.fn.gettext('Balanced')}</span>`
-                            : `<span class="text-danger h6">${$.fn.gettext('Not balance')}</span>`;
+                        return WFRTControl.displayEmployeeWithGroup(row?.['journal_entry_info']?.['employee_created']);
                     }
                 },
+                {
+                    className: "w-15 text-right",
+                    render: (data, type, row) => {
+                        let total_debit = parseFloat(row?.['debit'] || 0);
+                        return total_debit ? `<span class="mask-money" data-init-money="${total_debit}"></span>` : '--';
+                    }
+                },
+                {
+                    className: "w-15 text-right",
+                    render: (data, type, row) => {
+                        let total_credit = parseFloat(row?.['credit'] || 0);
+                        return total_credit ? `<span class="mask-money" data-init-money="${total_credit}"></span>` : '--';
+                    }
+                }
             ],
         })
     }
@@ -150,7 +147,7 @@ class GeneralLedgerReportEventHandler {
         pageElements.$applyFilterBtn.on('click', function () {
             let dayStart = DateTimeControl.formatDateType("DD/MM/YYYY", "YYYY-MM-DD", pageElements.$startDateFilter.val());
             let dayEnd = DateTimeControl.formatDateType("DD/MM/YYYY", "YYYY-MM-DD", pageElements.$endDateFilter.val());
-            let accountId = pageElements.$accountFilter.val() || '';
+            let accountId = pageElements.$accountFilter.val() || null;
             GeneralLedgerReportFunction.loadGeneralLedgerReportList(dayStart, dayEnd, accountId);
         });
 

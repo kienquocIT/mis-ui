@@ -14,6 +14,7 @@ $(function () {
             1: $transFact.attr('data-status-lease-1'),
             2: $transFact.attr('data-status-lease-2'),
             3: $transFact.attr('data-status-lease-3'),
+            4: $transFact.attr('data-status-lease-4'),
         }
         let dataAssetType = {
             1: $transFact.attr('data-asset-type-1'),

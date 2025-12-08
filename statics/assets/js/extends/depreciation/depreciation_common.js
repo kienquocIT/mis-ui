@@ -169,7 +169,7 @@ class DepreciationControl {
                 endDateTarget = lastData?.['end'];
             }
             lastData['lease_time'] = endDateTarget;
-            if (matchingRange.length > 1) {
+            if (matchingRange.length >= 1) {
                 lastData['lease_allocated'] = lastData?.['depreciation_value'];
                 let endDay = parseInt(end_date.split("/")[0]);
                 let endMonth = parseInt(end_date.split("/")[1]);

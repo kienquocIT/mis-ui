@@ -1191,6 +1191,10 @@ class NodeStoreHandle {
             }
             if (NodeLoadDataHandle.dataNode.length !== initLength) {
                 FlowJsP.init(true);
+                let elm_focus = $('#node-associate');
+                if (elm_focus.length > 0) {
+                    elm_focus.val(JSON.stringify({}));
+                }
             }
         }
         return true;

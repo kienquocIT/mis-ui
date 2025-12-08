@@ -2810,6 +2810,9 @@ class LeaseOrderLoadDataHandle {
                             dataFn = dataAsset?.['depreciation_data'];
                             LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
                             LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(dataFn).draw();
+                            if ($leaseStartDateEle.length > 0 && $leaseEndDateEle.length > 0) {
+                                $leaseStartDateEle.trigger('change');
+                            }
                             return true;
                         }
                     }

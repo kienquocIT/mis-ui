@@ -59,4 +59,15 @@ class ShiftMasterDataDetailAPI(APIView):
         return resp.auto_return(key_success='shift_detail')
 
 
-
+class ShiftImportAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.SHIFT_IMPORT).post(request.data)
+        if resp.state:
+            resp.result['message'] = HRMsg.SHIFT_CREATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()

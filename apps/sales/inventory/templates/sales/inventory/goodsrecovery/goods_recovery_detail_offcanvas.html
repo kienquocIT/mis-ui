@@ -1,0 +1,196 @@
+{% load i18n %}
+
+<div class="offcanvas offcanvas-end w-95" tabindex="-1" id="productCanvas" aria-labelledby="offcanvasTopLabel">
+    <div class="modal-header">
+        <h5><b>{% trans 'Product list' %}</b></h5>
+        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-6 border-right">
+                <table
+                    id="datable-delivery"
+                    class="table nowrap w-100"
+                >
+                    <thead>
+                    <tr class="bg-light">
+                        <th class="w-60">{% trans 'Delivery' %}</th>
+                        <th class="w-20">{% trans 'Date' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+
+                <table
+                    id="datable-deli-product"
+                    class="table nowrap w-100"
+                >
+                    <thead>
+                    <tr class="bg-light">
+                        <th>{% trans 'Service' %}</th>
+                        <th>{% trans 'Delivered' %}</th>
+                        <th>{% trans 'Remain' %}</th>
+                        <th>{% trans 'Recovery' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="hidden" id="scroll-new-leased-product">
+                    <table
+                        id="datable-deli-product-new"
+                        class="table nowrap w-100"
+                    >
+                        <thead>
+                        <tr class="bg-light">
+                            <th>{% trans 'Name' %}</th>
+                            <th>{% trans 'Code' %}</th>
+                            <th>{% trans 'Remain' %}</th>
+                            <th>{% trans 'Recovery' %}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas">{% trans 'Close' %}</button>
+        <button type="button" class="btn btn-primary" id="btn-save-product" data-bs-dismiss="offcanvas" hidden>{% trans 'Save' %}</button>
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-end w-90" tabindex="-1" id="viewDepreciationDetail" aria-labelledby="offcanvasTopLabel">
+    <div class="modal-header">
+        <h5><b>{% trans 'Depreciation detail' %}</b></h5>
+        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="row">
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label class="form-label required" for="cost_price">{% trans 'Total value' %}</label>
+                    <input type="text" class="form-control mask-money" id="cost_price" value="0" data-return-type="number" readonly>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-2">
+                <label class="form-label" for="depreciation_time">{% trans 'Depreciation time' %}</label>
+                <div class="input-group">
+                    <input type="text" class="form-control valid-num" id="depreciation_time" value="0" readonly>
+                    <span class="input-group-text" id="depreciation_uom"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label class="form-label" for="depreciation_method">{% trans 'Select method' %}</label>
+                    <select class="form-select depreciation-method" id="depreciation_method" readonly></select>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label class="form-label" for="depreciation_adjustment">{% trans 'Adjustment factor' %}</label>
+                    <input type="text" class="form-control depreciation-adjustment" id="depreciation_adjustment" value="1" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label class="form-label required" for="depreciation_start_date">{% trans 'Start depreciation' %}</label>
+                    <div class="input-affix-wrapper">
+                        <input type="text" id="depreciation_start_date"
+                               class="form-control depreciation-start-date date-picker text-black" autocomplete="off" disabled>
+                        <div class="input-suffix">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label class="form-label required" for="depreciation_end_date">{% trans 'End depreciation' %}</label>
+                    <div class="input-affix-wrapper">
+                        <input type="text" id="depreciation_end_date"
+                               class="form-control depreciation-end-date date-picker text-black" autocomplete="off" disabled>
+                        <div class="input-suffix">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label class="form-label required" for="lease_start_date">{% trans 'Start lease' %}</label>
+                    <div class="input-affix-wrapper">
+                        <input type="text" id="lease_start_date"
+                               class="form-control lease-start-date date-picker text-black" autocomplete="off" disabled>
+                        <div class="input-suffix">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label class="form-label required" for="lease_end_date">{% trans 'End lease' %}</label>
+                    <div class="input-affix-wrapper">
+                        <input type="text" id="lease_end_date"
+                               class="form-control lease-end-date date-picker text-black" autocomplete="off" disabled>
+                        <div class="input-suffix">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="d-flex justify-content-start hidden">
+                    <div class="form-check form-check-lg mr-4">
+                        <input type="radio" class="form-check-input depreciation-for-sale" id="depreciation_for_sale">
+                        <label class="form-check-label table-row-title" for="depreciation_for_sale">Sale</label>
+                    </div>
+                    <div class="form-check form-check-lg">
+                        <input type="radio" class="form-check-input depreciation-for-finance" id="depreciation_for_finance" checked>
+                        <label class="form-check-label table-row-title" for="depreciation_for_finance">Finance</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center align-items-center">
+            <div class="spinner-border" id="depreciation_spinner" role="status" hidden>
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <table
+                id="table-depreciation-detail"
+                class="table nowrap w-100 mb-5"
+        >
+            <thead>
+            <tr class="bg-light">
+                <th>{% trans 'Month' %}</th>
+                <th>{% trans 'Begin' %}</th>
+                <th>{% trans 'End' %}</th>
+                <th>{% trans 'Start net value' %}</th>
+                <th>{% trans 'Depreciation value' %}</th>
+                <th>{% trans 'End net value' %}</th>
+                <th>{% trans 'Lease time' %}</th>
+                <th>{% trans 'Allocated' %}</th>
+                <th>{% trans 'Accumulative' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas">{% trans 'Close' %}</button>
+        <button type="button" class="btn btn-primary" id="btn-save-depreciation-detail" data-bs-dismiss="offcanvas" hidden>{% trans 'Save' %}</button>
+    </div>
+</div>

@@ -23,3 +23,5 @@ SHEET_SALEDATA_PRODUCT = '#saledata.product'
 
 SHEET_SALEDATA_PRICE_TAX_CATEGORY = '#saledata.price.taxcategory'
 SHEET_SALEDATA_PRICE_TAX = '#saledata.price.tax'
+
+SHEET_SALEDATA_SHIFT = '#hr.shift'

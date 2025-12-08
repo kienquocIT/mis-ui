@@ -1458,6 +1458,18 @@ $(async function () {
             return check;
         };
 
+        // init current employee
+        loadInitInherit() {
+            if ($('#delivery_form').attr('data-method').toLowerCase() === 'put') {
+                let dataStr = $('#employee_current').text();
+                if (dataStr) {
+                    let data = JSON.parse(dataStr);
+                    FormElementControl.loadInitS2($('#selectEmployeeInherit'), [data]);
+                }
+            }
+            return true;
+        };
+
         static modalLogistics(customerID) {
             $.fn.callAjax2({
                 url: $url.attr('data-customer-detail').format_url_with_uuid(customerID),
@@ -1681,7 +1693,7 @@ $(async function () {
         })
             .then((req) => {
                 const res = $.fn.switcherResp(req);
-                if ($('#delivery_form').attr('data-method') === 'GET') {
+                if ($('#delivery_form').attr('data-method').toLowerCase() === 'get') {
                     new PrintTinymceControl().render('1373e903-909c-4b77-9957-8bcf97e8d6d3', res, false);
                     PrintTinymceControl.open_modal();
                 }
@@ -1779,8 +1791,10 @@ $(async function () {
                     }
                 }
                 if (res?.employee_inherit){
-                    $('#selectEmployeeInherit').initSelect2().val(res.employee_inherit.id).trigger('change')
+                    // $('#selectEmployeeInherit').initSelect2().val(res.employee_inherit.id).trigger('change')
+                    FormElementControl.loadInitS2($('#selectEmployeeInherit'), [res?.['employee_inherit']]);
                 }
+                prodTable.loadInitInherit();
                 $('#textareaRemarks').val(res.remarks)
 
                 // reset data stock

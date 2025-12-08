@@ -1505,6 +1505,7 @@ class AdvancePaymentHandler {
         frm.dataForm['money_gave'] = pageElements.$money_gave.prop('checked')
 
         let ap_item_list = []
+        let expense_items = [];
         pageElements.$table_line_detail.find('tbody tr').each(function () {
             let row = $(this);
             let expense_description = row.find('.expense-des-input').val();
@@ -1532,9 +1533,16 @@ class AdvancePaymentHandler {
                     'expense_after_tax_price': expense_after_tax_price,
                     'expense_tax_price': expense_subtotal_price * tax_rate / 100
                 })
+                if (expense_type) {
+                    let dataExpense = SelectDDControl.get_data_from_idx(row.find('.expense-type-select-box'), expense_type);
+                    expense_items.push({
+                        'expense_type': dataExpense,
+                    })
+                }
             }
         })
         frm.dataForm['ap_item_list'] = ap_item_list
+        frm.dataForm['expense_items'] = expense_items;
 
         frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
 

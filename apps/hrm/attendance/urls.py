@@ -3,12 +3,13 @@ from django.urls import path
 from apps.hrm.attendance.views import ShiftMasterDataList, ShiftMasterDataListAPI, ShiftMasterDataDetailAPI, \
     HRMAttendanceList, ShiftAssignmentList, ShiftAssignmentListAPI, AttendanceListAPI, DeviceIntegrateEmployeeList, \
     DeviceIntegrateEmployeeListAPI, DeviceIntegrateEmployeeDetailAPI, AttendanceDeviceList, AttendanceDeviceListAPI, \
-    AttendanceDeviceDetailAPI
+    AttendanceDeviceDetailAPI, ShiftImportAPI
 
 urlpatterns = [
     path('shift/list', ShiftMasterDataList.as_view(), name='ShiftMasterDataList'),
     path('shift/list/api', ShiftMasterDataListAPI.as_view(), name='ShiftMasterDataListAPI'),
     path('shift/list/api/<str:pk>', ShiftMasterDataDetailAPI.as_view(), name='ShiftMasterDataDetailAPI'),
+    path('shift/import/api', ShiftImportAPI.as_view(), name='ShiftImportAPI'),
 
     # shift assignment
     path('shift-assignment/list', ShiftAssignmentList.as_view(), name='ShiftAssignmentList'),

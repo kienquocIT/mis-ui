@@ -917,8 +917,12 @@ class LeaseOrderLoadDataHandle {
         let TotalOrder = LeaseOrderDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-order').length;
         let TotalGroup = LeaseOrderDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-group').length;
         let order = (TotalOrder - TotalGroup) + 1;
+        let dataUOM = {};
         let dataUOMTime = {};
         let dataTax = {};
+        if (data?.['sale_information']?.['default_uom']?.['id']) {
+            dataUOM = data?.['sale_information']?.['default_uom'];
+        }
         if (data?.['sale_information']?.['default_uom']?.['id']) {
             dataUOMTime = data?.['sale_information']?.['default_uom'];
         }
@@ -931,6 +935,7 @@ class LeaseOrderLoadDataHandle {
             "product_data": data,
             "asset_type": 1,
 
+            "uom_data": dataUOM,
             "uom_time_id": dataUOMTime?.['id'],
             "uom_time_data": dataUOMTime,
             "tax_id": dataTax?.['id'],
@@ -1021,7 +1026,7 @@ class LeaseOrderLoadDataHandle {
                             }
                         }
                     }
-                    FormElementControl.loadInitS2($(uomEle), uomData);
+                    // FormElementControl.loadInitS2($(uomEle), uomData);
                     $(offsetDataEle).val(JSON.stringify(offsetData));
                     $(quantityEle).val(quantity);
                 }
@@ -1062,7 +1067,7 @@ class LeaseOrderLoadDataHandle {
                             }
                         }
                     }
-                    FormElementControl.loadInitS2($(uomEle), uomData);
+                    // FormElementControl.loadInitS2($(uomEle), uomData);
                     $(toolDataEle).val(JSON.stringify(toolData));
                     $(quantityEle).val(quantity);
                 }
@@ -1102,7 +1107,7 @@ class LeaseOrderLoadDataHandle {
                             }
                         }
                     }
-                    FormElementControl.loadInitS2($(uomEle), uomData);
+                    // FormElementControl.loadInitS2($(uomEle), uomData);
                     $(assetDataEle).val(JSON.stringify(assetData));
                     $(quantityEle).val(assetData.length);
                 }

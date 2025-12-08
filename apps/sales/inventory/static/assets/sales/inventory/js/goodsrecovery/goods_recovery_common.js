@@ -768,7 +768,7 @@ class RecoveryDataTableHandle {
                     render: (data, type, row) => {
                         return `<div class="input-group">
                                     <input type="text" class="form-control table-row-quantity-time text-black valid-num" value="${row?.['product_quantity_time'] ? row?.['product_quantity_time'] : "0"}" readonly>
-                                    <span class="input-group-text">${row?.['uom_time_data']?.['title'] ? row?.['uom_time_data']?.['title'] : ''}</span>
+                                    <span class="input-group-text">${RecoveryLoadDataHandle.transEle.attr('data-month')}</span>
                                 </div>
                                 <div hidden>
                                         <select 
@@ -825,7 +825,7 @@ class RecoveryDataTableHandle {
                                                 data-zone="${dataZone}"
                                                 ${readonly}
                                             >
-                                            <span class="input-group-text">${row?.['uom_time_data']?.['title'] ? row?.['uom_time_data']?.['title'] : ''}</span>
+                                            <span class="input-group-text">${RecoveryLoadDataHandle.transEle.attr('data-month')}</span>
                                         </div>
                                         <button
                                             type="button"
@@ -1014,7 +1014,7 @@ class RecoveryDataTableHandle {
             searching: false,
             autoWidth: true,
             scrollX: true,
-            scrollY: "200px",
+            scrollY: "80vh",
             columns: [
                 {
                     targets: 0,

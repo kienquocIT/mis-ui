@@ -18,37 +18,45 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #
-msgid "Special rule"
-msgstr "Quy tắc đặt biệt"
+msgid "Journal Entry report"
+msgstr "Báo cáo bút toán"
 
 #
-msgid "Add special rule"
-msgstr "Thêm quy tắc đặt biệt"
+msgid "General Ledger report"
+msgstr "Báo cáo sổ cái"
 
 #
-msgid "standard"
-msgstr "tiêu chuẩn"
+msgid "Apply filter"
+msgstr "Áp dụng lọc"
 
 #
-msgid "Configure guide"
-msgstr "Hướng dẫn cấu hình"
+msgid "JE Code"
+msgstr "Mã bút toán"
 
 #
-msgid "Cash"
-msgstr "Tiền mặt"
+msgid "Total Entries"
+msgstr "TỔNG SỐ CHỨNG TỪ"
 
 #
-msgid "Bank Deposit"
-msgstr "Ngân hàng"
+msgid "Total Debit"
+msgstr "TỔNG NỢ"
 
 #
-msgid "Advance Payment"
-msgstr "Tạm ứng"
+msgid "Total Credit"
+msgstr "TỔNG CÓ"
 
 #
-msgid "Payable"
-msgstr "Phải trả"
+msgid "Opening Balance"
+msgstr "SỐ DƯ ĐẦU KỲ"
 
 #
-msgid "Advance Salary"
-msgstr "Ứng trước lương"
+msgid "Period Debit"
+msgstr "PHÁT SINH NỢ"
+
+#
+msgid "Period Credit"
+msgstr "PHÁT SINH CÓ"
+
+#
+msgid "Closing Balance"
+msgstr "SỐ DƯ CUỐI KỲ"

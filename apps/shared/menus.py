@@ -1083,7 +1083,19 @@ class MenusFinancials:
         name='Payment plan', code='menu_payment_plan_list', view_name='PaymentPlanList',
         icon='<i class="fas fa-money-check-alt"></i>',
     )
-
+    REPORT = MenuCommon(
+        name='Report', code='menu_accounting_report', view_name='', icon='<i class="fas fa-cog"></i>',
+        child=[
+            MenuCommon(
+                name='Journal Entry report', code='menu_report_journal_entry', view_name='ReportJournalEntryList',
+                icon='<i class="fas bi bi-journal-text"></i>',
+            ),
+            MenuCommon(
+                name='General Ledger report', code='menu_report_general_ledger', view_name='ReportGeneralLedgerList',
+                icon='<i class="fas fa-book-open"></i>',
+            ),
+        ],
+    )
 
 
 # Space Setup
@@ -1192,6 +1204,7 @@ class SpaceItem:
                 MenusFinancials.JOURNAL_ENTRY,
                 MenusFinancials.RECONCILIATION,
                 MenusFinancials.PAYMENT_PLAN,
+                MenusFinancials.REPORT
             ]
         ),
         'forms': SpaceCommon(

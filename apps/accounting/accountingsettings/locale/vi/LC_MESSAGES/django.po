@@ -76,3 +76,103 @@ msgstr "Xem quá trình tự động"
 #
 msgid "Auto JE configure guide"
 msgstr "Hướng dẫn cấu hình bút toán tự động"
+
+#
+msgid "Money"
+msgstr "Tiền tệ"
+
+#
+msgid "Customer Receivable"
+msgstr "Phải thu khách hàng"
+
+#
+msgid "Supplier Payable"
+msgstr "Phải trả nhà cung cấp"
+
+#
+msgid "Employee Payable"
+msgstr "Công nợ nhân viên"
+
+#
+msgid "Fixed Assets"
+msgstr "Tài sản cố định"
+
+#
+msgid "Accounts"
+msgstr "Tài khoản"
+
+#
+msgid "VND Exchange"
+msgstr "Quy đổi VND"
+
+#
+msgid "Payable Type"
+msgstr "Loại công nợ"
+
+#
+msgid "Select Bank Account"
+msgstr "Chọn loại ngân hàng"
+
+#
+msgid "Account Number"
+msgstr "Số tài khoản"
+
+#
+msgid "Bank Name"
+msgstr "Tên ngân hàng"
+
+#
+msgid "Select Customer"
+msgstr "Chọn khách hàng"
+
+#
+msgid "Customer Name"
+msgstr "Tên khách hàng"
+
+#
+msgid "Receivable Detail"
+msgstr "Chi tiết phải thu"
+
+#
+msgid "Prepaid customer (Prepayment - No Invoice)"
+msgstr "Khách hàng trả tiền trước (Prepayment - không có hóa đơn)"
+
+#
+msgid "Unpaid Amount (VND)"
+msgstr "Giá Trị Chưa Thanh Toán (VND)"
+
+#
+msgid "Invoice Date"
+msgstr "Ngày hóa đơn"
+
+#
+msgid "Expected Payment Date"
+msgstr "Ngày thanh toán dự kiến"
+
+#
+msgid "Check here if the customer pays in advance without an invoice yet"
+msgstr "Tick vòa đây nếu khách hàng trả tiền trước mà chưa có hóa đơn"
+
+#
+msgid "Advanced Payment (VND)"
+msgstr "Số tiền ứng trước (VND)"
+
+#
+msgid "Select Supplier"
+msgstr "Chọn nhà cung cấp"
+
+#
+msgid "Payable Detail"
+msgstr "Chi tiết phải trả"
+
+#
+msgid "Advance payment to supplier (Prepayment - No Invoice)"
+msgstr "Ứng tiền trước cho nhà cung cấp (Prepayment - không có hóa đơn)"
+
+#
+msgid "Select Employee"
+msgstr "Chọn nhân viên"
+
+#
+msgid "Select period"
+msgstr "Chọn giai đoạn"

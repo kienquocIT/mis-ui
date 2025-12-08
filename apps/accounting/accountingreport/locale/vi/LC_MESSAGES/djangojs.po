@@ -20,35 +20,3 @@ msgstr ""
 #
 msgid "Special rule"
 msgstr "Quy tắc đặt biệt"
-
-#
-msgid "Add special rule"
-msgstr "Thêm quy tắc đặt biệt"
-
-#
-msgid "standard"
-msgstr "tiêu chuẩn"
-
-#
-msgid "Configure guide"
-msgstr "Hướng dẫn cấu hình"
-
-#
-msgid "Cash"
-msgstr "Tiền mặt"
-
-#
-msgid "Bank Deposit"
-msgstr "Ngân hàng"
-
-#
-msgid "Advance Payment"
-msgstr "Tạm ứng"
-
-#
-msgid "Payable"
-msgstr "Phải trả"
-
-#
-msgid "Advance Salary"
-msgstr "Ứng trước lương"

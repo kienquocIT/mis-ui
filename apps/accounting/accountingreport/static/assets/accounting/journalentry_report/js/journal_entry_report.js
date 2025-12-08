@@ -113,6 +113,18 @@ class JEReportEventHandler {
             let dayEnd = DateTimeControl.formatDateType("DD/MM/YYYY", "YYYY-MM-DD", $('#end_date_filter').val());
             loadJournalEntryReportInfo.loadJournalEntryReportList(dayStart, dayEnd);
         });
+
+        // event when click reset filter button
+        $('#reset_filter').on('click', function() {
+            const today = moment();
+            const firstDayOfMonth = moment().startOf('month');
+            $('#start_date_filter').val(firstDayOfMonth.format('DD/MM/YYYY'));
+            $('#end_date_filter').val(today.format('DD/MM/YYYY'));
+
+            const dayStart = firstDayOfMonth.format('YYYY-MM-DD');
+            const dayEnd = today.format('YYYY-MM-DD');
+            loadJournalEntryReportInfo.loadJournalEntryReportList(dayStart, dayEnd);
+        });
     }
 
 }

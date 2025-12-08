@@ -12407,3 +12407,7 @@ msgstr "Giá trị ước tính"
 #
 msgid "Lead"
 msgstr "Lead"
+
+#
+msgid "Initial balance"
+msgstr "Số dư đầu kỳ"

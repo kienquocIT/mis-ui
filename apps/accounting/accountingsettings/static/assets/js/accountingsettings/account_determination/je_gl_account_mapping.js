@@ -32,7 +32,7 @@ $(document).ready(function() {
                 {
                     className: 'w-20',
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn bflow-mirrow-btn bg-blue-light-4">${row?.['posting_group']?.['code'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-blue-light-5">${row?.['posting_group']?.['code'] || ''}</span>`;
                     }
                 },
                 {
@@ -44,7 +44,7 @@ $(document).ready(function() {
                 {
                     className: 'w-20',
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn bflow-mirrow-btn btn-rounded bg-secondary-light-5">${row?.['role_key'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-secondary-light-5">${row?.['role_key'] || ''}</span>`;
                     }
                 },
                 {

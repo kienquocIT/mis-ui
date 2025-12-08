@@ -179,7 +179,7 @@ class DepreciationControl {
                 let beginMonthEndData = parseInt(lastData?.['begin'].split("/")[1]);
                 let beginYearEndData = parseInt(lastData?.['begin'].split("/")[2]);
 
-                if (endMonth === beginMonthEndData && endYear === beginYearEndData && beginDayEndData < endDay) {
+                if (endMonth === beginMonthEndData && endYear === beginYearEndData && beginDayEndData <= endDay) {
                     let daysOfMonth = DepreciationControl.getDaysOfMonth(lastData?.['begin']);
                     let daysOfFirstData = lastData?.['accumulative_month'] * daysOfMonth;
                     let perDayDepreciation = lastData?.['depreciation_value'] / daysOfFirstData;

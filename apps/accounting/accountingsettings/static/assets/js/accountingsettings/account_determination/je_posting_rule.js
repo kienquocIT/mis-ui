@@ -30,39 +30,33 @@ $(document).ready(function() {
                     render: () => ''
                 },
                 {
-                    className: 'w-10',
+                    className: 'w-20',
                     render: (data, type, row) => {
-                        return `<span>${row?.['document_type_app_code_parsed'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-primary-light-5" title="${row?.['document_type_app_code_parsed'] || ''}">${row?.['document_type_code'] || ''}</span>`;
                     }
                 },
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-primary-light-5">${row?.['document_type_code'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-secondary-light-5" title="${row?.['rule_level_parsed'] || ''}">${row?.['rule_level'] || ''}</span>`;
                     }
                 },
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-secondary-light-5">${row?.['rule_level'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-secondary-light-5" title="${row?.['role_key_parsed'] || ''}">${row?.['role_key'] || ''}</span>`;
                     }
                 },
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-secondary-light-5">${row?.['role_key'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-secondary-light-5" title="${row?.['amount_source_parsed'] || ''}">${row?.['amount_source'] || ''}</span>`;
                     }
                 },
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-secondary-light-5">${row?.['amount_source'] || ''}</span>`;
-                    }
-                },
-                {
-                    className: 'w-10',
-                    render: (data, type, row) => {
-                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-secondary-light-5">${row?.['side'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-secondary-light-5" title="${row?.['side_parsed'] || ''}">${row?.['side'] || ''}</span>`;
                     }
                 },
                 {
@@ -103,12 +97,6 @@ $(document).ready(function() {
             rowGroup: {
                 dataSrc: 'document_type_app_code_parsed'
             },
-            columnDefs: [
-                {
-                    "visible": false,
-                    "targets": [1]
-                }
-            ],
             initComplete: function () {
                 $je_posting_rule_table.find('tbody tr').each(function (index, ele) {
                     if ($(ele).find('.row-account').length) {

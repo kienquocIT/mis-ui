@@ -1450,7 +1450,7 @@ class ProductHandler {
 
         data['volume_id'] = pageElements.$volume.attr('data-id');
         data['weight_id'] = pageElements.$weight.attr('data-id');
-        data['product_types_mapped_list'] = [pageElements.$general_product_type.val()];
+        data['product_types_mapped_list'] = pageElements.$general_product_type.val() ? [pageElements.$general_product_type.val()] : [];
         data['general_product_category'] = pageElements.$general_product_category.val() || null;
         data['general_uom_group'] = pageElements.$general_uom_group.val() || null;
         data['general_manufacturer'] = pageElements.$general_manufacturer.val() || null;

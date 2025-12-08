@@ -30,21 +30,15 @@ $(document).ready(function() {
                     render: () => ''
                 },
                 {
-                    className: 'w-20',
+                    className: 'w-35',
                     render: (data, type, row) => {
-                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-blue-light-5">${row?.['posting_group']?.['code'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-blue-light-5">${row?.['posting_group']?.['code'] || ''}</span> - <span>${row?.['posting_group']?.['title'] || ''}</span>`;
                     }
                 },
                 {
-                    className: 'w-25',
+                    className: 'w-30',
                     render: (data, type, row) => {
-                        return `<span>${row?.['posting_group']?.['title'] || ''}</span>`;
-                    }
-                },
-                {
-                    className: 'w-20',
-                    render: (data, type, row) => {
-                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-secondary-light-5">${row?.['role_key'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-secondary-light-5">${row?.['role_key'] || ''}</span> - <span>${row?.['role_key_parsed'] || ''}</span>`;
                     }
                 },
                 {

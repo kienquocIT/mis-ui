@@ -30,15 +30,9 @@ $(document).ready(function() {
                     render: () => ''
                 },
                 {
-                    className: 'w-20',
+                    className: 'w-65',
                     render: (data, type, row) => {
-                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-blue-light-5">${row?.['code'] || ''}</span>`;
-                    }
-                },
-                {
-                    className: 'w-45',
-                    render: (data, type, row) => {
-                        return `<span>${row?.['title'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-blue-light-5">${row?.['code'] || ''}</span> - <span>${row?.['title'] || ''}</span>`;
                     }
                 },
                 {
@@ -55,6 +49,15 @@ $(document).ready(function() {
                         </div>`;
                     }
                 },
+            ],
+            rowGroup: {
+                dataSrc: 'posting_group_type_parsed'
+            },
+            columnDefs: [
+                {
+                    "visible": false,
+                    "targets": [2]
+                }
             ],
         });
     }

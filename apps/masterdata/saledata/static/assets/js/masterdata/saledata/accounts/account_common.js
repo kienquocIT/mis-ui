@@ -867,6 +867,9 @@ class AccountHandler {
 class AccountEventHandler {
     static InitPageEven() {
         $(document).on('click', '.del-row', function () {
+            if ($(this).closest('table').attr('id') === 'contact-list-table') {
+                pageVariables.current_contact_mapped = []
+            }
             UsualLoadPageFunction.DeleteTableRow(
                 $(this).closest('table'),
                 parseInt($(this).closest('tr').find('td:first-child').text())
@@ -941,7 +944,6 @@ class AccountEventHandler {
             AccountPageFunction.LoadTableSelectContact(contact_mapped_list);
         })
         pageElements.$add_contact_btn.on('click', function () {
-            AccountPageFunction.LoadTableContactMapped()
             let contact_selected = []
             document.querySelectorAll('.selected_contact').forEach(function (element) {
                 if (element.checked) {
@@ -956,13 +958,14 @@ class AccountEventHandler {
                     })
                 }
             })
-
             contact_selected = pageVariables.current_contact_mapped.concat(contact_selected)
+
             if (pageElements.$individual.prop('checked')) {
                 if (contact_selected.length !== 1) {
                     $.fn.notifyB({description: "You can not select more than ONE contact for Individual account."}, 'failure');
                 }
                 else {
+                    AccountPageFunction.LoadTableContactMapped()
                     for (let i = 0; i < contact_selected.length; i++) {
                         contact_selected[i]['is_account_owner'] = true
                         UsualLoadPageFunction.AddTableRow(pageElements.$contact_list_table, contact_selected[i])
@@ -1099,17 +1102,17 @@ class AccountEventHandler {
         })
         pageElements.$save_modal_billing_address.on('click', function () {
             try {
-                let billing_account_name = $('#billing-account-name').val();
+                let billing_account_name = $('#billing-account-name').val() || '';
                 let billing_email = $('#billing-email').val();
-                let billing_tax_code = $('#billing-tax-code').val();
+                let billing_tax_code = $('#billing-tax-code').val() || '';
 
                 let account_address = pageElements.$billing_address_slb.val();
                 if (pageElements.$billing_address_slb.is(':hidden')) {
                     account_address = pageElements.$edit_billing_address.val()
                 }
                 let full_address = '';
-                if (billing_email && billing_tax_code && account_address !== '0') {
-                    full_address = `${billing_account_name}, ${account_address} (email: ${billing_email}, tax code: ${billing_tax_code})`
+                if (billing_email && account_address !== '0') {
+                    full_address = `${billing_account_name}, ${account_address} (${billing_email ? `email: ${billing_email}` : ''}, ${billing_tax_code ? `tax code: ${billing_tax_code}` : ''})`
                     pageElements.$modal_billing_address.modal('hide');
                 } else {
                     $.fn.notifyB({description: "Missing address information!"}, 'failure');

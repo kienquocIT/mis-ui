@@ -27,19 +27,20 @@
     ></script>
     <div id="section-product-list">
         <table id="datatable_product_list" class="table nowrap w-100 mb-5" data-url="{% url "ProductListAPI" %}"
-               data-method="GET" data-url-detail="{% url "ProductDetail" pk=0%}"
-        data-url-product-type="{% url "ProductTypeListAPI" %}"
-        data-url-product-category="{% url "ProductCategoryListAPI" %}">
+               data-method="GET" data-url-detail="{% url "ProductDetail" pk=0 %}"
+               data-url-product-type="{% url "ProductTypeListAPI" %}"
+               data-url-product-category="{% url "ProductCategoryListAPI" %}">
             <thead>
             <tr>
                 <th style="min-width: 50px"></th>
-                <th style="min-width: 120px">{% trans "Code" %}</th>
+                <th style="min-width: 200px">{% trans "Code" %}</th>
                 <th style="min-width: 300px">{% trans "Name" %}</th>
                 <th style="min-width: 120px">{% trans "Product Type" %}</th>
                 <th style="min-width: 120px">{% trans "Product Category" %}</th>
                 <th style="min-width: 100px">{% trans "General Price" %}</th>
+                <th style="min-width: 150px">{% trans "Traceability method" %}</th>
                 <th style="min-width: 100px">{% trans "Stock" %}</th>
-                <th style="min-width: 100px">{% trans "Available" %}</th>
+{#                <th style="min-width: 100px">{% trans "Available" %}</th>#}
             </tr>
             </thead>
         </table>

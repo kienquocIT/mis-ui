@@ -11,6 +11,7 @@ $(document).ready(function () {
         $('#btn-calculate').remove()
     }
     let PERIODIC_CLOSED = false
+    let export_inventory_data_list = []
 
     function LoadItemsSelectBox(ele, data) {
         ele.initSelect2({
@@ -52,7 +53,8 @@ $(document).ready(function () {
     }
     LoadWarehouseSelectBox(warehouses_select_Ele)
 
-    function RenderTableWithParameter(table, data_list=[]) {
+    function RenderTableWithParameter(table, data_list = []) {
+        export_inventory_data_list = data_list
         table.DataTable().clear().destroy()
         table.DataTableDefault({
             styleDom: 'hide-foot',
@@ -89,14 +91,11 @@ $(document).ready(function () {
                                 html += `<span class="ml-1 text-danger small fw-bold sale-order-td" data-so-id="${row?.['order_id'] || ''}">${row?.['order_code']}</span>`
                             }
                             return html
-                        }
-                        else if (row?.['row_type'] === 'log') {
+                        } else if (row?.['row_type'] === 'log') {
                             return `<span class="text-muted">${row?.['system_date']}</span>`
-                        }
-                        else if (row?.['row_type'] === 'open') {
+                        } else if (row?.['row_type'] === 'open') {
                             return `--`
-                        }
-                        else if (row?.['row_type'] === 'wh') {
+                        } else if (row?.['row_type'] === 'wh') {
                             return `<span class="badge badge-sm badge-primary ml-1">${row?.['warehouse_code']}</span>
                                     <span class="warehouse-td text-primary fw-bold wh-of-${row?.['product_id']}">${row?.['warehouse_title']}</span>`
                         }
@@ -107,8 +106,7 @@ $(document).ready(function () {
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'open') {
                             return `<span class="text-center text-secondary">${row?.['ob_label']}</span>`
-                        }
-                        else if (row?.['row_type'] === 'log') {
+                        } else if (row?.['row_type'] === 'log') {
                             return `<span class="text-${row?.['text_color']}">${row?.['trans_title']} ${row?.['trans_code']}</span>`
                         }
                         return ``
@@ -146,15 +144,12 @@ $(document).ready(function () {
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'open') {
                             return `<span class="text-secondary">${row?.['opening_balance_quantity']}</span>`
-                        }
-                        else if (row?.['row_type'] === 'log') {
+                        } else if (row?.['row_type'] === 'log') {
                             return `<span class="text-secondary current-quantity-${row?.['product_id']}" data-stock-type="${row?.['stock_type']}">${row?.['current_quantity']}</span>`
-                        }
-                        else if (row?.['row_type'] === 'prd') {
+                        } else if (row?.['row_type'] === 'prd') {
                             let unique_ele_id = `${row?.['product_id'] || ''}-${row?.['order_id'] || ''}-${row?.['product_lot_number'] || ''}-${row?.['product_serial_number'] || ''}`
                             return `<span class="fw-bold text-primary sum-current-quantity-${unique_ele_id}"></span>`
-                        }
-                        else if (row?.['row_type'] === 'wh') {
+                        } else if (row?.['row_type'] === 'wh') {
                             let unique_ele_id = `${row?.['product_id'] || ''}-${row?.['order_id'] || ''}-${row?.['product_lot_number'] || ''}-${row?.['product_serial_number'] || ''}`
                             return `<span class="fw-bold text-secondary sum-current-quantity-of-wh-${unique_ele_id}">${row?.['ending_balance_quantity']}</span>`
                         }
@@ -166,15 +161,12 @@ $(document).ready(function () {
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'open') {
                             return `<span class="text-secondary mask-money" data-init-money="${row?.['opening_balance_cost']}"></span>`
-                        }
-                        else if (row?.['row_type'] === 'log') {
+                        } else if (row?.['row_type'] === 'log') {
                             return `<span class="text-secondary mask-money current-cost-${row?.['product_id']}" data-stock-type="${row?.['stock_type']}" data-init-money="${row?.['current_cost']}"></span>`
-                        }
-                        else if (row?.['row_type'] === 'prd') {
+                        } else if (row?.['row_type'] === 'prd') {
                             let unique_ele_id = `${row?.['product_id'] || ''}-${row?.['order_id'] || ''}-${row?.['product_lot_number'] || ''}-${row?.['product_serial_number'] || ''}`
                             return `<span class="fw-bold text-primary mask-money sum-current-cost-${unique_ele_id}" data-init-money=""></span>`
-                        }
-                        else if (row?.['row_type'] === 'wh') {
+                        } else if (row?.['row_type'] === 'wh') {
                             let unique_ele_id = `${row?.['product_id'] || ''}-${row?.['order_id'] || ''}-${row?.['product_lot_number'] || ''}-${row?.['product_serial_number'] || ''}`
                             return `<span class="fw-bold text-secondary mask-money sum-current-cost-of-wh-${unique_ele_id}" data-init-money="${row?.['ending_balance_cost']}"></span>`
                         }
@@ -186,15 +178,12 @@ $(document).ready(function () {
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'open') {
                             return `<span class="text-secondary mask-money" data-init-money="${row?.['opening_balance_value']}"></span>`
-                        }
-                        else if (row?.['row_type'] === 'log') {
+                        } else if (row?.['row_type'] === 'log') {
                             return `<span class="text-secondary mask-money current-value-${row?.['product_id']}" data-stock-type="${row?.['stock_type']}" data-init-money="${row?.['current_value']}"></span>`
-                        }
-                        else if (row?.['row_type'] === 'prd') {
+                        } else if (row?.['row_type'] === 'prd') {
                             let unique_ele_id = `${row?.['product_id'] || ''}-${row?.['order_id'] || ''}-${row?.['product_lot_number'] || ''}-${row?.['product_serial_number'] || ''}`
                             return `<span class="fw-bold text-primary mask-money sum-current-value-${unique_ele_id}" data-init-money=""></span>`
-                        }
-                        else if (row?.['row_type'] === 'wh') {
+                        } else if (row?.['row_type'] === 'wh') {
                             let unique_ele_id = `${row?.['product_id'] || ''}-${row?.['order_id'] || ''}-${row?.['product_lot_number'] || ''}-${row?.['product_serial_number'] || ''}`
                             return `<span class="fw-bold text-secondary mask-money sum-current-value-of-wh-${unique_ele_id}" data-init-money="${row?.['ending_balance_value']}"></span>`
                         }
@@ -202,7 +191,7 @@ $(document).ready(function () {
                     }
                 },
             ],
-            initComplete: function(settings, json) {
+            initComplete: function (settings, json) {
                 table.find('.product-td').each(function () {
                     $(this).closest('tr').addClass('bg-secondary-light-5')
                     $(this).closest('tr').addClass('fixed-row')
@@ -229,7 +218,7 @@ $(document).ready(function () {
                     })
 
                     table.find(`.sum-current-quantity-${unique_ele_id}`).text(sum_current_quantity)
-                    table.find(`.sum-current-cost-${unique_ele_id}`).attr('data-init-money', sum_current_quantity !== 0 ? sum_current_value/sum_current_quantity : 0)
+                    table.find(`.sum-current-cost-${unique_ele_id}`).attr('data-init-money', sum_current_quantity !== 0 ? sum_current_value / sum_current_quantity : 0)
                     table.find(`.sum-current-value-${unique_ele_id}`).attr('data-init-money', sum_current_value)
                 })
 
@@ -263,6 +252,170 @@ $(document).ready(function () {
                 }
             },
         });
+    }
+
+    function ExportInventory() {
+        let parseData = [];
+        let rowStyles = [];
+        let wh_list = export_inventory_data_list.filter(item => item.row_type === "wh");
+
+        export_inventory_data_list.forEach(item => {
+            if (item.row_type === "prd") {
+                let prd_quantity = 0;
+                let prd_cost = 0;
+                let prd_value = 0
+
+                wh_list.forEach(wh => {
+                    if (wh.product_id === item.product_id && wh.product_serial_number === item.product_serial_number) {
+                        prd_quantity += wh.ending_balance_quantity
+                        prd_cost += wh.ending_balance_cost
+                        prd_value += wh.ending_balance_value
+                    }
+                })
+
+                parseData.push({
+                    "Ngày": `${item.product_title}${item.product_serial_number ? `\nSerial đích danh: ${item.product_serial_number}` : '' } \nĐV lưu kho: ${item.product_uom}`,
+                    "Thông Tin Giao Dịch": "",
+                    "SL Nhập - Xuất": "",
+                    "Giá Nhập - Xuất": "",
+                    "Giá Trị Nhập - Xuất": "",
+                    "SL Tích Lũy": prd_quantity || 0,
+                    "Giá Vốn Tích Lũy": prd_cost || 0,
+                    "Giá Trị Tích Lũy": prd_value || 0,
+                });
+
+                rowStyles.push({"prd": {color: "black", background: "e0eeff"}});
+            }
+
+            if (item.row_type === "wh") {
+                parseData.push({
+                    "Ngày": item.warehouse_title,
+                    "Thông Tin Giao Dịch": "",
+                    "SL Nhập - Xuất": "",
+                    "Giá Nhập - Xuất": "",
+                    "Giá Trị Nhập - Xuất": "",
+                    "SL Tích Lũy": item.ending_balance_quantity || 0,
+                    "Giá Vốn Tích Lũy": item.ending_balance_cost || 0,
+                    "Giá Trị Tích Lũy": item.ending_balance_value || 0,
+                });
+
+                rowStyles.push({"wh": {color: "black", background: "F3F3F3"}});
+            }
+
+            if (item.row_type === "open") {
+                parseData.push({
+                    "Ngày": "---",
+                    "Thông Tin Giao Dịch": item.ob_label || '',
+                    "SL Nhập - Xuất": "",
+                    "Giá Nhập - Xuất": "",
+                    "Giá Trị Nhập - Xuất": "",
+                    "SL Tích Lũy": item.current_quantity || 0,
+                    "Giá Vốn Tích Lũy": item.current_cost || 0,
+                    "Giá Trị Tích Lũy": item.current_value || 0,
+                });
+
+                rowStyles.push("open");
+            }
+
+            if (item.row_type === "log") {
+                parseData.push({
+                    "Ngày": item.system_date,
+                    "Thông Tin Giao Dịch": `${item.trans_title || ''} ${item.trans_code || ''}`,
+                    "SL Nhập - Xuất": item.quantity || 0,
+                    "Giá Nhập - Xuất": item.cost || 0,
+                    "Giá Trị Nhập - Xuất": item.value || 0,
+                    "SL Tích Lũy": item.current_quantity || 0,
+                    "Giá Vốn Tích Lũy": item.current_cost || 0,
+                    "Giá Trị Tích Lũy": item.current_value || 0,
+                });
+
+                let color = "000000"
+
+                if (item.text_color === "primary")
+                    color = "4682A9"
+                if (item.text_color === "green")
+                    color = "628141"
+                if (item.text_color === "blue")
+                    color = "234C6A"
+                if (item.text_color === "purple")
+                    color = "8F0177"
+                if (item.text_color === "orange")
+                    color = "CC561E"
+                if (item.text_color === "danger")
+                    color = "CF0F0F"
+                if (item.text_color === "muted")
+                    color = "E3E3E3"
+
+                rowStyles.push({"log": {color: color, background: "FFFFFF"}});
+            }
+
+        });
+
+        if (!parseData || parseData.length === 0) {
+            alert("Không có dữ liệu để xuất!");
+            return;
+        }
+
+        const worksheet = XLSX.utils.json_to_sheet(parseData);
+
+        Object.keys(worksheet).forEach(cell => {
+            if (cell.startsWith("A") && worksheet[cell].v && worksheet[cell].v.includes("\n")) {
+                if (!worksheet[cell].s) worksheet[cell].s = {};
+                worksheet[cell].s.alignment = {wrapText: true};
+            }
+        });
+
+        // Style
+        const range = XLSX.utils.decode_range(worksheet["!ref"]);
+
+        for (let r = range.s.r + 1; r <= range.e.r; r++) {
+
+            const styleType = rowStyles[r - 1];
+            if (!styleType || typeof styleType !== "object") continue;
+
+            const type = Object.keys(styleType)[0];
+            const style = styleType[type];
+
+            const textColor = (style.color || "000000").replace("#", "");
+            const bgColor = (style.background || "FFFFFF").replace("#", "");
+
+            for (let c = range.s.c; c <= range.e.c; c++) {
+                const cellAddr = XLSX.utils.encode_cell({r, c});
+                const cell = worksheet[cellAddr];
+                if (!cell) continue;
+
+                cell.s = {
+                    fill: {
+                        fgColor: {rgb: bgColor}
+                    },
+                    font: {
+                        color: {rgb: textColor},
+                        bold: true
+                    },
+                    alignment: {
+                        vertical: "center",
+                        wrapText: true
+                    }
+                };
+            }
+        }
+
+        const colWidths = Object.keys(parseData[0]).map(key => {
+            const maxLength = Math.max(
+                key.length,
+                ...parseData.map(row => String(row[key] || "").length)
+            );
+            return {wch: maxLength + 2};
+        });
+
+        worksheet["!cols"] = colWidths;
+
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Inventory Report");
+
+        const now = new Date();
+        const timestamp = now.toISOString().replace(/[:.]/g, "_");
+        XLSX.writeFile(workbook, `inventory_${timestamp}.xlsx`);
     }
 
     $('#btn-view').on('click', function () {
@@ -360,7 +513,7 @@ $(document).ready(function () {
                                         if (activity?.['trans_title'] === 'Goods transfer (out)') {
                                             text_color = 'purple'
                                         }
-                                        if (activity?.['trans_title'] === 'Balance init input')  {
+                                        if (activity?.['trans_title'] === 'Balance init input') {
                                             text_color = 'muted'
                                         }
                                         let trans_title_sub = {
@@ -396,8 +549,7 @@ $(document).ready(function () {
                                         })
                                     }
                                 }
-                            }
-                            else {
+                            } else {
                                 table_inventory_report_data.push({
                                     'row_type': 'wh',
                                     'product_id': item?.['product']?.['id'] || '',
@@ -445,8 +597,8 @@ $(document).ready(function () {
                                         text_color = 'orange'
                                     }
                                     if (activity?.['trans_title'] === 'Goods transfer (out)') {
-                                            text_color = 'purple'
-                                        }
+                                        text_color = 'purple'
+                                    }
                                     if (activity?.['trans_title'] === 'Balance init input') {
                                         text_color = 'muted'
                                     }
@@ -519,8 +671,7 @@ $(document).ready(function () {
                         500
                     )
                 })
-        }
-        else {
+        } else {
             $.fn.notifyB({"description": 'No sub period selected.', "timeout": 3500}, 'warning')
         }
     })
@@ -621,7 +772,7 @@ $(document).ready(function () {
                                         if (activity?.['trans_title'] === 'Goods transfer (out)') {
                                             text_color = 'purple'
                                         }
-                                        if (activity?.['trans_title'] === 'Balance init input')  {
+                                        if (activity?.['trans_title'] === 'Balance init input') {
                                             text_color = 'muted'
                                         }
                                         let trans_title_sub = {
@@ -657,8 +808,7 @@ $(document).ready(function () {
                                         })
                                     }
                                 }
-                            }
-                            else {
+                            } else {
                                 table_inventory_report_data.push({
                                     'row_type': 'wh',
                                     'product_id': item?.['product']?.['id'] || '',
@@ -706,8 +856,8 @@ $(document).ready(function () {
                                         text_color = 'orange'
                                     }
                                     if (activity?.['trans_title'] === 'Goods transfer (out)') {
-                                            text_color = 'purple'
-                                        }
+                                        text_color = 'purple'
+                                    }
                                     if (activity?.['trans_title'] === 'Balance init input') {
                                         text_color = 'muted'
                                     }
@@ -780,8 +930,7 @@ $(document).ready(function () {
                         500
                     )
                 })
-        }
-        else {
+        } else {
             $.fn.notifyB({"description": 'No sub period selected.', "timeout": 3500}, 'warning')
         }
     })
@@ -1222,12 +1371,15 @@ $(document).ready(function () {
                                 500
                             )
                         })
-                }
-                else {
+                } else {
                     $.fn.notifyB({"description": 'No sub period selected.', "timeout": 3500}, 'warning')
                 }
             }
         })
+    })
+
+    $('#btn-export-to-excel').on('click', function () {
+        ExportInventory()
     })
 
     $(document).on("click", '#btn-filter', function () {

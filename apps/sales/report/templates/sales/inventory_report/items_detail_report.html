@@ -55,12 +55,17 @@
     ></script>
 
     <div class="row">
-        <div class="col-12">
+        <div class="col-6">
             <button id="btn-filter" class="btn btn-sm border-secondary bg-secondary-light-5 text-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFilter">
                 <i class="fas fa-sliders-h"></i>&nbsp;{% trans 'Filter' %}
             </button>
             <button type="button" class="btn btn-sm border-success bg-success-light-5 text-success" id="btn-refresh">
                 <i class="fa-solid fa-rotate"></i>&nbsp;{% trans 'Refresh' %}
+            </button>
+        </div>
+        <div class="col-6 text-right">
+            <button type="button" class="btn btn-sm border-secondary bg-secondary text-white" id="btn-export-to-excel">
+                <i class="fa-solid fa-file-excel"></i>&nbsp;{% trans 'Export to Excel' %}
             </button>
         </div>
     </div>
@@ -137,6 +142,8 @@
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+{#    <script src="{% static 'vendors/xlsx/dist/xlsx.full.min.js' %}"></script>#}
+    <script src="{% static 'vendors/xlsx/dist/xlsx-js-style.full.min.js' %}"></script>
 
     {#    phải để theo thứ tự này để load dữ liệu báo cáo mặc định#}
     <script src="{% static 'assets/js/periods_group.js' %}"></script>

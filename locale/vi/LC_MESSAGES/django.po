@@ -12415,3 +12415,7 @@ msgstr "Số dư đầu kỳ"
 #
 msgid "Report"
 msgstr "Báo cáo"
+
+#
+msgid "Quantity offset"
+msgstr "SL đối ứng"

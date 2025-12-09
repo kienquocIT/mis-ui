@@ -4077,6 +4077,20 @@ class LeaseOrderDataTableHandle {
                     targets: 2,
                     width: '8%',
                     render: (data, type, row) => {
+                        let dataZone = "lease_products_data";
+                        return `<select 
+                                    class="form-select table-row-uom"
+                                    data-zone="${dataZone}"
+                                    required
+                                    readonly
+                                 >
+                                </select>`;
+                    },
+                },
+                {
+                    targets: 3,
+                    width: '8%',
+                    render: (data, type, row) => {
                         return `<select 
                                     class="form-select table-row-asset-type"
                                     required
@@ -4085,7 +4099,7 @@ class LeaseOrderDataTableHandle {
                     }
                 },
                 {
-                    targets: 3,
+                    targets: 4,
                     width: '15%',
                     render: (data, type, row) => {
                         let dataZone = "lease_products_data";
@@ -4128,20 +4142,6 @@ class LeaseOrderDataTableHandle {
                                     <input type="text" class="form-control table-row-tool-data hidden">
                                 </div>`;
                     }
-                },
-                {
-                    targets: 4,
-                    width: '8%',
-                    render: (data, type, row) => {
-                        let dataZone = "lease_products_data";
-                        return `<select 
-                                    class="form-select table-row-uom"
-                                    data-zone="${dataZone}"
-                                    required
-                                    readonly
-                                 >
-                                </select>`;
-                    },
                 },
                 {
                     targets: 5,
@@ -6890,7 +6890,8 @@ class LeaseOrderCalculateCaseHandle {
         }
         let tax = 0;
         let discount = 0;
-        let subtotal = (price * quantity);
+        // let subtotal = (price * quantity);
+        let subtotal = price;
         let eleQuantityTime = row.querySelector('.table-row-quantity-time');
         if (eleQuantityTime) {
             if (eleQuantityTime.value) {
@@ -6898,7 +6899,8 @@ class LeaseOrderCalculateCaseHandle {
             } else if (!eleQuantityTime.value || eleQuantityTime.value === "0") {
                 quantityTime = 0;
             }
-            subtotal = (price * quantity * quantityTime);
+            // subtotal = (price * quantity * quantityTime);
+            subtotal = price * quantityTime;
         }
         let subtotalPlus = 0;
         let eleTax = row.querySelector('.table-row-tax');

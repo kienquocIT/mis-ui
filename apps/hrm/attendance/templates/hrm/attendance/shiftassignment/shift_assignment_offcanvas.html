@@ -1,5 +1,34 @@
 {% load i18n %}
 
+<div class="offcanvas offcanvas-end" tabindex="-1" id="configShiftAssignmentCanvas" aria-labelledby="configShiftAssignmentCanvas">
+    <div class="modal-header">
+        <h5><b>{% trans 'Shift assignment config' %}</b></h5>
+        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+    </div>
+    <div class="offcanvas-body" id="canvas_body_shift">
+        <div data-simplebar class="nicescroll-bar">
+            <div class="drawer-content-wrap">
+                <div class="form-group">
+                    <label class="form-label" for="box_employee_config">{% trans 'Employee allowed to config' %}</label>
+                    <select
+                            class="form-select"
+                            id="box_employee_config"
+                            data-url="{% url "EmployeeListAllAPI" %}"
+                            data-method="GET"
+                            data-keyResp="employee_list"
+                            data-keyText="full_name"
+                            multiple
+                    ></select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas">{% trans 'Close' %}</button>
+        <button type="button" class="btn btn-primary" id="save_config" data-bs-dismiss="offcanvas">{% trans 'Save' %}</button>
+    </div>
+</div>
+
 <div class="offcanvas offcanvas-end" tabindex="-1" id="shiftCanvas" aria-labelledby="shiftCanvas">
     <div class="modal-header">
         <h5><b>{% trans 'Shift detail' %}</b></h5>

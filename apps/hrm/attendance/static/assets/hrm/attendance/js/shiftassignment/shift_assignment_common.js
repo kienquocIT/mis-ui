@@ -1,5 +1,9 @@
 class ShiftAssignHandle {
     static $form = $('#frm_shift_assignment');
+    static $configEle = $('#config_shift_assignment');
+    static $configCanvasEle = $('#configShiftAssignmentCanvas');
+    static $configEmpEle = $('#box_employee_config');
+    static $configSaveEle = $('#save_config');
     static $wrapperEle = $('#calendarapp-wrapper');
     static $calendarEle = $('#calendar');
     static $canvas = $('#shiftCanvas');
@@ -783,6 +787,22 @@ $(document).ready(function () {
             ShiftAssignHandle.loadPushDtbEmployee(trEle, $(this).attr('data-group-id'));
             trEle.next().removeClass('hidden').find('.child-workflow-group').slideToggle();
         }
+    });
+
+    ShiftAssignHandle.$configEle.on('click', function () {
+        $.fn.callAjax2({
+            url: ShiftAssignHandle.$urlEle.attr('data-api-config'),
+            method: 'GET',
+            isLoading: true,
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    FormElementControl.loadInitS2(ShiftAssignHandle.$configEmpEle, data?.['employees_config'] ? data?.['employees_config'] : []);
+                    ShiftAssignHandle.$configCanvasEle.offcanvas('show');
+                }
+            }
+        )
     });
 
     ShiftAssignHandle.$allCompanyEle.on('click', function () {

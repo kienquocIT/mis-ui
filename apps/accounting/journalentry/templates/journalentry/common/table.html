@@ -1,6 +1,30 @@
 {% load i18n %}
 
 <div class="row mt-5 mb-5">
+    <div class="col-3 col-md-2 col-lg-2">
+        <div class="bflow-mirrow-card">
+            <span class="text-muted">{% trans 'Total debit' %}</span><br>
+            <span id="total-debit" class="text-primary h5 mask-money" data-init-money="0"></span>
+        </div>
+    </div>
+    <div class="col-3 col-md-2 col-lg-2">
+        <div class="bflow-mirrow-card">
+            <span class="text-muted">{% trans 'Total credit' %}</span><br>
+            <span id="total-credit" class="text-primary h5 mask-money" data-init-money="0"></span>
+        </div>
+    </div>
+    <div class="col-3 col-md-2 col-lg-2">
+        <div class="bflow-mirrow-card">
+            <span class="text-muted">{% trans 'State' %}</span><br>
+            <span class="text-success h5" id="status-balanced" hidden>{% trans 'Balanced' %}</span>
+            <span class="text-danger h5" id="status-imbalanced" hidden>{% trans 'Imbalance' %}</span>
+        </div>
+    </div>
+    <div class="col-3 col-md-6 col-lg-6 text-right">
+        <h4><span id="je-state"></span></h4>
+    </div>
+</div>
+<div class="row mt-5 mb-5">
     <div class="col-12">
         <table id="journal-entry-table" class="table nowrap w-100">
             <thead class="bg-secondary-light-5">
@@ -14,25 +38,6 @@
             </tr>
             </thead>
             <tbody></tbody>
-            <tfoot class="bg-success-light-5">
-                <tr>
-                <th style="min-width: 50px; border-left: 4px solid lightgreen"></th>
-                <th style="min-width: 250px"></th>
-                <th style="min-width: 150px">
-                    <span class="text-muted">{% trans 'Total debit' %}</span><br>
-                    <span id="total-debit" class="text-success fw-bold h5 mask-money" data-init-money="0"></span>
-                </th>
-                <th style="min-width: 150px">
-                    <span class="text-muted">{% trans 'Total credit' %}</span><br>
-                    <span id="total-credit" class="text-success fw-bold h5 mask-money" data-init-money="0"></span>
-                </th>
-                <th style="min-width: 150px">
-                    <span class="text-muted">{% trans 'State' %}</span><br>
-                    <span class="text-success fw-bold h6">{% trans 'Balanced' %}</span>
-                </th>
-                <th style="min-width: 250px"></th>
-            </tr>
-            </tfoot>
         </table>
     </div>
 </div>

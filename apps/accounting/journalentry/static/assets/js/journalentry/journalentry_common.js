@@ -97,6 +97,18 @@ class JELoadPage {
                         data: datalist[index]?.['account_data'] || {},
                     });
                 })
+
+                let total_debit = 0
+                let total_credit = 0
+                for (let i = 0; i < datalist.length; i++) {
+                    total_debit += datalist[i]?.['debit'] || 0
+                    total_credit += datalist[i]?.['credit'] || 0
+                }
+                $('#total-debit').attr('data-init-money', total_debit)
+                $('#total-credit').attr('data-init-money', total_credit)
+                $('#status-balanced').prop('hidden', total_debit !== total_credit)
+                $('#status-imbalanced').prop('hidden', total_debit === total_credit)
+                $.fn.initMaskMoney2()
             }
         });
     }

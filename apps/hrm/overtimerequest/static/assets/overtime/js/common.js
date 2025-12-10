@@ -265,24 +265,24 @@ class handleCommon {
                     const shiftData = event?.extendedProps?.shiftData;
 
                     if (this.checked) {
-                        if (!shiftData) {
-                            // nếu không có ca thì cảnh báo
-                            $.fn.notifyB({
-                                'description': $.fn.gettext('The date you selected does not contain a shift assignment')
-                            }, 'failure')
-                            arg.el.classList.add('fc-day-warning', 'pulse-warning');
-                            setTimeout(() => {
-                                arg.el.classList.remove('pulse-warning');
-                            }, 3000);
-                        } else {
-                            let ot_type = {'shift': shiftData, 'ot_type': 0};
-                            if (dayOfWeek === 0 || dayOfWeek === 6) ot_type.ot_type = 1
-                            let oldDate = _this.$DateSelectedElm.data('date') || {}
-                            oldDate[dateStr] = ot_type
-                            _this.$DateSelectedElm.data('date', oldDate)
-                        }
-                    } else {
-                        arg.el.classList.remove('fc-day-warning', 'pulse-warning');
+                        let dataDate = {
+                            'shift': shiftData ? {
+                                'id': shiftData?.id,
+                                'title': shiftData?.title,
+                                'code': shiftData?.code,
+                                'checkin_time': shiftData?.checkin_time,
+                                'checkout_time': shiftData?.checkout_time
+                            } : {},
+                            'ot_type': 0,
+                            'date': dateStr,
+                        };
+                        if (dayOfWeek === 0 || dayOfWeek === 6) dataDate.ot_type = 1
+
+                        let oldDate = _this.$DateSelectedElm.data('date') || {}
+                        oldDate[dateStr] = dataDate
+                        _this.$DateSelectedElm.data('date', oldDate)
+                    }
+                    else {
                         let crtDate = _this.$DateSelectedElm.data('date') || {}
                         if (crtDate?.[dateStr]) delete crtDate[dateStr]
                         _this.$DateSelectedElm.data('date', crtDate)
@@ -302,18 +302,13 @@ class handleCommon {
 
         // render event sau khi page edit/detail call data lần đầu
         const $shiftElm = $('#data_shift')
-        const shift = $shiftElm.data('shift');
-        const dataStartDate = $shiftElm.attr('data-start_date')
-        if (shift){
-            let count = moment($shiftElm.attr('data-end_date')).diff(dataStartDate, 'days') + 1;
-            if (dataStartDate === $shiftElm.attr('data-end_date')) count = 1;
+        const shifts = $shiftElm.data('shift');
+        if (shifts){
             const event = [];
-            for (let i = 1; i <= count; i++) {
-                let dateStr = dataStartDate;
-                dateStr = i > 1 ? moment(dateStr).add(i - 1, 'days').format('YYYY-MM-DD') : dateStr
+            for (let shift of shifts) {
                 event.push({
                     title: shift.title,
-                    start: dateStr,
+                    start: shift.date,
                     extendedProps: {
                         shiftData: shift,
                         toHtml: 'convert'
@@ -376,6 +371,7 @@ function timeToMinutes(time) {
 }
 
 function isTimeInRange(checkTime, startTime, endTime) {
+
     const checkStart = timeToMinutes(checkTime.start_time);
     const checkEnd = timeToMinutes(checkTime.end_time);
     const start = timeToMinutes(startTime);
@@ -396,29 +392,12 @@ function isTimeInRange(checkTime, startTime, endTime) {
         (checkStart >= end && checkEnd > end && checkEnd <= 1439)) {
         return 0;
     }
-
     return 2;
-}
-
-function hasWeekendInRange(startDate, endDate) {
-    // check from/to has in weekend
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const current = new Date(start);
-
-    while (current <= end) {
-        const day = current.getDay();
-        if (day === 0 || day === 6) {
-            return true; // Found weekend
-        }
-        current.setDate(current.getDate() + 1);
-    }
-
-    return false; // No weekend found
 }
 
 $(document).ready(function(){
     const $form = $('#overtime_request_form')
+
     WFRTControl.setWFInitialData('overtimerequest');
 
     SetupFormSubmit.validate($form, {
@@ -434,50 +413,51 @@ $(document).ready(function(){
             },
         },
         errorClass: 'is-invalid cl-red',
-        submitHandler:function (){
-             submitHandlerFunc($form);
-        },
+        submitHandler: submitHandlerFunc,
     });
 
-    function submitHandlerFunc(form) {
-        const frm = new SetupFormSubmit(form);
+    function submitHandlerFunc() {
+        const frm = new SetupFormSubmit($form);
         const data_submit = frm.dataForm
         data_submit.employee_list = []
         data_submit.employee_inherit = $x.fn.getEmployeeCurrent('id')
-        data_submit.ot_type = 0
 
         const _data = $('#date_selected').data('date')
-        let sort = Object.keys(_data).sort(function (a, b) {
-            return new Date(a) - new Date(b);
-        });
-        data_submit.start_date = sort[0];
-        data_submit.end_date = sort[sort.length - 1];
-        data_submit.shift = _data[data_submit.start_date]['shift']['id'];
+        data_submit.date_list = Object.values(_data);
+        if (!data_submit.date_list.length){
+            $.fn.notifyB({'description': $.fn.gettext("Date is missing")}, 'failure')
+            return false
+        }
 
-        if ((_data[data_submit.start_date]['shift']?.['working_day_list']?.['Sat'] ||
-            _data[data_submit.start_date]['shift']?.['working_day_list']?.['Sun']) && hasWeekendInRange(data_submit.start_date, data_submit.end_date))
-            data_submit.ot_type = 1
-        else if (_data[data_submit.start_date]?.['ot_type'] !== undefined)
-            data_submit.ot_type = _data[data_submit.start_date]?.['ot_type']
         const employee_list = $('#employee-checked').data('checked')
         for (let emp in employee_list) {
             data_submit.employee_list.push(emp)
             if (Object.keys(employee_list).length === 1)
                 data_submit.employee_inherit = emp
         }
+        if (!employee_list && employee_list.length === 0){
+            $.fn.notifyB({'description': $.fn.gettext("Employee is missing")}, 'failure')
+            return false
+        }
 
         // valid time register in time of shift
-        const checkIn = _data[data_submit.start_date]['shift']['checkin_time']
-        const checkOut = _data[data_submit.start_date]['shift']['checkout_time']
-        const list_error = {
-            0: '',
-            1: $.fn.gettext('The registered time is less than 30 minutes'),
-            2: $.fn.gettext('The registered time is not valid'),
-        }
-        const code = isTimeInRange(data_submit, checkIn, checkOut)
-        if (code !== 0){
-            $.fn.notifyB({description: list_error[code]}, 'success');
-            return false
+        for (let dataDate of data_submit.date_list){
+            const isShift = dataDate?.shift
+            if (isShift && Object.keys(isShift).length){
+                const checkIn = isShift['checkin_time']
+                const checkOut = isShift['checkout_time']
+                const list_error = {
+                    0: '',
+                    1: `Day` + dataDate.date.moment('DD') + ': ' + $.fn.gettext('The registered time is less than 30 minutes'),
+                    2: `Day` + dataDate.date.moment('DD') + ': ' + $.fn.gettext('The registered time is not valid'),
+                }
+
+                const outOfRegister = isTimeInRange(data_submit, checkIn, checkOut)
+                if (outOfRegister !== 0) {
+                    $.fn.notifyB({description: list_error[outOfRegister]}, 'success');
+                    return false
+                }
+            }
         }
         WFRTControl.callWFSubmitForm(frm);
     }

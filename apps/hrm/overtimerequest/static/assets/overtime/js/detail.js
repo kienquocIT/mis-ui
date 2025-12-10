@@ -6,8 +6,10 @@ function timeToMinutes(time) {
 function runCalendar(data = []) {
     let curYear = moment().format('YYYY');
     let curMonth = moment().format('MM');
-    const startDate = new Date(data.start_date).getTime();
-    const endDate = new Date(data.end_date).getTime();
+    const DateListSet = new Map();
+    data.date_list.forEach(item => {
+        DateListSet.set(item.date, item);
+    });
 
     const calendar = new FullCalendar.Calendar($('#calendar')[0], {
         initialView: 'dayGridMonth',
@@ -22,8 +24,7 @@ function runCalendar(data = []) {
         dayCellDidMount: function (arg) {
             if (arg.el.classList.contains('fc-day-past')) return true
             let dateStr = moment(arg.date).format('YYYY-MM-DD');
-            const dateCrt = new Date(dateStr).getTime()
-            if (dateCrt >= startDate && dateCrt <= endDate){
+            if (DateListSet.has(dateStr)){
                 let checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.className = 'day-checkbox';
@@ -31,7 +32,7 @@ function runCalendar(data = []) {
                 checkbox.style.top = '5px';
                 checkbox.style.right = '5px';
                 checkbox.style.zIndex = '10';
-                checkbox.setAttribute('arial-label', 'day in month')
+                checkbox.setAttribute('arial-label', `day in month ${arg}`)
                 checkbox.id = `day_${arg.date.getTime()}`
 
                 checkbox.setAttribute('data-date', dateStr);
@@ -50,25 +51,20 @@ function runCalendar(data = []) {
 
     calendar.render();
 
-    if (data?.['shift']) {
-        const shift = data?.['shift']
-        let count = moment(data.end_date).diff(data.start_date, 'days') + 1;
-        if (data.start_date === data.end_date) count = 1;
-        const event = [];
-        for (let i = 1; i <= count; i++) {
-            let dateStr = data.start_date;
-            dateStr = i > 1 ? moment(dateStr).add(i - 1, 'days').format('YYYY-MM-DD') : dateStr
+    const event = [];
+    for (let item of data['date_list']) {
+        const shift = item?.['shift']
+        if (shift && Object.keys(shift).length)
             event.push({
                 title: shift.title,
-                start: dateStr,
+                start: item.date,
                 extendedProps: {
                     shiftData: shift,
                     toHtml: 'convert'
                 }
             });
-        }
-        calendar.addEventSource(event);
     }
+    calendar.addEventSource(event);
 };
 
 $(document).ready(function () {
@@ -88,7 +84,7 @@ $(document).ready(function () {
             $('#end_time').val(data.end_time)
             $('#reason').val(data.reason)
 
-            const data_employee = data?.['employee_list_data'].length ? data?.['employee_list_data'] : [data.employee_inherit_data]
+            const data_employee = data?.['employee_list_data'].length ? data?.['employee_list_data'] : [data.employee_inherit]
 
             $('#table_employee').DataTableDefault({
                 data: data_employee,
@@ -115,11 +111,11 @@ $(document).ready(function () {
             })
 
             $('#table_group').DataTableDefault({
-                data: data_employee.sort((a, b) => {
+                data: data_employee ? data_employee.sort((a, b) => {
                     const codeA = a.group?.code?.toUpperCase() || '';
                     const codeB = b.group?.code?.toUpperCase() || '';
                     return codeA.localeCompare(codeB);
-                }),
+                }) : [],
                 ordering: false,
                 info: false,
                 columns: [
@@ -150,8 +146,7 @@ $(document).ready(function () {
                 rowGroup: {
                     dataSrc: 'group.title', // grouped by field group.title
                     startRender: function (rows, groupTitle) {
-                        const id = `${rows.data()[0].group.id}`;
-
+                        const id = `${rows.data()[0]?.group?.id}`;
                         return $(`<div class="d-flex justify-content-between align-items-center">`
                             + `<p><button type="button" class="btn btn-icon btn-rounded mr-1 btn-soft-secondary"><span class="icon"><i class="fas fa-caret-down"></i></span></button>${groupTitle}</p>`
                             + `<div class="form-check form-check-lg"><input type="checkbox" id="id_${id}" aria-label="${groupTitle}" class="form-check-input" checked></div></div>`);

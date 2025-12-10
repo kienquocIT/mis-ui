@@ -16,15 +16,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-
-#
-msgid "The date you selected does not contain a shift assignment"
-msgstr "Ngày bạn chọn không có ca làm việc"
-
 #
 msgid "The registered time is less than 30 minutes"
 msgstr "Số giờ làm việc ít hơn 30 phút"
-
 #
 msgid "The registered time is not valid"
 msgstr "Thời gian đăng ký không hợp lý"
+#
+msgid "Employee is missing"
+msgstr "Nhân viên chưa được chọn"
+#
+msgid "Date is missing"
+msgstr "Ngày chưa được chọn"

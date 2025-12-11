@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
     function loadJEList() {
         if (!$.fn.DataTable.isDataTable('#je-table-list')) {
             let dtb = $('#je-table-list');
@@ -18,6 +18,7 @@ $(document).ready(function() {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
                     dataSrc: function (resp) {
+                        export_inventory_data_list = resp?.['data']?.['journal_entry_list']
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             return resp.data['journal_entry_list'] ? resp.data['journal_entry_list'] : [];
@@ -115,4 +116,53 @@ $(document).ready(function() {
     }
 
     loadJEList();
+
+    let export_inventory_data_list = []
+
+    function ExportExcel() {
+        let parseData = []
+        export_inventory_data_list.forEach(function (data, index) {
+            let dateCreated = '';
+            if (data?.['date_created']) {
+                let d = new Date(data['date_created']);
+                let day = String(d.getDate()).padStart(2, '0');
+                let month = String(d.getMonth() + 1).padStart(2, '0');
+                let year = d.getFullYear();
+                dateCreated = `${day}/${month}/${year}`;
+            }
+
+            parseData.push({
+                "Mã": `${data?.['code'] || ''} - ${data?.['je_state_parsed'] || ''}`,
+                "Giao dịch gốc": `${data?.['original_transaction_parsed']} ${data?.['je_transaction_data']?.['code']}`,
+                "Người tạo": data?.['employee_created']?.['full_name'] || '',
+                "Ngày tạo": dateCreated,
+                "Tổng bên nợ": data?.['total_debit'],
+                "Tổng bên có": data?.['total_credit'],
+                "Trạng thái": data?.['total_debit'] === data?.['total_credit'] ? 'Đã cân bằng' : 'Chưa cân bằng',
+                "TT Hệ thống": data?.['system_auto_create'] ? 'Tạo tự động' : ''
+            })
+        })
+
+        const worksheet = XLSX.utils.json_to_sheet(parseData);
+
+        const colWidths = Object.keys(parseData[0]).map(key => {
+            const maxLength = Math.max(
+                key.length,
+                ...parseData.map(row => String(row[key] || "").length)
+            );
+            return {wch: maxLength + 2};
+        });
+        worksheet['!cols'] = colWidths;
+
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Inventory Report");
+
+        const now = new Date();
+        const timestamp = now.toISOString().replace(/[:.]/g, "_");
+        XLSX.writeFile(workbook, `journal_entry_list_${timestamp}.xlsx`);
+    }
+
+    $('#btn-export-to-excel').on('click', function () {
+        ExportExcel()
+    })
 })

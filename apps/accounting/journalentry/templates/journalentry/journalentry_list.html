@@ -55,6 +55,13 @@
     </div>
     <div class="row mt-5">
         <div class="col-12">
+            <div class="row">
+                <div class="col-12 text-right">
+                    <button type="button" class="btn btn-sm border-secondary bg-secondary text-white" id="btn-export-to-excel">
+                        <i class="fa-solid fa-file-excel"></i>&nbsp;{% trans 'Export to Excel' %}
+                    </button>
+                </div>
+            </div>
             <table class="table nowrap w-100"
                    id="je-table-list"
                    data-method="GET"
@@ -81,4 +88,5 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/journalentry/journalentry_list.js' %}"></script>
+    <script src="{% static 'vendors/xlsx/dist/xlsx.full.min.js' %}"></script>
 {% endblock %}

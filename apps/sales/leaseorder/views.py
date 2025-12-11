@@ -267,6 +267,8 @@ class LeaseOrderAssetList(View):
         template='sales/leaseorder/asset_status_lease_list.html',
         menu_active='menu_lease_asset_list',
         breadcrumb='LEASE_ASSET_LIST_PAGE',
+        icon_cls='fa-solid fa-screwdriver-wrench',
+        icon_bg='bg-gold',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

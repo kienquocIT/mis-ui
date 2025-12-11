@@ -145,7 +145,7 @@ class JEReportEventHandler {
 
 }
 
-$('document').ready(function () {
+$(document).ready(function () {
     const today = moment();
     const firstDayOfMonth = moment().startOf('month');
 

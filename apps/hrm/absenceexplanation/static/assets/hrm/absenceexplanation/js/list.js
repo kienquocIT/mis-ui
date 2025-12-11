@@ -1,4 +1,4 @@
-$('document').ready(function () {
+$(document).ready(function () {
     function loadAbsenceExplanationList() {
         if (!$.fn.DataTable.isDataTable('#tbl_absence_explanation')) {
             const $tb = $('#tbl_absence_explanation');

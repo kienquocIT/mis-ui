@@ -1087,11 +1087,11 @@ class MenusFinancials:
         name='Report', code='menu_accounting_report', view_name='', icon='<i class="fas fa-cog"></i>',
         child=[
             MenuCommon(
-                name='Journal Entry report', code='menu_report_journal_entry', view_name='ReportJournalEntryList',
+                name='Journal entry report', code='menu_report_journal_entry', view_name='ReportJournalEntryList',
                 icon='<i class="fas bi bi-journal-text"></i>',
             ),
             MenuCommon(
-                name='General Ledger report', code='menu_report_general_ledger', view_name='ReportGeneralLedgerList',
+                name='General ledger report', code='menu_report_general_ledger', view_name='ReportGeneralLedgerList',
                 icon='<i class="fas fa-book-open"></i>',
             ),
         ],

@@ -18,11 +18,11 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #
-msgid "Journal Entry report"
+msgid "Journal entry report"
 msgstr "Báo cáo bút toán"
 
 #
-msgid "General Ledger report"
+msgid "General ledger report"
 msgstr "Báo cáo sổ cái"
 
 #

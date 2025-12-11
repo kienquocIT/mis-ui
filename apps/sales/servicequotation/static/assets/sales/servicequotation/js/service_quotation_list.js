@@ -1,4 +1,4 @@
-$('document').ready(function () {
+$(document).ready(function () {
     function loadServiceQuotationList() {
         if (!$.fn.DataTable.isDataTable('#table-service-quotation')) {
             const $tb = $('#table-service-quotation');

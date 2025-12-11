@@ -339,7 +339,7 @@ class loadServiceOrderInfo {
     }
 }
 
-$('document').ready(function () {
+$(document).ready(function () {
     loadServiceOrderInfo.loadServiceOrderList();
 
     // event when save delivery service button

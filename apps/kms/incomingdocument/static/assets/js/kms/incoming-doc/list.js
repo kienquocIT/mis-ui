@@ -1,4 +1,4 @@
-$('document').ready(function () {
+$(document).ready(function () {
     function loadIncomingDocumentList() {
         if (!$.fn.DataTable.isDataTable('#tbl_incoming_document')) {
             const $tb = $('#tbl_incoming_document')

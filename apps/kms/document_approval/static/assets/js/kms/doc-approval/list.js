@@ -1,4 +1,4 @@
-$('document').ready(function(){
+$(document).ready(function(){
     const $tb = $('#tbl_document_approval')
     $tb.DataTableDefault({
         useDataServer: true,

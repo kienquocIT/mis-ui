@@ -142,7 +142,7 @@ class load_editor{
 }
 
 
-$('document').ready(function (e) {
+$(document).ready(function (e) {
 
     function init_table_recipient(data){
         const $tbl = $('#table_internal_recipient');

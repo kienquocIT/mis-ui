@@ -13,7 +13,7 @@
             <div class="form-group mb-3 mb-md-0">
                 <label class="form-label required" for="start_date_filter">{% trans 'Start Date' %}</label>
                 <div class="input-group">
-                <span class="input-affix-wrapper w-100">
+                <span class="input-affix-wrapper">
                     <span class="input-prefix">📅</span>
                     <input required type="text" name="start_date" class="form-control"
                            autocomplete="off" id="start_date_filter" placeholder="DD/MM/YYYY">
@@ -25,7 +25,7 @@
             <div class="form-group mb-3 mb-md-0">
                 <label class="form-label required" for="end_date_filter">{% trans 'End Date' %}</label>
                 <div class="input-group">
-                <span class="input-affix-wrapper w-100">
+                <span class="input-affix-wrapper">
                     <span class="input-prefix">📅</span>
                     <input required type="text" name="end_date" class="form-control"
                            autocomplete="off" id="end_date_filter" placeholder="DD/MM/YYYY">
@@ -33,13 +33,11 @@
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-2 col-lg-1">
-            <button type="button" class="btn btn-primary w-100" id="apply_filter">
+        <div class="col-6 col-md-4 col-lg-2">
+            <button type="button" class="btn btn-primary" id="apply_filter">
                 <i class="fas fa-check-circle"></i> {% trans 'Apply' %}
             </button>
-        </div>
-        <div class="col-6 col-md-2 col-lg-1">
-            <button type="button" class="btn btn-light w-100" id="reset_filter">
+            <button type="button" class="btn btn-light" id="reset_filter">
                 <i class="fas fa-redo"></i> {% trans 'Reset' %}
             </button>
         </div>

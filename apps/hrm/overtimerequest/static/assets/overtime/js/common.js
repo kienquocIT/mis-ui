@@ -448,13 +448,13 @@ $(document).ready(function(){
                 const checkOut = isShift['checkout_time']
                 const list_error = {
                     0: '',
-                    1: `Day` + dataDate.date.moment('DD') + ': ' + $.fn.gettext('The registered time is less than 30 minutes'),
-                    2: `Day` + dataDate.date.moment('DD') + ': ' + $.fn.gettext('The registered time is not valid'),
+                    1: `Day` + moment(dataDate.date).format('DD') + ': ' + $.fn.gettext('The registered time is less than 30 minutes'),
+                    2: `Day` + moment(dataDate.date).format('DD') + ': ' + $.fn.gettext('The registered time is not valid'),
                 }
 
                 const outOfRegister = isTimeInRange(data_submit, checkIn, checkOut)
                 if (outOfRegister !== 0) {
-                    $.fn.notifyB({description: list_error[outOfRegister]}, 'success');
+                    $.fn.notifyB({description: list_error[outOfRegister]}, 'failure');
                     return false
                 }
             }

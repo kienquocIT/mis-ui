@@ -11,8 +11,8 @@ $(document).ready(function () {
                 scrollCollapse: true,
                 reloadCurrency: true,
                 fixedColumns: {
-                    leftColumns: 2,
-                    rightColumns: window.innerWidth <= 768 ? 0 : 1
+                    leftColumns: 1,
+                    rightColumns: window.innerWidth <= 768 ? 0 : 0
                 },
                 ajax: {
                     url: frm.dataUrl,
@@ -40,20 +40,20 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-25',
+                        className: 'ellipsis-cell-lg w-20',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                         }
                     },
                     {
-                        className: 'ellipsis-cell-xs w-10',
+                        className: 'w-10',
                         render: (data, type, row) => {
                             return `<span>${row?.['sale_order_mapped_data']?.['code'] || '--'}</span>`
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-15',
+                        className: 'ellipsis-cell-lg w-20',
                         render: (data, type, row) => {
                             if (row?.['customer_mapped_data']?.['id']) {
                                 return `<span title="${row?.['customer_mapped_data']?.['name']}">${row?.['customer_mapped_data']?.['name']}</span>`
@@ -74,7 +74,7 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'text-center w-10',
+                        className: 'w-10',
                         render: (data, type, row) => {
                             let color = [
                                 'text-blue',
@@ -89,7 +89,7 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'text-center w-10',
+                        className: 'w-10',
                         render: (data, type, row) => {
                             return WFRTControl.displayRuntimeStatus(row?.['system_status']);
                         }

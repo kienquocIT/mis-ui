@@ -3605,7 +3605,7 @@ msgstr "Ngày dự kiến"
 
 #
 msgid "Select Order"
-msgstr "Chọn đơn bán hàng"
+msgstr "Chọn đơn hàng"
 
 #
 msgid "Select"

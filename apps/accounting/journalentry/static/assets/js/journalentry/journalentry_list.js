@@ -7,7 +7,7 @@ $(document).ready(function () {
                 useDataServer: true,
                 rowIdx: true,
                 scrollX: true,
-                scrollY: '54vh',
+                scrollY: '50vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
                 fixedColumns: {

@@ -1023,7 +1023,7 @@ class ARInvoiceEventHandler {
 
                     if (merged_data_product[productId] && merged_data_product[delivery_id]) {
                         merged_data_product[productId]['product_quantity'] += entry?.['product_quantity']
-                        merged_data_product[productId]['product_subtotal'] += entry?.['product_subtotal']
+                        merged_data_product[productId]['product_payment_value'] += entry?.['product_subtotal']
                         merged_data_product[productId]['product_tax_value'] += entry?.['product_tax_value']
                         merged_data_product[productId]['product_discount_value'] += entry?.['product_discount_value']
                         merged_data_product[productId]['product_subtotal_final'] += entry?.['product_subtotal_final']
@@ -1040,7 +1040,7 @@ class ARInvoiceEventHandler {
                                 .reduce((sum, item) => sum + item?.['product_quantity'], 0),
                             product_quantity: entry?.['product_quantity'],
                             product_unit_price: entry?.['product_unit_price'],
-                            product_subtotal: entry?.['product_subtotal'],
+                            product_payment_value: entry?.['product_subtotal'],
                             product_discount_value: entry?.['product_discount_value'],
                             product_tax_data: entry?.['product_tax_data'],
                             product_tax_value: entry?.['product_tax_value'],

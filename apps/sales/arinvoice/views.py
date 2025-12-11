@@ -141,6 +141,19 @@ class SaleOrderListForARInvoiceAPI(APIView):
         return resp.auto_return(key_success='sale_order_list')
 
 
+class LeaseOrderListForARInvoiceAPI(APIView):
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.LO_LIST_AR_INVOICE).get(params)
+        return resp.auto_return(key_success='lease_order_list')
+
+
 class DeliveryListForARInvoiceAPI(APIView):
 
     @mask_view(

@@ -10,22 +10,29 @@
         <div class="row">
             <div class="col-12">
                 <div class="form-group">
+                    <label class="form-label required" for="title">{% trans "Title" %}</label>
+                    <input required class="form-control" id="title">
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
                     <label class="form-label required" for="customer-name">{% trans "Customer" %}</label>
-                    <div style="display: flex;">
-                        <input disabled readonly type="text" placeholder="{% trans 'Click the button behind the box to select' %}" class="form-control" id="customer-name">
-                        <button type="button" class="btn btn-xs btn-soft-primary btn-animated ml-1" id="customer-select-btn" data-bs-toggle="modal" data-bs-target="#customer-select-modal">
-                            <span><span class="icon"><span class="feather-icon"><i class="bi bi-check2-circle"></i></span></span><span>{% trans 'Select customer' %}</span></span>
+                    <div class="d-flex gap-3">
+                        <input disabled readonly type="text" placeholder="{% trans 'Click the button behind the box to select' %}" class="form-control form-control-line" id="customer-name">
+                        <button type="button" class="btn btn-sm btn-light border" id="customer-select-btn" data-bs-toggle="modal" data-bs-target="#customer-select-modal">
+                            <span>
+                                <span class="icon">
+                                    <span class="feather-icon">
+                                        <i class="fa-regular fa-hand-pointer"></i>
+                                    </span>
+                                </span>
+                                <span>{% trans 'Select customer' %}</span>
+                            </span>
                         </button>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-4 col-lg-4">
-                <div class="form-group">
-                    <label class="form-label" for="customer-code">{% trans "Customer code" %}</label>
-                    <input disabled readonly type="text" class="form-control" id="customer-code">
-                </div>
-            </div>
-            <div class="col-12 col-md-8 col-lg-8">
+            <div class="col-12">
                 <div class="form-group">
                     <div class="row">
                         <div class="col-6">
@@ -36,12 +43,17 @@
                             <span hidden id="valid-tax" class="text-success small">{% trans 'Tax code is valid' %}</span>
                         </div>
                     </div>
-                    <div class="input-group">
-                        <span class="input-affix-wrapper">
-                            <input disabled readonly class="form-control" id="tax_code">
-                        </span>
-                        <button data-bs-toggle="modal" data-bs-target="#modal-view-tax-code-info" type="button" class="btn btn-xs btn-soft-secondary border" id="view-tax-code-info">
-                            <span>{% trans 'View tax code information' %}</span>
+                    <div class="d-flex gap-3">
+                        <input disabled readonly class="form-control form-control-line" id="tax_code">
+                        <button data-bs-toggle="modal" data-bs-target="#modal-view-tax-code-info" type="button" class="btn btn-sm btn-light" id="view-tax-code-info">
+                            <span>
+                                <span class="icon">
+                                    <span class="feather-icon">
+                                        <i class="fa-solid fa-earth-asia"></i>
+                                    </span>
+                                </span>
+                                <span>{% trans 'View tax code information' %}</span>
+                            </span>
                         </button>
                     </div>
                 </div>
@@ -56,23 +68,6 @@
                 <div class="form-group">
                     <label class="form-label" for="buyer-name">{% trans "Buyer name" %}</label>
                     <input class="form-control" id="buyer-name">
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label required" for="title">{% trans "Title" %}</label>
-                    <input required class="form-control" id="title">
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label" for="sale-order">{% trans "Sale order" %} <span class="small text-muted">({% trans 'Get by selected customer' %})</span></label>
-                    <div class="input-group">
-                        <select disabled class="select2 form-select" id="sale-order" data-method="GET" data-url="{% url 'SaleOrderListForARInvoiceAPI' %}"></select>
-                        <button id="view-payment-term" class="btn btn-xs btn-soft-secondary border" type="button" data-bs-toggle="modal" data-bs-target="#view-payment-term-modal">
-                            <span>{% trans 'View payment term' %}</span>
-                        </button>
-                    </div>
                 </div>
             </div>
             <div class="col-12 col-md-4 col-lg-4">
@@ -94,6 +89,52 @@
                 <div class="form-group">
                     <label class="form-label" for="note">{% trans "Note" %}</label>
                     <textarea class="form-control" id="note"></textarea>
+                </div>
+            </div>
+
+            <div class="col-12 mt-2">
+                <div class="card">
+                    <div class="card-header bg-primary-light-5"><span>{% trans 'Select Order' %} <span class="small text-muted">({% trans 'Get by selected customer' %})</span></span></div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="sale-order">{% trans "Sale order" %}</label>
+                                    <div class="d-flex gap-3">
+                                        <select disabled class="select2 form-select" id="sale-order" data-method="GET" data-url="{% url 'SaleOrderListForARInvoiceAPI' %}"></select>
+                                        <button id="view-payment-term-so" class="btn btn-sm btn-light border" type="button" data-bs-toggle="modal" data-bs-target="#view-payment-term-modal">
+                                            <span>
+                                                <span class="icon">
+                                                    <span class="feather-icon">
+                                                        <i class="fa-solid fa-eye"></i>
+                                                    </span>
+                                                </span>
+                                                <span>{% trans 'View payment term' %}</span>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="lease-order">{% trans "Lease order" %}</label>
+                                    <div class="d-flex gap-3">
+                                        <select disabled class="select2 form-select" id="lease-order" data-method="GET" data-url="{% url 'LeaseOrderListForARInvoiceAPI' %}"></select>
+                                        <button id="view-payment-term-lo" class="btn btn-sm btn-light border" type="button" data-bs-toggle="modal" data-bs-target="#view-payment-term-modal">
+                                            <span>
+                                                <span class="icon">
+                                                    <span class="feather-icon">
+                                                        <i class="fa-solid fa-eye"></i>
+                                                    </span>
+                                                </span>
+                                                <span>{% trans 'View payment term' %}</span>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -18,9 +18,9 @@
         </ul>
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_line_detail">
-                <div class="table_space row">
+                <div class="row">
                     <div class="col-12">
-                        <table id="normal_datatable"
+                        <table id="main-table"
                                data-delivery-selected=""
                                class="table nowrap w-100"
                                data-url-expense-type-list="{% url 'ExpenseItemListAPI' %}"
@@ -28,34 +28,16 @@
                             <thead>
                             <tr>
                                 <th style="min-width: 50px"></th>
-                                <th style="min-width: 50px"></th>
                                 <th style="min-width: 300px">{% trans 'Product' %}</th>
                                 <th style="min-width: 150px">{% trans 'UOM' %}</th>
                                 <th style="min-width: 100px">{% trans 'Quantity' %}</th>
-                                <th style="min-width: 150px">{% trans 'Unit price' %}</th>
-                                <th style="min-width: 150px">{% trans 'Subtotal price' %}</th>
-                                <th style="min-width: 150px">{% trans 'Discount' %}</th>
+                                <th style="min-width: 200px">{% trans 'Unit price' %}</th>
+                                <th style="min-width: 350px">{% trans 'Payment value' %}</th>
+                                <th style="min-width: 350px">{% trans 'Discount' %}</th>
                                 <th style="min-width: 150px">{% trans 'Tax' %}</th>
-                                <th style="min-width: 150px">{% trans 'Total amount' %}</th>
+                                <th style="min-width: 200px">{% trans 'Final value' %}</th>
                                 <th style="min-width: 200px">{% trans 'Note' %}</th>
-                            </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div hidden class="table_space row">
-                    <div class="col-12">
-                        <table id="description_datatable" class="table nowrap w-100">
-                            <thead>
-                            <tr>
                                 <th style="min-width: 50px"></th>
-                                <th style="min-width: 50px"></th>
-                                <th style="min-width: 250px">{% trans 'Description' %}</th>
-                                <th style="min-width: 150px">{% trans 'Subtotal price' %}</th>
-                                <th style="min-width: 150px">{% trans 'Tax' %}</th>
-                                <th style="min-width: 150px">{% trans 'Total amount' %}</th>
-                                <th style="min-width: 200px">{% trans 'Note' %}</th>
                             </tr>
                             </thead>
                             <tbody></tbody>
@@ -75,13 +57,9 @@
                                     <span>{% trans 'Add row optionally' %}</span>
                                 </a>
                                 <h6 class="dropdown-header">{% trans 'If referring to SO' %}</h6>
-                                <a class="dropdown-item btn-group-for-delivery-ar disabled" href="#" id="btn-select-from-delivery">
+                                <a class="dropdown-item disabled" href="#" id="btn-select-from-delivery">
                                     <i class="dropdown-icon fa-solid fa-square-check"></i>
                                     <span>{% trans 'Select product from delivery' %}</span>
-                                </a>
-                                <a class="dropdown-item btn-group-for-delivery-ar disabled" href="#" id="btn-add-des">
-                                    <i class="dropdown-icon fa-solid fa-quote-left"></i>
-                                    <span>{% trans 'Add new description' %}</span>
                                 </a>
                             </div>
                         </div>

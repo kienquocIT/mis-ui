@@ -13,7 +13,7 @@ class ARInvoicePageElements {
         this.$tax_code = $('#tax_code')
         this.$view_tax_code_info = $('#view-tax-code-info')
         this.$billing_address = $('#billing-address')
-        this.$buyer_name = $('#buyer-name')
+        this.$buyer_information = $('#buyer-information')
         this.$invoice_exp = $('#invoice-exp')
         this.$invoice_sign = $('#invoice-sign')
         this.$invoice_number = $('#invoice-number')
@@ -690,7 +690,7 @@ class ARInvoiceHandler {
 
         frm.dataForm['title'] = pageElements.$title.val()
         frm.dataForm['customer_mapped'] = pageElements.$customer_name.attr('data-id') || null
-        frm.dataForm['buyer_name'] = pageElements.$buyer_name.val()
+        frm.dataForm['buyer_information'] = pageElements.$buyer_information.val()
         frm.dataForm['tax_number'] = pageElements.$tax_code.val()
         frm.dataForm['billing_address_id'] = pageElements.$billing_address.val() || null
         frm.dataForm['invoice_method'] = pageElements.$invoice_method.val()
@@ -744,7 +744,7 @@ class ARInvoiceHandler {
                 if (data) {
                     data = data['ar_invoice_detail'];
 
-                    console.log(data)
+                    // console.log(data)
 
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
@@ -762,7 +762,7 @@ class ARInvoiceHandler {
                     pageElements.$title.val(data?.['title'])
                     pageElements.$customer_name.attr('data-id', data?.['customer_mapped_data']?.['id'])
                     pageElements.$customer_name.val(data?.['customer_mapped_data']?.['name'])
-                    pageElements.$buyer_name.val(data?.['buyer_name'])
+                    pageElements.$buyer_information.val(data?.['buyer_information'])
                     pageElements.$tax_code.val(data?.['customer_mapped_data']?.['tax_code'])
                     for (let i = 0; i < (data?.['customer_mapped_data']?.['billing_address_list'] || []).length; i++) {
                         pageElements.$billing_address.append(`
@@ -825,8 +825,8 @@ class ARInvoiceHandler {
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
 
                     UsualLoadPageFunction.DisablePage(
-                        option==='detail',
-                        ['#view-tax-code-info', '#view-payment-term']
+                        option === 'detail',
+                        ['#view-tax-code-info', '#view-payment-term', '#view-payment-term-so', '#view-payment-term-lo', '#view-payment-term-svo']
                     )
                 }
             })

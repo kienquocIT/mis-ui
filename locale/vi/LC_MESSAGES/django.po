@@ -6989,8 +6989,8 @@ msgid "Reload invoice status"
 msgstr "Đồng bộ trạng thái hoá đơn"
 
 #
-msgid "Buyer name"
-msgstr "Tên người mua hàng"
+msgid "Buyer information"
+msgstr "Thông tin người mua hàng"
 
 #
 msgid "Billing address"
@@ -12415,3 +12415,7 @@ msgstr "Số dư đầu kỳ"
 #
 msgid "Report"
 msgstr "Báo cáo"
+
+#
+msgid "Customer Information"
+msgstr "Thông tin khách hàng"

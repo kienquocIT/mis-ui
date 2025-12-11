@@ -1,5 +1,9 @@
 class ShiftAssignHandle {
     static $form = $('#frm_shift_assignment');
+    static $configEle = $('#config_shift_assignment');
+    static $configCanvasEle = $('#configShiftAssignmentCanvas');
+    static $configEmpEle = $('#box_employee_config');
+    static $configSaveEle = $('#save_config');
     static $wrapperEle = $('#calendarapp-wrapper');
     static $calendarEle = $('#calendar');
     static $canvas = $('#shiftCanvas');
@@ -783,6 +787,53 @@ $(document).ready(function () {
             ShiftAssignHandle.loadPushDtbEmployee(trEle, $(this).attr('data-group-id'));
             trEle.next().removeClass('hidden').find('.child-workflow-group').slideToggle();
         }
+    });
+
+    ShiftAssignHandle.$configEle.on('click', function () {
+        $.fn.callAjax2({
+            url: ShiftAssignHandle.$urlEle.attr('data-api-config'),
+            method: 'GET',
+            isLoading: true,
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    FormElementControl.loadInitS2(ShiftAssignHandle.$configEmpEle, data?.['employees_config'] ? data?.['employees_config'] : []);
+                    ShiftAssignHandle.$configCanvasEle.offcanvas('show');
+                }
+            }
+        )
+    });
+
+    ShiftAssignHandle.$configSaveEle.on('click', function () {
+        let dataEmp = [];
+        if (ShiftAssignHandle.$configEmpEle.val().length > 0) {
+            for (let empVal of ShiftAssignHandle.$configEmpEle.val()) {
+                dataEmp.push(SelectDDControl.get_data_from_idx(ShiftAssignHandle.$configEmpEle, empVal));
+            }
+        }
+        WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
+        $.fn.callAjax2(
+            {
+                'url': ShiftAssignHandle.$urlEle.attr('data-api-config'),
+                'method': 'PUT',
+                'data': {'employees_config': dataEmp},
+                isLoading: true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && (data['status'] === 201 || data['status'] === 200)) {
+                    $.fn.notifyB({description: data.message}, 'success');
+                    WindowControl.hideLoading();
+                }
+            }, (err) => {
+                setTimeout(() => {
+                    WindowControl.hideLoading();
+                }, 1000)
+                $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+            }
+        )
     });
 
     ShiftAssignHandle.$allCompanyEle.on('click', function () {

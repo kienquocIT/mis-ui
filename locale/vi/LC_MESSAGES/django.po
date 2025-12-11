@@ -12419,3 +12419,7 @@ msgstr "Báo cáo"
 #
 msgid "Quantity offset"
 msgstr "SL đối ứng"
+
+#
+msgid "Employee assign shift"
+msgstr "Nhân viên phân công ca"

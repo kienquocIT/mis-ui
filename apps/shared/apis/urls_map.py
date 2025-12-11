@@ -1019,6 +1019,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SHIFT_IMPORT = StringUrl('hrm/attendance/shift/import')
 
     # attendance/shift assignment
+    SHIFT_ASSIGNMENT_CONFIG = StringUrl('hrm/attendance/shift-assignment-config')
     SHIFT_ASSIGNMENT_LIST = StringUrl('hrm/attendance/shift-assignment/list')
 
     # attendance/attendance

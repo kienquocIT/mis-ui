@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from apps.shared import mask_view, ServerAPI, ApiURL, BaseView
 from apps.shared.constant import SYSTEM_STATUS
+from apps.shared.msg import BaseMsg
 
 
 class ShiftAssignmentList(View):
@@ -42,3 +43,26 @@ class ShiftAssignmentListAPI(APIView):
             request=request,
             url=ApiURL.SHIFT_ASSIGNMENT_LIST,
         )
+
+
+class ShiftAssignmentConfigDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.SHIFT_ASSIGNMENT_CONFIG).get()
+        return resp.auto_return()
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.SHIFT_ASSIGNMENT_CONFIG).put(request.data)
+        if resp.state:
+            resp.result['message'] = BaseMsg.UPDATE_OK
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()

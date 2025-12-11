@@ -11,6 +11,12 @@
 
 {% block pageAction %}{% endblock %}
 
+{% block pageSubAction %}
+    <div class="nav-pills-bfl" role="group" aria-label="Button group with nested dropdown">
+        <button type="button" class="btn nav-link text-smoke" id="config_shift_assignment" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Shift assignment config' %}"><span class="icon"><i class="fa-solid fa-gear"></i></span></button>
+    </div>
+{% endblock %}
+
 {% block pageContent %}
     <form
             data-url="{% url 'ShiftAssignmentListAPI' %}"
@@ -156,6 +162,7 @@
         type="text"
         id="app-url-factory"
         data-api-shift-assignment="{% url 'ShiftAssignmentListAPI' %}"
+        data-api-config="{% url 'ShiftAssignmentConfigDetailAPI' %}"
         data-dd-group="{% url 'GroupDDListAPI' %}"
         data-dd-employee="{% url 'EmployeeListAllAPI' %}"
     >

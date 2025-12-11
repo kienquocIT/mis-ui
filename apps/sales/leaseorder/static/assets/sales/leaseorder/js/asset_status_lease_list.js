@@ -108,26 +108,26 @@ $(function () {
                             return `<span>--</span>`;
                         }
                     },
+                    // {
+                    //     targets: 10,
+                    //     width: '10%',
+                    //     render: (data, type, row) => {
+                    //         return `<span class="mask-money table-row-net-value" data-init-money="${row?.['origin_cost'] ? row?.['origin_cost'] : 0}"></span>`;
+                    //     }
+                    // },
+                    // {
+                    //     targets: 11,
+                    //     width: '10%',
+                    //     render: (data, type, row) => {
+                    //         let netValue = DepreciationControl.getNetValue({
+                    //             "data_depreciation": row?.['depreciation_data'],
+                    //             "current_date": DateTimeControl.getCurrentDate("DMY", "/")
+                    //         })
+                    //         return `<span class="mask-money table-row-net-value" data-init-money="${netValue ? netValue : 0}"></span>`;
+                    //     }
+                    // },
                     {
                         targets: 10,
-                        width: '10%',
-                        render: (data, type, row) => {
-                            return `<span class="mask-money table-row-net-value" data-init-money="${row?.['origin_cost'] ? row?.['origin_cost'] : 0}"></span>`;
-                        }
-                    },
-                    {
-                        targets: 11,
-                        width: '10%',
-                        render: (data, type, row) => {
-                            let netValue = DepreciationControl.getNetValue({
-                                "data_depreciation": row?.['depreciation_data'],
-                                "current_date": DateTimeControl.getCurrentDate("DMY", "/")
-                            })
-                            return `<span class="mask-money table-row-net-value" data-init-money="${netValue ? netValue : 0}"></span>`;
-                        }
-                    },
-                    {
-                        targets: 12,
                         width: '10%',
                         render: (data, type, row) => {
                             return `<span>${row?.['depreciation_time'] ? row?.['depreciation_time'] : 0} ${$transFact.attr('data-month')}</span>`;

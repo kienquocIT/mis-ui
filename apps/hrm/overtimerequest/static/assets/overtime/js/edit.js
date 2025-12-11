@@ -15,27 +15,20 @@ $(document).ready(function(){
             $('#end_time').val(data.end_time)
             $('#reason').val(data.reason)
             $('#id').val(data.id)
-            const temp = data?.['employee_list_data'] || data?.['employee_inherit_data']
-            const $objectLst = {}
-            for (let item of temp){
-                $objectLst[item.id] = item
-            }
-            $('#employee-checked').data('checked', $objectLst)
+            const temps = data?.['employee_list_data'] || data?.['employee_inherit']
+            $('#employee-checked').data('checked', temps.reduce((acc, item) => {
+                acc[item.id] = item
+                return acc
+            }, {}))
 
-            let range = moment(data.end_date).diff(data.start_date, 'days') + 1;
-            // + 1 vì moment không tính start_date là một ngày mà tính từ ngày tiếp theo của start_date
-            if (data.start_date === data.end_date) range = 1;
             const dateRange = {};
-            for (let i = 1; i <= range; i++) {
-                let dateStr = data.start_date;
-                dateStr = i > 1 ? moment(dateStr).add(i - 1, 'days').format('YYYY-MM-DD') : dateStr
-                dateRange[dateStr] = {'shift': data.shift, 'ot_type': data.ot_type}
+            const dateShift = [];
+            for (let temp of data?.['date_list']) {
+                dateRange[temp.date] = temp
+                dateShift.push(temp.shift)
             }
             $('#date_selected').data('date', dateRange);
-
-            $('#data_shift').data('shift', data.shift)
-                .attr('data-start_date', data.start_date)
-                .attr('data-end_date', data.end_date)
+            $('#data_shift').data('shift', dateShift);
 
             // run all setup after add data to HTML
             new handleCommon();

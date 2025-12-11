@@ -10130,7 +10130,7 @@ msgstr "Tổng cấn trừ phải bằng 0"
 
 #
 msgid "View payment term"
-msgstr "Xem điều khoản thanh toán"
+msgstr "Xem ĐKTT"
 
 #
 msgid "View tax code information"

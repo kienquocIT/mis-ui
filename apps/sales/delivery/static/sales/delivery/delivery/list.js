@@ -27,6 +27,7 @@ $(document).ready(function () {
                 {
                     width: '1%',
                     render: (data, type, row, meta) => {
+                        console.log(row)
                         return `<span class="table-row-order">${(meta.row + 1)}</span>`
                     }
                 },

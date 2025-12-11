@@ -319,7 +319,7 @@ class ARInvoicePageFunction {
                 {
                     render: (data, type, row) => {
                         let product_data = row?.['product_data'] || {}
-                        let delivery_item_mapped_id = product_data?.['delivery_item_mapped_id'] || ''
+                        let delivery_item_mapped_id = row?.['delivery_item_mapped_id'] || ''
                         return `<div class="input-group">
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix product-des" data-bs-toggle="tooltip" title="${product_data?.['description']}"><i class="bi bi-info-circle"></i></span>
@@ -356,7 +356,7 @@ class ARInvoicePageFunction {
                                         <span class="input-suffix"><i class="fa-solid fa-percent"></i></span>
                                     </span>
                                     <span class="input-group-text">=</span>
-                                    <input ${option==='detail' ? 'disabled readonly' : ''} class="form-control product_payment_value mask-money recalculate-field text-right" style="min-width: 200px" value="${row?.['product_subtotal'] || 0}">
+                                    <input ${option==='detail' ? 'disabled readonly' : ''} class="form-control product_payment_value mask-money recalculate-field text-right" style="min-width: 200px" value="${row?.['product_payment_value'] || 0}">
                                 </div>`
                     }
                 },
@@ -573,33 +573,35 @@ class ARInvoicePageFunction {
     static CalculatePriceRow(row) {
         let quantity = parseFloat(row.find('.product_quantity').val() || 0)
         let unit_price = parseFloat(row.find('.product_unit_price').attr('value') || 0)
-        let payment_percent = parseFloat(row.find('.product_payment_percent').val() || 100) / 100
-        let row_subtotal = quantity * unit_price * payment_percent
+        let product_payment_percent = parseFloat(row.find('.product_payment_percent').val() || 100) / 100
+        let product_payment_value = quantity * unit_price * product_payment_percent
 
         if (row.find('.product_payment_percent').val() === '') {
-            row_subtotal = parseFloat(row.find('.product_payment_value').attr('value') || 0)
+            product_payment_value = parseFloat(row.find('.product_payment_value').attr('value') || 0)
         }
 
-        row.find('.product_payment_value').attr('value', row_subtotal)
+        row.find('.product_payment_value').attr('value', product_payment_value)
 
-        let discount_percent = parseFloat(row.find('.product_discount_percent').val() || 0)
-        let discount_value = row_subtotal * discount_percent / 100
+        let product_discount_percent = parseFloat(row.find('.product_discount_percent').val() || 0)
+        let product_discount_value = product_payment_value * product_discount_percent / 100
         if (row.find('.product_discount_percent').val() === '') {
-            discount_value = parseFloat(row.find('.product_discount_value').attr('value') || 0)
+            product_discount_value = parseFloat(row.find('.product_discount_value').attr('value') || 0)
         }
 
-        row.find('.product_discount_value').attr('value', discount_value)
+        row.find('.product_discount_value').attr('value', product_discount_value)
 
-        let row_subtotal_after_discount = row_subtotal - discount_value
+        let product_payment_value_after_discount = product_payment_value - product_discount_value
 
         let tax_selected = SelectDDControl.get_data_from_idx(row.find('.product_taxes'), row.find('.product_taxes').val())
         let tax_rate = parseFloat(tax_selected?.['rate'] || 0)
-        let row_tax_value = row_subtotal_after_discount * tax_rate / 100
+        let product_taxes = product_payment_value_after_discount * tax_rate / 100
 
-        let row_final_amount = row_subtotal_after_discount + row_tax_value
+        let product_subtotal_final = product_payment_value_after_discount + product_taxes
 
-        row.find('.product_taxes').attr('data-tax-value', row_tax_value)
-        row.find('.product_subtotal_final').attr('data-init-money', row_final_amount)
+        row.find('.product_taxes').attr('data-tax-value', product_taxes)
+        row.find('.product_subtotal_final').attr('data-init-money', product_subtotal_final)
+
+        ARInvoicePageFunction.CalculatePrice()
         $.fn.initMaskMoney2()
     }
     static CalculatePrice() {
@@ -610,26 +612,24 @@ class ARInvoicePageFunction {
         let dropdown_tax_detail_data = {}
         pageElements.$main_table.find('tbody tr').each(function () {
             let row = $(this)
-            let quantity = parseFloat(row.find('.product_quantity').val() || 0)
-            let unit_price = parseFloat(row.find('.product_unit_price').attr('value') || 0)
             let tax_selected = SelectDDControl.get_data_from_idx(row.find('.product_taxes'), row.find('.product_taxes').val())
             let tax_rate = parseFloat(tax_selected?.['rate'] || 0)
 
-            let row_subtotal = quantity * unit_price
-            let row_discount = parseFloat(row.find('.product_discount_value').attr('value') || 0)
-            let row_tax = (row_subtotal - row_discount) * tax_rate / 100
-            let row_amount = row_subtotal - row_discount + row_tax
+            let product_payment_value = parseFloat(row.find('.product_payment_value').attr('value') || 0)
+            let product_discount_value = parseFloat(row.find('.product_discount_value').attr('value') || 0)
+            let product_taxes = (product_payment_value - product_discount_value) * tax_rate / 100
+            let product_subtotal_final = parseFloat(row.find('.product_subtotal_final').attr('data-init-money') || 0)
 
-            sum_subtotal_price += row_subtotal
-            sum_discount += row_discount
-            sum_taxes += row_tax
-            sum_amount += row_amount
+            sum_subtotal_price += product_payment_value
+            sum_discount += product_discount_value
+            sum_taxes += product_taxes
+            sum_amount += product_subtotal_final
 
             if (dropdown_tax_detail_data?.[tax_rate]) {
-                dropdown_tax_detail_data[tax_rate] += row_tax
+                dropdown_tax_detail_data[tax_rate] += product_taxes
             }
             else {
-                dropdown_tax_detail_data[tax_rate] = row_tax
+                dropdown_tax_detail_data[tax_rate] = product_taxes
             }
         })
 
@@ -744,7 +744,7 @@ class ARInvoiceHandler {
                 if (data) {
                     data = data['ar_invoice_detail'];
 
-                    // console.log(data)
+                    console.log(data)
 
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
@@ -996,7 +996,6 @@ class ARInvoiceEventHandler {
         })
         $(document).on("change", '.recalculate-field', function () {
             ARInvoicePageFunction.CalculatePriceRow($(this).closest('tr'))
-            ARInvoicePageFunction.CalculatePrice()
         })
         $(document).on("change", '.selected-delivery', function () {
             // xử lí dữ liệu product delivery

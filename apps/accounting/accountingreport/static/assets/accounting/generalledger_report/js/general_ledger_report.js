@@ -15,7 +15,7 @@ const pageElements = new GeneralLedgerReportElements();
  * Khai bao cac ham load data
  */
 class GeneralLedgerReportFunction {
-    static loadGeneralLedgerReportList(startDate = '', endDate = '', accountId = '') {
+    static loadGeneralLedgerReportList(from_date = '', endDate = '', accountId = '') {
         if ($.fn.DataTable.isDataTable(pageElements.$tableReport)) {
             pageElements.$tableReport.DataTable().destroy();
         }
@@ -30,12 +30,13 @@ class GeneralLedgerReportFunction {
             autoWidth: true,
             scrollCollapse: true,
             reloadCurrency: true,
+            paging: false,
             ajax: {
                 url: frm.dataUrl,
                 type: 'GET',
                 data: {
-                    'journal_entry__date_created__lte': endDate,
-                    'journal_entry__date_created__gte': startDate,
+                    'from_date': from_date,
+                    'to_date': to_date,
                     'account_id': accountId,
                     'is_general_ledger': true,
                 },

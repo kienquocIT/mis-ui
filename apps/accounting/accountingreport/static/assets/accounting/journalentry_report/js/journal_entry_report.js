@@ -1,5 +1,5 @@
 class loadJournalEntryReportInfo {
-    static loadJournalEntryReportList(startDate = '', endDate = '') {
+    static loadJournalEntryReportList(from_date = '', to_date = '') {
         const $tb = $('#je_table_report');
 
         // Destroy existing DataTable if exists
@@ -16,13 +16,13 @@ class loadJournalEntryReportInfo {
             autoWidth: true,
             scrollCollapse: true,
             reloadCurrency: true,
-            // paging: false,
+            paging: false,
             ajax: {
                 url: frm.dataUrl,
                 type: 'GET',
                 data: {
-                    'journal_entry__date_created__lte': endDate,
-                    'journal_entry__date_created__gte': startDate
+                    'from_date': from_date,
+                    'to_date': to_date
                 },
                 dataSrc: function(resp) {
                     let data = $.fn.switcherResp(resp);

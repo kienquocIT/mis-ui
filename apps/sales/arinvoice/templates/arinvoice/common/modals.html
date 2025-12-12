@@ -71,7 +71,7 @@
     </div>
 </div>
 
-<div class="offcanvas offcanvas-end w-90" tabindex="-1" id="select-delivery-offcanvas" aria-labelledby="offcanvasTopLabel">
+<div class="offcanvas offcanvas-end w-70" tabindex="-1" id="select-delivery-offcanvas" aria-labelledby="offcanvasTopLabel">
     <div class="offcanvas-header">
         <h5 id="offcanvasRightLabel">{% trans 'Select product from delivery' %}</h5>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -83,9 +83,10 @@
                     <thead class="bg-primary-light-5">
                     <tr>
                         <th></th>
+                        <th>{% trans 'Select' %}</th>
                         <th>{% trans 'Code' %}</th>
+                        <th>{% trans 'Description' %}</th>
                         <th>{% trans 'Actual delivery date' %}</th>
-                        <th>{% trans 'This time' %}</th>
                     </tr>
                     </thead>
                 </table>
@@ -96,12 +97,13 @@
                 <table class="table w-100 nowrap" id="table-delivery-product">
                     <thead class="bg-secondary-light-5">
                     <tr>
-                        <th class="w-10"></th>
-                        <th class="w-30">{% trans 'Product' %}</th>
-                        <th class="w-15">{% trans 'UOM' %}</th>
-                        <th class="w-15">{% trans 'Total' %}</th>
-                        <th class="w-15">{% trans 'Previous time' %}</th>
-                        <th class="w-15">{% trans 'This time' %}</th>
+                        <th></th>
+                        <th>{% trans 'Product' %}</th>
+                        <th>{% trans 'UOM' %}</th>
+                        <th>{% trans 'Total' %}</th>
+                        <th>{% trans 'Previous time' %}</th>
+                        <th>{% trans 'This time' %}</th>
+                        <th>{% trans 'AR value done' %}</th>
                     </tr>
                     </thead>
                 </table>
@@ -109,7 +111,6 @@
         </div>
         <div class="row mt-5">
             <div class="col-12 text-right">
-                <script id="delivery_product_data_script"></script>
                 <button type="button" id="accept-delivery-product-btn" class="btn btn-sm btn-custom btn-success btn-wth-icon">
                     <span>
                         <span>{% trans 'Select' %}</span>

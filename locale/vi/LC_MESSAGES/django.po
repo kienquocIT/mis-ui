@@ -3820,8 +3820,8 @@ msgid "Add new row"
 msgstr "Thêm dòng mới"
 
 #
-msgid "Payment value"
-msgstr "Giá trị thanh toán"
+msgid "Payment value this time"
+msgstr "Giá trị thanh toán đợt này"
 
 #
 msgid "Advance Payment value"
@@ -12427,3 +12427,7 @@ msgstr "Nhân viên phân công ca"
 #
 msgid "Customer Information"
 msgstr "Thông tin khách hàng"
+
+#
+msgid "AR value done"
+msgstr "Giá trị hóa đơn đã xuất"

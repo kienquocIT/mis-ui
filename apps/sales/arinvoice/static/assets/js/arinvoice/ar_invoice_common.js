@@ -33,7 +33,6 @@ class ARInvoicePageElements {
         this.$main_table = $('#main-table')
         this.$table_select_delivery = $('#table-select-delivery')
         this.$table_delivery_product = $('#table-delivery-product')
-        this.$delivery_product_data_script = $('#delivery_product_data_script')
         this.$accept_delivery_product_btn = $('#accept-delivery-product-btn')
         this.$btn_select_from_delivery = $('#btn-select-from-delivery')
         this.$btn_add_optionally = $('#btn-add-optionally')
@@ -47,6 +46,7 @@ const pageElements = new ARInvoicePageElements()
 class ARInvoicePageVariables {
     constructor() {
         this.invoice_signs = JSON.parse($('#invoice_signs').text() || '{}')
+        this.delivery_product_data = []
     }
 }
 const pageVariables = new ARInvoicePageVariables()
@@ -199,6 +199,7 @@ class ARInvoicePageFunction {
         let order_id = pageElements.$sale_order.val() || pageElements.$lease_order.val() || ''
         pageElements.$table_select_delivery.DataTable().clear().destroy()
         pageElements.$table_select_delivery.DataTableDefault({
+            styleDom: "hide-foot",
             useDataServer: true,
             rowIdx: true,
             reloadCurrency: true,
@@ -221,30 +222,36 @@ class ARInvoicePageFunction {
             columns: [
                 {
                     className: 'w-10',
-                    'render': () => {
+                    render: () => {
                         return ``;
+                    }
+                },
+                {
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        return `${row?.['is_done_ar_invoice'] ? `<i class="fas fa-check-circle text-success mr-1"></i>` + $.fn.gettext('Invoiced') : ''}
+                                <div class="form-check" ${row?.['is_done_ar_invoice'] ? 'hidden' : ''}>
+                                    <input data-detail="${JSON.stringify(row?.['details'] || []).replace(/"/g, "&quot;")}" data-already="${row?.['is_done_ar_invoice'] ? 1 : 0}" data-id="${row?.['id']}" type="checkbox" name="selected-delivery" class="form-check-input selected-delivery" ${row?.['is_done_ar_invoice'] ? 'checked' : ''}>
+                                    <label class="form-check-label"></label>
+                                </div>`
+                    }
+                },
+                {
+                    className: 'w-20',
+                    render: (data, type, row) => {
+                        return `<span class="text-primary fw-bold">${row?.['code']}</span>`
                     }
                 },
                 {
                     className: 'w-40',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-primary">${row?.['code']}</span>`
+                        return `<span>${row?.['remarks'] || ''}</span>`
                     }
                 },
                 {
-                    className: 'w-25',
+                    className: 'w-20 text-right',
                     render: (data, type, row) => {
-                        return `${moment(row?.['actual_delivery_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}`
-                    }
-                },
-                {
-                    className: 'w-25 text-center',
-                    render: (data, type, row) => {
-                        return `${row?.['already'] ? `<i class="fas fa-check-circle text-success mr-1"></i>` + $.fn.gettext('Invoiced') : ''}
-                                <div class="form-check" ${row?.['already'] ? 'hidden' : ''}>
-                                    <input data-detail="${JSON.stringify(row?.['details'] || []).replace(/"/g, "&quot;")}" data-already="${row?.['already'] ? 1 : 0}" data-id="${row?.['id']}" type="checkbox" name="selected-delivery" class="form-check-input selected-delivery" ${row?.['already'] ? 'checked' : ''}>
-                                    <label class="form-check-label"></label>
-                                </div>`
+                        return moment(row?.['actual_delivery_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')
                     }
                 },
             ]
@@ -263,18 +270,21 @@ class ARInvoicePageFunction {
             data: datasource,
             columns: [
                 {
+                    className: '',
                     render: () => {
                         return ``;
                     }
                 },
                 {
+                    className: '',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-secondary">${(row?.['product_data'] || {})?.['code'] || ''}</span>&nbsp;${(row?.['product_data'] || {})?.['title'] || ''}`
+                        return `<span class="badge badge-ssm badge-light">${(row?.['product_data'] || {})?.['code'] || ''}</span><br>${(row?.['product_data'] || {})?.['title'] || ''}`
                     }
                 },
                 {
+                    className: '',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-primary">${(row?.['product_uom_data'] || {})?.['title'] || ''}</span>`
+                        return `<span>${(row?.['uom_data'] || {})?.['title'] || ''}</span>`
                     }
                 },
                 {
@@ -292,7 +302,13 @@ class ARInvoicePageFunction {
                 {
                     className: 'text-center',
                     render: (data, type, row) => {
-                        return `<span class="text-primary">${row?.['product_quantity'] || 0}</span>`
+                        return `<span>${row?.['picked_quantity'] || 0}</span>`
+                    }
+                },
+                {
+                    className: 'text-right',
+                    render: (data, type, row) => {
+                        return `<span class="mask-money" data-init-money="${row?.['ar_value_done'] || 0}"></span>`
                     }
                 },
             ],
@@ -352,7 +368,7 @@ class ARInvoicePageFunction {
                     render: (data, type, row) => {
                         return `<div class="input-group">
                                     <span class="input-affix-wrapper">
-                                        <input ${option==='detail' ? 'disabled readonly' : ''} class="form-control product_payment_percent recalculate-field text-right" type="number" value="${row?.['product_payment_percent'] || 100}" min="1" max="100">
+                                        <input ${option==='detail' ? 'disabled readonly' : ''} class="form-control product_payment_percent recalculate-field text-right" type="number" value="${row?.['product_payment_percent']}" min="1" max="100">
                                         <span class="input-suffix"><i class="fa-solid fa-percent"></i></span>
                                     </span>
                                     <span class="input-group-text">=</span>
@@ -365,7 +381,7 @@ class ARInvoicePageFunction {
                     render: (data, type, row) => {
                         return `<div class="input-group">
                                     <span class="input-affix-wrapper">
-                                        <input ${option==='detail' ? 'disabled readonly' : ''} class="form-control product_discount_percent recalculate-field text-danger text-right" type="number" value="${row?.['product_discount_percent'] || 0}" min="0" max="100">
+                                        <input ${option==='detail' ? 'disabled readonly' : ''} class="form-control product_discount_percent recalculate-field text-danger text-right" type="number" value="${row?.['product_discount_percent']}" min="0" max="100">
                                         <span class="input-suffix"><i class="fa-solid fa-percent"></i></span>
                                     </span>
                                     <span class="input-group-text">=</span>
@@ -920,7 +936,7 @@ class ARInvoiceEventHandler {
             $('#ar-invoice-label').text($(this).find('option:selected').attr('data-text'))
         })
         pageElements.$accept_delivery_product_btn.on('click', function () {
-            ARInvoicePageFunction.LoadMainTable(JSON.parse(pageElements.$delivery_product_data_script.text() || '[]'))
+            ARInvoicePageFunction.LoadMainTable(pageVariables.delivery_product_data)
             $('#select-delivery-offcanvas').offcanvas('hide')
             let data_product = []
             $('.selected-delivery').each(function () {
@@ -998,61 +1014,52 @@ class ARInvoiceEventHandler {
             ARInvoicePageFunction.CalculatePriceRow($(this).closest('tr'))
         })
         $(document).on("change", '.selected-delivery', function () {
-            // xử lí dữ liệu product delivery
-            let data_product = []
-            let data_product_already = []
+            pageVariables.delivery_product_data = []
+            let data_product = {
+                delivery_data: [],
+                so_data: []
+            };
+
+            // Merge delivery data từ checkbox
             $('.selected-delivery').each(function () {
                 if ($(this).prop('checked') && $(this).attr('data-already') === '0') {
-                    data_product = data_product.concat(
-                        JSON.parse($(this).attr('data-detail') || '[]')
-                    )
-                }
-
-                if ($(this).prop('checked') && $(this).attr('data-already') === '1') {
-                    data_product_already = data_product_already.concat(
-                        JSON.parse($(this).attr('data-detail') || '[]')
-                    )
-                }
-            })
-
-            const merged_data_product = {};
-            data_product.forEach(entry => {
-                if (parseFloat(entry?.['product_quantity']) > 0) {
-                    const productId = entry?.['product_id'];
-                    const delivery_id = entry?.['delivery_id'];
-
-                    if (merged_data_product[productId] && merged_data_product[delivery_id]) {
-                        merged_data_product[productId]['product_quantity'] += entry?.['product_quantity']
-                        merged_data_product[productId]['product_payment_value'] += entry?.['product_subtotal']
-                        merged_data_product[productId]['product_tax_value'] += entry?.['product_tax_value']
-                        merged_data_product[productId]['product_discount_value'] += entry?.['product_discount_value']
-                        merged_data_product[productId]['product_subtotal_final'] += entry?.['product_subtotal_final']
-                    }
-                    else {
-                        merged_data_product[productId] = {
-                            delivery_item_mapped_id: entry?.['id'],
-                            delivery_id: entry?.['delivery_id'],
-                            product_data: entry?.['product_data'],
-                            product_uom_data: entry?.['product_uom_data'],
-                            delivery_quantity: entry?.['delivery_quantity'],
-                            delivered_quantity_before: data_product_already
-                                .filter(item => item?.['product_data']?.['id'] === productId)
-                                .reduce((sum, item) => sum + item?.['product_quantity'], 0),
-                            product_quantity: entry?.['product_quantity'],
-                            product_unit_price: entry?.['product_unit_price'],
-                            product_payment_value: entry?.['product_subtotal'],
-                            product_discount_value: entry?.['product_discount_value'],
-                            product_tax_data: entry?.['product_tax_data'],
-                            product_tax_value: entry?.['product_tax_value'],
-                            product_subtotal_final: entry?.['product_subtotal_final'],
-                        }
-                    }
+                    let json = JSON.parse($(this).attr('data-detail') || '{}');
+                    data_product.delivery_data.push(...(json?.['delivery_data'] || []));
+                    data_product.so_data.push(...(json?.['so_data'] || []));
                 }
             });
-            data_product = Object.values(merged_data_product)
 
-            ARInvoicePageFunction.LoadDeliveryProductTable(data_product)
-            pageElements.$delivery_product_data_script.text(JSON.stringify(data_product))
-        })
+            let all_delivery_data = data_product?.['delivery_data'];
+            let all_so_data = data_product?.['so_data'];
+
+            ARInvoicePageFunction.LoadDeliveryProductTable(all_delivery_data);
+
+            for (let item of all_delivery_data) {
+                let so_item = all_so_data.find(so_data =>
+                    String(so_data?.['product_data']?.['id']) === String(item?.['product_data']?.['id'] || '')
+                    && String(so_data?.['so_id']) === String(item?.['so_id'] || '')
+                ) || {};
+
+                let product_payment_value = (so_item?.['product_subtotal_price'] || 0) - (item?.['ar_value_done'] || 0)
+                let product_discount_value = product_payment_value * (so_item?.['product_discount_value'] || 0) / 100
+                let product_tax_value = (product_payment_value - product_discount_value) * (so_item?.['product_tax_value'] || 0) / 100
+                pageVariables.delivery_product_data.push({
+                    'delivery_item_mapped_id': item?.['id'] || '',
+                    'product_data': item?.['product_data'] || {},
+                    'product_uom_data': item?.['uom_data'] || {},
+                    'product_quantity': item?.['picked_quantity'] || 0,
+                    'product_unit_price': so_item?.['product_unit_price'] || 0,
+                    'product_subtotal': so_item?.['product_subtotal_price'] || 0,
+                    'product_payment_percent': '',
+                    'product_payment_value': product_payment_value,
+                    'product_discount_percent': so_item?.['product_discount_value'] || 0,
+                    'product_discount_value': product_discount_value,
+                    'product_tax_data': so_item?.['tax_data'] || {},
+                    'product_tax_value': product_tax_value,
+                    'product_subtotal_final': product_payment_value - product_discount_value + product_tax_value,
+                    'note': ''
+                });
+            }
+        });
     }
 }

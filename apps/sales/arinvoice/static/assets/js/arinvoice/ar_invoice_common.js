@@ -227,7 +227,7 @@ class ARInvoicePageFunction {
                     }
                 },
                 {
-                    className: 'w-10',
+                    className: 'w-15',
                     render: (data, type, row) => {
                         return `${row?.['is_done_ar_invoice'] ? `<i class="fas fa-check-circle text-success mr-1"></i>` + $.fn.gettext('Invoiced') : ''}
                                 <div class="form-check" ${row?.['is_done_ar_invoice'] ? 'hidden' : ''}>
@@ -243,7 +243,7 @@ class ARInvoicePageFunction {
                     }
                 },
                 {
-                    className: 'w-40',
+                    className: 'w-35',
                     render: (data, type, row) => {
                         return `<span>${row?.['remarks'] || ''}</span>`
                     }

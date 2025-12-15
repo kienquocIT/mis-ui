@@ -1,5 +1,38 @@
 
 $(function () {
+    class AdvanceFilterLeaseOrderHandler extends AdvanceFilterCommonHandler{
+        constructor() {
+            super();
+            this.$url = $('#app-url-factory')
+            this.CONTENT_TYPE_MAPPING_URL = {
+                "saledata.account": {
+                    "url": $('#app-url-factory').data('account-list'),
+                    "keyResp": "account_list",
+                    "keyText": "name"
+                },
+                "saledata.contact": {
+                    "url": $('#app-url-factory').data('contact-list'),
+                    "keyResp": "contact_list",
+                    "keyText": "fullname"
+                },
+            }
+        }
+
+        getPropUrl() {
+            return this.$url.data('app-prop-list')
+        }
+
+        getContentTypeMappingUrl(contentType) {
+            return this.CONTENT_TYPE_MAPPING_URL[contentType]
+        }
+
+        clearDataFormCreateFilter() {
+            super.clearDataFormCreateFilter();
+            this.init()
+        }
+    }
+
+
     $(document).ready(function () {
 
         let $table = $('#table_lease_order_list');
@@ -373,8 +406,22 @@ $(function () {
             if ($.fn.dataTable.isDataTable($table)) {
                 $table.DataTable().destroy();
             }
+            const appliedAdvanceFilter = $('.filter-item').find('input[type="radio"]:checked')
+            if(appliedAdvanceFilter.length > 0) {
+                dataParams['advance_filter_id'] = $(appliedAdvanceFilter[0]).attr('id')
+            }
             loadDbl(dataParams);
         });
+
+        const advanceFilterLeaseOrder = new AdvanceFilterLeaseOrderHandler();
+        advanceFilterLeaseOrder.getCurrPageAppID()
+        advanceFilterLeaseOrder.addEventBinding()
+        advanceFilterLeaseOrder.init()
+
+        advanceFilterLeaseOrder.setUpFormCreateFilterSubmit()
+        advanceFilterLeaseOrder.fetchDataFilterList()
+
+        advanceFilterLeaseOrder.setUpFormUpdateFilterSubmit()
 
     });
 });

@@ -179,6 +179,7 @@
                         </div>
                     </div>
                 </div>
+                {% include 'sales/advance_filter.html' with app_id='010404b3-bb91-4b24-9538-075f5f00ef14' %}
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas">{% trans 'Close' %}</button>
@@ -187,6 +188,10 @@
         </div>
 
     </div>
+{% endblock %}
+
+{% block modalData %}
+    {% include 'sales/advance_filter_modal.html' with app_id='010404b3-bb91-4b24-9538-075f5f00ef14' %}
 {% endblock %}
 
 {% block dataHiddenGroup %}
@@ -208,6 +213,9 @@
            data-link-list-api="{% url 'LeaseOrderListAPI' %}"
            data-create-delivery="{% url 'LeaseOrderDetailDeliveryAPI' 1 %}"
            data-delivery="{% url 'OrderDeliveryList' %}" data-picking="{% url 'OrderPickingList' %}"
+           data-account-list="{% url 'AccountListAPI' %}"
+           data-contact-list="{% url 'ContactListAPI' %}"
+           data-app-prop-list="{% url 'ApplicationPropertyListAPI' %}"
     >
     {{ data.stt_sys|json_script:'stt_sys' }}
     {{ data.delivery_status|json_script:'delivery_status' }}
@@ -219,7 +227,7 @@
     {% if base.language == 'vi' %}
         <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
     {% endif %}
-
+     <script src="{% static 'assets/sales/report/js/advance_filter/advance_filter_common.js' %}"></script>
     <script src="{% static 'assets/sales/leaseorder/js/lease_order_list.js' %}"></script>
     <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

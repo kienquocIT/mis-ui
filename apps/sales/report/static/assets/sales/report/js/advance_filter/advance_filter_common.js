@@ -316,7 +316,7 @@ class AdvanceFilterCommonHandler {
                         {},
                         null,
                         false,
-                        {res1: "code", res2: "title"}
+                        {res1: "code", res2: this.getContentTypeMappingUrl(content_type)?.['keyText']}
                     );
                     if (data['type']) {
                         this.loadInitS2(

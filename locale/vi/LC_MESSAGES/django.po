@@ -12431,3 +12431,11 @@ msgstr "Thông tin khách hàng"
 #
 msgid "AR value done"
 msgstr "Giá trị hóa đơn đã xuất"
+
+#
+msgid "Shift applied is inappropriate"
+msgstr "Ca làm việc áp dụng không phù hợp"
+
+#
+msgid "Posting Engine"
+msgstr "Bộ máy hạch toán"

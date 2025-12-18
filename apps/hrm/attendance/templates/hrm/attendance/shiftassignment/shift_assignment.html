@@ -124,7 +124,7 @@
                         <input type="text" class="form-control" id="shift_current" readonly>
                     </div>
                     <div class="form-group">
-                        <label class="form-label required" for="box_shift_apply">{% trans 'Select shift to apply' %}</label>
+                        <label class="form-label" for="box_shift_apply">{% trans 'Select shift to apply' %}</label>
                         <select
                                 class="form-select"
                                 id="box_shift_apply"
@@ -132,7 +132,6 @@
                                 data-url="{% url "ShiftMasterDataListAPI" %}"
                                 data-method="GET"
                                 data-keyResp="shift_list"
-                                required
                         ></select>
                     </div>
 
@@ -157,6 +156,7 @@
         type="text"
         id="app-trans-factory"
         data-employee="{% trans 'Employee' %}"
+        data-err-no-date="{% trans 'Shift applied is inappropriate' %}"
     >
     <input
         type="text"

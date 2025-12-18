@@ -74,15 +74,15 @@ $(document).ready(function() {
         let app_id = $(this).attr('data-app-id')
         Swal.fire({
             html:
-            `<div class="d-flex align-items-center">
-                <h4 class="text-blue">${$.fn.gettext('Are you sure you want to enable automatic journal entries for this transaction?')}</h4>
+            `<div class="align-items-center">
+                <h5 class="text-blue">${$.fn.gettext('Are you sure to activate/deactivate automatic journal entries for this transaction?')}</h5>
             </div>`,
             customClass: {
                 confirmButton: 'btn btn-outline-secondary text-blue',
                 cancelButton: 'btn btn-outline-secondary text-gray',
-                container: 'swal2-has-bg',
-                htmlContainer: 'bg-transparent text-start',
-                actions:'w-100'
+                container: 'swal2-has-bg custom-swal-sm',
+                htmlContainer: 'bg-transparent',
+                actions: 'w-100'
             },
             showCancelButton: true,
             buttonsStyling: false,

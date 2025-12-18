@@ -35,7 +35,7 @@ msgstr "Xoá trường"
 
 #
 msgid "Are you sure about deleting?"
-msgstr "Bạn có chắc chắn về việc xóa?"
+msgstr "Bạn có chắc về việc xóa?"
 
 #
 msgid "Yes, delete it"
@@ -55,7 +55,7 @@ msgstr "Nhân đôi trường"
 
 #
 msgid "Are you sure about cloning?"
-msgstr "Bạn có chắc chắn về việc nhân đôi?"
+msgstr "Bạn có chắc về việc nhân đôi?"
 
 #
 msgid "Yes, clone it"

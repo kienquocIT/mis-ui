@@ -8,6 +8,5 @@ urlpatterns = [
 
     # general report
     path('general-ledger', ReportGeneralLedgerList.as_view(), name='ReportGeneralLedgerList'),
-
     path('get-je-chart-of-account/api', ChartOfAccountsSummarizeAPI.as_view(), name='GetChartOfAccountSummaryAPI'),
 ]

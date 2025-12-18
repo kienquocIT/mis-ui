@@ -39,7 +39,7 @@ msgstr "Tạo bút toán tự động"
 
 #
 msgid "JE document type"
-msgstr "Loại chứng từ hạch toán"
+msgstr "Loại chứng từ"
 
 #
 msgid "JE posting rule"
@@ -55,7 +55,7 @@ msgstr "Gán nhóm định khoản"
 
 #
 msgid "JE GL account mapping"
-msgstr "Thiết lập tài khoản kế toán"
+msgstr "Ánh xạ tài khoản"
 
 #
 msgid "Rule level"
@@ -75,7 +75,7 @@ msgstr "Xem quá trình tự động"
 
 #
 msgid "Auto JE configure guide"
-msgstr "Hướng dẫn cấu hình bút toán tự động"
+msgstr "Hướng dẫn cấu hình"
 
 #
 msgid "Money"
@@ -176,3 +176,23 @@ msgstr "Chọn nhân viên"
 #
 msgid "Select period"
 msgstr "Chọn giai đoạn"
+
+#
+msgid "Add new posting group"
+msgstr "Thêm nhóm định khoản mới"
+
+#
+msgid "Group type"
+msgstr "Nhóm"
+
+#
+msgid "Add/Update posting group"
+msgstr "Thêm/Cập nhập nhóm định khoản"
+
+#
+msgid "Add/Update account mapping"
+msgstr "Thêm/Cập nhập tài khoản ánh xạ"
+
+#
+msgid "Add/Update posting rule"
+msgstr "Thêm/Cập nhập quy tắc hạch toán"

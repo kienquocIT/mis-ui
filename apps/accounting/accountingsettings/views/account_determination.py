@@ -42,8 +42,7 @@ class JEDocumentTypeDetailAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.JE_DOCUMENT_TYPE_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return()
 
-
-# JE group mapping
+# JE posting group
 class JEPostingGroupList(View):
     @mask_view(
         auth_require=True,
@@ -54,7 +53,12 @@ class JEPostingGroupList(View):
         icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        je_group_type_resp = ServerAPI(user=request.user, url=ApiURL.JE_GROUP_TYPE).get()
+        return {
+            'data': {
+                'je_group_type': je_group_type_resp.result
+            }
+        }, status.HTTP_200_OK
 
 
 class JEPostingGroupListAPI(APIView):
@@ -68,6 +72,49 @@ class JEPostingGroupListAPI(APIView):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.JE_POSTING_GROUP_LIST).get(params)
         return resp.auto_return(key_success='je_posting_group')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.JE_POSTING_GROUP_LIST).post(request.data)
+        if resp.state:
+            return resp.result, status.HTTP_201_CREATED
+        return resp.auto_return()
+
+
+class JEPostingGroupDetailAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.JE_POSTING_GROUP_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return()
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def delete(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.JE_POSTING_GROUP_DETAIL.fill_key(pk=pk)).delete(request.data)
+        return resp.auto_return()
+
+# JE posting group - role key
+class JEPostingGroupRoleKeyListAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.JE_POSTING_GROUP_ROLE_KEY_LIST).get(params)
+        return resp.auto_return(key_success='je_posting_group_role_key')
 
 # JE group assigment
 class JEGroupAssignmentList(View):
@@ -106,7 +153,12 @@ class JEGLAccountMappingList(View):
         icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        je_group_type_resp = ServerAPI(user=request.user, url=ApiURL.JE_GROUP_TYPE).get()
+        return {
+            'data': {
+                'je_group_type': je_group_type_resp.result
+            }
+        }, status.HTTP_200_OK
 
 
 class JEGLAccountMappingListAPI(APIView):
@@ -121,6 +173,35 @@ class JEGLAccountMappingListAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.JE_GL_ACCOUNT_MAPPING_LIST).get(params)
         return resp.auto_return(key_success='je_gl_account_mapping')
 
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.JE_GL_ACCOUNT_MAPPING_LIST).post(request.data)
+        if resp.state:
+            return resp.result, status.HTTP_201_CREATED
+        return resp.auto_return()
+
+
+class JEGLAccountMappingDetailAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.JE_GL_ACCOUNT_MAPPING_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return()
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def delete(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.JE_GL_ACCOUNT_MAPPING_DETAIL.fill_key(pk=pk)).delete(request.data)
+        return resp.auto_return()
 
 # JE posting rule
 class JEPostingRuleList(View):
@@ -133,7 +214,14 @@ class JEPostingRuleList(View):
         icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        je_document_type_resp = ServerAPI(user=request.user, url=ApiURL.JE_DOCUMENT_TYPE).get()
+        je_amount_source_resp = ServerAPI(user=request.user, url=ApiURL.JE_AMOUNT_SOURCE).get()
+        return {
+            'data': {
+                'je_document_type': je_document_type_resp.result,
+                'je_amount_source': je_amount_source_resp.result
+            }
+        }, status.HTTP_200_OK
 
 
 class JEPostingRuleListAPI(APIView):
@@ -147,7 +235,6 @@ class JEPostingRuleListAPI(APIView):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.JE_POSTING_RULE_LIST).get(params)
         return resp.auto_return(key_success='je_posting_rule')
-
 
 # Auto JE Configure Guide
 class JEConfigureGuidePage(View):

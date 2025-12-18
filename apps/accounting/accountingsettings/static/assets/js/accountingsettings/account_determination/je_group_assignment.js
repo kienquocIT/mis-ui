@@ -37,7 +37,7 @@ $(document).ready(function() {
                 {
                     className: 'w-40',
                     render: (data, type, row) => {
-                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-blue-light-5">${row?.['posting_group']?.['code'] || ''}</span> - <span>${row?.['posting_group']?.['title'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-blue-light-4">${row?.['posting_group']?.['code'] || ''}</span> - <span>${row?.['posting_group']?.['title'] || ''}</span>`;
                     }
                 },
                 {

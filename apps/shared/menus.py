@@ -1043,7 +1043,7 @@ class MenusFinancials:
         ],
     )
     JOURNAL_ENTRY = MenuCommon(
-        name='Journal entry', code='', view_name='', icon='<i class="fa-solid fa-scale-balanced"></i>',
+        name='Posting Engine', code='', view_name='', icon='<i class="fa-solid fa-bolt"></i>',
         child=[
             MenuCommon(
                 name='Auto JE configure guide', code='menu_auto_je_guide_page', view_name='JEConfigureGuidePage',

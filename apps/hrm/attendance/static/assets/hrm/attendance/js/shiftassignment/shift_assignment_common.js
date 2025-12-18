@@ -222,29 +222,31 @@ class ShiftAssignHandle {
                         let shiftBg = {};
                         for (let m = mStart.clone(); m.isBefore(mEnd); m.add(1, 'days')) {
                             for (let shiftAssignmentData of data.shift_assignment_list) {
-                                if (shiftAssignmentData?.['date'] === m.format('YYYY-MM-DD')) {
-                                    let bg = '#298DFF';
-                                    if (Object.keys(shiftBg).length === 0) {
-                                        shiftBg[shiftAssignmentData?.['shift']?.['id']] = '#298DFF';
+                                if (shiftAssignmentData?.['shift']?.['id']) {
+                                    if (shiftAssignmentData?.['date'] === m.format('YYYY-MM-DD')) {
+                                        let bg = '#298DFF';
+                                        if (Object.keys(shiftBg).length === 0) {
+                                            shiftBg[shiftAssignmentData?.['shift']?.['id']] = '#298DFF';
+                                        }
+                                        if (Object.keys(shiftBg).length > 0) {
+                                            if (shiftBg?.[shiftAssignmentData?.['shift']?.['id']]) {
+                                                bg = shiftBg?.[shiftAssignmentData?.['shift']?.['id']];
+                                            }
+                                            if (!shiftBg?.[shiftAssignmentData?.['shift']?.['id']]) {
+                                                bg = ShiftAssignHandle.getRandomColor();
+                                                shiftBg[shiftAssignmentData?.['shift']?.['id']] = bg;
+                                            }
+                                        }
+                                        events.push({
+                                            backgroundColor: bg,
+                                            title: shiftAssignmentData?.['shift']?.['title'],
+                                            start: m.format('YYYY-MM-DD'),
+                                            dataShift: shiftAssignmentData?.['shift'],
+                                            extendedProps: {
+                                                toHtml: 'convert'
+                                            }
+                                        });
                                     }
-                                    if (Object.keys(shiftBg).length > 0) {
-                                        if (shiftBg?.[shiftAssignmentData?.['shift']?.['id']]) {
-                                            bg = shiftBg?.[shiftAssignmentData?.['shift']?.['id']];
-                                        }
-                                        if (!shiftBg?.[shiftAssignmentData?.['shift']?.['id']]) {
-                                            bg = ShiftAssignHandle.getRandomColor();
-                                            shiftBg[shiftAssignmentData?.['shift']?.['id']] = bg;
-                                        }
-                                    }
-                                    events.push({
-                                        backgroundColor: bg,
-                                        title: shiftAssignmentData?.['shift']?.['title'],
-                                        start: m.format('YYYY-MM-DD'),
-                                        dataShift: shiftAssignmentData?.['shift'],
-                                        extendedProps: {
-                                            toHtml: 'convert'
-                                        }
-                                    });
                                 }
                             }
                         }
@@ -294,6 +296,7 @@ class ShiftAssignHandle {
                 }
             }
         }
+        const hasWorkingDay = Object.keys(dayOfWeekCheck).length > 0;
         let parse = (str) => {
             const [day, month, year] = str.split('/').map(Number);
             return new Date(year, month - 1, day);
@@ -309,7 +312,7 @@ class ShiftAssignHandle {
         let end = parse(dateTo);
 
         while (current <= end) {
-            if (dayOfWeek.includes(current.getDay())) {
+            if (!hasWorkingDay || dayOfWeek.includes(current.getDay())) {
                 result.push(format(new Date(current)));
             }
             current.setDate(current.getDate() + 1);
@@ -693,7 +696,7 @@ $(document).ready(function () {
     ShiftAssignHandle.$wrapperEle.css({
         'height': 'calc(100vh - 78px)'
     });
-    FormElementControl.loadInitS2(ShiftAssignHandle.$shiftApplyEle)
+    FormElementControl.loadInitS2(ShiftAssignHandle.$shiftApplyEle, [], {}, null, true);
 
     let calendarEl = ShiftAssignHandle.$calendarEle[0];
     let curYear = moment().format('YYYY');
@@ -878,15 +881,19 @@ $(document).ready(function () {
                 apply_to: {
                     required: true,
                 },
-                shift: {
-                    required: true,
-                },
             },
             errorClass: 'is-invalid cl-red',
             submitHandler: submitHandlerFunc
         });
 
     function submitHandlerFunc() {
+        let dataSubmit = ShiftAssignHandle.setupDataSubmit();
+        if (dataSubmit?.['date_list'] && dataSubmit?.['shift']) {
+            if (dataSubmit?.['date_list'].length === 0) {
+                $.fn.notifyB({description: ShiftAssignHandle.$transEle.attr('data-err-no-date')}, 'failure');
+                return false;
+            }
+        }
         WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
         $.fn.callAjax2(
             {

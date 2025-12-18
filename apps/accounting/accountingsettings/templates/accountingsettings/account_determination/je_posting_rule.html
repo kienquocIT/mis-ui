@@ -8,8 +8,21 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
+    <a id="btn-create" href="#" data-bs-toggle="modal" data-bs-target="#modal-add-posting-rule">
+        <button class="btn btn-outline-primary" type="button">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
 {% endblock %}
 {% block pageContent %}
+    {{ data.data.je_document_type | json_script:"je_document_type" }}
+    {{ data.data.je_amount_source | json_script:"je_amount_source" }}
+
     <script id="script-url"
             data-url-list="{% url 'JEPostingRuleListAPI' %}"
     ></script>
@@ -30,11 +43,120 @@
                     <th style="min-width: 200px">{% trans 'Description' %}</th>
                     <th style="min-width: 100px">{% trans 'Priority' %}</th>
                     <th style="min-width: 250px">{% trans 'Account mapped' %}</th>
-                    <th style="min-width: 100px">{% trans 'Active' %}</th>
+                    <th style="min-width: 100px"></th>
                 </tr>
                 </thead>
                 <tbody></tbody>
             </table>
+        </div>
+    </div>
+{% endblock %}
+{% block modalData %}
+    <div class="modal fade" id="modal-add-posting-rule" tabindex="-1" role="dialog" aria-labelledby="modal-add-posting-rule" aria-hidden="true">
+        <div class="modal-dialog modal-lg" style="min-width: 50%;" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Add/Update posting rule' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-add-posting-rule" data-method="POST" data-url="{% url 'JEPostingGroupListAPI' %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <h6 class="text-primary mb-3"><i class="bi bi-info-circle me-2"></i>Thông tin cơ bản</h6>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="document-type">{% trans 'JE document type' %}</label>
+                                    <select class="form-select select2" id="document-type" required></select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="description">{% trans 'Description' %}</label>
+                                    <textarea class="form-control" id="description"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <div class="form-group">
+                                    <label class="form-label required" for="side">{% trans 'Debit' %}/{% trans 'Credit' %}</label>
+                                    <select class="form-select select2" id="side" required>
+                                        <option></option>
+                                        <option value="DEBIT">DEBIT - {% trans 'Debit' %}</option>
+                                        <option value="CREDIT">CREDIT - {% trans 'Credit' %}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <div class="form-group">
+                                    <label class="form-label required" for="rule-level">{% trans 'Rule level' %}</label>
+                                    <select class="form-select select2" id="rule-level" required>
+                                        <option></option>
+                                        <option value="HEADER">HEADER {% trans '(total document)' %}</option>
+                                        <option value="LINE">LINE {% trans '(by line)' %}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <div class="form-group">
+                                    <label class="form-label required" for="priority">{% trans 'Priority' %}</label>
+                                    <input class="form-control" type="number" min="0" id="priority" required placeholder="10, 15, 20, ...">
+                                </div>
+                            </div>
+                            <h6 class="text-primary mt-5 mb-3"><i class="bi bi-cash-stack me-2"></i>Nguồn lấy số tiền</h6>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="amount-source">{% trans 'Amount source' %}</label>
+                                    <select class="form-select select2" id="amount-source" required></select>
+                                </div>
+                            </div>
+
+                            <h6 class="text-primary mt-5 mb-3"><i class="bi bi-wallet2 me-2"></i>Cách lấy tài khoản</h6>
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label required" for="account-source-type">{% trans 'Account source type' %}</label>
+                                    <select class="form-select select2" id="account-source-type" required>
+                                        <option></option>
+                                        <option value="FIXED">FIXED {% trans '(fixed)' %}</option>
+                                        <option value="LOOKUP">LOOKUP {% trans '(lookup by Posting group + Role key)' %}</option>
+                                        <option value="CONDITIONAL" disabled>CONDITIONAL {% trans '(lookup by last linked document)' %}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6 fixed-item">
+                                <div class="form-group">
+                                    <label class="form-label required" for="fixed-account">{% trans 'Fixed account' %}</label>
+                                    <select class="form-select select2" id="fixed-account" required data-method="GET" data-url="{% url 'ChartOfAccountsListAPI' %}"></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6 lookup-item">
+                                <div class="form-group">
+                                    <label class="form-label required" for="fixed-account">{% trans 'Lookup source' %}</label>
+                                    <select class="form-select select2" id="fixed-account" required data-method="GET" data-url="{% url 'ChartOfAccountsListAPI' %}"></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6 lookup-item">
+                                <div class="form-group">
+                                    <label class="form-label required" for="fixed-account">{% trans 'Lookup role' %}</label>
+                                    <select class="form-select select2" id="fixed-account" required data-method="GET" data-url="{% url 'ChartOfAccountsListAPI' %}"></select>
+                                </div>
+                            </div>
+
+                            <div class="col-12 mt-5">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" id="is-active" class="form-check-input" checked>
+                                    <label class="form-check-label" for="is-active">{% trans 'Active' %}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" form="form-add-posting-rule" class="btn btn-primary">{% trans 'Save' %}</button>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

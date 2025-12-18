@@ -1543,6 +1543,13 @@ table.dataTable tr.dtrg-group th {
   border-radius: 12px;       /* bo góc đẹp hơn */
 }
 
+/* tăng chiều rộng và căn giữa popup */
+.swal2-container.custom-swal-sm .swal2-popup {
+  min-width: 30% !important;   /* hoặc 700px, tuỳ bạn */
+  max-width: 60% !important; /* tránh bị tràn màn hình */
+  border-radius: 12px;       /* bo góc đẹp hơn */
+}
+
 #idxPageContentWrapper {
     /*background-image: url("/static/assets/js/home_4.jpg");*/
     /*background-repeat: no-repeat;*/

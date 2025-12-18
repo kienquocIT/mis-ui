@@ -46,5 +46,13 @@ msgid "Click here to config"
 msgstr "Cấu hình ngay tại đây"
 
 #
-msgid "Are you sure you want to enable automatic journal entries for this transaction?"
-msgstr "Bạn có chắc chắn muốn bật tính năng tự động sinh bút toán cho giao dịch này không?"
+msgid "Are you sure to activate/deactivate automatic journal entries for this transaction?"
+msgstr "Bạn có chắc muốn bật/tắt tính năng tự động sinh bút toán cho giao dịch này không?"
+
+#
+msgid "Are you sure to save this change?"
+msgstr "Bạn có chắc lưu thay đổi này không?"
+
+#
+msgid "Are you sure to delete?"
+msgstr "Bạn có chắc xóa chứ?"

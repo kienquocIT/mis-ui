@@ -9,7 +9,8 @@ from apps.accounting.accountingsettings.views import (
     AssetCategoryListAPI, AssetCategoryDetailAPI, DimensionSplitTemplateList, DimensionSplitTemplateListAPI,
     DimensionSplitTemplateDetailAPI, JEDocumentTypeList, JEDocumentTypeListAPI, JEDocumentTypeDetailAPI,
     JEPostingRuleList, JEPostingRuleListAPI, JEPostingGroupList, JEGroupAssignmentList, JEGLAccountMappingList,
-    JEPostingGroupListAPI, JEGroupAssignmentListAPI, JEGLAccountMappingListAPI, JEConfigureGuidePage
+    JEPostingGroupListAPI, JEGroupAssignmentListAPI, JEGLAccountMappingListAPI, JEConfigureGuidePage,
+    JEPostingGroupDetailAPI, JEPostingGroupRoleKeyListAPI, JEGLAccountMappingDetailAPI
 )
 
 urlpatterns = [
@@ -21,10 +22,13 @@ urlpatterns = [
     path('je-document-type/detail/api/<str:pk>', JEDocumentTypeDetailAPI.as_view(), name='JEDocumentTypeDetailAPI'),
     path('je-posting-group/list', JEPostingGroupList.as_view(), name='JEPostingGroupList'),
     path('je-posting-group/list/api', JEPostingGroupListAPI.as_view(), name='JEPostingGroupListAPI'),
+    path('je-posting-group/detail/api/<str:pk>', JEPostingGroupDetailAPI.as_view(), name='JEPostingGroupDetailAPI'),
+    path('je-posting-group-role-key/list/api', JEPostingGroupRoleKeyListAPI.as_view(), name='JEPostingGroupRoleKeyListAPI'),
     path('je-group-assignment/list', JEGroupAssignmentList.as_view(), name='JEGroupAssignmentList'),
     path('je-group-assignment/list/api', JEGroupAssignmentListAPI.as_view(), name='JEGroupAssignmentListAPI'),
     path('je-gl-account-mapping/list', JEGLAccountMappingList.as_view(), name='JEGLAccountMappingList'),
     path('je-gl-account-mapping/list/api', JEGLAccountMappingListAPI.as_view(), name='JEGLAccountMappingListAPI'),
+    path('je-gl-account-mapping/detail/api/<str:pk>', JEGLAccountMappingDetailAPI.as_view(), name='JEGLAccountMappingDetailAPI'),
     path('je-posting-rule/list', JEPostingRuleList.as_view(), name='JEPostingRuleList'),
     path('je-posting-rule/list/api', JEPostingRuleListAPI.as_view(), name='JEPostingRuleListAPI'),
     path('auto-je-configure-guide/list/api', JEConfigureGuidePage.as_view(), name='JEConfigureGuidePage'),

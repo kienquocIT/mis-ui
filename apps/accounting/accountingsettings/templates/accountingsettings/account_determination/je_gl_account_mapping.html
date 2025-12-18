@@ -8,10 +8,23 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
+    <a id="btn-create" href="#" data-bs-toggle="modal" data-bs-target="#modal-add-gl-account-mapping">
+        <button class="btn btn-outline-primary" type="button">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
 {% endblock %}
 {% block pageContent %}
+    {{ data.data.je_group_type | json_script:"je_group_type" }}
+
     <script id="script-url"
             data-url-list="{% url 'JEGLAccountMappingListAPI' %}"
+            data-url-detail="{% url 'JEGLAccountMappingDetailAPI' '0' %}"
     ></script>
     <div class="row">
         <div class="col-12">
@@ -19,17 +32,72 @@
                    id="je-gl-account-mapping-table"
                    data-chart-of-account-url="{% url 'ChartOfAccountsListAPI' %}"
             >
-                <thead class="bg-secondary-light-5">
+                <thead class="bg-primary-light-5">
                 <tr>
                     <th style="min-width: 50px"></th>
                     <th style="min-width: 350px">{% trans 'Posting group' %}</th>
                     <th style="min-width: 350px">{% trans 'Role key' %}</th>
                     <th style="min-width: 250px">{% trans 'Account mapped' %}</th>
-                    <th style="min-width: 100px">{% trans 'Active' %}</th>
+                    <th style="min-width: 100px"></th>
                 </tr>
                 </thead>
                 <tbody></tbody>
             </table>
+        </div>
+    </div>
+{% endblock %}
+{% block modalData %}
+    <div class="modal fade" id="modal-add-gl-account-mapping" tabindex="-1" role="dialog" aria-labelledby="modal-add-gl-account-mapping" aria-hidden="true">
+        <div class="modal-dialog modal-lg" style="min-width: 50%" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Add/Update account mapping' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-add-gl-account-mapping" data-method="POST" data-url="{% url 'JEGLAccountMappingListAPI' %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="gl-posting-group-type">{% trans 'Posting group type' %}</label>
+                                    <select class="form-select select2" id="gl-posting-group-type" required></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label required" for="gl-posting-group">{% trans 'Posting group' %}</label>
+                                    <select class="form-select select2" id="gl-posting-group" required data-method="GET" data-url="{% url 'JEPostingGroupListAPI' %}"></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label required" for="gl-role-key">{% trans 'Role key' %}</label>
+                                    <select class="form-select select2" id="gl-role-key" required data-method="GET" data-url="{% url 'JEPostingGroupRoleKeyListAPI' %}"></select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="gl-account">{% trans 'Account' %}</label>
+                                    <select class="form-select select2" id="gl-account" required data-method="GET" data-url="{% url 'ChartOfAccountsListAPI' %}"></select>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-5">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" id="is-active" class="form-check-input" checked>
+                                    <label class="form-check-label" for="is-active">{% trans 'Active' %}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" form="form-add-gl-account-mapping" class="btn btn-primary">{% trans 'Save' %}</button>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

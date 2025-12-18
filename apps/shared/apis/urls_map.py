@@ -922,8 +922,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     JE_POSTING_RULE_LIST = StringUrl('accounting-setting/je-posting-rule/list')
     JE_POSTING_RULE_DETAIL = StringUrl('accounting-setting/je-posting-rule/detail/{pk}')
     JE_POSTING_GROUP_LIST = StringUrl('accounting-setting/je-posting-group/list')
+    JE_POSTING_GROUP_DETAIL = StringUrl('accounting-setting/je-posting-group/detail/{pk}')
+    JE_POSTING_GROUP_ROLE_KEY_LIST = StringUrl('accounting-setting/je-posting-group-role-key/list')
     JE_GROUP_ASSIGNMENT_LIST = StringUrl('accounting-setting/je-group-assignment/list')
     JE_GL_ACCOUNT_MAPPING_LIST = StringUrl('accounting-setting/je-gl-account-mapping/list')
+    JE_GL_ACCOUNT_MAPPING_DETAIL = StringUrl('accounting-setting/je-gl-account-mapping/detail/{pk}')
 
     DIMENSION_DEFINITION_LIST = StringUrl('accounting-setting/dimension-definition/list')
     DIMENSION_DEFINITION_DETAIL = StringUrl('accounting-setting/dimension-definition/detail/{pk}')
@@ -940,6 +943,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DIMENSION_SPLIT_TEMPLATE_DETAIL = StringUrl('accounting-setting/dimension-split-template/detail/{pk}')
     ASSET_CATEGORY_LIST = StringUrl('accounting-setting/asset-category/list')
     ASSET_CATEGORY_DETAIL = StringUrl('accounting-setting/asset-category/detail/{pk}')
+    JE_DOCUMENT_TYPE = StringUrl('accounting-setting/get-je-document-type')
+    JE_AMOUNT_SOURCE = StringUrl('accounting-setting/get-je-amount-source')
+    JE_GROUP_TYPE = StringUrl('accounting-setting/get-je-group-type')
 
     JOURNAL_ENTRY_LIST = StringUrl('journal-entry/list')
     JOURNAL_ENTRY_LINE_LIST = StringUrl('accounting-report/line/list')

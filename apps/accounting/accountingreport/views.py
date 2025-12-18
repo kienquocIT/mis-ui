@@ -54,3 +54,16 @@ class ChartOfAccountsSummarizeAPI(APIView):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.CHART_OF_ACCOUNTS_SUMMARIZE).get(params)
         return resp.auto_return(key_success='journal_entry_summarize')
+
+
+class ReportTrialBalanceList(View):
+    @mask_view(
+        auth_require=True,
+        template='accounting/trialbalance_report/trialbalance_report.html',
+        menu_active='menu_report_trial_balance',
+        breadcrumb='REPORT_TRIAL_BALANCE_LIST_PAGE',
+        icon_cls='fas bi bi-journal-text',
+        icon_bg='bg-blue',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK

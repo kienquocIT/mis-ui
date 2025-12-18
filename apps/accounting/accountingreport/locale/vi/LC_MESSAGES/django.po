@@ -47,16 +47,38 @@ msgstr "TỔNG CÓ"
 
 #
 msgid "Opening Balance"
-msgstr "SỐ DƯ ĐẦU KỲ"
+msgstr "Số dư đầu kỳ"
 
 #
 msgid "Period Debit"
-msgstr "PHÁT SINH NỢ"
+msgstr "Phát sinh nợ"
 
 #
 msgid "Period Credit"
-msgstr "PHÁT SINH CÓ"
+msgstr "Phát sinh có"
 
 #
 msgid "Closing Balance"
-msgstr "SỐ DƯ CUỐI KỲ"
+msgstr "Số dư cuối kỳ"
+
+#
+msgid "Trial balance"
+msgstr "Cân đối số phát sinh"
+
+#
+msgid "Trial balance report"
+msgstr "Bảng cân đối số phát sinh"
+
+#
+msgid "Period Movement"
+msgstr "Số phát sinh trong kỳ"
+
+#
+msgid "Account Level"
+msgstr "Cấp tài khoản"
+
+#
+msgid "Display"
+msgstr "Hiển thị"
+
+

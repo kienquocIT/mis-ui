@@ -151,7 +151,7 @@ function loadSummarize() {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data && typeof data === 'object' && data.hasOwnProperty('journal_entry_summarize')) {
-                return data?.['journal_entry_summarize'];
+                return (data?.['journal_entry_summarize'] || []).length === 1 ? (data?.['journal_entry_summarize'][0] || {}) : {};
             }
             return {};
         },

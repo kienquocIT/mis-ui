@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Trial balance' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}" rel="stylesheet"
+          type="text/css"/>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageContent %}
+    {{ data.data.je_document_type | json_script:"je_document_type" }}
+    {{ data.data.je_amount_source | json_script:"je_amount_source" }}
+
+    {#  URL  #}
+    <script id="script-url"
+            data-url-list="{% url 'JEPostingRuleListAPI' %}"
+    ></script>
+
+    {#  Filter  #}
+    <div class="row align-items-end">
+        <div class="col-12 col-md-4 col-lg-3">
+            <div class="form-group mb-3 mb-md-0">
+                <label class="form-label">{% trans 'Account Level' %}</label>
+                <select class="form-select" id="account_level_filter">
+                    <option value="-1">All level</option>
+                    <option value="0">Level 1</option>
+                    <option value="1">Level 2</option>
+                    <option value="2">Level 3</option>
+                    <option value="3">Level 4</option>
+                    <option value="4">Level 5</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4 col-lg-3">
+            <div class="form-group mb-3 mb-md-0">
+                <label class="form-label">{% trans 'Display' %}</label>
+                <select class="form-select" id="account_display_filter">
+                    <option value="0">All</option>
+                    <option value="1">Non-zero only</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-auto">
+            <button type="button"
+                    class="btn btn-outline-secondary account-info-btn"
+                    id="account_info_btn"
+                    style="display: none;">
+                <i class="fas fa-info-circle"></i>
+            </button>
+        </div>
+
+        <div class="col-12 col-md-4 col-lg-2">
+            <button type="button" class="btn btn-primary" id="apply_filter">
+                <i class="fas fa-check-circle"></i> {% trans 'Apply' %}
+            </button>
+            <button type="button" class="btn btn-light" id="reset_filter">
+                <i class="fas fa-redo"></i> {% trans 'Reset' %}
+            </button>
+        </div>
+
+    </div>
+
+
+    <div class="row">
+        <div class="col-12">
+            <table class="table nowrap table-bordered w-100"
+                   id="trial-balance-table"
+                   data-table-url="{% url 'GetChartOfAccountSummaryAPI' %}"
+                   data-method="GET">
+                <thead class="bg-secondary-light-5 text-center align-middle">
+                <tr>
+                    <th rowspan="2">
+                        {% trans 'Account Code' %}<br>
+                        <small>Account Code</small>
+                    </th>
+                    <th rowspan="2">
+                        {% trans 'Account Name' %}<br>
+                        <small>Account Name</small>
+                    </th>
+
+                    <th colspan="2">
+                        {% trans 'Opening Balance' %}<br>
+                        <small>Opening Balance</small>
+                    </th>
+
+                    <th colspan="2">
+                        {% trans 'Period Movement' %}<br>
+                        <small>Period Movement</small>
+                    </th>
+
+                    <th colspan="2">
+                        {% trans 'Closing Balance' %}<br>
+                        <small>Closing Balance</small>
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        {% trans 'Debit' %}<br>
+                        <small>Debit</small>
+                    </th>
+                    <th>
+                        {% trans 'Credit' %}<br>
+                        <small>Credit</small>
+                    </th>
+
+                    <th>
+                        {% trans 'Debit' %}<br>
+                        <small>Debit</small>
+                    </th>
+                    <th>
+                        {% trans 'Credit' %}<br>
+                        <small>Credit</small>
+                    </th>
+
+                    <th>
+                        {% trans 'Debit' %}<br>
+                        <small>Debit</small>
+                    </th>
+                    <th>
+                        {% trans 'Credit' %}<br>
+                        <small>Credit</small>
+                    </th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
+    <script src="{% static 'assets/accounting/trialbalance_report/js/trial_balance_report.js' %}"></script>
+{% endblock %}

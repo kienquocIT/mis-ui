@@ -1094,6 +1094,10 @@ class MenusFinancials:
                 name='General ledger report', code='menu_report_general_ledger', view_name='ReportGeneralLedgerList',
                 icon='<i class="fas fa-book-open"></i>',
             ),
+            MenuCommon(
+                name='Trial balance report', code='menu_report_trial_balance', view_name='ReportTrialBalanceList',
+                icon='<i class="fa-solid fa-scale-balanced"></i>',
+            ),
         ],
     )
 

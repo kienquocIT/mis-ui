@@ -913,6 +913,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     INSTRUMENT_TOOL_DETAIL = StringUrl('asset/instrument-tool/detail')
     CHART_OF_ACCOUNTS_LIST = StringUrl('accounting-setting/chart-of-accounts/list')
     CHART_OF_ACCOUNTS_DETAIL = StringUrl('accounting-setting/chart-of-accounts/{pk}')
+    CHART_OF_ACCOUNTS_SUMMARIZE = StringUrl('accounting-setting/get_chart_of_accounts_summarize')
     INSTRUMENT_TOOL_FOR_LEASE_LIST = StringUrl('asset/instrument-tool-for-lease/list')
     INSTRUMENT_TOOL_STATUS_LEASE_LIST = StringUrl('asset/instrument-tool-status-lease/list')
 

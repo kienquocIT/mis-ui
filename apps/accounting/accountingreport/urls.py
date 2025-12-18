@@ -1,6 +1,6 @@
 from django.urls import path
 from apps.accounting.accountingreport.views import ReportJournalEntryList, ReportJournalEntryListAPI, \
-    ReportGeneralLedgerList
+    ReportGeneralLedgerList, ChartOfAccountsSummarizeAPI
 
 urlpatterns = [
     path('journal-entry', ReportJournalEntryList.as_view(), name='ReportJournalEntryList'),
@@ -8,4 +8,6 @@ urlpatterns = [
 
     # general report
     path('general-ledger', ReportGeneralLedgerList.as_view(), name='ReportGeneralLedgerList'),
+
+    path('get-je-chart-of-account/api', ChartOfAccountsSummarizeAPI.as_view(), name='GetChartOfAccountSummaryAPI'),
 ]

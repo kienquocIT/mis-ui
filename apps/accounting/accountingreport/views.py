@@ -41,3 +41,16 @@ class ReportGeneralLedgerList(View):
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
+
+
+class ChartOfAccountsSummarizeAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.CHART_OF_ACCOUNTS_SUMMARIZE).get(params)
+        return resp.auto_return(key_success='journal_entry_summarize')

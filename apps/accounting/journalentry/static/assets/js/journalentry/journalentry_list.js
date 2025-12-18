@@ -104,10 +104,10 @@ $(document).ready(function () {
                     Promise.all([ajax]).then(
                         (results) => {
                             // console.log(results[0])
-                            $('#summarize-total-je').text(results[0]?.['summarize_total_je'] || 0)
-                            $('#summarize-total-debit').attr('data-init-money', results[0]?.['summarize_total_debit'] || 0)
-                            $('#summarize-total-credit').attr('data-init-money', results[0]?.['summarize_total_credit'] || 0)
-                            $('#summarize-total-source-type').text(results[0]?.['summarize_total_source_type'] || 0)
+                            $('#summarize-total-je').text(results[0]?.['total_je_doc'] || 0)
+                            $('#summarize-total-debit').attr('data-init-money', results[0]?.['total_debit'] || 0)
+                            $('#summarize-total-credit').attr('data-init-money', results[0]?.['total_credit'] || 0)
+                            $('#summarize-total-source-type').text(results[0]?.['total_source_type'] || 0)
                             $.fn.initMaskMoney2()
                         });
                 }

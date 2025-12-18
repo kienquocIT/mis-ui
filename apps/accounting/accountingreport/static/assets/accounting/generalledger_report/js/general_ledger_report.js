@@ -9,13 +9,15 @@ class GeneralLedgerReportElements {
         this.$resetFilterBtn = $('#reset_filter');
     }
 }
+
 const pageElements = new GeneralLedgerReportElements();
+let select_account_id = ""
 
 /**
  * Khai bao cac ham load data
  */
 class GeneralLedgerReportFunction {
-    static loadGeneralLedgerReportList(from_date = '', endDate = '', accountId = '') {
+    static loadGeneralLedgerReportList(from_date = '', to_date = '', accountId = '') {
         if ($.fn.DataTable.isDataTable(pageElements.$tableReport)) {
             pageElements.$tableReport.DataTable().destroy();
         }
@@ -40,7 +42,7 @@ class GeneralLedgerReportFunction {
                     'account_id': accountId,
                     'is_general_ledger': true,
                 },
-                dataSrc: function(resp) {
+                dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         return resp.data['report_journal_entry_list'] ? resp.data['report_journal_entry_list'] : [];
@@ -99,7 +101,7 @@ class GeneralLedgerReportFunction {
                         return total_credit ? `<span class="mask-money" data-init-money="${total_credit}"></span>` : '--';
                     }
                 }
-            ],
+            ]
         })
     }
 
@@ -139,6 +141,36 @@ class GeneralLedgerReportFunction {
     }
 }
 
+function loadSummarize() {
+    // let dataParam = {}
+    let ajax = $.fn.callAjax2({
+        url: pageElements.$tableReport.attr('data-url-summarize'),
+        data: {'account_id': select_account_id},
+        method: 'GET'
+    }).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data && typeof data === 'object' && data.hasOwnProperty('journal_entry_summarize')) {
+                return data?.['journal_entry_summarize'];
+            }
+            return {};
+        },
+        (errs) => {
+            console.log(errs);
+        }
+    )
+
+    Promise.all([ajax]).then(
+        (results) => {
+            // console.log(results[0])
+            $('#total_opening_balance').text(results[0]?.['opening_balance'] || 0)
+            $('#total_period_debit').attr('data-init-money', results[0]?.['total_debit'] || 0)
+            $('#total_period_credit').attr('data-init-money', results[0]?.['total_credit'] || 0)
+            $('#total_closing_balance').text(results[0]?.['closing_balance'] || 0)
+            $.fn.initMaskMoney2()
+        });
+}
+
 /**
  * Khai bao cac ham su kien
  */
@@ -150,6 +182,7 @@ class GeneralLedgerReportEventHandler {
             let dayEnd = DateTimeControl.formatDateType("DD/MM/YYYY", "YYYY-MM-DD", pageElements.$endDateFilter.val());
             let accountId = pageElements.$accountFilter.val() || null;
             GeneralLedgerReportFunction.loadGeneralLedgerReportList(dayStart, dayEnd, accountId);
+            loadSummarize()
         });
 
         // event when click reset filter button
@@ -170,8 +203,9 @@ class GeneralLedgerReportEventHandler {
         });
 
         // event when account filter changes
-        pageElements.$accountFilter.on('change', function() {
+        pageElements.$accountFilter.on('change', function () {
             const selectedData = $(this).select2('data');
+            select_account_id = selectedData[0]?.['data']['id']
             GeneralLedgerReportFunction.updateAccountInfoPopover(selectedData);
         });
     }

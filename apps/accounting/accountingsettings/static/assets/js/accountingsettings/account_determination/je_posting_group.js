@@ -88,7 +88,7 @@ $(document).ready(function() {
         let data_option = JSON.parse($('#je_group_type').text() || '{}')?.['je_group_type'] || []
         let data_option_html = '<option></option>'
         for (let i=0; i < data_option.length; i++) {
-            data_option_html += `<option value="${data_option[i][0]}">${data_option[i][1]}</option>`
+            data_option_html += `<option value="${data_option[i][0]}">${data_option[i][0]} - ${data_option[i][1]}</option>`
         }
         $pg_group_type.html(data_option_html)
     }
@@ -149,7 +149,7 @@ $(document).ready(function() {
 
     $('#btn-create').on('click', function () {
         $pg_code.prop('readonly', false)
-        $pg_group_type.empty().prop('disabled', false)
+        $pg_group_type.prop('disabled', false)
         $modal_add_posting_group.attr('data-is-update', 'false')
         $modal_add_posting_group.attr('data-row-id', '')
     })

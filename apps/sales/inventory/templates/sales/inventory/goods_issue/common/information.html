@@ -9,6 +9,7 @@
 {#                        <option value="1">{% trans 'For liquidation' %}</option>#}
                 <option value="2">{% trans 'For production' %}</option>
                 <option value="3">{% trans 'For product modification' %}</option>
+                <option value="4">{% trans 'For fixed asset' %}</option>
             </select>
         </div>
     </div>
@@ -40,6 +41,17 @@
             <div class="input-group">
                 <input disabled readonly id="box-select-pm" class="form-control" placeholder="{% trans 'Please click on the button to select' %}">
                 <button class="btn btn-outline-secondary" id="btn-select-pm" type="button" data-bs-toggle="modal" data-bs-target="#select-pm-modal">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div hidden id="fa-select-space" class="col-12 col-md-9 col-lg-9">
+        <div class="form-group">
+            <label for="box-select-fa" class="form-label required">{% trans 'Select Fixed asset' %}</label>
+            <div class="input-group">
+                <input disabled readonly id="box-select-fa" class="form-control" placeholder="{% trans 'Please click on the button to select' %}">
+                <button class="btn btn-outline-secondary" id="btn-select-fa" type="button" data-bs-toggle="modal" data-bs-target="#select-fa-modal">
                     <i class="fas fa-ellipsis-v"></i>
                 </button>
             </div>

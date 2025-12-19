@@ -7197,6 +7197,10 @@ msgid "Select Product modification"
 msgstr "Chọn Phiếu Ráp-Rã thiết bị"
 
 #
+msgid "Select Fixed asset"
+msgstr "Chọn Phiếu Tài sản cố định"
+
+#
 msgid "Input data later"
 msgstr "Nhập liệu sau"
 
@@ -11783,6 +11787,10 @@ msgstr "Sản phẩm không có cấu hình lưu kho. Bạn có muốn tiếp t�
 #
 msgid "For product modification"
 msgstr "Cho ráp-rã sản phẩm"
+
+#
+msgid "For fixed asset"
+msgstr "Cho tài sản cố định"
 
 #
 msgid "Product mapping"

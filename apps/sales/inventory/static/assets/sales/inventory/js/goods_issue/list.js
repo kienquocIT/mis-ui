@@ -55,6 +55,7 @@ $(document).ready(function () {
                                 dtb.attr('data-trans-liquidation'),
                                 dtb.attr('data-trans-production'),
                                 dtb.attr('data-trans-product-modification'),
+                                dtb.attr('data-trans-fixed-asset'),
                             ]
                             return `<span class="text-muted fst-italic">${type_trans[row?.['goods_issue_type']]}</span>`
                         }

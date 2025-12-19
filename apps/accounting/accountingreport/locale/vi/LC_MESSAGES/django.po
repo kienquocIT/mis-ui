@@ -35,15 +35,15 @@ msgstr "Mã bút toán"
 
 #
 msgid "Total Entries"
-msgstr "TỔNG SỐ CHỨNG TỪ"
+msgstr "Tổng số Chứng từ"
 
 #
 msgid "Total Debit"
-msgstr "TỔNG NỢ"
+msgstr "Tổng nợ"
 
 #
 msgid "Total Credit"
-msgstr "TỔNG CÓ"
+msgstr "Tổng có"
 
 #
 msgid "Opening Balance"
@@ -81,4 +81,6 @@ msgstr "Cấp tài khoản"
 msgid "Display"
 msgstr "Hiển thị"
 
-
+#
+msgid "Non-zero account only"
+msgstr "Chỉ tài khoản có số dư"

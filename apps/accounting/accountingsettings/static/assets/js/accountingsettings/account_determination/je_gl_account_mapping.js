@@ -38,7 +38,7 @@ $(document).ready(function() {
                 {
                     className: 'w-35',
                     render: (data, type, row) => {
-                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-blue-light-4">${row?.['posting_group']?.['code'] || ''}</span> - <span>${row?.['posting_group']?.['title'] || ''}</span>`;
+                        return `<span class="bflow-mirrow-badge border-0 fw-bold bg-blue-light-4">${row?.['posting_group_data']?.['code'] || ''}</span> - <span>${row?.['posting_group_data']?.['title'] || ''}</span>`;
                     }
                 },
                 {
@@ -79,6 +79,9 @@ $(document).ready(function() {
                     if (rowData && !rowData['is_active']) {
                         $(ele).addClass('bg-secondary-light-5');
                     }
+                    else if (rowData && Object.keys(rowData['account_data']).length === 0) {
+                        $(ele).addClass('bg-warning-light-5');
+                    }
                     if ($(ele).find('.row-account').length) {
                         UsualLoadPageAccountingFunction.LoadAccountingAccount({
                             element: $(ele).find('.row-account'),
@@ -98,7 +101,7 @@ $(document).ready(function() {
         let data_option = JSON.parse($('#je_group_type').text() || '{}')?.['je_group_type'] || []
         let data_option_html = '<option></option>'
         for (let i=0; i < data_option.length; i++) {
-            data_option_html += `<option value="${data_option[i][0]}">${data_option[i][1]}</option>`
+            data_option_html += `<option value="${data_option[i][0]}">${data_option[i][0]} - ${data_option[i][1]}</option>`
         }
         $gl_posting_group_type.html(data_option_html)
     }
@@ -176,7 +179,7 @@ $(document).ready(function() {
                 'account': $gl_account.val(),
                 'is_active': $is_active.prop('checked')
             } : {
-                'posting_group': $gl_posting_group.val(),
+                'posting_group_data': $gl_posting_group.val(),
                 'role_key': $gl_role_key.val(),
                 'account': $gl_account.val(),
                 'is_active': $is_active.prop('checked')
@@ -199,9 +202,9 @@ $(document).ready(function() {
 
     $(document).on('click', '.edit-row', function () {
         let data = JSON.parse($(this).closest('div').find('.data-row').text() || '{}')
-        $gl_posting_group_type.val(data?.['posting_group']?.['posting_group_type'])
+        $gl_posting_group_type.val(data?.['posting_group_data']?.['posting_group_type'])
         $gl_posting_group_type.trigger('change').prop('disabled', true)
-        LoadPostingGroup(data?.['posting_group'], $gl_posting_group_type.val())
+        LoadPostingGroup(data?.['posting_group_data'], $gl_posting_group_type.val())
         $gl_posting_group.trigger('change').prop('disabled', true)
         LoadRoleKey({'role_key': data?.['role_key'], 'description': data?.['role_key_parsed']}, $gl_posting_group.val())
         $gl_role_key.trigger('change').prop('disabled', true)
@@ -218,7 +221,7 @@ $(document).ready(function() {
     })
 
     $('#btn-create').on('click', function () {
-        $gl_posting_group_type.empty().prop('disabled', false)
+        $gl_posting_group_type.prop('disabled', false)
         $gl_posting_group.empty().prop('disabled', false)
         $gl_role_key.empty().prop('disabled', false)
         $modal_add_gl_account_mapping.attr('data-is-update', 'false')

@@ -902,6 +902,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     FIXED_ASSET_DETAIL = StringUrl('asset/fixed-asset/detail')
     FIXED_ASSET_FOR_LEASE_LIST = StringUrl('asset/fixed-asset-for-lease/list')
     FIXED_ASSET_STATUS_LEASE_LIST = StringUrl('asset/fixed-asset-status-lease/list')
+    PRODUCT_WAREHOUSE_FOR_ASSET = StringUrl('asset/fixed-asset/product-warehouse/list')
+    FIXED_ASSET_LIST_WITH_DEPRECIATION = StringUrl('asset/fa-depreciation/list')
+    RUN_ASSET_DEPRECIATION = StringUrl('asset/run-depreciation')
 
     # masterdata/ instrument tool
     INSTRUMENT_TOOL_CLASSIFICATION_LIST = StringUrl('saledata/tool/classification/list')

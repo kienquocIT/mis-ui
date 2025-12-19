@@ -18,6 +18,7 @@ __all__ = [
     'AssetForLeaseListAPI',
     'AssetStatusLeaseListAPI',
     'FixedAssetListDDAPI',
+    'ProductWarehouseListForFixedAssetAPI'
 ]
 
 
@@ -42,7 +43,7 @@ class FixedAssetList(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/asset/fixed-asset/fixedasset_list.html',
+        template='sales/asset/fixed_asset/fixed_asset_list.html',
         menu_active='menu_fixed_asset',
         breadcrumb='FIXED_ASSET_LIST_PAGE',
     )
@@ -53,7 +54,7 @@ class FixedAssetList(View):
 class FixedAssetCreate(View):
     @mask_view(
         auth_require=True,
-        template='sales/asset/fixed-asset/fixedasset_create.html',
+        template='sales/asset/fixed_asset/fixed_asset_create.html',
         menu_active='menu_fixed_asset',
         breadcrumb='FIXED_ASSET_CREATE_PAGE',
     )
@@ -68,7 +69,7 @@ class FixedAssetCreate(View):
 class FixedAssetDetail(View):
     @mask_view(
         auth_require=True,
-        template='sales/asset/fixed-asset/fixedasset_detail.html',
+        template='sales/asset/fixed_asset/fixed_asset_detail.html',
         menu_active='menu_fixed_asset',
         breadcrumb='FIXED_ASSET_DETAIL_PAGE',
     )
@@ -84,7 +85,7 @@ class FixedAssetDetail(View):
 class FixedAssetUpdate(View):
     @mask_view(
         auth_require=True,
-        template='sales/asset/fixed-asset/fixedasset_update.html',
+        template='sales/asset/fixed_asset/fixed_asset_update.html',
         menu_active='menu_fixed_asset',
         breadcrumb='FIXED_ASSET_UPDATE_PAGE',
     )
@@ -172,3 +173,14 @@ class AssetStatusLeaseListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.FIXED_ASSET_STATUS_LEASE_LIST).get(data)
         return resp.auto_return(key_success='fixed_asset_status_lease_list')
+
+class ProductWarehouseListForFixedAssetAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_WAREHOUSE_FOR_ASSET).get(data)
+        return resp.auto_return(key_success='product_warehouse_list')
+

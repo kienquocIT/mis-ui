@@ -21,10 +21,12 @@
 {% endblock %}
 {% block pageContent %}
     {{ data.data.je_document_type | json_script:"je_document_type" }}
+    {{ data.data.je_group_type | json_script:"je_group_type" }}
     {{ data.data.je_amount_source | json_script:"je_amount_source" }}
 
     <script id="script-url"
             data-url-list="{% url 'JEPostingRuleListAPI' %}"
+            data-url-detail="{% url 'JEPostingRuleDetailAPI' '0' %}"
     ></script>
     <div class="row">
         <div class="col-12">
@@ -37,9 +39,9 @@
                     <th style="min-width: 50px"></th>
                     <th style="min-width: 150px">{% trans 'Transaction' %}</th>
                     <th style="min-width: 150px">{% trans 'Rule level' %}</th>
-                    <th style="min-width: 150px">{% trans 'Role' %}</th>
                     <th style="min-width: 150px">{% trans 'Amount source' %}</th>
                     <th style="min-width: 100px">{% trans 'Side' %}</th>
+                    <th style="min-width: 150px">{% trans 'Role key' %}</th>
                     <th style="min-width: 200px">{% trans 'Description' %}</th>
                     <th style="min-width: 100px">{% trans 'Priority' %}</th>
                     <th style="min-width: 250px">{% trans 'Account mapped' %}</th>
@@ -61,8 +63,8 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <form id="form-add-posting-rule" data-method="POST" data-url="{% url 'JEPostingGroupListAPI' %}">
+                <div class="modal-body" style="overflow-y: auto; max-height: 75vh">
+                    <form id="form-add-posting-rule" data-method="POST" data-url="{% url 'JEPostingRuleListAPI' %}">
                         {% csrf_token %}
                         <div class="row">
                             <h6 class="text-primary mb-3"><i class="bi bi-info-circle me-2"></i>Thông tin cơ bản</h6>
@@ -120,26 +122,38 @@
                                         <option></option>
                                         <option value="FIXED">FIXED {% trans '(fixed)' %}</option>
                                         <option value="LOOKUP">LOOKUP {% trans '(lookup by Posting group + Role key)' %}</option>
-                                        <option value="CONDITIONAL" disabled>CONDITIONAL {% trans '(lookup by last linked document)' %}</option>
+{#                                        <option value="CONDITIONAL">CONDITIONAL {% trans '(lookup by last linked document)' %}</option>#}
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6 col-lg-6 fixed-item">
+                            <div class="col-12 col-md-6 col-lg-6 fixed-item" hidden>
                                 <div class="form-group">
                                     <label class="form-label required" for="fixed-account">{% trans 'Fixed account' %}</label>
                                     <select class="form-select select2" id="fixed-account" required data-method="GET" data-url="{% url 'ChartOfAccountsListAPI' %}"></select>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6 col-lg-6 lookup-item">
+                            <div class="col-12 col-md-6 col-lg-6 fixed-item" hidden>
                                 <div class="form-group">
-                                    <label class="form-label required" for="fixed-account">{% trans 'Lookup source' %}</label>
-                                    <select class="form-select select2" id="fixed-account" required data-method="GET" data-url="{% url 'ChartOfAccountsListAPI' %}"></select>
+                                    <label class="form-label required" for="global-role-key">{% trans 'Role key' %}</label>
+                                    <select class="form-select select2" id="global-role-key" required data-method="GET" data-url="{% url 'JEPostingGroupRoleKeyListAPI' %}"></select>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6 col-lg-6 lookup-item">
+                            <div class="col-12 col-md-6 col-lg-6 lookup-item" hidden>
                                 <div class="form-group">
-                                    <label class="form-label required" for="fixed-account">{% trans 'Lookup role' %}</label>
-                                    <select class="form-select select2" id="fixed-account" required data-method="GET" data-url="{% url 'ChartOfAccountsListAPI' %}"></select>
+                                    <label class="form-label required" for="lookup-posting-group-type">{% trans 'Lookup posting group type' %}</label>
+                                    <select class="form-select select2" id="lookup-posting-group-type" required></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6 lookup-item" hidden>
+                                <div class="form-group">
+                                    <label class="form-label required" for="lookup-posting-group">{% trans 'Lookup posting group' %}</label>
+                                    <select class="form-select select2" id="lookup-posting-group" required data-method="GET" data-url="{% url 'JEPostingGroupListAPI' %}"></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6 lookup-item" hidden>
+                                <div class="form-group">
+                                    <label class="form-label required" for="lookup-role-key">{% trans 'Lookup role key' %}</label>
+                                    <select class="form-select select2" id="lookup-role-key" required data-method="GET" data-url="{% url 'JEPostingGroupRoleKeyListAPI' %}"></select>
                                 </div>
                             </div>
 

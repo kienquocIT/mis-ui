@@ -9,12 +9,15 @@ class GISPageElements {
         this.IAEle = $('#box-select-ia')
         this.POWOEle = $('#box-select-powo')
         this.PMEle = $('#box-select-pm')
+        this.FAEle = $('#box-select-fa')
         this.IAItemTable = $('#dtbProductIA')
         this.POItemTable = $('#dtbProductProduction')
         this.PMItemTable = $('#dtbProductPM')
+        this.FAItemTable = $('#dtbProductFA')
         this.IAItemTableDiv = $('#table-for-ia')
         this.POItemTableDiv = $('#table-for-production')
         this.PMItemTableDiv = $('#table-for-pm')
+        this.FAItemTableDiv = $('#table-for-fa')
         this.NONETable = $('#select-detail-table-none')
         this.SNTable = $('#select-detail-table-sn')
         this.SNTableNotify = $('#select-detail-table-sn-notify')
@@ -400,6 +403,102 @@ class GISPageFunction {
                             })
                         })
                     }
+                }
+            }
+        })
+    }
+    static DrawTableFAItems(data_list=[], option='create') {
+        pageElements.FAItemTable.DataTable().clear().destroy()
+        pageElements.FAItemTable.DataTableDefault({
+            dom: 't',
+            rowIdx: true,
+            reloadCurrency: true,
+            paging: false,
+            scrollY: '68vh',
+            scrollX: true,
+            scrollCollapse: true,
+            data: data_list,
+            columns: [
+                {
+                    className: 'w-5',
+                    render: () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'w-15',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-sm badge-light">${row?.['product_mapped']?.['code'] || ''}</span><br>
+                                <span>${row?.['product_mapped']?.['title'] || ''}</span>`;
+                    }
+                },
+                {
+                    className: 'w-15',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['product_mapped']?.['description'] || ''}</span>`;
+                    }
+                },
+                {
+                    className: 'w-15',
+                    render: (data, type, row) => {
+                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 selected-warehouse"></select>`;
+                    }
+                },
+                {
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['uom_mapped']?.['title'] || ''}</span>`;
+                    }
+                },
+                {
+                    className: 'text-center w-10',
+                    render: (data, type, row) => {
+                        return `<span class="sum-quantity">${row?.['sum_quantity'] || 0}</span>`;
+                    }
+                },
+                {
+                    className: 'text-center w-10',
+                    render: (data, type, row) => {
+                        return `<span class="before-quantity">${row?.['before_quantity'] || 0}</span>`;
+                    }
+                },
+                {
+                    className: 'text-center w-10',
+                    render: (data, type, row) => {
+                        return `<span class="remain-quantity">${row?.['remain_quantity'] || 0}</span>`;
+                    }
+                },
+                {
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        return `<div class="input-group">
+                                    <input readonly disabled class="form-control selected-quantity" type="number" value="${row?.['issued_quantity']|| 0}">
+                                    <button ${((row?.['product_mapped']?.['general_traceability_method'] || '') === 0 && pageVariables.IS_DONE_GIS || (row?.['issued_quantity'] || '') === 0 && pageVariables.IS_DONE_GIS) ? 'disabled' : ''}
+                                            data-uom-id="${row?.['uom_mapped']?.['id'] || ''}"
+                                            data-uom-title="${row?.['uom_mapped']?.['title'] || ''}"
+                                            data-prd-id="${row?.['product_mapped']?.['id'] || ''}"
+                                            data-prd-type="${row?.['product_mapped']?.['general_traceability_method'] || ''}"
+                                            data-wh-id="${row?.['warehouse_mapped']?.['id'] || ''}"
+                                            data-remain-quantity="${row?.['remain_quantity'] || 0}"
+                                            data-item-id="${row?.['id'] || ''}"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#select-detail-modal"
+                                            type="button"
+                                            class="btn btn-sm btn-outline-secondary select-detail">
+                                        <i class="bi bi-list-check"></i>
+                                    </button>
+                                </div>
+                                <script class="lot-data-script">${row?.['lot_data'] ? JSON.stringify(row?.['lot_data']) : JSON.stringify([])}</script>
+                                <script class="sn-data-script">${row?.['sn_data'] ? JSON.stringify(row?.['sn_data']) : JSON.stringify([])}</script>
+                        `;
+                    }
+                },
+            ],
+            initComplete: function () {
+                if (data_list.length > 0) {
+                    pageElements.FAItemTable.find('tbody tr').each(function (index) {
+                        GISPageFunction.LoadWarehouse($(this).find('.selected-warehouse'), data_list[index]?.['warehouse_mapped'])
+                    })
                 }
             }
         })
@@ -850,6 +949,7 @@ class GISHandler {
                         pageElements.IAItemTableDiv.prop('hidden', false)
                         pageElements.POItemTableDiv.prop('hidden', true)
                         pageElements.PMItemTableDiv.prop('hidden', true)
+                        pageElements.FAItemTableDiv.prop('hidden', true)
                     }
                     else if (data?.['goods_issue_type'] === 1) {
                     }
@@ -873,6 +973,7 @@ class GISHandler {
                         pageElements.IAItemTableDiv.prop('hidden', true)
                         pageElements.POItemTableDiv.prop('hidden', false)
                         pageElements.PMItemTableDiv.prop('hidden', true)
+                        pageElements.FAItemTableDiv.prop('hidden', true)
                     }
                     else if (data?.['goods_issue_type'] === 3) {
                         pageElements.gis_type.val(3)
@@ -909,6 +1010,45 @@ class GISHandler {
                         pageElements.IAItemTableDiv.prop('hidden', true)
                         pageElements.POItemTableDiv.prop('hidden', true)
                         pageElements.PMItemTableDiv.prop('hidden', false)
+                        pageElements.FAItemTableDiv.prop('hidden', true)
+                    }
+                    else if (data?.['goods_issue_type'] === 4) {
+                        pageElements.gis_type.val(4)
+                        $('#ia-select-space').prop('hidden', true)
+                        $('#powo-select-space').prop('hidden', true)
+                        $('#pm-select-space').prop('hidden', true)
+                        $('#fa-select-space').prop('hidden', false)
+
+                        pageElements.FAEle.attr('data-id', data?.['fixed_asset']?.['id'])
+                        pageElements.FAEle.val(data?.['fixed_asset']?.['title'])
+
+                        const merged = {}
+                        for (const item of (data?.['detail_data_fa'] || [])) {
+                            const warehouseId = item?.['warehouse_mapped']?.['id'];
+                            const productId = item?.['product_mapped']?.['id'];
+                            const key = `${warehouseId}_${productId}`;
+
+                            if (!merged[key]) {
+                                merged[key] = JSON.parse(JSON.stringify(item));
+                            } else {
+                                const mergedItem = merged[key];
+                                mergedItem.sum_quantity += item.sum_quantity;
+                                mergedItem.before_quantity += item.before_quantity;
+                                mergedItem.remain_quantity += item.remain_quantity;
+                                mergedItem.issued_quantity += item.issued_quantity;
+
+                                mergedItem.lot_data = mergedItem.lot_data.concat(item.lot_data);
+                                mergedItem.sn_data = mergedItem.sn_data.concat(item.sn_data);
+                            }
+                        }
+
+                        const result = Object.values(merged);
+
+                        GISPageFunction.DrawTableFAItems(result)
+                        pageElements.IAItemTableDiv.prop('hidden', true)
+                        pageElements.POItemTableDiv.prop('hidden', true)
+                        pageElements.PMItemTableDiv.prop('hidden', true)
+                        pageElements.FAItemTableDiv.prop('hidden', false)
                     }
 
                     new $x.cls.file($('#attachment')).init({

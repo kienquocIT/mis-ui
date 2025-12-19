@@ -1009,24 +1009,27 @@ class MenusFinancials:
         name='Assets', code='menu_asset', view_name='', icon='<i class="fas fa-warehouse"></i>',
         child=[
             MenuCommon(
+                name='Fixed asset depreciation', code='menu_fixed_asset_depreciation', view_name='FixedAssetDepreciationList',
+                icon='<i class="fas fa-warehouse"></i>',
+            ),
+            MenuCommon(
                 name='Fixed assets', code='menu_fixed_asset', view_name='FixedAssetList',
                 icon='<i class="fas fa-warehouse"></i>',
             ),
-            MenuCommon(
-                name='Fixed asset write-off', code='menu_fixed_asset_writeoff', view_name='FixedAssetWriteOffList',
-                icon='<i class="fas fa-warehouse"></i>',
-            ),
-            MenuCommon(
-                name='Instruments & Tools', code='menu_instrument_tool',
-                view_name='InstrumentToolList',
-                icon='<i class="fas fa-tools"></i>',
-            ),
-            MenuCommon(
-                name='Instrument tool write-off', code='menu_instrument_tool_write_off',
-                view_name='InstrumentToolWriteOffList',
-                icon='<i class="fas fa-tools"></i>',
-            ),
-
+            # MenuCommon(
+            #     name='Fixed asset write-off', code='menu_fixed_asset_writeoff', view_name='FixedAssetWriteOffList',
+            #     icon='<i class="fas fa-warehouse"></i>',
+            # ),
+            # MenuCommon(
+            #     name='Instruments & Tools', code='menu_instrument_tool',
+            #     view_name='InstrumentToolList',
+            #     icon='<i class="fas fa-tools"></i>',
+            # ),
+            # MenuCommon(
+            #     name='Instrument tool write-off', code='menu_instrument_tool_write_off',
+            #     view_name='InstrumentToolWriteOffList',
+            #     icon='<i class="fas fa-tools"></i>',
+            # ),
         ],
     )
     CASHFLOW = MenuCommon(

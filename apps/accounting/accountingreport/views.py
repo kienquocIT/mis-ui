@@ -62,8 +62,8 @@ class ReportTrialBalanceList(View):
         template='accounting/trialbalance_report/trialbalance_report.html',
         menu_active='menu_report_trial_balance',
         breadcrumb='REPORT_TRIAL_BALANCE_LIST_PAGE',
-        icon_cls='fas bi bi-journal-text',
-        icon_bg='bg-blue',
+        icon_cls='fa-solid fa-scale-balanced',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

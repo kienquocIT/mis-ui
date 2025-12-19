@@ -7,7 +7,8 @@ from .views import FixedAssetList, FixedAssetCreate, FixedAssetDetail, FixedAsse
     FixedAssetWriteOffUpdate, InstrumentToolWriteOffList, InstrumentToolWriteOffCreate, InstrumentToolWriteOffDetail, \
     InstrumentToolWriteOffUpdate, InstrumentToolWriteOffListAPI, InstrumentToolWriteOffDetailAPI, \
     AssetForLeaseListAPI, ToolForLeaseListAPI, AssetStatusLeaseListAPI, ToolStatusLeaseListAPI, \
-    InstrumentToolDDListAPI, FixedAssetListDDAPI
+    InstrumentToolDDListAPI, FixedAssetListDDAPI, ProductWarehouseListForFixedAssetAPI, FixedAssetDepreciationList, \
+    FixedAssetDepreciationListAPI, FixedAssetDepreciationDetailAPI, RunAssetDepreciationAPI
 
 fixed_asset_urlpatterns = [
     path('fixed-asset/list', FixedAssetList.as_view(), name='FixedAssetList'),
@@ -21,6 +22,7 @@ fixed_asset_urlpatterns = [
     path('fixed-asset/api/detail/<str:pk>', FixedAssetDetailAPI.as_view(), name='FixedAssetDetailAPI'),
     path('fixed-asset-for-lease/api/list', AssetForLeaseListAPI.as_view(), name='AssetForLeaseListAPI'),
     path('fixed-asset-status-lease/api/list', AssetStatusLeaseListAPI.as_view(), name='AssetStatusLeaseListAPI'),
+    path('fixed-asset/product-warehouse/list', ProductWarehouseListForFixedAssetAPI.as_view(), name='ProductWarehouseListForFixedAssetAPI'),
 ]
 
 instrument_tool_urlpatterns = [
@@ -59,9 +61,19 @@ it_write_off_urlpatterns = [
     path('instrument-tool-writeoff/api/detail/<str:pk>', InstrumentToolWriteOffDetailAPI.as_view(), name='InstrumentToolWriteOffDetailAPI'),
 ]
 
+fa_depreciation_urlpatterns = [
+    path('fa-depreciation/list', FixedAssetDepreciationList.as_view(), name='FixedAssetDepreciationList'),
+
+    # api
+    path('fa-depreciation/api/list', FixedAssetDepreciationListAPI.as_view(), name='FixedAssetDepreciationListAPI'),
+    path('fa-depreciation/api/detail/<str:pk>', FixedAssetDepreciationDetailAPI.as_view(), name='FixedAssetDepreciationDetailAPI'),
+    path('fa-run-depreciation', RunAssetDepreciationAPI.as_view(), name='RunAssetDepreciationAPI')
+]
+
 urlpatterns = (
     fixed_asset_urlpatterns
     + instrument_tool_urlpatterns
     + fa_write_off_urlpatterns
     + it_write_off_urlpatterns
+    + fa_depreciation_urlpatterns
 )

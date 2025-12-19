@@ -196,3 +196,47 @@ msgstr "Thêm/Cập nhập tài khoản ánh xạ"
 #
 msgid "Add/Update posting rule"
 msgstr "Thêm/Cập nhập quy tắc hạch toán"
+
+#
+msgid "Side"
+msgstr "Phía"
+
+#
+msgid "Amount source"
+msgstr "Nguồn lấy tiền"
+
+#
+msgid "Account source type"
+msgstr "Nguồn chọn tài khoản"
+
+#
+msgid "Fixed account"
+msgstr "Tài khoản cứng"
+
+#
+msgid "Lookup posting group type"
+msgstr "Tìm theo loại nhóm định khoản"
+
+#
+msgid "Lookup posting group"
+msgstr "Tìm theo nhóm định khoản"
+
+#
+msgid "Lookup role key"
+msgstr "Tìm theo mã vai trò"
+
+#
+msgid "(total document)"
+msgstr "(toàn phiếu)"
+
+#
+msgid "(by line)"
+msgstr "(theo dòng)"
+
+#
+msgid "(fixed)"
+msgstr "(cứng)"
+
+#
+msgid "(lookup by Posting group + Role key)"
+msgstr "(tìm theo Nhóm định khoản + Mã vai trò)"

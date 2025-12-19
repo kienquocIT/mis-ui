@@ -216,10 +216,12 @@ class JEPostingRuleList(View):
     def get(self, request, *args, **kwargs):
         je_document_type_resp = ServerAPI(user=request.user, url=ApiURL.JE_DOCUMENT_TYPE).get()
         je_amount_source_resp = ServerAPI(user=request.user, url=ApiURL.JE_AMOUNT_SOURCE).get()
+        je_group_type_resp = ServerAPI(user=request.user, url=ApiURL.JE_GROUP_TYPE).get()
         return {
             'data': {
                 'je_document_type': je_document_type_resp.result,
-                'je_amount_source': je_amount_source_resp.result
+                'je_amount_source': je_amount_source_resp.result,
+                'je_group_type': je_group_type_resp.result
             }
         }, status.HTTP_200_OK
 
@@ -235,6 +237,37 @@ class JEPostingRuleListAPI(APIView):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.JE_POSTING_RULE_LIST).get(params)
         return resp.auto_return(key_success='je_posting_rule')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.JE_POSTING_RULE_LIST).post(request.data)
+        if resp.state:
+            return resp.result, status.HTTP_201_CREATED
+        return resp.auto_return()
+
+
+class JEPostingRuleDetailAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.JE_POSTING_RULE_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return()
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def delete(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.JE_POSTING_RULE_DETAIL.fill_key(pk=pk)).delete(request.data)
+        return resp.auto_return()
+
 
 # Auto JE Configure Guide
 class JEConfigureGuidePage(View):

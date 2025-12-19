@@ -10,7 +10,7 @@ from apps.accounting.accountingsettings.views import (
     DimensionSplitTemplateDetailAPI, JEDocumentTypeList, JEDocumentTypeListAPI, JEDocumentTypeDetailAPI,
     JEPostingRuleList, JEPostingRuleListAPI, JEPostingGroupList, JEGroupAssignmentList, JEGLAccountMappingList,
     JEPostingGroupListAPI, JEGroupAssignmentListAPI, JEGLAccountMappingListAPI, JEConfigureGuidePage,
-    JEPostingGroupDetailAPI, JEPostingGroupRoleKeyListAPI, JEGLAccountMappingDetailAPI
+    JEPostingGroupDetailAPI, JEPostingGroupRoleKeyListAPI, JEGLAccountMappingDetailAPI, JEPostingRuleDetailAPI
 )
 
 urlpatterns = [
@@ -31,6 +31,7 @@ urlpatterns = [
     path('je-gl-account-mapping/detail/api/<str:pk>', JEGLAccountMappingDetailAPI.as_view(), name='JEGLAccountMappingDetailAPI'),
     path('je-posting-rule/list', JEPostingRuleList.as_view(), name='JEPostingRuleList'),
     path('je-posting-rule/list/api', JEPostingRuleListAPI.as_view(), name='JEPostingRuleListAPI'),
+    path('je-posting-rule/detail/api/<str:pk>', JEPostingRuleDetailAPI.as_view(), name='JEPostingRuleDetailAPI'),
     path('auto-je-configure-guide/list/api', JEConfigureGuidePage.as_view(), name='JEConfigureGuidePage'),
 ] + [
     # initial balance

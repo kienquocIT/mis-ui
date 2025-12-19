@@ -1,0 +1,258 @@
+{% load static i18n %}
+
+<div class="card card-border mb-4" id="asset-detail-card">
+    <div class="card-header bg-primary">
+        <h5 class="mb-0 text-white">
+            <i class="bi bi-file-earmark-text me-2"></i>
+            {% trans 'Step 2: Select Source Documents' %}
+        </h5>
+    </div>
+    <div class="card-body">
+
+        <!-- Source Type Display -->
+        <div class="alert alert-info">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-info-circle fs-4 me-3"></i>
+                <div>
+                    <strong>{% trans 'Selected Source Type:' %}</strong>
+                    <span id="selected-source-type-name" class="ms-2"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dynamic Content Area for each Source Type -->
+        <div id="source-document-content">
+
+        </div>
+
+        <!-- Cost Summary -->
+        <div class="card border border-primary card-border-top-thick mt-3">
+            <div class="card-body bg-light">
+                <h6 class="mb-3 fw-semibold">
+                    <i class="bi bi-calculator me-2"></i>
+                    Cost Summary
+                </h6>
+                <div class="cost-summary-item">
+                    <span>{% trans 'Original Cost' %}:</span>
+                    <span name="original_cost" id="original-cost" class="mask-money"></span>
+                </div>
+                <div class="cost-summary-item">
+                    <span>{% trans 'Accumulative Depreciation' %}:</span>
+                    <span name="accumulative_depreciation" id="accumulative-depreciation" class="mask-money"></span>
+                </div>
+                <div class="cost-summary-item">
+                    <span>{% trans 'Net Book Value' %}:</span>
+                    <span name="net_book_value" id="net-book-value" class="mask-money"></span>
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-5">
+
+        <!-- ========== ASSET DETAILS & DEPRECIATION ========== -->
+
+        <!-- Asset Identification -->
+        <h6 class="mb-3 fw-semibold text-primary">
+            <i class="bi bi-tag me-2"></i>
+            {% trans '' %}Asset Identification
+        </h6>
+
+        <div class="row ">
+            <div class="col-md-6 mb-3">
+                <label class="form-label required" for="asset-name">
+                    {% trans 'Asset Name' %}
+                </label>
+                <input name="title" type="text" class="form-control" id="asset-name" placeholder="e.g., Dell PowerEdge R740 Server"
+                       required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label class="form-label" for="asset-number">{% trans 'Serial Number/ Batch Number' %} </label>
+                <input name="asset_code" type="text" class="form-control" id="asset-number">
+            </div>
+        </div>
+
+        <div class="row ">
+            <div class="col-md-6 mb-3">
+                <div class="form-group">
+                    <label class="form-label required" for="manage-department">{% trans 'Manage Department' %}</label>
+                    <select name="manage_department" class="form-select select2" id="manage-department" data-method="GET"
+                            data-keyResp="group_list" data-url="{% url 'GroupListAPI' %}" required></select>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-group">
+                    <label class="form-label required" for="use-department">{% trans 'Use Department' %}</label>
+                    <select name="use_department" class="form-select select2" id="use-department" data-method="GET"
+                            data-keyResp="group_list" data-url="{% url 'GroupListAPI' %}" required multiple></select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row ">
+            <div class="col-md-6 mb-3">
+                <label class="form-label required" for="asset-category">
+                    {% trans 'Asset Category' %}
+                </label>
+                <select name="asset_category_id" class="form-select select2" id="asset-category" required="" data-url="{% url 'AssetCategoryListAPI' %}" data-keyResp="asset_category_list">
+                </select>
+                <div class="form-text">
+                    <i class="bi bi-lightbulb text-warning me-1"></i>
+                    {% trans 'Depreciation and GL accounts will be auto-filled' %}
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        <!-- Depreciation Settings -->
+        <h6 class="mb-3 fw-semibold text-primary">
+            <i class="bi bi-calculator me-2"></i>
+            {% trans 'Depreciation Settings' %}
+        </h6>
+
+        <div class="row mb-5">
+            <div class="col-md-6">
+                <div class="form-group">
+                            <label class="form-label required" for="depreciation-method">{% trans 'Method' %}</label>
+                            <select name="depreciation_method" class="form-select select2" id="depreciation-method" data-method="GET" data-url="" required>
+                                <option value="">-- Select Method --</option>
+                                <option value=0>{% trans 'Straight line depreciation' %}</option>
+                                <option value=1>{% trans 'Adjusted reducing balance' %}</option>
+                            </select>
+                        </div>
+
+                <div class="row">
+                    <div class="col-8">
+                        <div class="form-group">
+                            <label class="form-label required" for="depreciation-time-unit">{% trans 'Depreciation Time' %}</label>
+                            <div class="row">
+                                <div class="col-4">
+                                    <label class="form-label required" for="depreciation-time" hidden>{% trans 'Depreciation Time' %}</label>
+                                    <input type="number" name="depreciation_time" class="form-control" id="depreciation-time" required>
+                                </div>
+                                <div class="col-6">
+                                    <select name="depreciation_time_unit" class="form-select select2" id="depreciation-time-unit" data-method="GET" data-url="" required>
+                                        <option value=0>{% trans 'Month' %}</option>
+                                        <option value=1>{% trans 'Year' %}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label class="form-label" for="adjustment-factor">
+                                <span>
+                                    <span>{% trans 'Adjustment factor' %}</span>
+                                    <span class="icon" data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="{% trans 'Only for adjusted reducing balance method' %}">
+                                        <i class="fa fa-info-circle"></i>
+                                    </span>
+                                </span>
+                            </label>
+                            <select readonly name="adjustment_factor" class="form-select select2" id="adjustment-factor" data-method="GET" data-url="">
+                                <option>0</option>
+                                <option>1.5</option>
+                                <option>2</option>
+                                <option>2.5</option>
+                                <option>3</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required" for="depreciation-value">{% trans 'Depreciation value' %}</label>
+                        <input required name="depreciation_value"
+                               class="form-control mask-money" autocomplete="off" id="depreciation-value">
+                </div>
+
+            </div>
+            <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label required" for="depreciation-start-date">{% trans 'Start date' %}</label>
+                        <div class="input-affix-wrapper">
+                            <input required type="text" name="depreciation_start_date"
+                                   class="form-control depreciation-date" autocomplete="off" id="depreciation-start-date">
+                            <div class="input-suffix">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required" for="depreciation-end-date">{% trans 'End date' %}</label>
+                        <div class="input-affix-wrapper">
+                            <input disabled readonly required type="text" name ='depreciation_end_date'
+                                       class="form-control depreciation-date" autocomplete="off" id="depreciation-end-date">
+                            <div class="input-suffix">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-2">
+                <button class="btn btn-outline-primary" type="button" id="load-depreciation-btn">
+                    <span>
+                        <span>{% trans 'Load Preview Of Depreciation' %}</span>
+                        <span class="icon"><i class="fa-regular fa-floppy-disk"></i></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+        <hr class="my-4">
+
+        <!-- Auto-filled GL Accounts -->
+        <h6 class="mb-3 fw-semibold text-primary">
+            <i class="bi bi-journal-text me-2"></i>
+            GL Account Mapping
+            <span class="badge bg-info ms-2">Auto-filled from Category</span>
+        </h6>
+
+        <div class="row ">
+            <div class="col-md-4 mb-3">
+                <label for="asset-account" class="form-label required">{% trans 'Asset Account' %}</label>
+                <select name="asset_account_id" class="gl-acc-select form-select select2"
+                        id="asset-account"
+                        data-url="{% url "ChartOfAccountsListAPI" %}"
+                        data-keyResp="chart_of_accounts_list"
+                        required>
+                </select>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label for="accum-dep-account" class="form-label required">{% trans 'Accumulated Depreciation' %}</label>
+                <select class="gl-acc-select form-select select2" id="accum-dep-account"
+                        name="accumulated_depreciation_account_id"
+                        data-url="{% url "ChartOfAccountsListAPI" %}"
+                        data-keyResp="chart_of_accounts_list"
+                        required>
+                </select>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label for="dep-expense-account" class="form-label required">{% trans 'Depreciation Expense' %}</label>
+                <select class="gl-acc-select form-select select2" id="dep-expense-account"
+                        name="depreciation_expense_account_id"
+                        data-url="{% url "ChartOfAccountsListAPI" %}"
+                        data-keyResp="chart_of_accounts_list"
+                        required>
+                </select>
+            </div>
+        </div>
+
+        <div class="alert alert-info mb-0">
+            <i class="bi bi-info-circle me-2"></i>
+            <strong>Note:</strong> Depreciation settings and GL accounts are auto-filled from Asset Category but can be
+            edited if needed.
+            Changes will apply only to this asset registration.
+        </div>
+    </div>
+</div>

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Instrument Tool list' %}{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'InstrumentToolCreate' %}"
+       data-bs-toggle="tooltip"
+       data-bs-placement="top"
+       title="{% trans 'Create Instrument Tool' %}"
+       id="create-instrument-tool"
+       data-bs-original-title="Add Instrument Tool">
+            <button type="button" class="btn btn-outline-primary">
+                <span>
+                    <span>{% trans 'Add' %}</span>
+                    <span class="icon">
+                        <i class="fa-solid fa-plus"></i>
+                    </span>
+                </span>
+            </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <table
+            id="table-instrument-tool-list"
+            class="table nowrap w-100 mb-5"
+            data-url="{% url 'InstrumentToolListAPI' %}"
+            data-method="get"
+            data-url-detail="{% url 'InstrumentToolDetail' pk='0'%}"
+            style="min-width: 1300px"
+    >
+        <thead>
+            <tr>
+                <th></th>
+                <th>{% trans 'Code' %}</th>
+                <th>{% trans 'Title' %}</th>
+                <th>{% trans 'Tool Number' %}</th>
+{#                <th>{% trans 'Offset Item' %}</th>#}
+                <th>{% trans 'Quantity' %}</th>
+                <th>{% trans 'Status' %}</th>
+                <th>{% trans 'Managing Department' %}</th>
+                <th>{% trans 'Using Department' %}</th>
+                <th>{% trans 'Using Customer' %}</th>
+                <th>{% trans 'Created Date' %}</th>
+                <th>{% trans 'Depreciation Time' %}</th>
+                <th>{% trans 'Write-Off Quantity' %}</th>
+                <th>{% trans 'Status' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+{% endblock %}
+{% block dataHiddenGroup %}
+    {{ data.stt_sys|json_script:'stt_sys' }}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/sales/asset/instrument-tool/js/instrument_tool_list.js' %}"></script>
+{% endblock %}

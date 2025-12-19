@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Instrument Tool Write-off list' %}{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'InstrumentToolWriteOffCreate' %}"
+       data-bs-toggle="tooltip"
+       data-bs-placement="top"
+       title="{% trans 'Create Instrument Tool Write-off' %}"
+       id="create-instrument-tool"
+       data-bs-original-title="Add Instrument Tool">
+            <button type="button" class="btn btn-outline-primary">
+                <span>
+                    <span>{% trans 'Add' %}</span>
+                    <span class="icon">
+                        <i class="fa-solid fa-plus"></i>
+                    </span>
+                </span>
+            </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <table
+            id="table-instrument-tool-write-off-list"
+            class="table nowrap w-100 mb-5"
+            data-url="{% url 'InstrumentToolWriteOffListAPI' %}"
+            data-method="get"
+            data-url-detail="{% url 'InstrumentToolWriteOffDetail' pk='0'%}"
+    >
+        <thead>
+            <tr>
+                <th></th>
+                <th>{% trans 'Code' %}</th>
+                <th>{% trans 'Title' %}</th>
+                <th>{% trans 'Document Date' %}</th>
+                <th>{% trans 'Posting Date' %}</th>
+                <th>{% trans 'Write-off type' %}</th>
+                <th>{% trans 'Write-off quantity' %}</th>
+                <th>{% trans 'Status' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+{% endblock %}
+{% block dataHiddenGroup %}
+    {{ data.stt_sys|json_script:'stt_sys' }}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/sales/asset/instrument-tool-write-off/js/it_write_off_list.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block pageAction %}
+    <button type="button" class="btn btn-primary" id="btn-select-source">
+        {% trans 'Next: Select Documents' %}
+        <i class="bi bi-arrow-right ms-1"></i>
+    </button>
+    <button type="button" class="btn btn-outline-secondary" id="btn-back-previous-step">
+        <i class="bi bi-arrow-left me-1"></i>
+        {% trans 'Back' %}
+    </button>
+    <button class="btn btn-outline-primary" type="submit" form="form-fixed-asset">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon"><i class="fa-regular fa-floppy-disk"></i></span>
+        </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form
+            data-url="{% url 'FixedAssetListAPI' %}"
+            data-url-redirect="{% url 'FixedAssetList' %}"
+            data-method="POST"
+            id="form-fixed-asset"
+    >
+        {% csrf_token %}
+        {% include 'sales/asset/fixed_asset/common/stepper.html' %}
+        {% include 'sales/asset/fixed_asset/common/source_type_select_card.html' %}
+        {% include 'sales/asset/fixed_asset/common/source_doc_and_asset_detail_card.html' %}
+    </form>
+{% endblock %}
+
+{% block modalData %}
+    {% include 'sales/asset/fixed_asset/common/modal.html' %}
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'vendors/tinymce/tinymce.min.js' %}"></script>
+    <script src="{% static 'assets/js/extends/depreciation/depreciation_common.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
+    <script src="{% static 'assets/sales/asset/fixed_asset/js/fixed_asset_common.js' %}"></script>
+    <script src="{% static 'assets/sales/asset/fixed_asset/js/fixed_asset_create.js' %}"></script>
+{% endblock %}

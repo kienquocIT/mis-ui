@@ -1,0 +1,22 @@
+@media screen and (max-width: 1024px) {
+    .dataTables_scrollFootInner {
+        width: 100% !important;
+    }
+
+    .dataTables_scrollFootInner > .min-w-1500p {
+        min-width: 100% !important;
+    }
+}
+.add_new_line ul{
+    display: none;
+    position: absolute;
+    left: 100%;
+    top:0;
+    background: #fff;
+    box-shadow: 0px 6px 16px rgba(47, 52, 58, 0.1);
+    border-radius: 0.5rem;
+    padding: .5rem;
+}
+.add_new_line:hover ul{
+    display: block;
+}

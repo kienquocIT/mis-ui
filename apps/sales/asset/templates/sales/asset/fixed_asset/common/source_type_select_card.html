@@ -1,0 +1,129 @@
+{% load static i18n %}
+
+<style>
+    .source-type-radio {
+        display: none;
+    }
+
+    .source-type-card {
+        cursor: pointer;
+        transition: all 0.1s ease;
+    }
+
+    .source-type-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .source-type-radio:checked + .source-type-card {
+        outline: 3px solid #0d6efd;
+        outline-offset: 0;
+        border-color: transparent;
+    }
+</style>
+
+<div class="card card-border mb-4" id="source-type-select-card">
+    <div class="card-header bg-primary">
+        <h5 class="mb-0 text-white">
+            <i class="bi bi-funnel me-2"></i>
+            {% trans 'Step 1: Select Source Type (Source for creating asset)' %}
+        </h5>
+    </div>
+
+    <div class="card-body">
+        <div class="alert alert-primary d-flex align-items-center" role="alert">
+            <i class="bi bi-info-circle me-2"></i>
+            <div><strong>{% trans 'Instruction:' %}</strong>{% trans ' Select the fixed asset formation source to determine the original cost and related documents' %}</div>
+        </div>
+
+        <div class="row g-3">
+
+            <!-- Inventory -->
+            <div class="col-md-4">
+                <input type="radio" name="source_type" id="inventory-transfer" class="source-type-radio" value=0>
+                <label for="inventory-transfer" class="source-type-card card border h-100">
+                    <span class="card-body text-center">
+                        <span class="display-6 text-info mb-2">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </span>
+                        <span class="fw-semibold mb-2 d-block">{% trans 'Transfer from Inventory' %}</span>
+                        <span class="text-muted small mb-0 d-block">{% trans 'Transfer from Account 156 to Fixed Assets (Account 211X)' %}</span>
+                    </span>
+                </label>
+            </div>
+
+            <!-- Purchase -->
+            <div class="col-md-4">
+                <input type="radio" name="source_type" id="purchase" class="source-type-radio" value=1>
+                <label for="purchase" class="source-type-card card border h-100">
+                    <span class="card-body text-center">
+                        <span class="display-6 text-success mb-2">
+                            <i class="bi bi-cart-check"></i>
+                        </span>
+                        <span class="fw-semibold mb-2 d-block">{% trans 'Purchase Fixed Assets' %}</span>
+                        <span class="text-muted small mb-0 d-block">{% trans 'From AP Invoice or Cash Out' %}</span>
+                    </span>
+                </label>
+            </div>
+
+            <!-- Self-Manufactured -->
+            <div class="col-md-4">
+                <input type="radio" name="source_type" id="self-manufactured" class="source-type-radio" value=2>
+                <label for="self-manufactured" class="source-type-card card border h-100">
+                    <span class="card-body text-center d-block">
+                        <span class="display-6 text-warning mb-2 d-block">
+                            <i class="bi bi-tools"></i>
+                        </span>
+
+                        <span class="fw-semibold mb-2 d-block">{% trans 'Self-Manufactured Fixed Assets' %}</span>
+
+                        <span class="text-muted small mb-0 d-block">{% trans 'Transfer from Account 154/155' %}</span>
+                    </span>
+                </label>
+            </div>
+
+            <!-- Construction -->
+            <div class="col-md-4">
+                <input type="radio" name="source_type" id="construction" class="source-type-radio" value=3>
+                <label for="construction" class="source-type-card card border h-100">
+                    <span class="card-body text-center">
+                        <span class="display-6 text-danger mb-2">
+                            <i class="bi bi-building"></i>
+                        </span>
+                        <span class="fw-semibold mb-2 d-block">{% trans 'Capital Construction Investment' %}</span>
+                        <span class="text-muted small mb-0 d-block">{% trans 'Account 241X' %}</span>
+                    </span>
+                </label>
+            </div>
+
+            <!-- Donation -->
+            <div class="col-md-4">
+                <input type="radio" name="source_type" id="donation" class="source-type-radio" value=4>
+                <label for="donation" class="source-type-card card border h-100">
+                    <span class="card-body text-center">
+                        <span class="display-6 text-primary mb-2">
+                            <i class="bi bi-gift"></i>
+                        </span>
+                        <span class="fw-semibold mb-2 d-block">{% trans 'Donation / Sponsorship' %}</span>
+                        <span class="text-muted small mb-0 d-block">{% trans 'Received from organization/individual' %}</span>
+                    </span>
+                </label>
+            </div>
+
+            <!-- Capital Contribution -->
+            <div class="col-md-4">
+                <input type="radio" name="source_type" id="capital-contribution" class="source-type-radio" value=5>
+                <label for="capital-contribution" class="source-type-card card border h-100">
+                    <span class="card-body text-center">
+                        <span class="display-6 text-secondary mb-2">
+                            <i class="bi bi-piggy-bank"></i>
+                        </span>
+                        <span class="fw-semibold mb-2 d-block">{% trans 'Receive Capital Contribution' %}</span>
+                        <span class="text-muted small mb-0 d-block">{% trans 'From shareholders or budget' %}</span>
+                    </span>
+                </label>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'FixedAssetUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary" id="btn-enable-edit">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon"><i class="fa-regular fa-pen-to-square"></i></span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <form
+            data-url="{% url 'FixedAssetDetailAPI' pk=pk %}"
+            data-url-redirect="{% url 'FixedAssetList' %}"
+            data-method="POST"
+            id="form-fixed-asset"
+    >
+        {% csrf_token %}
+        {% include 'sales/asset/fixed-asset/common/fixedasset_common_fields.html' %}
+        {% include 'sales/asset/fixed-asset/common/fixedasset_tabs.html' %}
+    </form>
+{% endblock %}
+
+{% block modalData %}
+    {% include 'sales/asset/fixed-asset/common/fixedasset_modals.html' %}
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'vendors/tinymce/tinymce.min.js' %}"></script>
+    <script src="{% static 'assets/js/extends/depreciation/depreciation_common.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
+    <script src="{% static 'assets/sales/asset/fixedasset/js/fixedasset_common.js' %}"></script>
+    <script src="{% static 'assets/sales/asset/fixedasset/js/fixedasset_detail.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block pageAction %}
+     <a href="{% url 'FixedAssetWriteOffUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary" id="btn-enable-edit">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon"><i class="fa-regular fa-pen-to-square"></i></span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <form
+            data-url="{% url 'FixedAssetWriteOffDetailAPI' pk=pk %}"
+            data-url-redirect="{% url 'FixedAssetWriteOffList' %}"
+            data-method="POST"
+            id="form-fixed-asset-writeoff"
+    >
+        {% csrf_token %}
+        {% include 'sales/asset/fixed-asset-write-off/common/fa_write_off_common_fields.html' %}
+        {% include 'sales/asset/fixed-asset-write-off/common/fa_write_off_tabs.html' %}
+    </form>
+{% endblock %}
+
+{% block modalData %}
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'vendors/tinymce/tinymce.min.js' %}"></script>
+    <script src="{% static 'assets/sales/asset/fixed-asset-write-off/js/fa_write_off_common.js' %}"></script>
+    <script src="{% static 'assets/sales/asset/fixed-asset-write-off/js/fa_write_off_detail.js' %}"></script>
+{% endblock %}

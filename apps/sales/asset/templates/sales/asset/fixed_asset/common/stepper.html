@@ -1,0 +1,26 @@
+{% load static i18n %}
+
+{% block cssHeader %}
+    <link href = "{% static 'assets/sales/asset/fixed_asset/css/stepper.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+<div class="card card-border mb-4">
+    <div class="card-body">
+        <div class="stepper-container">
+            <!-- Progress line -->
+            <div class="progress-line" id="progress-line"></div>
+
+            <!-- Step 1 -->
+            <div id="step1" class="step">
+                <div id="step1-circle" class="step-circle step-circle-active">1</div>
+                <div id="step1-text" class="step-text step-text-active">{% trans 'Source Type' %}</div>
+            </div>
+
+            <!-- Step 2 -->
+            <div id="step2" class="step">
+                <div id="step2-circle" class="step-circle step-circle-inactive">2</div>
+                <div id="step2-text" class="step-text step-text-inactive">Source Documents &amp; Asset Details</div>
+            </div>
+        </div>
+    </div>
+</div>

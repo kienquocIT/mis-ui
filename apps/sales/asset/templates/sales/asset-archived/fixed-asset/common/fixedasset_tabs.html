@@ -1,0 +1,221 @@
+{% load i18n %}
+
+<!-- tabs -->
+<!-- tabs navigation -->
+<div class="row">
+    <ul class="nav nav-light nav-tabs" id="asset-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#tab_source">
+                <span class="nav-link-text">{% trans 'Source' %}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#tab_depreciation">
+                <span class="nav-link-text">{% trans 'Depreciation' %}</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<!-- tabs content -->
+<div class="tab-content pb-30" id="asset-tab-content">
+    <div data-zone="asset_sources" class="tab-pane fade show active" id="tab_source">
+        <div class="row mb-5">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="form-group">
+                            <label class="form-label required" for="source-type">{% trans 'Source type' %}</label>
+                            <select name="source_type" class="form-select select2" id="source-type" data-method="GET" data-url="" required>
+                                <option value=0>{% trans "New Purchase" %}</option>
+                                <option value=1>{% trans "Financial Lease" %}</option>
+                                <option value=2>{% trans "Taken from Goods, Finished Products" %}</option>
+                                <option value=3>{% trans "Capital Construction Investment" %}</option>
+                                <option value=4>{% trans "Capital Contribution, Sponsorship, Donation" %}</option>
+                                <option value=5>{% trans "Exchange" %}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="form-group">
+                            <label class="form-label required" for="capital-fund">{% trans 'Capital/fund' %}</label>
+                            <select readonly name="" class="form-select select2" id="capital-fund" data-method="GET" data-url=""></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table
+                id="datatable-asset-source"
+                class="table nowrap w-100 mb-20"
+                style="min-width: 768px"
+        >
+            <thead>
+                <tr class="bg-light">
+                    <th></th>
+                    <th class="required">{% trans 'Description' %}</th>
+                    <th class="required">{% trans 'Document No.' %}</th>
+                    <th>{% trans 'Transaction type' %}</th>
+                    <th>{% trans 'Code' %}</th>
+                    <th>{% trans 'Value' %}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-outline-primary mt-5" id="btn-add-source" data-bs-toggle="modal" data-bs-target="#modal-source-option">
+            <span>
+                <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                <span>{% trans 'Add' %}</span>
+            </span>
+        </button>
+    </div>
+
+    <div class="tab-pane fade" id="tab_depreciation">
+        <div class="row mb-5">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="form-group">
+                            <label class="form-label required" for="depreciation-method">{% trans 'Method' %}</label>
+                            <select name="depreciation_method" class="form-select select2" id="depreciation-method" data-method="GET" data-url="" required>
+                                <option value=0>{% trans 'Straight line depreciation' %}</option>
+                                <option value=1>{% trans 'Adjusted reducing balance' %}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-10">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <label class="form-label required" for="time-unit">{% trans 'Depreciation Time' %}</label>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <input type="number" name="depreciation_time" class="form-control" id="depreciation-time" required>
+                                        </div>
+                                        <div class="col-6">
+                                            <select name="depreciation_time_unit" class="form-select select2" id="time-unit" data-method="GET" data-url="" required>
+                                                <option value=0>{% trans 'Month' %}</option>
+                                                <option value=1>{% trans 'Year' %}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label class="form-label" for="adjustment-factor">
+                                        <span>
+                                            <span>{% trans 'Adjustment factor' %}</span>
+                                            <span class="icon" data-bs-toggle="tooltip"
+                                                data-bs-placement="top"
+                                                title="{% trans 'Only for adjusted reducing balance method' %}">
+                                                <i class="fa fa-info-circle"></i>
+                                            </span>
+                                        </span>
+                                    </label>
+                                    <select readonly name="adjustment_factor" class="form-select select2" id="adjustment-factor" data-method="GET" data-url="">
+                                        <option>0</option>
+                                        <option>1.5</option>
+                                        <option>2</option>
+                                        <option>2.5</option>
+                                        <option>3</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-10">
+                        <div class="form-group">
+                            <label class="form-label required" for="depreciation-value">{% trans 'Depreciation value' %}</label>
+                                <input required name="depreciation_value"
+                                       class="form-control mask-money" autocomplete="off" id="depreciation-value">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="form-group">
+                            <label class="form-label required" for="depreciation-start-date">{% trans 'Start date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input required type="text" name="depreciation_start_date"
+                                       class="form-control depreciation-date" autocomplete="off" id="depreciation-start-date">
+                                <div class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-8">
+                        <div class="form-group">
+                            <label class="form-label required" for="depreciation-end-date">{% trans 'End date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input disabled readonly required type="text" name ='depreciation_end_date'
+                                           class="form-control depreciation-date" autocomplete="off" id="depreciation-end-date">
+                                <div class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-2">
+                <button class="btn btn-outline-primary" type="button" id="load-depreciation-btn">
+                    <span>
+                        <span>{% trans 'Load Preview Of Depreciation' %}</span>
+                        <span class="icon"><i class="fa-regular fa-floppy-disk"></i></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-10" id="table-depreciation-area" hidden>
+                <table
+                    id="datatable-depreciation"
+                    class="table nowrap w-100 mb-20"
+                    style="min-width: 768px"
+                >
+                    <thead>
+                        <tr class="bg-light">
+                            <th>{% trans 'Month' %}</th>
+                            <th>{% trans 'Begin date' %}</th>
+                            <th>{% trans 'End date' %}</th>
+                            <th>{% trans 'Begin net value' %}</th>
+                            <th>{% trans 'Depreciation value' %}</th>
+                            <th>{% trans 'End net value' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block dataHiddenGroup %}
+    <script id="data-script"
+            data-apinvoice-detail-list="{}"
+            data-fixed-asset-detail=""
+    ></script>
+    <script id="trans-script"
+            data-increase-must-positive="{% trans 'Current FA increase must be bigger than 0' %}"
+            data-sum-exceed-total-value="{% trans 'The sum of current increased FA and existing increased FA exceeds the total value' %}"
+    ></script>
+{% endblock %}

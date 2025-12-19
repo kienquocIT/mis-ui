@@ -21,13 +21,13 @@ $(document).ready(function () {
         ResetValue()
         $trial_balance_table.DataTable().clear().destroy()
         $trial_balance_table.DataTableDefault({
+            styleDom: 'hide-foot',
             useDataServer: true,
             rowIdx: false,
             reloadCurrency: true,
             paging: false,
             scrollX: true,
-            info: false,
-            scrollY: '48vh',
+            scrollY: '54vh',
             scrollCollapse: true,
             ajax: {
                 url: $trial_balance_table.attr('data-table-url'),
@@ -49,7 +49,7 @@ $(document).ready(function () {
             columns: [
                 {
                     render: (data, type, row) => {
-                        return `<p class="ml-${row?.['account_level'] * 4}">${row?.['account_code']}</p>`
+                        return `<p class="ml-${row?.['account_level'] * 4} fw-bold">${row?.['account_code']}</p>`
                     }
                 },
                 {

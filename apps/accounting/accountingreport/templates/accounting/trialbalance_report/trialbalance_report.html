@@ -1,17 +1,13 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Trial balance' %}{% endblock %}
+{% block title %}{% trans 'Trial balance report' %}{% endblock %}
 {% block cssHeader %}
-    <link href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}" rel="stylesheet"
-          type="text/css"/>
+    <link href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}" rel="stylesheet"type="text/css"/>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageContent %}
-    {{ data.data.je_document_type | json_script:"je_document_type" }}
-    {{ data.data.je_amount_source | json_script:"je_amount_source" }}
-
     {#  URL  #}
     <script id="script-url"
             data-url-list="{% url 'JEPostingRuleListAPI' %}"
@@ -19,36 +15,42 @@
 
     {#  Filter  #}
     <div class="row align-items-end">
-        <div class="col-12 col-md-4 col-lg-3">
+        <div class="col-12 col-md-3 col-lg-3">
             <div class="form-group mb-3 mb-md-0">
-                <label class="form-label">{% trans 'Account Level' %}</label>
+                <label class="form-label" for="account_level_filter">{% trans 'Account Level' %}</label>
                 <select class="form-select" id="account_level_filter">
-                    <option value="-1">All level</option>
-                    <option value="0">Level 1</option>
-                    <option value="1">Level 2</option>
-                    <option value="2">Level 3</option>
-                    <option value="3">Level 4</option>
-                    <option value="4">Level 5</option>
+                    <option value="-1">{% trans 'All' %}</option>
+                    <option value="0">{% trans 'Level' %} 1</option>
+                    <option value="1">{% trans 'Level' %} 2</option>
+                    <option value="2">{% trans 'Level' %} 3</option>
+                    <option value="3">{% trans 'Level' %} 4</option>
+                    <option value="4">{% trans 'Level' %} 5</option>
                 </select>
             </div>
         </div>
 
-        <div class="col-12 col-md-4 col-lg-3">
+        <div class="col-12 col-md-3 col-lg-3">
             <div class="form-group mb-3 mb-md-0">
-                <label class="form-label">{% trans 'Display' %}</label>
+                <label class="form-label" for="account_display_filter">{% trans 'Display' %}</label>
                 <select class="form-select" id="account_display_filter">
-                    <option value="0">All</option>
-                    <option value="1">Non-zero only</option>
+                    <option value="0">{% trans 'All' %}</option>
+                    <option value="1">{% trans 'Non-zero account only' %}</option>
                 </select>
             </div>
         </div>
 
-        <div class="col-12 col-md-4 col-lg-3">
-            <button type="button" class="btn btn-primary" id="apply_filter">
+        <div class="col-12 col-md-3 col-lg-3">
+            <button type="button" class="btn btn-gradient-primary" id="apply_filter">
                 <i class="fas fa-check-circle"></i> {% trans 'Apply' %}
             </button>
-            <button type="button" class="btn btn-light" id="reset_filter">
+            <button type="button" class="btn btn-gradient-light" id="reset_filter">
                 <i class="fas fa-redo"></i> {% trans 'Reset' %}
+            </button>
+        </div>
+
+        <div class="col-12 col-md-3 col-lg-3 text-right">
+            <button type="button" class="btn btn-gradient-info" id="btn-export-to-excel">
+                <i class="fa-solid fa-file-excel"></i>&nbsp;{% trans 'Export to Excel' %}
             </button>
         </div>
     </div>
@@ -56,77 +58,56 @@
 
     <div class="row">
         <div class="col-12">
-            <div class="row">
-                <div class="col-12 text-right">
-                    <button type="button" class="btn btn-sm border-secondary bg-secondary text-white"
-                            id="btn-export-to-excel">
-                        <i class="fa-solid fa-file-excel"></i>&nbsp;{% trans 'Export to Excel' %}
-                    </button>
-                </div>
-            </div>
-            <table class="table nowrap w-100"
+            <table class="table table-bordered nowrap w-100"
                    id="trial-balance-table"
                    data-table-url="{% url 'GetChartOfAccountSummaryAPI' %}"
                    data-method="GET">
                 <thead class="bg-secondary-light-5 text-center align-middle">
                 <tr>
-                    <th rowspan="2">
+                    <th rowspan="2" style="min-width: 100px">
                         <h6>{% trans 'Account Code' %}</h6>
-                        <small>Account Code</small>
                     </th>
                     <th rowspan="2">
                         <h6>{% trans 'Account Name' %}</h6>
-                        <small>Account Name</small>
                     </th>
 
                     <th colspan="2">
                         <h6>{% trans 'Opening Balance' %}</h6>
-                        <small>Opening Balance</small>
                     </th>
 
                     <th colspan="2">
                         <h6>{% trans 'Period Movement' %}</h6>
-                        <small>Period Movement</small>
                     </th>
 
                     <th colspan="2">
                         <h6>{% trans 'Closing Balance' %}</h6>
-                        <small>Closing Balance</small>
                     </th>
                 </tr>
                 <tr>
-                    <th>
+                    <th class="text-center" style="min-width: 200px">
                         <h6>{% trans 'Debit' %}</h6>
-                        <small>Debit</small>
                     </th>
-                    <th>
+                    <th class="text-center" style="min-width: 200px">
                         <h6>{% trans 'Credit' %}</h6>
-                        <small>Credit</small>
                     </th>
-
-                    <th>
+                    <th class="text-center" style="min-width: 200px">
                         <h6>{% trans 'Debit' %}</h6>
-                        <small>Debit</small>
                     </th>
-                    <th>
+                    <th class="text-center" style="min-width: 200px">
                         <h6>{% trans 'Credit' %}</h6>
-                        <small>Credit</small>
                     </th>
-
-                    <th>
+                    <th class="text-center" style="min-width: 200px">
                         <h6>{% trans 'Debit' %}</h6>
-                        <small>Debit</small>
                     </th>
-                    <th>
+                    <th class="text-center" style="min-width: 200px">
                         <h6>{% trans 'Credit' %}</h6>
-                        <small>Credit</small>
                     </th>
                 </tr>
                 </thead>
 
                 <tfoot class="bg-secondary-light-5 p-4">
                 <tr>
-                    <th colspan="2" class="text-start fs-5 fw-bold">{% trans "Total" %}</th>
+                    <th colspan="2" class="text-start text-muted fs-5 fw-bold">{% trans "Total" %}</th>
 
                     <th class="text-end fw-bold fs-5 text-danger total-opening-debit">0</th>
                     <th class="text-end fw-bold fs-5 text-primary total-opening-credit">0</th>

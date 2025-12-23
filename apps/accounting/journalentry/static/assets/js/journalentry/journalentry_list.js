@@ -10,10 +10,6 @@ $(document).ready(function () {
                 scrollY: '50vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
-                fixedColumns: {
-                    leftColumns: 2,
-                    rightColumns: window.innerWidth <= 768 ? 0 : 1
-                },
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -64,7 +60,7 @@ $(document).ready(function () {
                         render: (data, type, row) => {
                             let total_debit = parseFloat(row?.['total_debit'] || 0)
                             let total_credit = parseFloat(row?.['total_credit'] || 0)
-                            return `<span class="mask-money" data-init-money="${total_debit}"></span> - <span class="mask-money" data-init-money="${total_credit}"></span>`;
+                            return `<span class="mask-money text-danger" data-init-money="${total_debit}"></span> - <span class="mask-money text-primary" data-init-money="${total_credit}"></span>`;
                         }
                     },
                     {

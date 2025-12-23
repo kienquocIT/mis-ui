@@ -47,7 +47,7 @@ class JELoadPage {
                     className: 'text-right w-15',
                     render: (data, type, row) => {
                         if (!row?.['is_fc'] && row?.['debit'] !== 0) {
-                            return `<span class="text-primary mask-money" data-init-money="${row?.['debit']}"></span>`;
+                            return `<span class="text-danger mask-money" data-init-money="${row?.['debit']}"></span>`;
                         }
                         return `--`;
                     }
@@ -78,17 +78,6 @@ class JELoadPage {
                 },
             ],
             initComplete: function(settings, json) {
-                let wrapper$ = pageElements.$journal_entry_table.closest('.dataTables_wrapper');
-                const headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
-                const textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
-                headerToolbar$.prepend(textFilter$);
-                if (textFilter$.length > 0) {
-                    textFilter$.css('display', 'flex');
-                    textFilter$.append(
-                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="h5 text-primary fw-bold">${$.fn.gettext('Journal lines')}</span>`)
-                    )
-                }
-
                 pageElements.$journal_entry_table.find('tbody tr').each(function (index, ele) {
                     UsualLoadPageAccountingFunction.LoadAccountingAccount({
                         element: $(this).find('.row-account'),

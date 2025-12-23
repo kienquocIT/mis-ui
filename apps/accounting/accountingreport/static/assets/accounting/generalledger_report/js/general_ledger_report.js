@@ -1,3 +1,9 @@
+let select_account_id = ""
+let total_value = {
+    summarize_debit: 0,
+    summarize_credit: 0,
+}
+
 class GeneralLedgerReportElements {
     constructor() {
         this.$tableReport = $('#gl_table_report');
@@ -9,26 +15,20 @@ class GeneralLedgerReportElements {
         this.$resetFilterBtn = $('#reset_filter');
     }
 }
-
 const pageElements = new GeneralLedgerReportElements();
-let select_account_id = ""
-let total_value = {
-    summarize_debit: 0,
-    summarize_credit: 0,
-}
 
 /**
  * Khai bao cac ham load data
  */
 class GeneralLedgerReportFunction {
-    static loadGeneralLedgerReportList(from_date = '', to_date = '', accountId = '') {
+    static loadGeneralLedgerReportList(from_date = '', to_date = '', accountIdList = []) {
         if ($.fn.DataTable.isDataTable(pageElements.$tableReport)) {
             pageElements.$tableReport.DataTable().destroy();
         }
 
         let frm = new SetupFormSubmit(pageElements.$tableReport);
 
-        ResetValue()
+        GeneralLedgerReportFunction.ResetValue()
         pageElements.$tableReport.DataTableDefault({
             useDataServer: true,
             rowIdx: true,
@@ -44,7 +44,7 @@ class GeneralLedgerReportFunction {
                 data: {
                     'from_date': from_date,
                     'to_date': to_date,
-                    'account_id': accountId,
+                    'account_id': accountIdList.join(','),
                     'is_general_ledger': true,
                 },
                 dataSrc: function (resp) {
@@ -69,7 +69,7 @@ class GeneralLedgerReportFunction {
                     }
                 },
                 {
-                    className: 'w-20',
+                    className: 'w-10',
                     render: (data, type, row) => {
                         const jeId = row?.['journal_entry_info']?.['id'];
                         const jeCode = row?.['journal_entry_info']?.['code'] || '--';
@@ -93,11 +93,17 @@ class GeneralLedgerReportFunction {
                     }
                 },
                 {
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        return `<span class="fw-bold">${row?.['account_data']?.['acc_code']}</span>`;
+                    }
+                },
+                {
                     className: "w-15 text-right",
                     render: (data, type, row) => {
                         let total_debit = parseFloat(row?.['debit'] || 0);
                         total_value.summarize_debit += total_debit
-                        return total_debit ? `<span class="mask-money text-danger" data-init-money="${total_debit}"></span>` : '';
+                        return total_debit ? `<span class="mask-money text-danger" data-init-money="${total_debit}"></span>` : '--';
                     }
                 },
                 {
@@ -105,14 +111,14 @@ class GeneralLedgerReportFunction {
                     render: (data, type, row) => {
                         let total_credit = parseFloat(row?.['credit'] || 0);
                         total_value.summarize_credit += total_credit
-                        return total_credit ? `<span class="mask-money text-primary" data-init-money="${total_credit}"></span>` : '';
+                        return total_credit ? `<span class="mask-money text-primary" data-init-money="${total_credit}"></span>` : '--';
                     }
                 }
             ],
             drawCallback: function () {
                 const api = this.api();
                 const $tfoot = $(api.table().footer());
-                RenderTotalToFooter($tfoot)
+                GeneralLedgerReportFunction.RenderTotalToFooter($tfoot)
             }
         })
     }
@@ -151,36 +157,22 @@ class GeneralLedgerReportFunction {
         if (existingPopover) existingPopover.dispose();
         pageElements.$accountInfoBtn.hide();
     }
-}
 
-function loadSummarize() {
-    // let dataParam = {}
-    let ajax = $.fn.callAjax2({
-        url: pageElements.$tableReport.attr('data-url-summarize'),
-        data: {'account_id': select_account_id},
-        method: 'GET'
-    }).then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data && typeof data === 'object' && data.hasOwnProperty('journal_entry_summarize')) {
-                return (data?.['journal_entry_summarize'] || []).length === 1 ? (data?.['journal_entry_summarize'][0] || {}) : {};
-            }
-            return {};
-        },
-        (errs) => {
-            console.log(errs);
+    static RenderTotalToFooter($tfoot) {
+        $tfoot.find('.total-debit').html(
+            `<span class="mask-money fw-bold fs-6" data-init-money="${total_value.summarize_debit}"></span>`
+        );
+        $tfoot.find('.total-credit').html(
+            `<span class="mask-money fw-bold fs-6" data-init-money="${total_value.summarize_credit}"></span>`
+        );
+    }
+
+    static ResetValue() {
+        total_value = {
+            summarize_debit: 0,
+            summarize_credit: 0,
         }
-    )
-
-    Promise.all([ajax]).then(
-        (results) => {
-            // console.log(results[0])
-            $('#total_opening_balance').text(results[0]?.['opening_balance'] || 0)
-            $('#total_period_debit').attr('data-init-money', results[0]?.['total_debit'] || 0)
-            $('#total_period_credit').attr('data-init-money', results[0]?.['total_credit'] || 0)
-            $('#total_closing_balance').text(results[0]?.['closing_balance'] || 0)
-            $.fn.initMaskMoney2()
-        });
+    }
 }
 
 /**
@@ -192,9 +184,8 @@ class GeneralLedgerReportEventHandler {
         pageElements.$applyFilterBtn.on('click', function () {
             let dayStart = DateTimeControl.formatDateType("DD/MM/YYYY", "YYYY-MM-DD", pageElements.$startDateFilter.val());
             let dayEnd = DateTimeControl.formatDateType("DD/MM/YYYY", "YYYY-MM-DD", pageElements.$endDateFilter.val());
-            let accountId = pageElements.$accountFilter.val() || null;
-            GeneralLedgerReportFunction.loadGeneralLedgerReportList(dayStart, dayEnd, accountId);
-            loadSummarize()
+            let accountIdList = pageElements.$accountFilter.val() || [];
+            GeneralLedgerReportFunction.loadGeneralLedgerReportList(dayStart, dayEnd, accountIdList);
         });
 
         // event when click reset filter button
@@ -211,7 +202,7 @@ class GeneralLedgerReportEventHandler {
 
             const dayStart = firstDayOfMonth.format('YYYY-MM-DD');
             const dayEnd = today.format('YYYY-MM-DD');
-            GeneralLedgerReportFunction.loadGeneralLedgerReportList(dayStart, dayEnd, '');
+            GeneralLedgerReportFunction.loadGeneralLedgerReportList(dayStart, dayEnd);
         });
 
         // event when account filter changes
@@ -222,7 +213,6 @@ class GeneralLedgerReportEventHandler {
         });
     }
 }
-
 
 $(document).ready(function () {
     const today = moment();
@@ -253,23 +243,7 @@ $(document).ready(function () {
     // load data with default date range
     const dayStart = firstDayOfMonth.format('YYYY-MM-DD');
     const dayEnd = today.format('YYYY-MM-DD');
-    GeneralLedgerReportFunction.loadGeneralLedgerReportList(dayStart, dayEnd, '');
+    GeneralLedgerReportFunction.loadGeneralLedgerReportList(dayStart, dayEnd);
 
     GeneralLedgerReportEventHandler.initPageEvent();
 });
-
-function RenderTotalToFooter($tfoot) {
-    $tfoot.find('.total-debit').html(
-        `<span class="mask-money fw-bold fs-6" data-init-money="${total_value.summarize_debit}"></span>`
-    );
-    $tfoot.find('.total-credit').html(
-        `<span class="mask-money fw-bold fs-6" data-init-money="${total_value.summarize_credit}"></span>`
-    );
-}
-
-function ResetValue() {
-    total_value = {
-        summarize_debit: 0,
-        summarize_credit: 0,
-    }
-}

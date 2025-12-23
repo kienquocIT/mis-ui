@@ -3,6 +3,22 @@
 {% load static %}
 {% block title %}{% trans 'Journal entry' %}{% endblock %}
 {% block cssHeader %}
+    <style>
+    /* Ép bảng body luôn hiện thanh cuộn (hoặc chừa chỗ) để header tính toán đúng */
+.dataTables_scrollBody {
+    overflow-y: scroll !important; /* Luôn hiện scrollbar dọc */
+}
+
+/* Hoặc cách hiện đại hơn (nếu trình duyệt hỗ trợ): */
+.dataTables_scrollBody {
+    scrollbar-gutter: stable;
+}
+
+/* Đảm bảo bảng full chiều rộng */
+table.dataTable {
+    width: 100% !important;
+}
+    </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}

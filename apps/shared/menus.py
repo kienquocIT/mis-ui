@@ -957,7 +957,7 @@ class MenusPartnerCenter:
     )
 
 
-class MenusFinancials:
+class MenusFinancial:
     HOME = MenuCommon(
         name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
@@ -1195,19 +1195,19 @@ class SpaceItem:
                 MenuEOffice.MEETING,
             ],
         ),
-        'financials': SpaceCommon(
-            'FINANCIALS',
-            'financials',
+        'financial': SpaceCommon(
+            'FINANCIAL',
+            'financial',
             icon='<i class="fas fa-balance-scale"></i>',
             menus=[
-                MenusFinancials.HOME,
-                MenusFinancials.ACCOUNTING_SETTING,
-                MenusFinancials.POSTING_ENGINE,
-                MenusFinancials.ACCOUNTING_REPORT,
-                MenusFinancials.CASHFLOW,
-                MenusFinancials.ASSET,
-                MenusFinancials.RECONCILIATION,
-                MenusFinancials.PAYMENT_PLAN,
+                MenusFinancial.HOME,
+                MenusFinancial.ACCOUNTING_SETTING,
+                MenusFinancial.POSTING_ENGINE,
+                MenusFinancial.ACCOUNTING_REPORT,
+                MenusFinancial.CASHFLOW,
+                MenusFinancial.ASSET,
+                MenusFinancial.RECONCILIATION,
+                MenusFinancial.PAYMENT_PLAN,
             ]
         ),
         'forms': SpaceCommon(
@@ -1351,7 +1351,7 @@ class SpaceGroup:
             SpaceItem.mapping['crm'],
             SpaceItem.mapping['kms'],
             SpaceItem.mapping['e-office'],
-            SpaceItem.mapping['financials'],
+            SpaceItem.mapping['financial'],
             SpaceItem.mapping['forms'],
             SpaceItem.mapping['hrm'],
             SpaceItem.mapping['inventory'],

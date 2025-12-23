@@ -13,7 +13,7 @@
                 <label class="form-label" for="account_filter">{% trans 'Account' %}</label>
                 <div class="input-group">
                     <select class="form-select select2" id="account_filter"
-                            data-url="{% url 'ChartOfAccountsListAPI' %}"></select>
+                            data-url="{% url 'ChartOfAccountsListAPI' %}" multiple></select>
                     <button type="button" class="btn btn-outline-secondary account-info-btn" id="account_info_btn"
                             style="display: none;">
                         <i class="fas fa-info-circle"></i>
@@ -105,6 +105,7 @@
                     <th style="min-width: 150px">{% trans 'JE code' %}</th>
                     <th style="min-width: 150px">{% trans 'Original transaction' %}</th>
                     <th style="min-width: 200px">{% trans 'Employee created' %}</th>
+                    <th style="min-width: 150px">{% trans 'Account code' %}</th>
                     <th style="min-width: 150px">{% trans 'Debit' %}</th>
                     <th style="min-width: 150px">{% trans 'Credit' %}</th>
                 </tr>
@@ -116,6 +117,7 @@
                     <th style="min-width: 150px"></th>
                     <th style="min-width: 150px"></th>
                     <th style="min-width: 200px"></th>
+                    <th style="min-width: 150px"></th>
                     <th style="min-width: 150px" class="text-end fw-bold text-danger total-debit">0</th>
                     <th style="min-width: 150px" class="text-end fw-bold text-primary total-credit">0</th>
                 </tr>

@@ -3,7 +3,10 @@ let total_value = {
     summarize_credit: 0,
 }
 
-class loadJournalEntryReportInfo {
+/**
+ * Khai bao cac ham load data
+ */
+class JEReportFunction {
     static loadJournalEntryReportList(from_date = '', to_date = '') {
         const $tb = $('#je_table_report');
 
@@ -12,7 +15,7 @@ class loadJournalEntryReportInfo {
             $tb.DataTable().destroy();
         }
 
-        ResetValue()
+        JEReportFunction.ResetValue()
         let frm = new SetupFormSubmit($tb);
         $tb.DataTableDefault({
             useDataServer: true,
@@ -89,7 +92,7 @@ class loadJournalEntryReportInfo {
                     render: (data, type, row) => {
                         let total_debit = parseFloat(row?.['debit'] || 0);
                         total_value.summarize_debit += total_debit
-                        return total_debit ? `<span class="mask-money text-danger" data-init-money="${total_debit}"></span>` : '';
+                        return total_debit ? `<span class="mask-money text-danger" data-init-money="${total_debit}"></span>` : '--';
                     }
                 },
                 {
@@ -97,7 +100,7 @@ class loadJournalEntryReportInfo {
                     render: (data, type, row) => {
                         let total_credit = parseFloat(row?.['credit'] || 0);
                         total_value.summarize_credit += total_credit
-                        return total_credit ? `<span class="mask-money text-primary" data-init-money="${total_credit}"></span>` : '';
+                        return total_credit ? `<span class="mask-money text-primary" data-init-money="${total_credit}"></span>` : '--';
                     }
                 }
             ],
@@ -128,19 +131,38 @@ class loadJournalEntryReportInfo {
             drawCallback: function () {
                 const api = this.api();
                 const $tfoot = $(api.table().footer());
-                RenderTotalToFooter($tfoot)
+                JEReportFunction.RenderTotalToFooter($tfoot)
             }
         })
     }
+
+    static RenderTotalToFooter($tfoot) {
+        $tfoot.find('.total-debit').html(
+            `<span class="mask-money fw-bold fs-6" data-init-money="${total_value.summarize_debit}"></span>`
+        );
+        $tfoot.find('.total-credit').html(
+            `<span class="mask-money fw-bold fs-6" data-init-money="${total_value.summarize_credit}"></span>`
+        );
+    }
+
+    static ResetValue() {
+        total_value = {
+            summarize_debit: 0,
+            summarize_credit: 0,
+        }
+    }
 }
 
+/**
+ * Khai bao cac ham su kien
+ */
 class JEReportEventHandler {
     static initPageEvent() {
         // event when click apply filter button
         $('#apply_filter').on('click', function () {
             let dayStart = DateTimeControl.formatDateType("DD/MM/YYYY", "YYYY-MM-DD", $('#start_date_filter').val());
             let dayEnd = DateTimeControl.formatDateType("DD/MM/YYYY", "YYYY-MM-DD", $('#end_date_filter').val());
-            loadJournalEntryReportInfo.loadJournalEntryReportList(dayStart, dayEnd);
+            JEReportFunction.loadJournalEntryReportList(dayStart, dayEnd);
         });
 
         // event when click reset filter button
@@ -152,7 +174,7 @@ class JEReportEventHandler {
 
             const dayStart = firstDayOfMonth.format('YYYY-MM-DD');
             const dayEnd = today.format('YYYY-MM-DD');
-            loadJournalEntryReportInfo.loadJournalEntryReportList(dayStart, dayEnd);
+            JEReportFunction.loadJournalEntryReportList(dayStart, dayEnd);
         });
     }
 
@@ -178,23 +200,7 @@ $(document).ready(function () {
     // load data with default date range
     const dayStart = firstDayOfMonth.format('YYYY-MM-DD');
     const dayEnd = today.format('YYYY-MM-DD');
-    loadJournalEntryReportInfo.loadJournalEntryReportList(dayStart, dayEnd);
+    JEReportFunction.loadJournalEntryReportList(dayStart, dayEnd);
 
     JEReportEventHandler.initPageEvent();
 });
-
-function RenderTotalToFooter($tfoot) {
-    $tfoot.find('.total-debit').html(
-        `<span class="mask-money fw-bold fs-6" data-init-money="${total_value.summarize_debit}"></span>`
-    );
-    $tfoot.find('.total-credit').html(
-        `<span class="mask-money fw-bold fs-6" data-init-money="${total_value.summarize_credit}"></span>`
-    );
-}
-
-function ResetValue() {
-    total_value = {
-        summarize_debit: 0,
-        summarize_credit: 0,
-    }
-}

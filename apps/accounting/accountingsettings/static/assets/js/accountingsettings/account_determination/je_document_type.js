@@ -37,7 +37,7 @@ $(document).ready(function() {
                 {
                     className: 'w-15',
                     render: (data, type, row) => {
-                        return `<span>${row?.['module_parsed'] || ''}</span>`;
+                        return `<span>${row?.['module'] || ''} - ${row?.['module_parsed'] || ''}</span>`;
                     }
                 },
                 {
@@ -56,7 +56,10 @@ $(document).ready(function() {
                 },
             ],
             rowGroup: {
-                dataSrc: 'module_parsed'
+                dataSrc: 'module_parsed',
+                startRender: function (rows, module_parsed) {
+                    return $('<tr class="group-header">').append(`<td colspan="100%"><h5><span class="text-muted">${module_parsed}</span></h5></td>`);
+                }
             },
             columnDefs: [
                 {

@@ -152,16 +152,23 @@ $(document).ready(function() {
 
     LoadJEDocumentType()
 
-    function LoadJEAmountSource() {
-        let data_option = JSON.parse($('#je_amount_source').text() || '{}')?.['je_amount_source'] || []
-        let data_option_html = '<option></option>'
-        for (let i=0; i < data_option.length; i++) {
-            data_option_html += `<option value="${data_option[i][0]}">${data_option[i][0]} - ${data_option[i][1]}</option>`
-        }
-        $amount_source.html(data_option_html)
-    }
+    $document_type.on('change', function() {
+        $amount_source.empty()
+        LoadJEAmountSource(null, $document_type.val())
+    })
 
-    LoadJEAmountSource()
+    function LoadJEAmountSource(data, document_type_app_code) {
+        $amount_source.initSelect2({
+            ajax: {
+                url: `${$amount_source.attr('data-url')}?document_type_app_code=${document_type_app_code}`,
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'je_amount_source',
+            keyId: 'code',
+            keyText: 'description',
+        })
+    }
 
     function LoadJEGroupType() {
         let data_option = JSON.parse($('#je_group_type').text() || '{}')?.['je_group_type'] || []
@@ -231,7 +238,7 @@ $(document).ready(function() {
         })
     }
 
-    function LoadRoleKeyGlobal($ele, data) {
+    function LoadRoleKeyGlobal(data) {
         $global_role_key.initSelect2({
             ajax: {
                 url: $global_role_key.attr('data-url'),
@@ -249,7 +256,7 @@ $(document).ready(function() {
 
     LoadRoleKey()
 
-    LoadRoleKeyGlobal($global_role_key)
+    LoadRoleKeyGlobal()
 
     UsualLoadPageAccountingFunction.LoadAccountingAccount({
         element: $fixed_account,

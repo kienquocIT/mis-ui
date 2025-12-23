@@ -346,15 +346,24 @@ class ARInvoicePageFunction {
                 },
                 {
                     render: (data, type, row) => {
-                        let product_uom_data = row?.['product_uom_data'] || {}
-                        return `<select ${option==='detail' ? 'disabled' : ''} ${from_delivery} data-product-uom="${JSON.stringify(product_uom_data).replace(/"/g, "&quot;")}" class="form-select select-2 uom-select"></select>`
-                    }
-                },
-                {
-                    className: 'text-right',
-                    render: (data, type, row) => {
                         let product_quantity = row?.['product_quantity'] || 0
-                        return `<input ${option==='detail' ? 'disabled readonly' : ''} type="number" ${from_delivery} value="${product_quantity}" class="form-control product_quantity recalculate-field text-right">`
+                        let product_quantity_time = row?.['product_quantity_time'] || 0
+                        let product_uom_data = row?.['product_uom_data'] || {}
+                        if (product_quantity_time) {
+                            return `<div class="input-group">
+                                        <span class="input-affix-wrapper">
+                                            <input ${option==='detail' ? 'disabled readonly' : ''} type="number" ${from_delivery} value="${product_quantity}" class="form-control product_quantity recalculate-field" style="min-width: 100px">
+                                        </span>
+                                        <select ${option==='detail' ? 'disabled' : ''} ${from_delivery} data-product-uom="${JSON.stringify(product_uom_data).replace(/"/g, "&quot;")}" class="form-select select-2 uom-select"></select>
+                                        <span class="input-group-text">x ${product_quantity_time} ${$.fn.gettext('Month')}</span>
+                                    </div>`
+                        }
+                        return `<div class="input-group">
+                                    <span class="input-affix-wrapper">
+                                        <input ${option==='detail' ? 'disabled readonly' : ''} type="number" ${from_delivery} value="${product_quantity}" class="form-control product_quantity recalculate-field" style="min-width: 100px">
+                                    </span>
+                                    <select ${option==='detail' ? 'disabled' : ''} ${from_delivery} data-product-uom="${JSON.stringify(product_uom_data).replace(/"/g, "&quot;")}" class="form-select select-2 uom-select"></select>
+                                </div>`
                     }
                 },
                 {
@@ -381,11 +390,11 @@ class ARInvoicePageFunction {
                     render: (data, type, row) => {
                         return `<div class="input-group">
                                     <span class="input-affix-wrapper">
-                                        <input ${option==='detail' ? 'disabled readonly' : ''} class="form-control product_discount_percent recalculate-field text-danger text-right" type="number" value="${row?.['product_discount_percent']}" min="0" max="100">
+                                        <input ${option==='detail' ? 'disabled readonly' : ''} ${from_delivery} class="form-control product_discount_percent recalculate-field text-danger text-right" type="number" value="${row?.['product_discount_percent']}" min="0" max="100">
                                         <span class="input-suffix"><i class="fa-solid fa-percent"></i></span>
                                     </span>
                                     <span class="input-group-text">=</span>
-                                    <input ${option==='detail' ? 'disabled readonly' : ''} class="form-control product_discount_value mask-money recalculate-field text-danger text-right" style="min-width: 200px" value="${row?.['product_discount_value'] || 0}">
+                                    <input ${option==='detail' ? 'disabled readonly' : ''} ${from_delivery} class="form-control product_discount_value mask-money recalculate-field text-danger text-right" style="min-width: 200px" value="${row?.['product_discount_value'] || 0}">
                                 </div>`
                     }
                 },
@@ -425,6 +434,7 @@ class ARInvoicePageFunction {
                         let prd_select = $(this).find('.product-select')
                         let prd_data = prd_select.attr('data-product') ? JSON.parse(prd_select.attr('data-product')) : {}
                         UsualLoadPageFunction.LoadProduct({
+                            allowClear: false,
                             element: prd_select,
                             data: prd_data,
                             data_url: pageElements.$script_url.attr('data-url-product-list')
@@ -433,6 +443,7 @@ class ARInvoicePageFunction {
                         let uom_select = $(this).find('.uom-select')
                         let uom_data = uom_select.attr('data-product-uom') ? JSON.parse(uom_select.attr('data-product-uom')) : {}
                         UsualLoadPageFunction.LoadUOM({
+                            allowClear: false,
                             element: uom_select,
                             data: uom_data,
                             data_params: {'group_id': prd_data?.['general_uom_group']?.['id']},
@@ -799,6 +810,15 @@ class ARInvoiceHandler {
                     ARInvoicePageFunction.LoadSaleOrder(data?.['sale_order_mapped_data'] || {})
                     ARInvoicePageFunction.LoadLeaseOrder(data?.['lease_order_mapped_data'] || {})
 
+                    if (Object.keys(data?.['sale_order_mapped_data'] || {}).length > 0 || Object.keys(data?.['lease_order_mapped_data'] || {}).length > 0) {
+                        pageElements.$btn_select_from_delivery.removeClass('disabled')
+                        pageElements.$btn_add_optionally.addClass('disabled')
+                    }
+                    else {
+                        pageElements.$btn_select_from_delivery.addClass('disabled')
+                        pageElements.$btn_add_optionally.removeClass('disabled')
+                    }
+
                     pageElements.$posting_date.val(moment(data?.['posting_date'].split(' ')[0]).format('DD/MM/YYYY'))
                     pageElements.$document_date.val(moment(data?.['document_date'].split(' ')[0]).format('DD/MM/YYYY'))
                     pageElements.$invoice_date.val(moment(data?.['invoice_date'].split(' ')[0]).format('DD/MM/YYYY'))
@@ -815,20 +835,6 @@ class ARInvoiceHandler {
 
                     pageElements.$main_table.attr('data-delivery-selected', data?.['delivery_mapped'].map(item => item.id).join(','))
                     ARInvoicePageFunction.LoadMainTable(data?.['item_mapped'], option)
-
-                    if (Object.keys(data?.['sale_order_mapped_data']).length > 0) {
-                        pageElements.$btn_select_from_delivery.removeClass('disabled')
-                    }
-                    else {
-                        pageElements.$btn_select_from_delivery.addClass('disabled')
-                    }
-
-                    if (Object.keys(data?.['sale_order_mapped_data']).length > 0) {
-                        pageElements.$btn_add_optionally.addClass('disabled')
-                    }
-                    else {
-                        pageElements.$btn_add_optionally.removeClass('disabled')
-                    }
 
                     new $x.cls.file($('#attachment')).init({
                         enable_edit: option !== 'detail',
@@ -960,6 +966,7 @@ class ARInvoiceEventHandler {
                 UsualLoadPageFunction.AddTableRow(pageElements.$main_table, {})
                 let row_added = pageElements.$main_table.find('tbody tr:last-child')
                 UsualLoadPageFunction.LoadProduct({
+                    allowClear: false,
                     element: row_added.find('.product-select'),
                     data_url: pageElements.$script_url.attr('data-url-product-list')
                 })
@@ -977,6 +984,7 @@ class ARInvoiceEventHandler {
                 let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
                 $(this).closest('tr').find('.product-des').attr('title', selected?.['description'] ? selected?.['description'] : '')
                 UsualLoadPageFunction.LoadUOM({
+                    allowClear: false,
                     element: $(this).closest('tr').find('.uom-select'),
                     data: selected?.['sale_default_uom'] || {},
                     data_params: {'group_id': selected?.['general_uom_group']?.['id']},
@@ -1017,7 +1025,7 @@ class ARInvoiceEventHandler {
             pageVariables.delivery_product_data = []
             let data_product = {
                 delivery_data: [],
-                so_data: []
+                order_data: []
             };
 
             // Merge delivery data từ checkbox
@@ -1025,36 +1033,40 @@ class ARInvoiceEventHandler {
                 if ($(this).prop('checked') && $(this).attr('data-already') === '0') {
                     let json = JSON.parse($(this).attr('data-detail') || '{}');
                     data_product.delivery_data.push(...(json?.['delivery_data'] || []));
-                    data_product.so_data.push(...(json?.['so_data'] || []));
+                    data_product.order_data.push(...(json?.['order_data'] || []));
                 }
             });
 
             let all_delivery_data = data_product?.['delivery_data'];
-            let all_so_data = data_product?.['so_data'];
+            let all_order_data = data_product?.['order_data'];
+
+            console.table(all_delivery_data)
+            console.table(all_order_data)
 
             ARInvoicePageFunction.LoadDeliveryProductTable(all_delivery_data);
 
             for (let item of all_delivery_data) {
-                let so_item = all_so_data.find(so_data =>
-                    String(so_data?.['product_data']?.['id']) === String(item?.['product_data']?.['id'] || '')
-                    && String(so_data?.['so_id']) === String(item?.['so_id'] || '')
+                let order_item = all_order_data.find(order_data =>
+                    String(order_data?.['product_data']?.['id']) === String(item?.['product_data']?.['id'] || '')
+                    && String(order_data?.['order_id']) === String(item?.['order_id'] || '')
                 ) || {};
 
-                let product_payment_value = (so_item?.['product_subtotal_price'] || 0) - (item?.['ar_value_done'] || 0)
-                let product_discount_value = product_payment_value * (so_item?.['product_discount_value'] || 0) / 100
-                let product_tax_value = (product_payment_value - product_discount_value) * (so_item?.['product_tax_value'] || 0) / 100
+                let product_payment_value = item?.['product_quantity_time'] ? ((item?.['picked_quantity'] || 0) * (item?.['product_quantity_time'] || 0) * (order_item?.['product_unit_price'] || 0)) - (item?.['ar_value_done'] || 0) : ((item?.['picked_quantity'] || 0) * (order_item?.['product_unit_price'] || 0)) - (item?.['ar_value_done'] || 0)
+                let product_discount_value = product_payment_value * (order_item?.['product_discount_value'] || 0) / 100
+                let product_tax_value = (product_payment_value - product_discount_value) * (order_item?.['product_tax_value'] || 0) / 100
                 pageVariables.delivery_product_data.push({
                     'delivery_item_mapped_id': item?.['id'] || '',
                     'product_data': item?.['product_data'] || {},
-                    'product_uom_data': item?.['uom_data'] || {},
+                    'product_uom_data': order_item?.['uom_data'] || {},
                     'product_quantity': item?.['picked_quantity'] || 0,
-                    'product_unit_price': so_item?.['product_unit_price'] || 0,
-                    'product_subtotal': so_item?.['product_subtotal_price'] || 0,
+                    'product_quantity_time': item?.['product_quantity_time'] || 0,
+                    'product_unit_price': order_item?.['product_unit_price'] || 0,
+                    'product_subtotal': order_item?.['product_subtotal_price'] || 0,
                     'product_payment_percent': '',
                     'product_payment_value': product_payment_value,
-                    'product_discount_percent': so_item?.['product_discount_value'] || 0,
+                    'product_discount_percent': order_item?.['product_discount_value'] || 0,
                     'product_discount_value': product_discount_value,
-                    'product_tax_data': so_item?.['tax_data'] || {},
+                    'product_tax_data': order_item?.['tax_data'] || {},
                     'product_tax_value': product_tax_value,
                     'product_subtotal_final': product_payment_value - product_discount_value + product_tax_value,
                     'note': ''

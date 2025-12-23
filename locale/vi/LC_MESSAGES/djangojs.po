@@ -588,3 +588,15 @@ msgstr "Năm tài chính"
 #
 msgid "Move plan to"
 msgstr "Chuyển kế hoạch sang"
+
+#
+msgid "Permission"
+msgstr "Quyền"
+
+#
+msgid "New permission"
+msgstr "Quyền mới"
+
+#
+msgid "Month"
+msgstr "Tháng"

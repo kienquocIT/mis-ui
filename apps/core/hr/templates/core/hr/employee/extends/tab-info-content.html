@@ -3,7 +3,7 @@
 <div class="tab-pane fade show active" id="tab-info" data-disabled="{{li_content_head_disabled|parse_0_or_1}}">
     <div class="container-fluid mt-5">
         <div class="row">
-            <div class="col-12 col-md-4 col-lg-3">
+            <div class="col-12 col-md-3 col-lg-2">
                 <div class="row">
                     <div class="col-12">
                         <div class="form-group">
@@ -24,9 +24,15 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-8 col-lg-9">
+            <div class="col-12 col-md-9 col-lg-10">
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label required" for="employee-code">{% trans 'Employee Code' %}</label>
+                            <input oninput="this.value=this.value.toUpperCase()" type="text" class="form-control" name="code" id="employee-code" required>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-8 col-lg-8">
                         <div class="form-group">
                             <label class="form-label" for="select-box-user">{% trans 'User link to the employee' %}</label>
                             <div class="input-group">
@@ -44,25 +50,25 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-4">
-                        <div class="form-group">
-                            <label class="form-label required" for="employee-code">{% trans 'Employee Code' %}</label>
-                            <input oninput="this.value=this.value.toUpperCase()" type="text" class="form-control" name="code" id="employee-code" required>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-9 col-lg-4">
+                    <div class="col-12 col-md-4 col-lg-4">
                         <div class="form-group">
                             <label for="employee-first-name" class="form-label required">{% trans 'First Name' %}</label>
                             <input type="text" class="form-control" name="first_name" id="employee-first-name"{% if li_content_head_disabled == True %} disabled readonly {% endif %} required>
                         </div>
                     </div>
-                    <div class="col-12 col-md-3 col-lg-4">
+                    <div class="col-12 col-md-4 col-lg-4">
                         <div class="form-group">
                             <label for="employee-last-name" class="form-label required">{% trans 'Surname and Middle Names' %}</label>
                             <input type="text" class="form-control" name="last_name" id="employee-last-name"{% if li_content_head_disabled == True %} disabled readonly {% endif %} required>
                         </div>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-4">
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <div class="form-group">
+                            <label for="employee-dob" class="form-label">{% trans 'Date of birth' %}</label>
+                            <input class="form-control date-picker" type="text" id="employee-dob" {% if li_content_head_disabled == True %} disabled readonly {% endif %}/>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4">
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-6">
@@ -84,37 +90,33 @@
                             <input type="email" class="form-control" name="email" id="employee-email" {% if li_content_head_disabled == True %} disabled readonly {% endif %} required>
                         </div>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-4">
+                    <div class="col-12 col-md-4 col-lg-4">
                         <div class="form-group">
                             <label for="employee-phone" class="form-label required">{% trans 'Phone' %}</label>
                             <input type="text" class="form-control" name="phone" id="employee-phone"{% if li_content_head_disabled == True %} disabled readonly {% endif %} required>
                         </div>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-4">
-                        <div class="form-group">
-                            <label for="select-box-group-employee" class="form-label">{% trans 'Department' %}</label>
-                            <select class="form-select" name="group" id="select-box-group-employee" data-url="{% url 'GroupListAPI' %}" data-keyResp="group_list"{% if li_content_head_disabled == True %} disabled readonly {% endif %}></select>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-12 col-lg-4">
-                        <div class="form-group">
-                            <label for="employee-dob" class="form-label">{% trans 'Date of birth' %}</label>
-                            <input class="form-control date-picker" type="text" id="employee-dob" {% if li_content_head_disabled == True %} disabled readonly {% endif %}/>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-12 col-lg-4">
+                    <div class="col-12 col-md-4 col-lg-4">
                         <div class="form-group">
                             <label for="employee-date-joined" class="form-label required">{% trans 'Date Joined' %}</label>
                             <input class="form-control date-picker" type="text" id="employee-date-joined"{% if li_content_head_disabled == True %} disabled readonly {% endif %} required>
                         </div>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-4">
+                </div>
+                <div class="row mt-5">
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <div class="form-group">
+                            <label for="select-box-group-employee" class="form-label">{% trans 'Department' %}</label>
+                            <select class="form-select" name="group" id="select-box-group-employee" data-url="{% url 'GroupListAPI' %}" data-keyResp="group_list"{% if li_content_head_disabled == True %} disabled readonly {% endif %}></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-8 col-lg-8">
                         <div class="form-group">
                             <label for="select-box-role-employee" class="form-label">{% trans 'Role' %}</label>
                             <select class="form-select" name="role" id="select-box-role-employee" data-url="{% url 'RoleListAPI' %}" data-keyResp="role_list"{% if li_content_head_disabled == True %} disabled readonly {% endif %} multiple></select>
                         </div>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-12">
+                    <div class="col-12">
                         <div class="form-group">
                             <div class="form-check form-switch">
                                 <input type="checkbox" class="form-check-input" name="is_admin_company" id="idx_is_admin_company"{% if li_content_head_disabled == True %} disabled readonly {% endif %}>
@@ -122,7 +124,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-12">
+                    <div class="col-12">
                         <div class="form-group">
                             <div class="form-check form-switch">
                                 <input type="checkbox" class="form-check-input" name="is_active" id="is_active"{% if li_content_head_disabled == True %} disabled readonly {% endif %}>

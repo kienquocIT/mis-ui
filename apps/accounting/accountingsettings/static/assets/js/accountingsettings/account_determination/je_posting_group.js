@@ -1,9 +1,10 @@
 $(document).ready(function() {
     const $je_posting_group_table = $('#je-posting-group-table')
     const $modal_add_posting_group = $('#modal-add-posting-group')
+    const $pg_group_type = $('#pg-group-type')
     const $pg_code = $('#pg-code')
     const $pg_title = $('#pg-title')
-    const $pg_group_type = $('#pg-group-type')
+    const $pg_assign_to = $('#pg-assign-to')
     const $is_active = $('#is-active')
 
     function LoadJEPostingGroupTable() {
@@ -35,15 +36,21 @@ $(document).ready(function() {
                     render: () => ''
                 },
                 {
-                    className: 'w-65',
+                    className: 'w-20',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['posting_group_type_parsed'] || ''}</span>`;
+                    }
+                },
+                {
+                    className: 'w-25',
                     render: (data, type, row) => {
                         return `<span class="bflow-mirrow-badge border-0 fw-bold bg-blue-light-4">${row?.['code'] || ''}</span> - <span>${row?.['title'] || ''}</span>`;
                     }
                 },
                 {
-                    className: 'w-20',
+                    className: 'w-40',
                     render: (data, type, row) => {
-                        return `<span>${row?.['posting_group_type_parsed'] || ''}</span>`;
+                        return `<div class="assignment-data"></div>`;
                     }
                 },
                 {
@@ -63,12 +70,15 @@ $(document).ready(function() {
                 },
             ],
             rowGroup: {
-                dataSrc: 'posting_group_type_parsed'
+                dataSrc: 'posting_group_type_parsed',
+                startRender: function (rows, posting_group_type_parsed) {
+                    return $('<tr class="group-header">').append(`<td colspan="100%"><h5><span class="text-muted">${posting_group_type_parsed}</span></h5></td>`);
+                }
             },
             columnDefs: [
                 {
                     "visible": false,
-                    "targets": [2]
+                    "targets": [1]
                 }
             ],
             initComplete: function () {
@@ -76,6 +86,10 @@ $(document).ready(function() {
                     let rowData = $je_posting_group_table.DataTable().row(ele).data();
                     if (rowData && !rowData['is_active']) {
                         $(ele).addClass('bg-secondary-light-5');
+                    }
+                    for (let i = 0; i < rowData?.['assignment_data_list'].length; i++) {
+                        let item = rowData?.['assignment_data_list'][i]
+                        $(ele).find('.assignment-data').append(`<span class="bflow-mirrow-badge mb-1 mr-1"><span class="fw-bold">${item?.['code']}</span> - ${item?.['title']}</span><br>`)
                     }
                 })
             }
@@ -95,6 +109,20 @@ $(document).ready(function() {
 
     LoadJEGroupType()
 
+    $pg_group_type.on('change', function () {
+        if ($(this).val() === 'ITEM_GROUP') {
+            UsualLoadPageFunction.LoadProductType({
+                element: $pg_assign_to,
+                data_url: $('#script-url').attr('data-url-product-type'),
+            })
+        } else if ($(this).val() === 'PARTNER_GROUP') {
+            UsualLoadPageFunction.LoadAccountType({
+                element: $pg_assign_to,
+                data_url: $('#script-url').attr('data-url-account-type'),
+            })
+        }
+    })
+
     new SetupFormSubmit($('#form-add-posting-group')).validate({
         rules: {
             code: {
@@ -113,11 +141,13 @@ $(document).ready(function() {
             let frm = new SetupFormSubmit($(form));
             let data = is_update ? {
                 'title': $pg_title.val(),
+                'assignment_data_list': $pg_assign_to.val(),
                 'is_active': $is_active.prop('checked')
             } : {
                 'code': $pg_code.val(),
                 'title': $pg_title.val(),
                 'posting_group_type': $pg_group_type.val(),
+                'assignment_data_list': $pg_assign_to.val(),
                 'is_active': $is_active.prop('checked')
             }
             $.fn.callAjax2({
@@ -144,6 +174,20 @@ $(document).ready(function() {
         $pg_group_type.trigger('change').prop('disabled', true)
         $modal_add_posting_group.attr('data-is-update', 'true')
         $modal_add_posting_group.attr('data-row-id', data?.['id'])
+        if (data?.['posting_group_type'] === 'ITEM_GROUP') {
+            UsualLoadPageFunction.LoadProductType({
+                element: $pg_assign_to,
+                data_url: $('#script-url').attr('data-url-product-type'),
+                data: data?.['assignment_data_list'] || []
+            })
+        }
+        else if (data?.['posting_group_type'] === 'PARTNER_GROUP') {
+            UsualLoadPageFunction.LoadAccountType({
+                element: $pg_assign_to,
+                data_url: $('#script-url').attr('data-url-account-type'),
+                data: data?.['assignment_data_list'] || []
+            })
+        }
         $is_active.prop('checked', data?.['is_active'])
     })
 

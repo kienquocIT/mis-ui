@@ -49,7 +49,7 @@ $(document).ready(function () {
                     {
                         className: 'w-10',
                         render: (data, type, row) => {
-                            return `<span>${row?.['sale_order_mapped_data']?.['code'] || '--'}</span>`
+                            return `<span>${row?.['sale_order_mapped_data']?.['code'] || row?.['lease_order_mapped_data']?.['code'] || '--'}</span>`
                         }
                     },
                     {

@@ -1005,6 +1005,52 @@ class MenusFinancials:
             ),
         ],
     )
+    POSTING_ENGINE = MenuCommon(
+        name='Posting Engine', code='', view_name='', icon='<i class="fa-solid fa-bolt"></i>',
+        child=[
+            MenuCommon(
+                name='Auto JE configure guide', code='menu_auto_je_guide_page', view_name='JEConfigureGuidePage',
+                icon='<i class="fa-regular fa-circle-question"></i>',
+            ),
+            MenuCommon(
+                name='JE document type', code='menu_je_document_type', view_name='JEDocumentTypeList',
+                icon='<i class="fa-solid fa-infinity"></i>',
+            ),
+            MenuCommon(
+                name='JE posting group', code='menu_je_posting_group', view_name='JEPostingGroupList',
+                icon='<i class="fa-solid fa-layer-group"></i>',
+            ),
+            MenuCommon(
+                name='JE GL account mapping', code='menu_je_gl_account_mapping', view_name='JEGLAccountMappingList',
+                icon='<i class="fa-solid fa-circle-nodes"></i>',
+            ),
+            MenuCommon(
+                name='JE posting rule', code='menu_je_posting_rule', view_name='JEPostingRuleList',
+                icon='<i class="fa-solid fa-pen-ruler"></i>',
+            ),
+            MenuCommon(
+                name='Journal entry list', code='menu_journal_entry_list', view_name='JournalEntryList',
+                icon='<i class="fas bi bi-journal-text"></i>',
+            ),
+        ],
+    )
+    ACCOUNTING_REPORT = MenuCommon(
+        name='Accounting Report', code='menu_accounting_report', view_name='', icon='<i class="fas fa-cog"></i>',
+        child=[
+            MenuCommon(
+                name='Journal entry report', code='menu_report_journal_entry', view_name='ReportJournalEntryList',
+                icon='<i class="fas bi bi-journal-text"></i>',
+            ),
+            MenuCommon(
+                name='General ledger report', code='menu_report_general_ledger', view_name='ReportGeneralLedgerList',
+                icon='<i class="fas fa-book-open"></i>',
+            ),
+            MenuCommon(
+                name='Trial balance report', code='menu_report_trial_balance', view_name='ReportTrialBalanceList',
+                icon='<i class="fa-solid fa-scale-balanced"></i>',
+            ),
+        ],
+    )
     ASSET = MenuCommon(
         name='Assets', code='menu_asset', view_name='', icon='<i class="fas fa-warehouse"></i>',
         child=[
@@ -1045,39 +1091,6 @@ class MenusFinancials:
             ),
         ],
     )
-    JOURNAL_ENTRY = MenuCommon(
-        name='Posting Engine', code='', view_name='', icon='<i class="fa-solid fa-bolt"></i>',
-        child=[
-            MenuCommon(
-                name='Auto JE configure guide', code='menu_auto_je_guide_page', view_name='JEConfigureGuidePage',
-                icon='<i class="fa-regular fa-circle-question"></i>',
-            ),
-            MenuCommon(
-                name='JE document type', code='menu_je_document_type', view_name='JEDocumentTypeList',
-                icon='<i class="fa-solid fa-infinity"></i>',
-            ),
-            MenuCommon(
-                name='JE posting group', code='menu_je_posting_group', view_name='JEPostingGroupList',
-                icon='<i class="fa-solid fa-layer-group"></i>',
-            ),
-            MenuCommon(
-                name='JE group assignment', code='menu_je_group_assignment', view_name='JEGroupAssignmentList',
-                icon='<i class="fa-solid fa-handshake-angle"></i>',
-            ),
-            MenuCommon(
-                name='JE GL account mapping', code='menu_je_gl_account_mapping', view_name='JEGLAccountMappingList',
-                icon='<i class="fa-solid fa-circle-nodes"></i>',
-            ),
-            MenuCommon(
-                name='JE posting rule', code='menu_je_posting_rule', view_name='JEPostingRuleList',
-                icon='<i class="fa-solid fa-pen-ruler"></i>',
-            ),
-            MenuCommon(
-                name='Journal entry list', code='menu_journal_entry_list', view_name='JournalEntryList',
-                icon='<i class="fas bi bi-journal-text"></i>',
-            ),
-        ],
-    )
     RECONCILIATION = MenuCommon(
         name='Reconciliation', code='menu_reconciliation', view_name='ReconList',
         icon='<i class="fas bi bi-ui-checks"></i>',
@@ -1085,23 +1098,6 @@ class MenusFinancials:
     PAYMENT_PLAN = MenuCommon(
         name='Payment plan', code='menu_payment_plan_list', view_name='PaymentPlanList',
         icon='<i class="fas fa-money-check-alt"></i>',
-    )
-    REPORT = MenuCommon(
-        name='Report', code='menu_accounting_report', view_name='', icon='<i class="fas fa-cog"></i>',
-        child=[
-            MenuCommon(
-                name='Journal entry report', code='menu_report_journal_entry', view_name='ReportJournalEntryList',
-                icon='<i class="fas bi bi-journal-text"></i>',
-            ),
-            MenuCommon(
-                name='General ledger report', code='menu_report_general_ledger', view_name='ReportGeneralLedgerList',
-                icon='<i class="fas fa-book-open"></i>',
-            ),
-            MenuCommon(
-                name='Trial balance report', code='menu_report_trial_balance', view_name='ReportTrialBalanceList',
-                icon='<i class="fa-solid fa-scale-balanced"></i>',
-            ),
-        ],
     )
 
 
@@ -1206,12 +1202,12 @@ class SpaceItem:
             menus=[
                 MenusFinancials.HOME,
                 MenusFinancials.ACCOUNTING_SETTING,
+                MenusFinancials.POSTING_ENGINE,
+                MenusFinancials.ACCOUNTING_REPORT,
                 MenusFinancials.CASHFLOW,
                 MenusFinancials.ASSET,
-                MenusFinancials.JOURNAL_ENTRY,
                 MenusFinancials.RECONCILIATION,
                 MenusFinancials.PAYMENT_PLAN,
-                MenusFinancials.REPORT
             ]
         ),
         'forms': SpaceCommon(

@@ -8,9 +8,10 @@ from apps.accounting.accountingsettings.views import (
     DimensionAccountDetailAPI, InitialBalanceDetail, InitialBalanceUpdate, InitialBalanceDetailAPI, AssetCategoryList,
     AssetCategoryListAPI, AssetCategoryDetailAPI, DimensionSplitTemplateList, DimensionSplitTemplateListAPI,
     DimensionSplitTemplateDetailAPI, JEDocumentTypeList, JEDocumentTypeListAPI, JEDocumentTypeDetailAPI,
-    JEPostingRuleList, JEPostingRuleListAPI, JEPostingGroupList, JEGroupAssignmentList, JEGLAccountMappingList,
+    JEPostingRuleList, JEPostingRuleListAPI, JEPostingGroupList, JEGLAccountMappingList,
     JEPostingGroupListAPI, JEGroupAssignmentListAPI, JEGLAccountMappingListAPI, JEConfigureGuidePage,
-    JEPostingGroupDetailAPI, JEPostingGroupRoleKeyListAPI, JEGLAccountMappingDetailAPI, JEPostingRuleDetailAPI
+    JEPostingGroupDetailAPI, JEPostingGroupRoleKeyListAPI, JEGLAccountMappingDetailAPI, JEPostingRuleDetailAPI,
+    JEAmountSourceListAPI
 )
 
 urlpatterns = [
@@ -24,11 +25,11 @@ urlpatterns = [
     path('je-posting-group/list/api', JEPostingGroupListAPI.as_view(), name='JEPostingGroupListAPI'),
     path('je-posting-group/detail/api/<str:pk>', JEPostingGroupDetailAPI.as_view(), name='JEPostingGroupDetailAPI'),
     path('je-posting-group-role-key/list/api', JEPostingGroupRoleKeyListAPI.as_view(), name='JEPostingGroupRoleKeyListAPI'),
-    path('je-group-assignment/list', JEGroupAssignmentList.as_view(), name='JEGroupAssignmentList'),
     path('je-group-assignment/list/api', JEGroupAssignmentListAPI.as_view(), name='JEGroupAssignmentListAPI'),
     path('je-gl-account-mapping/list', JEGLAccountMappingList.as_view(), name='JEGLAccountMappingList'),
     path('je-gl-account-mapping/list/api', JEGLAccountMappingListAPI.as_view(), name='JEGLAccountMappingListAPI'),
     path('je-gl-account-mapping/detail/api/<str:pk>', JEGLAccountMappingDetailAPI.as_view(), name='JEGLAccountMappingDetailAPI'),
+    path('je-amount-source/list/api', JEAmountSourceListAPI.as_view(), name='JEAmountSourceListAPI'),
     path('je-posting-rule/list', JEPostingRuleList.as_view(), name='JEPostingRuleList'),
     path('je-posting-rule/list/api', JEPostingRuleListAPI.as_view(), name='JEPostingRuleListAPI'),
     path('je-posting-rule/detail/api/<str:pk>', JEPostingRuleDetailAPI.as_view(), name='JEPostingRuleDetailAPI'),

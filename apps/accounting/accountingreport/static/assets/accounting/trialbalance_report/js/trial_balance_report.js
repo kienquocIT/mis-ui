@@ -49,7 +49,7 @@ $(document).ready(function () {
             columns: [
                 {
                     render: (data, type, row) => {
-                        return `<p class="ml-${row?.['account_level'] * 4} fw-bold">${row?.['account_code']}</p>`
+                        return `<p class="fw-bold">${row?.['account_code']}</p>`
                     }
                 },
                 {

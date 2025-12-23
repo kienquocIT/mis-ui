@@ -22,7 +22,6 @@
 {% block pageContent %}
     {{ data.data.je_document_type | json_script:"je_document_type" }}
     {{ data.data.je_group_type | json_script:"je_group_type" }}
-    {{ data.data.je_amount_source | json_script:"je_amount_source" }}
 
     <script id="script-url"
             data-url-list="{% url 'JEPostingRuleListAPI' %}"
@@ -110,7 +109,7 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label class="form-label required" for="amount-source">{% trans 'Amount source' %}</label>
-                                    <select class="form-select select2" id="amount-source" required></select>
+                                    <select class="form-select select2" id="amount-source" required data-method="GET" data-url="{% url 'JEAmountSourceListAPI' %}"></select>
                                 </div>
                             </div>
 

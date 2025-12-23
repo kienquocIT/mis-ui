@@ -12447,3 +12447,7 @@ msgstr "Ca làm việc áp dụng không phù hợp"
 #
 msgid "Posting Engine"
 msgstr "Bộ máy hạch toán"
+
+#
+msgid "Accounting Report"
+msgstr "Báo cáo kế toán"

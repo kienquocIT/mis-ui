@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block cssHeader %}
+    <link href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="{% static 'assets/css/core/hr/extends_new/style.css' %}">
     <style>
@@ -20,6 +21,15 @@
             font-weight: bold;
             font-size: 14px;
             color: #fff;
+        }
+        .dataTables_scrollBody tr.group-header > td {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: rgb(235, 245, 245);
+        }
+        .dataTables_scrollFootInner, .dataTables_scrollFootInner table {
+            width: 100% !important;
         }
     </style>
 {% endblock %}
@@ -85,9 +95,8 @@
             return eleInfo;
         }
     </script>
-
+    <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
-
     <script src="{% static 'assets/js/core/hr/employee/employee_pk.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/employee/employee_detail.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/extends_new/plan_app_permissions.js' %}"></script>

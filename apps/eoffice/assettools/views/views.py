@@ -44,7 +44,7 @@ class AssetToolsProvideRequestCreate(View):
         breadcrumb='ASSET_TOOLS_PROVIDE_CREATE',
     )
     def get(self, request, *args, **kwargs):
-        print('user current', request.user.employee_current_data)
+        # print('user current', request.user.employee_current_data)
         reps_employee = ServerAPI(
             user=request.user, url=ApiURL.EMPLOYEE_DETAIL_PK.fill_key(pk=request.user.employee_current_data['id'])
         ).get({'list_from_app': 'assettools.assettoolsprovide.create'})

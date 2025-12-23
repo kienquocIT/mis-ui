@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block cssHeader %}
+    <link href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}" rel="stylesheet" type="text/css"/>
     <style>
         .row-error-disabled {
             position: relative;
@@ -18,6 +19,15 @@
             font-weight: bold;
             font-size: 14px;
             color: #fff;
+        }
+        .dataTables_scrollBody tr.group-header > td {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: rgb(235, 245, 245);
+        }
+        .dataTables_scrollFootInner, .dataTables_scrollFootInner table {
+            width: 100% !important;
         }
     </style>
 {% endblock %}
@@ -68,6 +78,7 @@
     <script>
         let urlDetail = "{% url 'RoleDetailAPI' pk=pk %}";
     </script>
+    <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/role/roles_common.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/role/role_update.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/extends_new/plan_app_permissions.js' %}"></script>

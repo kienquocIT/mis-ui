@@ -15,7 +15,6 @@
     >
         <thead>
         <tr>
-            <th>#</th>
             <th>{% trans 'Application' %}</th>
             <th>{% trans 'All' %}</th>
             <th id="headingPermitView">{% trans 'View' %}</th>
@@ -38,17 +37,12 @@
                         title="{% trans 'Only for view' %}. {% trans 'Allow the action to access data in both the general space and another space.' %}"
                 ></i>
             </th>
-            <th>
-                <div class="d-flex align-items-center justify-content-end">
-                    <span class="mr-1">{% trans 'Actions' %}</span>
-                </div>
-            </th>
+            <th></th>
         </tr>
         </thead>
         <tbody></tbody>
         <tfoot>
         <tr id="idx-new-row-add">
-            <td></td>
             <td>
                 {# get_from: employee, role, opportunity, project #}
                 <select
@@ -139,7 +133,7 @@
                 <select class="form-select" id="new-row-space" disabled>
                     <option value="" selected></option>
                     <option value="0" disabled>{% trans 'General' %}</option>
-                    <option value="1"disabled>{% trans 'All' %}</option>
+                    <option value="1" disabled>{% trans 'All' %}</option>
                 </select>
                 <label for="new-row-space" class="d-none"></label>
             </td>

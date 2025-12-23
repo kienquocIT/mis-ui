@@ -39,6 +39,7 @@ let elePermit = {
     btnResetPermit: $('#btnResetPermit'),
     inputSearchApp: $('#searching-highlight-plan-app'),
     tabSummaryInfo: $("#tab-summary-info"),
+    permissionIndex: {},
 
     resetNewRow: function (resetApp = false) {
         this.btnAddNewPermit.prop('disabled', true);
@@ -700,6 +701,7 @@ class HandlePlanAppNew {
     }
     static dtb = elePermit.tblPermission; // table render permit
     static app_by_id = {}; // convert plan_app to dict by app_id (for search app data)
+    static app_has_perm_already = {};
     static plan_app = []; // init plan_app fill to it
     static permission_by_configured = []; // init permit fill to it
     static tenant_plan_app = []; // plan_app was bought by tenant
@@ -721,6 +723,7 @@ class HandlePlanAppNew {
             'selected': selected, // AUTO true because load from detail of instance!
             'plan_id': plan_id,
         }
+        HandlePlanAppNew.app_has_perm_already[app_data.id] = false
     }
 
     static setPlanApp(plan_app, reset_before_add = false) {
@@ -891,70 +894,113 @@ class HandlePlanAppNew {
             elePermit.tblPlanApp.DataTable().destroy();
         }
 
+        const getFirstLetter = (str) => {
+            if (!str || typeof str !== 'string') return '#';
+            return str.trim().charAt(0).toUpperCase();
+        };
+
         return elePermit.tblPlanApp.DataTableDefault({
-            stateDefaultPageControl: false,
-            stateFullTableTools: false,
-            visiblePaging: false,
+            dom: 't',
+            useDataServer: false,
+            rowIdx: false,
+            paging: false,
+            scrollX: true,
+            scrollY: '68vh',
+            scrollCollapse: true,
             data: allData,
-            autoWidth: false,
             columns: [
                 {
-                    "width": "15%",
-                    className: "wrap-text",
+                    className: 'w-10',
                     data: 'id',
                     render: function (data, type, row, meta) {
                         if (data && row.hasOwnProperty('title') && row.hasOwnProperty('code')) {
-                            return `<span class="badge badge-${$x.cls.doc.classOfPlan(row.code)}" data-id="${row.id}">${row.title}</span>`;
+                            return `<h5 class="text-primary" data-id="${row?.['id']}">${row?.['title']}</h5>`;
                         }
                         return '';
                     }
                 }, {
-                    "width": "85%",
+                    className: 'w-90',
                     data: 'application',
                     render: (data, type, row) => {
-                        if (data && Array.isArray(data)) {
-                            const dataResolved = data.sort((a, b) => {
-                                let aAppDataTitle = a?.['title_i18n'] || null;
-                                let bAppDataTitle = b?.['title_i18n'] || null;
-                                if (aAppDataTitle && bAppDataTitle && typeof aAppDataTitle === 'string' && typeof bAppDataTitle === 'string') {
-                                    return aAppDataTitle.localeCompare(bAppDataTitle);
-                                } else if (aAppDataTitle) return true;
-                                else if (bAppDataTitle) return false;
-                                return true;
-                            })
-                            let detailHTML = dataResolved.map((item) => {
-                                return `
-                                        <div class="col-lg-3 col-md-6 col-12">
-                                            <div class="form-check">
-                                                <input 
-                                                    type="checkbox" 
-                                                    class="form-check-input plan-app-checkbox" 
-                                                    id="app-${item.id}"
-                                                    data-id="${item.id}"
-                                                    ${allAppID.indexOf(item.id) !== -1 ? "checked" : ""}
-                                                    ${HandlePlanAppNew.editEnabled !== true ? "disabled" : ""}
-                                                >
-                                                <label 
-                                                    class="form-check-label" 
-                                                    for="app-${item.id}"
-                                                >
-                                                    ${item?.['title_i18n'] || ''}
-                                                </label>
-                                            </div>
-                                        </div>
-                                    `;
-                            }).join("");
-                            return `<div class="row">${detailHTML}</div>`;
-                        }
-                        return ''
+                        if (!Array.isArray(data) || !data.length) return $.fn.gettext('No application');
+
+                        // 1. Sort A → Z theo title_i18n
+                        const sortedData = [...data].sort((a, b) => {
+                            const aTitle = a?.['title_i18n'] || '';
+                            const bTitle = b?.['title_i18n'] || '';
+                            return aTitle.localeCompare(bTitle, 'vi', { sensitivity: 'base' });
+                        });
+
+                        // 2. Group theo chữ cái đầu
+                        const grouped = {};
+                        sortedData.forEach(item => {
+                            const letter = getFirstLetter(item?.['title_i18n']);
+                            if (!grouped[letter]) grouped[letter] = [];
+                            grouped[letter].push(item);
+                        });
+
+                        // 3. Render HTML
+                        let html = '';
+
+                        const letters = Object.keys(grouped || {}).sort();
+
+                        letters.forEach((letter, index) => {
+
+                            const isLastLetter = index === letters.length - 1;
+                            const borderClass = !isLastLetter ? 'border-bottom' : '';
+
+                            const apps = grouped?.[letter] || [];
+
+                            const app_html = apps.map(item => `
+                                <div class="col-lg-2 col-md-4 col-12">
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox"
+                                            class="form-check-input plan-app-checkbox"
+                                            id="app-${item?.['id']}"
+                                            data-id="${item?.['id']}"
+                                            ${allAppID?.includes(item?.['id']) ? "checked" : ""}
+                                            ${HandlePlanAppNew?.editEnabled !== true ? "disabled" : ""}
+                                        >
+                                        <label class="form-check-label" for="app-${item?.['id']}">
+                                            ${item?.['title_i18n'] || ''}
+                                        </label>
+                                    </div>
+                                </div>
+                            `).join('');
+
+                            html += `
+                                <div class="col-2 col-md-1 col-lg-1 ${borderClass}">
+                                    <h6 class="text-primary my-3">${letter}</h6>
+                                </div>
+                                <div class="col-10 col-md-11 col-lg-11 ${borderClass}">
+                                    <div class="row my-3">
+                                        ${app_html}
+                                    </div>
+                                </div>
+                            `;
+                        });
+
+                        return `<div class="row">${html}</div>`;
                     }
                 }, {
                     visible: false,
-                    "width": "0%",
                     render: (data, type, row) => {
                         return ''
                     }
                 },
+            ],
+            rowGroup: {
+                dataSrc: 'title',
+                startRender: function (rows, title) {
+                    return $('<tr class="group-header">').append(`<td colspan="100%"><span class="text-primary fw-bold h5">${title}</span></td>`);
+                }
+            },
+            columnDefs: [
+                {
+                    "visible": false,
+                    "targets": [0]
+                }
             ],
             rowCallback: function (row, data) {
                 $(row).find('input.plan-app-checkbox').on('change', function () {
@@ -1064,7 +1110,7 @@ class HandlePlanAppNew {
                             });
                             elePermit.newRowAppEle.initSelect2({
                                 ajax: null,
-                                data: app_list,
+                                data: [{}].concat(app_list),
                                 keyId: 'id',
                                 keyText: 'title_i18n',
                             }).val("");
@@ -1088,6 +1134,14 @@ class HandlePlanAppNew {
             if (!HandlePlanAppNew.hasSpaceChoice) {
                 HandlePlanAppNew.dtb.DataTable().column(-2).visible(false).draw();
             }
+
+            Object.entries(HandlePlanAppNew.app_has_perm_already).forEach(([appId, hasPerm]) => {
+                if (!hasPerm) {
+                    if ($(`#app-${appId}`).prop('checked')) {
+                        $(`#app-${appId}`).closest('.form-check').find('label').addClass('text-warning');
+                    }
+                }
+            });
         }
 
         if (HandlePlanAppNew.hasTabPermission() === true) {
@@ -1105,6 +1159,7 @@ class HandlePlanAppNew {
                 let dataList = HandlePlanAppNew.permission_by_configured.map(
                     (item) => {
                         let appID = item?.['app_id'] || null;
+                        HandlePlanAppNew.app_has_perm_already[appID] = true
                         let appData = appID ? HandlePlanAppNew.getAppDetail(appID) : {};
                         return {
                             ...item,
@@ -1124,30 +1179,42 @@ class HandlePlanAppNew {
                 )
                 dtb.DataTableDefault({
                     data: dataList,
-                    rowIdx: true,
-                    autoWidth: false,
+                    useDataServer: false,
+                    paging: false,
+                    rowIdx: false,
+                    scrollX: true,
+                    scrollY: '52vh',
+                    scrollCollapse: true,
                     columns: [
                         {
-                            width: "5%",
+                            className: 'w-15',
                             render: (data, type, row) => {
-                                if (!row.hasOwnProperty('appData') && row?.['app_id']){
-                                    row.appData = (row.app_id ? HandlePlanAppNew.getAppDetail(row.app_id) : {}) || {};
+                                if (!row.hasOwnProperty('appData') && row?.app_id) {
+                                    row.appData = HandlePlanAppNew.getAppDetail?.(row.app_id) || {};
                                 }
-                                return ``;
+
+                                if (!row?.['id']) {
+                                    return `<span hidden>${row?.['appData']?.['title_i18n']}</span><span class="text-success">${$.fn.gettext('New permission')}</span>`;
+                                }
+
+                                if (row?.['appData']?.['title_i18n']) {
+                                    const group = row?.['appData']?.['title_i18n'];
+                                    if (!group) return '_';
+
+                                    if (!elePermit.permissionIndex[group]) {
+                                        elePermit.permissionIndex[group] = 0;
+                                    }
+
+                                    elePermit.permissionIndex[group]++;
+
+                                    return `<span hidden>${row?.['appData']?.['title_i18n']}</span><span class="text-muted">${$.fn.gettext('Permission')} ${elePermit.permissionIndex[group]}</span>`;
+                                }
+
+                                row.app_data_not_found = true;
+                                return `<span class="text-secondary app-title">_</span>`;
                             },
                         }, {
-                            width: (HandlePlanAppNew.editEnabled === true ? "15%" : "20%"),
-                            data: "appData",
-                            render: (data, type, row) => {
-                                if (data && typeof data === 'object' && data.hasOwnProperty('title')) {
-                                    return `<span class="badge badge-primary">${data?.['title_i18n'] || ''}</span>`;
-                                }
-                                else row['app_data_not_found'] = true;
-                                return `<span class="badge badge-secondary app-title">_</span>`;
-                            },
-                        }, {
-                            width: "10%",
-                            data: "",
+                            className: 'w-10',
                             render: (data, type, row) => {
                                 let state = !!(row['create'] === true && row['view'] === true && row['edit'] === true && row['delete'] === true);
                                 let app_id = row['app_id'];
@@ -1167,7 +1234,7 @@ class HandlePlanAppNew {
                                 return ``;
                             },
                         }, {
-                            width: "10%",
+                            className: 'w-10',
                             data: "view",
                             render: (data, type, row) => {
                                 let app_id = row['app_id'];
@@ -1188,7 +1255,7 @@ class HandlePlanAppNew {
                                 return ``;
                             },
                         }, {
-                            width: "10%",
+                            className: 'w-10',
                             data: "create",
                             render: (data, type, row) => {
                                 let [state, _range] = HandlePlanAppNew.isAppAllowPermit(row.appData, "create");
@@ -1209,7 +1276,7 @@ class HandlePlanAppNew {
                                 return ``;
                             },
                         }, {
-                            width: "10%",
+                            className: 'w-10',
                             data: "edit",
                             render: (data, type, row) => {
                                 let [state, _range] = HandlePlanAppNew.isAppAllowPermit(row.appData, "edit");
@@ -1230,7 +1297,7 @@ class HandlePlanAppNew {
                                 return ``;
                             },
                         }, {
-                            width: "10%",
+                            className: 'w-10',
                             data: "delete",
                             render: (data, type, row) => {
                                 let [state, _range] = HandlePlanAppNew.isAppAllowPermit(row.appData, "delete");
@@ -1251,7 +1318,7 @@ class HandlePlanAppNew {
                                 return ``;
                             },
                         }, {
-                            width: (HandlePlanAppNew.hasSpaceChoice === true ? "13%" : "25%"),
+                            className: 'w-15',
                             data: "range",
                             render: (data, type, row) => {
                                 let [_state_view, range_view] = HandlePlanAppNew.getRangeAppAllowPermit(row.appData, 'view');
@@ -1262,7 +1329,7 @@ class HandlePlanAppNew {
                                 return HandlePlanAppNew.getHtmlRange(row['app_id'], data, allow_range);
                             },
                         }, {
-                            width: (HandlePlanAppNew.hasSpaceChoice === true ? "12%" : "0%"),
+                            className: 'w-15',
                             data: "space",
                             render: (data, type, row) => {
                                 if (data === null) {
@@ -1275,7 +1342,7 @@ class HandlePlanAppNew {
                                 return HandlePlanAppNew.getHtmlSpace(row['app_id'], data, [data]);
                             },
                         }, {
-                            width: (HandlePlanAppNew.editEnabled === true ? "5%" : "0%"),
+                            className: 'w-5',
                             render: (data, type, row) => {
                                 return `
                                 <div class="d-flex justify-content-end">
@@ -1290,9 +1357,24 @@ class HandlePlanAppNew {
                             },
                         },
                     ],
+                    rowGroup: {
+                        dataSrc: 'appData.title_i18n',
+                        startRender: function (rows, title_i18n) {
+                            return $('<tr class="group-header">').append(`<td colspan="100%"><span class="text-primary fw-bold h5">${title_i18n}</span></td>`);
+                        }
+                    },
+                    columnDefs: [
+                        {
+                            "visible": true,
+                            "targets": [0]
+                        }
+                    ],
+                    preDrawCallback: function () {
+                        elePermit.permissionIndex = {};
+                    },
                     rowCallback: function (row, data) {
                         let cls_err = 'bg-secondary bg-opacity-25 row-error-disabled';
-                        let cls_pass = 'bg-success bg-opacity-10';
+                        let cls_pass = '';
                         if (data.app_data_not_found === true) {
                             $(row).removeClass(cls_pass).addClass(cls_err);
                             $(row).find('input, select').prop('disabled', true);

@@ -36,13 +36,13 @@ $(document).ready(function() {
                     render: () => ''
                 },
                 {
-                    className: 'w-35',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         return `<span class="bflow-mirrow-badge border-0 fw-bold bg-blue-light-4">${row?.['posting_group_data']?.['code'] || ''}</span> - <span>${row?.['posting_group_data']?.['title'] || ''}</span>`;
                     }
                 },
                 {
-                    className: 'w-30',
+                    className: 'w-45',
                     render: (data, type, row) => {
                         return `<span class="bflow-mirrow-badge border-0 fw-bold bg-secondary-light-5">${row?.['role_key'] || ''}</span> - <span>${row?.['role_key_parsed'] || ''}</span>`;
                     }
@@ -91,7 +91,21 @@ $(document).ready(function() {
                         })
                     }
                 })
-            }
+            },
+            rowGroup: {
+                dataSrc: 'posting_group_data.code',
+                startRender: function (rows, code) {
+                    let firstRowData = rows.data()[0];
+                    let title = firstRowData?.['posting_group_data']?.['title'];
+                    return $('<tr class="group-header">').append(`<td colspan="100%"><span class="bflow-mirrow-badge border-0 fw-bold bg-blue-light-4">${code}</span> - ${title}</td>`);
+                }
+            },
+            columnDefs: [
+                {
+                    "visible": false,
+                    "targets": [1]
+                }
+            ],
         });
     }
 

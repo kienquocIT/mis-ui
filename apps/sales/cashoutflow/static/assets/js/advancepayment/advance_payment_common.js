@@ -1546,6 +1546,11 @@ class AdvancePaymentHandler {
 
         frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
 
+
+        // only for check WF condition not submit
+        frm.dataForm['advance_value_before_tax'] = parseFloat($('#pretax-value').valCurrency());
+        frm.dataForm['advance_value'] = parseFloat($('#total-value').valCurrency());
+
         return frm
     }
     static LoadDetailAP(option) {

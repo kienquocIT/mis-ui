@@ -25,6 +25,8 @@
     <script id="script-url"
             data-url-list="{% url 'JEPostingGroupListAPI' %}"
             data-url-detail="{% url 'JEPostingGroupDetailAPI' '0' %}"
+            data-url-product-type="{% url 'ProductTypeListAPI' %}"
+            data-url-account-type="{% url 'AccountTypeListAPI' %}"
     ></script>
     <div class="row">
         <div class="col-12">
@@ -34,8 +36,9 @@
                 <thead class="bg-primary-light-5">
                 <tr>
                     <th style="min-width: 50px"></th>
-                    <th style="min-width: 350px">{% trans 'Posting group' %}</th>
                     <th style="min-width: 150px">{% trans 'Posting group type' %}</th>
+                    <th style="min-width: 350px">{% trans 'Posting group' %}</th>
+                    <th style="min-width: 350px">{% trans 'Assign to' %}</th>
                     <th style="min-width: 100px"></th>
                 </tr>
                 </thead>
@@ -60,6 +63,12 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group">
+                                    <label class="form-label required" for="pg-group-type">{% trans 'Group type' %}</label>
+                                    <select class="form-select select2" id="pg-group-type" required></select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
                                     <label class="form-label required" for="pg-code">{% trans 'Code' %}</label>
                                     <input class="form-control" id="pg-code" required>
                                 </div>
@@ -70,10 +79,12 @@
                                     <input class="form-control" id="pg-title" required>
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label class="form-label required" for="pg-group-type">{% trans 'Group type' %}</label>
-                                    <select class="form-select select2" id="pg-group-type" required></select>
+                            <div class="col-12 mt-2">
+                                <div class="border rounded bg-secondary-light-5 p-2">
+                                    <div class="form-group">
+                                        <label class="form-label" for="pg-assign-to">{% trans 'Assign to' %}</label>
+                                        <select class="form-select select2" id="pg-assign-to" multiple></select>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-12 mt-5">

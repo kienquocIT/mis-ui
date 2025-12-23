@@ -1,54 +1,49 @@
 {% load i18n %}
 
 <div class="row">
-    <div class="form-group mt-3">
-        <input
-                type="text"
-                class="form-control"
-                id="searching-highlight-plan-app"
-                placeholder="{% trans 'Search' %}"
-        />
-        <label for="searching-highlight-plan-app" class="form-label"></label>
+    <div class="col-12 col-md-3 col-lg-3 ms-auto">
+        <input type="text" class="form-control" id="searching-highlight-plan-app" placeholder="{% trans 'Search' %}"/>
+    </div>
+    <div class="col-12">
+        <table
+                class="table nowrap w-100"
+                id="dtb-plan-app-new"
+                data-url="{% url 'TenantPlanListAPI' %}"
+                data-method="GET"
+                data-is-edit="{{ add_new_enabled }}"
+        >
+            <thead hidden>
+            <tr>
+                <th>{% trans 'Plan' %}</th>
+                <th>{% trans 'Application' %}</th>
+                <th>
+                    {% trans 'License' %}
+                    <i
+                            class="ml-1 fa-solid fa-circle-info"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            title="{% trans 'License Used' %} / {% trans 'Limited' %}"
+                    ></i>
+                </th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot>
+            {% if warning_enabled == 'true' %}
+                <tr>
+                    <td colspan="3">
+                        <small class="text-warning">{% trans 'Notes' %}: {% trans "Data of this tab will be used on 'Permission` tab after saving." %}</small>
+                    </td>
+                </tr>
+            {% endif %}
+            {% if warning_license == 'true' %}
+                <tr>
+                    <td colspan="3">
+                        <small class="text-warning">{% trans 'Notes' %}: {% trans "The used license will be total member multiplication with role used license." %}</small>
+                    </td>
+                </tr>
+            {% endif %}
+            </tfoot>
+        </table>
     </div>
 </div>
-<div class="row">
-    <table
-            class="table nowrap w-100"
-            id="dtb-plan-app-new"
-            data-url="{% url 'TenantPlanListAPI' %}"
-            data-method="GET"
-            data-is-edit="{{ add_new_enabled }}"
-    >
-        <thead>
-        <tr>
-            <th>{% trans 'Plan' %}</th>
-            <th>{% trans 'Application' %}</th>
-            <th>
-                {% trans 'License' %}
-                <i
-                        class="ml-1 fa-solid fa-circle-info"
-                        data-bs-toggle="tooltip" data-bs-placement="bottom"
-                        title="{% trans 'License Used' %} / {% trans 'Limited' %}"
-                ></i>
-            </th>
-        </tr>
-        </thead>
-        <tbody></tbody>
-        <tfoot>
-        {% if warning_enabled == 'true' %}
-            <tr>
-                <td colspan="3">
-                    <small class="text-warning">{% trans 'Notes' %}: {% trans "Data of this tab will be used on 'Permission` tab after saving." %}</small>
-                </td>
-            </tr>
-        {% endif %}
-        {% if warning_license == 'true' %}
-            <tr>
-                <td colspan="3">
-                    <small class="text-warning">{% trans 'Notes' %}: {% trans "The used license will be total member multiplication with role used license." %}</small>
-                </td>
-            </tr>
-        {% endif %}
-        </tfoot>
-    </table>
-</div>
+

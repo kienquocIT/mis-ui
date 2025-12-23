@@ -117,19 +117,6 @@ class JEPostingGroupRoleKeyListAPI(APIView):
         return resp.auto_return(key_success='je_posting_group_role_key')
 
 # JE group assigment
-class JEGroupAssignmentList(View):
-    @mask_view(
-        auth_require=True,
-        template='accountingsettings/account_determination/je_group_assignment.html',
-        breadcrumb='JE_GROUP_ASSIGNMENT_LIST_PAGE',
-        menu_active='menu_je_group_assignment',
-        icon_cls='fa-solid fa-handshake-angle',
-        icon_bg='bg-primary',
-    )
-    def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
-
-
 class JEGroupAssignmentListAPI(APIView):
     permission_classes = [IsAuthenticated]  # noqa
 
@@ -215,12 +202,10 @@ class JEPostingRuleList(View):
     )
     def get(self, request, *args, **kwargs):
         je_document_type_resp = ServerAPI(user=request.user, url=ApiURL.JE_DOCUMENT_TYPE).get()
-        je_amount_source_resp = ServerAPI(user=request.user, url=ApiURL.JE_AMOUNT_SOURCE).get()
         je_group_type_resp = ServerAPI(user=request.user, url=ApiURL.JE_GROUP_TYPE).get()
         return {
             'data': {
                 'je_document_type': je_document_type_resp.result,
-                'je_amount_source': je_amount_source_resp.result,
                 'je_group_type': je_group_type_resp.result
             }
         }, status.HTTP_200_OK
@@ -268,6 +253,18 @@ class JEPostingRuleDetailAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.JE_POSTING_RULE_DETAIL.fill_key(pk=pk)).delete(request.data)
         return resp.auto_return()
 
+
+class JEAmountSourceListAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        je_amount_source_resp = ServerAPI(user=request.user, url=ApiURL.JE_AMOUNT_SOURCE).get(params)
+        return je_amount_source_resp.auto_return(key_success='je_amount_source')
 
 # Auto JE Configure Guide
 class JEConfigureGuidePage(View):

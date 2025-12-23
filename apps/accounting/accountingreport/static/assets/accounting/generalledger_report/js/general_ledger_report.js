@@ -12,6 +12,10 @@ class GeneralLedgerReportElements {
 
 const pageElements = new GeneralLedgerReportElements();
 let select_account_id = ""
+let total_value = {
+    summarize_debit: 0,
+    summarize_credit: 0,
+}
 
 /**
  * Khai bao cac ham load data
@@ -24,6 +28,7 @@ class GeneralLedgerReportFunction {
 
         let frm = new SetupFormSubmit(pageElements.$tableReport);
 
+        ResetValue()
         pageElements.$tableReport.DataTableDefault({
             useDataServer: true,
             rowIdx: true,
@@ -91,17 +96,24 @@ class GeneralLedgerReportFunction {
                     className: "w-15 text-right",
                     render: (data, type, row) => {
                         let total_debit = parseFloat(row?.['debit'] || 0);
-                        return total_debit ? `<span class="mask-money" data-init-money="${total_debit}"></span>` : '--';
+                        total_value.summarize_debit += total_debit
+                        return total_debit ? `<span class="mask-money text-danger" data-init-money="${total_debit}"></span>` : '';
                     }
                 },
                 {
                     className: "w-15 text-right",
                     render: (data, type, row) => {
                         let total_credit = parseFloat(row?.['credit'] || 0);
-                        return total_credit ? `<span class="mask-money" data-init-money="${total_credit}"></span>` : '--';
+                        total_value.summarize_credit += total_credit
+                        return total_credit ? `<span class="mask-money text-primary" data-init-money="${total_credit}"></span>` : '';
                     }
                 }
-            ]
+            ],
+            drawCallback: function () {
+                const api = this.api();
+                const $tfoot = $(api.table().footer());
+                RenderTotalToFooter($tfoot)
+            }
         })
     }
 
@@ -245,3 +257,19 @@ $(document).ready(function () {
 
     GeneralLedgerReportEventHandler.initPageEvent();
 });
+
+function RenderTotalToFooter($tfoot) {
+    $tfoot.find('.total-debit').html(
+        `<span class="mask-money fw-bold fs-6" data-init-money="${total_value.summarize_debit}"></span>`
+    );
+    $tfoot.find('.total-credit').html(
+        `<span class="mask-money fw-bold fs-6" data-init-money="${total_value.summarize_credit}"></span>`
+    );
+}
+
+function ResetValue() {
+    total_value = {
+        summarize_debit: 0,
+        summarize_credit: 0,
+    }
+}

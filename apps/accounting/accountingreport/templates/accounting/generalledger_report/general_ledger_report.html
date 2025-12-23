@@ -57,40 +57,40 @@
         </div>
     </div>
 
-    <div class="row mt-5">
-        <div class="col-12 col-md-3 col-lg-3">
-            <div class="bflow-mirrow-card">
-                <div class="text-center">
-                    <h5 class="text-muted mt-3">{% trans 'Opening Balance' %}</h5>
-                    <span id="total_opening_balance" class="text-blue mask-money fw-bold h3"></span><br>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-3 col-lg-3">
-            <div class="bflow-mirrow-card">
-                <div class="text-center">
-                    <h5 class="text-muted mt-3">{% trans 'Period Debit' %}</h5>
-                    <span id="total_period_debit" class="text-blue mask-money fw-bold h3"></span><br>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-3 col-lg-3">
-            <div class="bflow-mirrow-card">
-                <div class="text-center">
-                    <h5 class="text-muted mt-3">{% trans 'Period Credit' %}</h5>
-                    <span id="total_period_credit" class="text-blue mask-money fw-bold h3"></span><br>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-3 col-lg-3">
-            <div class="bflow-mirrow-card">
-                <div class="text-center">
-                    <h5 class="text-muted mt-3">{% trans 'Closing Balance' %}</h5>
-                    <span id="total_closing_balance" class="text-blue mask-money fw-bold h3"></span><br>
-                </div>
-            </div>
-        </div>
-    </div>
+    {#    <div class="row mt-5">#}
+    {#        <div class="col-12 col-md-3 col-lg-3">#}
+    {#            <div class="bflow-mirrow-card">#}
+    {#                <div class="text-center">#}
+    {#                    <h5 class="text-muted mt-3">{% trans 'Opening Balance' %}</h5>#}
+    {#                    <span id="total_opening_balance" class="text-blue mask-money fw-bold h3"></span><br>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#        <div class="col-12 col-md-3 col-lg-3">#}
+    {#            <div class="bflow-mirrow-card">#}
+    {#                <div class="text-center">#}
+    {#                    <h5 class="text-muted mt-3">{% trans 'Period Debit' %}</h5>#}
+    {#                    <span id="total_period_debit" class="text-blue mask-money fw-bold h3"></span><br>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#        <div class="col-12 col-md-3 col-lg-3">#}
+    {#            <div class="bflow-mirrow-card">#}
+    {#                <div class="text-center">#}
+    {#                    <h5 class="text-muted mt-3">{% trans 'Period Credit' %}</h5>#}
+    {#                    <span id="total_period_credit" class="text-blue mask-money fw-bold h3"></span><br>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#        <div class="col-12 col-md-3 col-lg-3">#}
+    {#            <div class="bflow-mirrow-card">#}
+    {#                <div class="text-center">#}
+    {#                    <h5 class="text-muted mt-3">{% trans 'Closing Balance' %}</h5>#}
+    {#                    <span id="total_closing_balance" class="text-blue mask-money fw-bold h3"></span><br>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
 
     <div class="row mt-5">
         <div class="col-12">
@@ -98,17 +98,28 @@
                    data-url="{% url 'ReportJournalEntryListAPI' %}"
                    data-url-detail="{% url 'JournalEntryDetail' '0' %}"
                    data-url-summarize="{% url 'GetChartOfAccountSummaryAPI' %}">
-                    <thead>
-                        <tr class="bg-light border-right">
-                            <th style="min-width: 50px"></th>
-                            <th style="min-width: 150px">{% trans 'Date' %}</th>
-                            <th style="min-width: 150px">{% trans 'JE code' %}</th>
-                            <th style="min-width: 150px">{% trans 'Original transaction' %}</th>
-                            <th style="min-width: 200px">{% trans 'Employee created' %}</th>
-                            <th style="min-width: 150px">{% trans 'Debit' %}</th>
-                            <th style="min-width: 150px">{% trans 'Credit' %}</th>
-                        </tr>
-                    </thead>
+                <thead class="p-5">
+                <tr class="bg-light">
+                    <th style="min-width: 50px"></th>
+                    <th style="min-width: 150px">{% trans 'Date' %}</th>
+                    <th style="min-width: 150px">{% trans 'JE code' %}</th>
+                    <th style="min-width: 150px">{% trans 'Original transaction' %}</th>
+                    <th style="min-width: 200px">{% trans 'Employee created' %}</th>
+                    <th style="min-width: 150px">{% trans 'Debit' %}</th>
+                    <th style="min-width: 150px">{% trans 'Credit' %}</th>
+                </tr>
+                </thead>
+                <tfoot class="bg-secondary-light-5 p-5">
+                <tr>
+                    <th style="min-width: 50px"></th>
+                    <th style="min-width: 150px" class="fw-bold text-muted">{% trans "Total" %}</th>
+                    <th style="min-width: 150px"></th>
+                    <th style="min-width: 150px"></th>
+                    <th style="min-width: 200px"></th>
+                    <th style="min-width: 150px" class="text-end fw-bold text-danger total-debit">0</th>
+                    <th style="min-width: 150px" class="text-end fw-bold text-primary total-credit">0</th>
+                </tr>
+                </tfoot>
             </table>
         </div>
     </div>

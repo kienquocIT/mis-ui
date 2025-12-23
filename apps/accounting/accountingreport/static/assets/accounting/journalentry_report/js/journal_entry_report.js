@@ -1,3 +1,8 @@
+let total_value = {
+    summarize_debit: 0,
+    summarize_credit: 0,
+}
+
 class loadJournalEntryReportInfo {
     static loadJournalEntryReportList(from_date = '', to_date = '') {
         const $tb = $('#je_table_report');
@@ -7,6 +12,7 @@ class loadJournalEntryReportInfo {
             $tb.DataTable().destroy();
         }
 
+        ResetValue()
         let frm = new SetupFormSubmit($tb);
         $tb.DataTableDefault({
             useDataServer: true,
@@ -24,7 +30,7 @@ class loadJournalEntryReportInfo {
                     'from_date': from_date,
                     'to_date': to_date
                 },
-                dataSrc: function(resp) {
+                dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         return resp.data['report_journal_entry_list'] ? resp.data['report_journal_entry_list'] : [];
@@ -74,7 +80,7 @@ class loadJournalEntryReportInfo {
                     render: (data, type, row) => {
                         let $ele = $(UsualLoadPageAccountingFunction.default_account_select2)
                         $ele.find('.row-account').prop('disabled', true);
-                        $ele.find('.row-account').attr('data-account-mapped', JSON.stringify(row?.['account_data'] ||{}));
+                        $ele.find('.row-account').attr('data-account-mapped', JSON.stringify(row?.['account_data'] || {}));
                         return $ele.prop('outerHTML')
                     }
                 },
@@ -82,14 +88,16 @@ class loadJournalEntryReportInfo {
                     className: "w-15 text-right",
                     render: (data, type, row) => {
                         let total_debit = parseFloat(row?.['debit'] || 0);
-                        return total_debit ? `<span class="mask-money" data-init-money="${total_debit}"></span>` : '--';
+                        total_value.summarize_debit += total_debit
+                        return total_debit ? `<span class="mask-money text-danger" data-init-money="${total_debit}"></span>` : '';
                     }
                 },
                 {
                     className: "w-15 text-right",
                     render: (data, type, row) => {
                         let total_credit = parseFloat(row?.['credit'] || 0);
-                        return total_credit ? `<span class="mask-money" data-init-money="${total_credit}"></span>` : '--';
+                        total_value.summarize_credit += total_credit
+                        return total_credit ? `<span class="mask-money text-primary" data-init-money="${total_credit}"></span>` : '';
                     }
                 }
             ],
@@ -117,6 +125,11 @@ class loadJournalEntryReportInfo {
                     "targets": [1]
                 }
             ],
+            drawCallback: function () {
+                const api = this.api();
+                const $tfoot = $(api.table().footer());
+                RenderTotalToFooter($tfoot)
+            }
         })
     }
 }
@@ -131,7 +144,7 @@ class JEReportEventHandler {
         });
 
         // event when click reset filter button
-        $('#reset_filter').on('click', function() {
+        $('#reset_filter').on('click', function () {
             const today = moment();
             const firstDayOfMonth = moment().startOf('month');
             $('#start_date_filter').val(firstDayOfMonth.format('DD/MM/YYYY'));
@@ -169,3 +182,19 @@ $(document).ready(function () {
 
     JEReportEventHandler.initPageEvent();
 });
+
+function RenderTotalToFooter($tfoot) {
+    $tfoot.find('.total-debit').html(
+        `<span class="mask-money fw-bold fs-6" data-init-money="${total_value.summarize_debit}"></span>`
+    );
+    $tfoot.find('.total-credit').html(
+        `<span class="mask-money fw-bold fs-6" data-init-money="${total_value.summarize_credit}"></span>`
+    );
+}
+
+function ResetValue() {
+    total_value = {
+        summarize_debit: 0,
+        summarize_credit: 0,
+    }
+}

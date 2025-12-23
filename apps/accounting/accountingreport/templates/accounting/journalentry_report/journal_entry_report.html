@@ -3,7 +3,8 @@
 {% block title %}{% trans 'Journal entry report' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
-    <link href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}" rel="stylesheet"
+          type="text/css"/>
 {% endblock %}
 {% block pageAction %}
 {% endblock %}
@@ -43,40 +44,40 @@
         </div>
     </div>
 
-{#    <div class="row">#}
-{#        <div class="col-12 col-md-3 col-lg-3">#}
-{#            <div class="bflow-mirrow-card">#}
-{#                <div class="text-center">#}
-{#                    <h5 class="text-muted mt-3">{% trans 'Total Entries' %}</h5>#}
-{#                    <span id="total_je_entries" class="text-blue fw-bold h3"></span><br>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#        <div class="col-12 col-md-3 col-lg-3">#}
-{#            <div class="bflow-mirrow-card">#}
-{#                <div class="text-center">#}
-{#                    <h5 class="text-muted mt-3">{% trans 'Total Debit' %}</h5>#}
-{#                    <span id="total_je_debit" class="text-blue mask-money fw-bold h3"></span><br>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#        <div class="col-12 col-md-3 col-lg-3">#}
-{#            <div class="bflow-mirrow-card">#}
-{#                <div class="text-center">#}
-{#                    <h5 class="text-muted mt-3">{% trans 'Total Credit' %}</h5>#}
-{#                    <span id="total_je_credit" class="text-blue mask-money fw-bold h3"></span><br>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#        <div class="col-12 col-md-3 col-lg-3">#}
-{#            <div class="bflow-mirrow-card">#}
-{#                <div class="text-center">#}
-{#                    <h5 class="text-muted mt-3">{% trans 'Status' %}</h5>#}
-{#                    <span id="je_status" class="text-blue fw-bold h3"></span>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
+    {#    <div class="row">#}
+    {#        <div class="col-12 col-md-3 col-lg-3">#}
+    {#            <div class="bflow-mirrow-card">#}
+    {#                <div class="text-center">#}
+    {#                    <h5 class="text-muted mt-3">{% trans 'Total Entries' %}</h5>#}
+    {#                    <span id="total_je_entries" class="text-blue fw-bold h3"></span><br>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#        <div class="col-12 col-md-3 col-lg-3">#}
+    {#            <div class="bflow-mirrow-card">#}
+    {#                <div class="text-center">#}
+    {#                    <h5 class="text-muted mt-3">{% trans 'Total Debit' %}</h5>#}
+    {#                    <span id="total_je_debit" class="text-blue mask-money fw-bold h3"></span><br>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#        <div class="col-12 col-md-3 col-lg-3">#}
+    {#            <div class="bflow-mirrow-card">#}
+    {#                <div class="text-center">#}
+    {#                    <h5 class="text-muted mt-3">{% trans 'Total Credit' %}</h5>#}
+    {#                    <span id="total_je_credit" class="text-blue mask-money fw-bold h3"></span><br>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#        <div class="col-12 col-md-3 col-lg-3">#}
+    {#            <div class="bflow-mirrow-card">#}
+    {#                <div class="text-center">#}
+    {#                    <h5 class="text-muted mt-3">{% trans 'Status' %}</h5>#}
+    {#                    <span id="je_status" class="text-blue fw-bold h3"></span>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
 
     <div class="row mt-5">
         <div class="col-12">
@@ -84,18 +85,31 @@
                    data-url="{% url 'ReportJournalEntryListAPI' %}"
                    data-url-detail="{% url 'JournalEntryDetail' '0' %}"
                    data-url-summarize="{% url 'JournalEntrySummarizeAPI' %}">
-                    <thead>
-                        <tr class="bg-light border-right">
-                            <th style="min-width: 50px"></th>
-                            <th style="min-width: 150px">{% trans 'Date' %}</th>
-                            <th style="min-width: 150px">{% trans 'JE code' %}</th>
-                            <th style="min-width: 150px">{% trans 'Original transaction' %}</th>
-                            <th style="min-width: 200px">{% trans 'Employee created' %}</th>
-                            <th style="min-width: 350px">{% trans 'Account' %}</th>
-                            <th style="min-width: 150px">{% trans 'Debit' %}</th>
-                            <th style="min-width: 150px">{% trans 'Credit' %}</th>
-                        </tr>
-                    </thead>
+                <thead>
+                <tr class="bg-light border-right">
+                    <th style="min-width: 50px"></th>
+                    <th style="min-width: 150px">{% trans 'Date' %}</th>
+                    <th style="min-width: 150px">{% trans 'JE code' %}</th>
+                    <th style="min-width: 150px">{% trans 'Original transaction' %}</th>
+                    <th style="min-width: 200px">{% trans 'Employee created' %}</th>
+                    <th style="min-width: 350px">{% trans 'Account' %}</th>
+                    <th style="min-width: 150px">{% trans 'Debit' %}</th>
+                    <th style="min-width: 150px">{% trans 'Credit' %}</th>
+                </tr>
+                </thead>
+                <tfoot class="bg-secondary-light-5 p-4">
+                <tr>
+                    <th style="min-width: 50px"></th>
+                    <th style="min-width: 150px"></th>
+                    <th style="min-width: 150px" class="fs-5 fw-bold text-muted">{% trans "Total" %}</th>
+                    <th style="min-width: 150px"></th>
+                    <th style="min-width: 200px"></th>
+                    <th style="min-width: 350px"></th>
+                    <th style="min-width: 150px" class="text-end fw-bold text-danger total-debit">0</th>
+                    <th style="min-width: 150px" class="text-end fw-bold text-primary total-credit">0</th>
+                </tr>
+                </tfoot>
+                <tbody></tbody>
             </table>
         </div>
     </div>

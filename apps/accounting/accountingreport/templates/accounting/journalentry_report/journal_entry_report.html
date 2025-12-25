@@ -81,6 +81,11 @@
 
     <div class="row mt-5">
         <div class="col-12">
+            <div class="text-right">
+                <button type="button" class="btn btn-gradient-info" id="btn-export-to-excel">
+                    <i class="fa-solid fa-file-excel"></i>&nbsp;{% trans 'Export to Excel' %}
+                </button>
+            </div>
             <table class="table nowrap w-100" id="je_table_report" data-method="GET"
                    data-url="{% url 'ReportJournalEntryListAPI' %}"
                    data-url-detail="{% url 'JournalEntryDetail' '0' %}"
@@ -117,6 +122,7 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
+    <script src="{% static 'vendors/xlsx/xlsx-js-style.full.min.js' %}"></script>
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/accounting/journalentry_report/js/journal_entry_report.js' %}"></script>
 {% endblock %}

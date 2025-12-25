@@ -3,6 +3,7 @@ let total_value = {
     summarize_debit: 0,
     summarize_credit: 0,
 }
+let export_inventory_data_list = []
 
 class GeneralLedgerReportElements {
     constructor() {
@@ -15,6 +16,7 @@ class GeneralLedgerReportElements {
         this.$resetFilterBtn = $('#reset_filter');
     }
 }
+
 const pageElements = new GeneralLedgerReportElements();
 
 /**
@@ -50,7 +52,8 @@ class GeneralLedgerReportFunction {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        return resp.data['report_journal_entry_list'] ? resp.data['report_journal_entry_list'] : [];
+                        export_inventory_data_list = resp.data['report_journal_entry_list'] ? resp.data['report_journal_entry_list'] : []
+                        return export_inventory_data_list;
                     }
                     return [];
                 }
@@ -213,6 +216,66 @@ class GeneralLedgerReportEventHandler {
         });
     }
 }
+
+function ExportExcel() {
+    let parseData = [];
+
+    export_inventory_data_list.forEach(function (data) {
+        parseData.push({
+            "Ngày": data?.['journal_entry_info']?.['date_created'],
+            "JE Code": data?.['journal_entry_info']?.['code'] || '',
+            "Giao dịch gốc": data?.['journal_entry_info']?.['original_transaction_parsed'] || '',
+            "Người tạo": data?.['journal_entry_info']?.['employee_created']?.['full_name'] || '',
+            "Số hiệu Tài khoản": data?.['account_data']?.['acc_code'] || '',
+            "Nợ": Number(data?.['debit'] || 0),
+            "Có": Number(data?.['credit'] || 0)
+        });
+    });
+
+    parseData.push({
+        "Ngày": "",
+        "JE Code": "",
+        "Giao dịch gốc": "TỔNG CỘNG",
+        "Người tạo": "",
+        "Số hiệu Tài khoản": "",
+        "Nợ": total_value.summarize_debit,
+        "Có": total_value.summarize_credit
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(parseData);
+
+    const range = XLSX.utils.decode_range(worksheet['!ref']);
+    const totalRow = range.e.r + 1;
+
+    for (let R = range.s.r + 1; R <= range.e.r; ++R) {
+        let debitCell = worksheet[XLSX.utils.encode_cell({r: R, c: 5})]
+        debitCell.s = {
+            font: {color: {rgb: "FF0000"}}
+        };
+
+        let creditCell = worksheet[XLSX.utils.encode_cell({r: R, c: 6})];
+        creditCell.s = {
+            font: {color: {rgb: "0070C0"}}
+        };
+    }
+
+    worksheet['!cols'] = Object.keys(parseData[0]).map(key => ({
+        wch: Math.max(
+            key.length,
+            ...parseData.map(row => String(row[key] || "").length)
+        ) + 2
+    }));
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "General ledger Report");
+
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "_");
+    XLSX.writeFile(workbook, `general_ledger_${timestamp}.xlsx`);
+}
+
+$('#btn-export-to-excel').on('click', function () {
+    ExportExcel()
+})
 
 $(document).ready(function () {
     const today = moment();

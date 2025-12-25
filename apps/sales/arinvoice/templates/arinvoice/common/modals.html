@@ -10,21 +10,19 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="table-responsive">
-                    <table class="table nowrap w-100"
-                           id="table-select-customer"
-                           data-method="GET" data-url="{% url 'CustomerListAPI' %}"
-                    >
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th>{% trans 'Customer' %}</th>
-                                <th>{% trans 'Tax number' %}</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
+                <table class="table nowrap w-100"
+                       id="table-select-customer"
+                       data-method="GET" data-url="{% url 'CustomerListAPI' %}"
+                >
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th>{% trans 'Customer' %}</th>
+                            <th>{% trans 'Tax number' %}</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
@@ -80,10 +78,10 @@
         <div class="row">
             <div class="col-12">
                 <table class="table w-100 nowrap" id="table-select-delivery">
-                    <thead class="bg-primary-light-5">
+                    <thead class="bg-secondary-light-5">
                     <tr>
                         <th></th>
-                        <th>{% trans 'Select' %}</th>
+                        <th></th>
                         <th>{% trans 'Code' %}</th>
                         <th>{% trans 'Description' %}</th>
                         <th>{% trans 'Actual delivery date' %}</th>
@@ -111,7 +109,7 @@
         </div>
         <div class="row mt-5">
             <div class="col-12 text-right">
-                <button type="button" id="accept-delivery-product-btn" class="btn btn-sm btn-custom btn-success btn-wth-icon">
+                <button type="button" id="accept-delivery-product-btn" class="btn btn-custom btn-gradient-success btn-wth-icon">
                     <span>
                         <span>{% trans 'Select' %}</span>
                         <span class="icon"><span class="feather-icon"><i class="fa-solid fa-check"></i></span></span>

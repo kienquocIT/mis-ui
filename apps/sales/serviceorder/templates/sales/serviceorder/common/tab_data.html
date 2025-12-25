@@ -45,7 +45,9 @@
         </ul>
         <!-- tabs content -->
         <div class="tab-content" id="service-order-tab-content">
-            <div class="tab-pane fade show active" id="tab_service_detail">
+            <div class="tab-pane fade show active"
+                 id="tab_service_detail"
+                 {% if feature == 'service_quotation' %} data-zone="service_detail" {% endif %} >
                 <div class="row">
                     <div class="col-12">
                         <table id="table-service-detail" class="table nowrap w-100">
@@ -103,7 +105,8 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="tab_work_order">
+            <div class="tab-pane fade" id="tab_work_order"
+                {% if feature == 'work_order' %} data-zone="work" {% endif %} >
                 <div class="row">
                     <div class="col-12">
                         {% if feature == 'service_quotation' %}
@@ -230,7 +233,9 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="tab_expense">
+            <div class="tab-pane fade"
+                 id="tab_expense"
+                 {% if feature == 'service_quotation' %} data-zone="expense" {% endif %}>
                 <!-- main expense table -->
                 <table class="table nowrap w-100" id="table_expense">
                     <thead class="bg-secondary-light-5">
@@ -279,7 +284,8 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="tab_payment">
+            <div class="tab-pane fade" id="tab_payment"
+                {% if feature == 'service_quotation' %} data-zone="payment" {% endif %} >
                 <table id="table-payment" class="table nowrap w-100 min-w-1350p">
                     <thead class="bg-secondary-light-5"></thead>
                     <tbody></tbody>
@@ -289,12 +295,15 @@
                     {% trans 'Add Installment' %}
                 </button>
             </div>
-            <div class="tab-pane fade" id="tab_attachment">
+            <div class="tab-pane fade" id="tab_attachment"
+                {% if feature == 'service_quotation' %} data-zone="attachment" {% endif %}>
                 <div class="form-group content_attached">
                     <div id="attachment" class="{{ addClass }}">{% include 'extends/files/all.html' %}</div>
                 </div>
             </div>
-            {% include 'extends/task/tab_pane.html' %}
+            {% if feature != 'service_quotation' %}
+                {% include 'extends/task/tab_pane.html' %}
+            {% endif %}
         </div>
     </div>
 </div>

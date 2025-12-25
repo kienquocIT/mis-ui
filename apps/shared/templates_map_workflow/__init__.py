@@ -27,6 +27,7 @@ from .asset_instrumenttool import INSTRUMENT_TOOL_DATA_MAP, INSTRUMENT_TOOL_WRIT
 from .kms_document_approval import KMS_DOCUMENT_APPROVAL_DATA_MAP
 from .kms_incoming_document import INCOMING_DOCUMENT_DATA_MAP
 from .hrm import OVERTIME_REQUEST_DATA_MAP, PAYROLL_TEMPLATE_DATA_MAP
+from .servicequotation_servicequotation import SERVICE_QUOTATION_DATA_MAP
 
 __all__ = [
     'InputMappingProperties',
@@ -68,3 +69,4 @@ class InputMappingProperties:
     INCOMING_DOCUMENT_DATA_MAP = INCOMING_DOCUMENT_DATA_MAP
     HRM_OVERTIME_REQUEST = OVERTIME_REQUEST_DATA_MAP
     HRM_PAYROLL_TEMPLATE = PAYROLL_TEMPLATE_DATA_MAP
+    SERVICE_QUOTATION_DATA_MAP = SERVICE_QUOTATION_DATA_MAP

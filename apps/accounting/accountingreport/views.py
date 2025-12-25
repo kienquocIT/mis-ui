@@ -56,6 +56,39 @@ class ChartOfAccountsSummarizeAPI(APIView):
         return resp.auto_return(key_success='journal_entry_summarize')
 
 
+class ReportAccountBalanceList(View):
+    @mask_view(
+        auth_require=True,
+        template='accounting/accountbalance_report/account_balance_report.html',
+        menu_active='menu_report_account_balance',
+        breadcrumb='REPORT_ACCOUNT_BALANCE_LIST_PAGE',
+        icon_cls='fa-solid fa-sack-dollar',
+        icon_bg='bg-blue',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class ChartOfAccountTypeTreeListAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.CHART_OF_ACCOUNT_TYPE_TREE_LIST).get(params)
+        return resp.auto_return(key_success='chart_of_account_type_list')
+
+
+class ChartOfAccountGroupListAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.CHART_OF_ACCOUNT_GROUP_LIST).get(params)
+        return resp.auto_return(key_success='chart_of_account_group_list')
+
+
 class ReportTrialBalanceList(View):
     @mask_view(
         auth_require=True,

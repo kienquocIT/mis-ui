@@ -600,3 +600,7 @@ msgstr "Quyền mới"
 #
 msgid "Month"
 msgstr "Tháng"
+
+#
+msgid "Initial balance"
+msgstr "Số dư đầu kỳ"

@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Account balance report' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    <div class="row align-items-end">
+        <div class="col-12 col-md-3 col-lg-3">
+            <div class="form-group mb-3 mb-md-0">
+                <label class="form-label" for="account_type_filter">{% trans 'Account group' %}</label>
+                <div class="input-group">
+                    <select class="form-select select2" id="account_group_filter" multiple
+                            data-url="{% url 'ChartOfAccountGroupListAPI' %}">
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-3 col-lg-3">
+            <div class="form-group mb-3 mb-md-0">
+                <label class="form-label" for="account_level">{% trans 'Account level' %}</label>
+                <div class="input-group">
+                    <select class="form-select select2" id="account_level" multiple>
+                        <option value=""></option>
+                        <option value="0">{% trans 'Level' %} 1</option>
+                        <option value="1">{% trans 'Level' %} 2</option>
+                        <option value="2">{% trans 'Level' %} 3</option>
+                        <option value="3">{% trans 'Level' %} 4</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-2 col-lg-2">
+            <div class="form-group mb-3 mb-md-0">
+                <label class="form-label" for="display_element">{% trans 'Display' %}</label>
+                <div class="input-group">
+                    <select class="form-select select2" id="display_element">
+                        <option value=""></option>
+                        <option value="0">{% trans 'All' %}</option>
+                        <option value="1">{% trans 'Non-zero account only' %}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-1 col-lg-1">
+            <button type="button" class="btn btn-primary w-100" id="apply_filter">
+                <i class="fas fa-check-circle"></i> {% trans 'Apply' %}
+            </button>
+        </div>
+        <div class="col-12 col-md-1 col-lg-1">
+            <button type="button" class="btn btn-light w-100" id="reset_filter">
+                <i class="fas fa-redo"></i> {% trans 'Reset' %}
+            </button>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <table class="table nowrap w-100" id="ab_table_report" data-method="GET"
+                   data-url="{% url 'ChartOfAccountTypeTreeListAPI' %}">
+                <thead>
+                    <tr class="bg-light border-right">
+                        <th style="min-width: 50px"></th>
+                        <th style="min-width: 150px">{% trans 'Code' %}</th>
+                        <th style="min-width: 150px">{% trans 'Account name' %}</th>
+                        <th style="min-width: 150px">{% trans 'Type' %}</th>
+                        <th style="min-width: 150px">{% trans 'Debit' %}</th>
+                        <th style="min-width: 150px">{% trans 'Credit' %}</th>
+                        <th style="min-width: 150px">{% trans 'Balance' %}</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
+    {% if base.language == 'vi' %}
+        <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
+    {% endif %}
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
+    <script src="{% static 'assets/accounting/accountbalance_report/js/account_balance_report.js' %}"></script>
+{% endblock %}

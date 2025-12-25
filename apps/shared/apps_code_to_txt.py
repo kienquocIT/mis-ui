@@ -245,6 +245,24 @@ class AppsCodeToList:
                 'is_active': True,
             }
         },
+        'serviceorder': {
+            'serviceorder': {
+                'title': _('Service Order'),
+                'is_active': True,
+            },
+        },
+        'servicequotation': {
+            'servicequotation': {
+                'title': _('Service Quotation'),
+                'is_active': True,
+            },
+        },
+        'asset': {
+            'fixed_asset': {
+                'title': _('Fixed Asset'),
+                'is_active': True,
+            }
+        }
     }
 
     @classmethod

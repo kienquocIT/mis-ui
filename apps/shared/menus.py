@@ -336,7 +336,7 @@ class MenusCRM:
         icon='<i class="fas fa-chart-column"></i>',
     )
     PLANNING = MenuCommon(
-        name='Planning', code='id_menu_planning', view_name='#',
+        name='Planning', code='', view_name='#',
         icon='<i class="fas fa-scroll"></i>',
         child=[
             MenuCommon(
@@ -349,25 +349,37 @@ class MenusCRM:
             )
         ],
     )
-    LEAD = MenuCommon(
-        name='Lead', code='menu_lead_list', view_name='LeadList',
-        icon='<i class="fas far fa-star"></i>',
+    BUSINESS_PARTNER = MenuCommon(
+        name='Business partner', code='', view_name='#',
+        icon='<i class="fas fa-scroll"></i>',
+        child=[
+            MenuCommon(
+                name='Contact', code='id_menu_contact', view_name='ContactList',
+                icon='<i class="fas fa-solid fa-id-card"></i>',
+            ),
+            MenuCommon(
+                name='Partner', code='id_menu_account', view_name='AccountList',
+                icon='<i class="fas fa-solid fa-id-card-clip"></i>',
+            ),
+        ],
     )
     CALENDAR = MenuCommon(
         name='Calendar', code='menu_calendar', view_name='ProgrammeList',
         icon='<i class="fas far fa-calendar"></i>',
     )
-    CONTACT = MenuCommon(
-        name='Contact', code='id_menu_contact', view_name='ContactList',
-        icon='<i class="fas fa-solid fa-id-card"></i>',
-    )
-    ACCOUNT = MenuCommon(
-        name='Account', code='id_menu_account', view_name='AccountList',
-        icon='<i class="fas fa-solid fa-id-card-clip"></i>',
-    )
     OPPORTUNITY = MenuCommon(
-        name='Opportunity', code='menu_opportunity_list', view_name='OpportunityList',
+        name='Opportunity', code='', view_name='',
         icon='<i class="fas far fa-lightbulb"></i>',
+        child=[
+            MenuCommon(
+                name='Lead', code='menu_lead_list', view_name='LeadList',
+                icon='<i class="fas far fa-star"></i>',
+            ),
+            MenuCommon(
+                name='Opportunity', code='menu_opportunity_list', view_name='OpportunityList',
+                icon='<i class="fas far fa-lightbulb"></i>',
+            )
+        ],
     )
     QUOTATION = MenuCommon(
         name='Quotation', code='', view_name='#',
@@ -377,10 +389,10 @@ class MenusCRM:
                 name='Sale quotation', code='menu_quotation_list', view_name='QuotationList',
                 icon='<i class="fas fa-file-invoice-dollar"></i>',
             ),
-            # MenuCommon(
-            #     name='Service quotation', code='menu_service_quotation_list', view_name='ServiceQuotationList',
-            #     icon='<i class="fas fa-file-invoice-dollar"></i>',
-            # )
+            MenuCommon(
+                name='Service quotation', code='menu_service_quotation_list', view_name='ServiceQuotationList',
+                icon='<i class="fas fa-file-invoice-dollar"></i>',
+            )
         ],
     )
     BIDDING = MenuCommon(
@@ -1046,6 +1058,10 @@ class MenusFinancial:
                 icon='<i class="fas fa-book-open"></i>',
             ),
             MenuCommon(
+                name='Account balance report', code='menu_report_account_balance', view_name='ReportAccountBalanceList',
+                icon='<i class="fa-solid fa-sack-dollar"></i>',
+            ),
+            MenuCommon(
                 name='Trial balance report', code='menu_report_trial_balance', view_name='ReportTrialBalanceList',
                 icon='<i class="fa-solid fa-scale-balanced"></i>',
             ),
@@ -1147,12 +1163,12 @@ class SpaceItem:
             menus=[
                 MenusCRM.HOME,
                 MenusCRM.DASHBOARD,
-                MenusCRM.LEAD,
-                MenusCRM.CONTACT,
-                MenusCRM.ACCOUNT,
+                MenusCRM.BUSINESS_PARTNER,
                 MenusCRM.OPPORTUNITY,
+                MenusCRM.SALE_ACTIVITIES,
                 MenusCRM.QUOTATION,
                 MenusCRM.ORDERS,
+                MenusCRM.ACCOUNT_PAYABLE,
                 MenusCRM.CALENDAR,
                 MenusCRM.CONSULTING,
                 MenusCRM.BIDDING,
@@ -1167,8 +1183,6 @@ class SpaceItem:
                 MenusCRM.PRODUCT,
                 MenusCRM.OPP_BOM,
                 MenusCRM.PRICING,
-                MenusCRM.ACCOUNT_PAYABLE,
-                MenusCRM.SALE_ACTIVITIES,
                 MenusCRM.TASK,
                 MenusCRM.CHAT_3RD,
             ],

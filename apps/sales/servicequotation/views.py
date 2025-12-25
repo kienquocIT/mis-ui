@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from apps.shared import ServerAPI, ApiURL, mask_view, SaleMsg
+from apps.shared import ServerAPI, ApiURL, mask_view, SaleMsg, InputMappingProperties
 
 
 class ServiceQuotationList(View):
@@ -32,20 +32,11 @@ class ServiceQuotationCreate(View):
         icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
-        employee_current = {}
-        if request.user and not isinstance(request.user, AnonymousUser):
-            employee_current = getattr(request.user, 'employee_current_data', {})
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_TASK_CONFIG).get()
-        task_config = {}
-        if resp.state:
-            task_config = resp.result
         ctx = {
-            'form_id': '',
-            'app_id': '',
-            'list_from_app': '',
-
-            'employee_current': employee_current,
-            'task_config': task_config,
+            'form_id': 'form-create-service-quotation',
+            'app_id': 'c9e131ec760c45af8ae65349f2bb542e',
+            'list_from_app': 'servicequotation.servicequotation.create',
+            'input_mapping_properties': InputMappingProperties.SERVICE_QUOTATION_DATA_MAP,
             'employee_info': request.user.employee_current_data,
         }
         return ctx, status.HTTP_200_OK
@@ -62,18 +53,10 @@ class ServiceQuotationDetail(View):
         icon_bg='bg-primary',
     )
     def get(self, request, pk, *args, **kwargs):
-        employee_current = {}
-        if request.user and not isinstance(request.user, AnonymousUser):
-            employee_current = getattr(request.user, 'employee_current_data', {})
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_TASK_CONFIG).get()
-        task_config = {}
-        if resp.state:
-            task_config = resp.result
         return {
-            'pk': pk,
-
-            'employee_current': employee_current,
-            'task_config': task_config,
+            'form_id': 'form-detail-service-quotation',
+            'app_id': 'c9e131ec760c45af8ae65349f2bb542e',
+            'input_mapping_properties': InputMappingProperties.SERVICE_QUOTATION_DATA_MAP,
             'employee_info': request.user.employee_current_data,
         }, status.HTTP_200_OK
 
@@ -92,17 +75,14 @@ class ServiceQuotationUpdate(View):
         employee_current = {}
         if request.user and not isinstance(request.user, AnonymousUser):
             employee_current = getattr(request.user, 'employee_current_data', {})
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_TASK_CONFIG).get()
-        task_config = {}
-        if resp.state:
-            task_config = resp.result
         ctx = {
             'pk': pk,
             'data': {'doc_id': pk},
-            'form_id': 'form-detail-service-quotation',
-
+            'form_id': 'form-update-service-quotation',
+            'app_id': 'c9e131ec760c45af8ae65349f2bb542e',
+            'list_from_app': 'servicequotation.servicequotation.edit',
+            'input_mapping_properties': InputMappingProperties.SERVICE_QUOTATION_DATA_MAP,
             'employee_current': employee_current,
-            'task_config': task_config,
             'employee_info': request.user.employee_current_data,
         }
         return ctx, status.HTTP_200_OK

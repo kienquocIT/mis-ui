@@ -587,6 +587,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Accounting report
     REPORT_JOURNAL_ENTRY_LIST_PAGE = BreadcrumbChildren(_('Journal entry report'), 'ReportJournalEntryList')
     REPORT_GENERAL_LEDGER_LIST_PAGE = BreadcrumbChildren(_('General ledger report'), 'ReportGeneralLedgerList')
+    REPORT_ACCOUNT_BALANCE_LIST_PAGE = BreadcrumbChildren(_('Account balance report'), 'ReportAccountBalanceList')
     REPORT_TRIAL_BALANCE_LIST_PAGE = BreadcrumbChildren(_('Trial balance report'), 'ReportTrialBalanceList')
 
 
@@ -1599,6 +1600,9 @@ class BreadcrumbView:
     ]
     REPORT_GENERAL_LEDGER_LIST_PAGE = [
         BreadcrumbItem.REPORT_GENERAL_LEDGER_LIST_PAGE
+    ]
+    REPORT_ACCOUNT_BALANCE_LIST_PAGE = [
+        BreadcrumbItem.REPORT_ACCOUNT_BALANCE_LIST_PAGE
     ]
     REPORT_TRIAL_BALANCE_LIST_PAGE = [
         BreadcrumbItem.REPORT_TRIAL_BALANCE_LIST_PAGE

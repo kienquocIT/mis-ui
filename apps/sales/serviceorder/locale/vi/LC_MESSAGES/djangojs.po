@@ -66,7 +66,7 @@ msgid "Invoice"
 msgstr "Hóa Đơn"
 
 #
-msgid "Payment Value"
+msgid "Payment value"
 msgstr "Giá Trị Thanh Toán"
 
 #

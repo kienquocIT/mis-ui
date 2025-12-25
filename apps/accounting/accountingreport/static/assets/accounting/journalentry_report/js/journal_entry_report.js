@@ -71,7 +71,7 @@ class JEReportFunction {
                 {
                     className: 'w-15',
                     render: (data, type, row) => {
-                        return `<span class="mr-1">${row?.['journal_entry_info']?.['original_transaction_parsed']}</span><span class="fw-bold bflow-mirrow-badge-sm">${(row?.['journal_entry_info']?.['je_transaction_data'] || {})?.['code'] || ''}</span>`
+                        return `<span class="mr-1">${row?.['journal_entry_info']?.['original_transaction_parsed'] || $.fn.gettext('Initial balance') || ''}</span><span class="fw-bold bflow-mirrow-badge-sm">${(row?.['journal_entry_info']?.['je_transaction_data'] || {})?.['code'] || ''}</span>`
                     }
                 },
                 {
@@ -153,6 +153,63 @@ class JEReportFunction {
             summarize_credit: 0,
         }
     }
+
+    static ExportExcel() {
+    let parseData = [];
+
+    export_inventory_data_list.forEach(function (data) {
+        parseData.push({
+            "Ngày": data?.['journal_entry_info']?.['date_created'] ? moment(data?.['journal_entry_info']?.['date_created'], 'YYYY-MM-DD').format('DD/MM/YYYY') : '',
+            "Mã bút toán": data?.['journal_entry_info']?.['code'] || '',
+            "Giao dịch gốc": data?.['journal_entry_info']?.['original_transaction_parsed'] || $.fn.gettext('Initial balance') || '',
+            "Người tạo": data?.['journal_entry_info']?.['employee_created']?.['full_name'] || '',
+            "Số Tài khoản": data?.['account_data']?.['acc_code'] || '',
+            "Nợ": Number(data?.['debit'] || 0),
+            "Có": Number(data?.['credit'] || 0)
+        });
+    });
+
+    parseData.push({
+        "Ngày": "",
+        "Mã bút toán": "",
+        "Giao dịch gốc": "TỔNG CỘNG",
+        "Người tạo": "",
+        "Số Tài khoản": "",
+        "Nợ": total_value.summarize_debit,
+        "Có": total_value.summarize_credit
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(parseData);
+
+    const range = XLSX.utils.decode_range(worksheet['!ref']);
+    const totalRow = range.e.r + 1;
+
+    for (let R = range.s.r + 1; R <= range.e.r; ++R) {
+        let debitCell = worksheet[XLSX.utils.encode_cell({r: R, c: 5})];
+        debitCell.s = {
+            font: {color: {rgb: "FF0000"}}
+        };
+
+        let creditCell = worksheet[XLSX.utils.encode_cell({r: R, c: 6})];
+        creditCell.s = {
+            font: {color: {rgb: "0070C0"}}
+        };
+
+    }
+
+    worksheet['!cols'] = Object.keys(parseData[0]).map(key => ({
+        wch: Math.max(
+            key.length,
+            ...parseData.map(row => String(row[key] || "").length)
+        ) + 2
+    }));
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "General ledger Report");
+
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "_");
+    XLSX.writeFile(workbook, `general_ledger_${timestamp}.xlsx`);
+}
 }
 
 /**
@@ -178,8 +235,11 @@ class JEReportEventHandler {
             const dayEnd = today.format('YYYY-MM-DD');
             JEReportFunction.loadJournalEntryReportList(dayStart, dayEnd);
         });
-    }
 
+        $('#btn-export-to-excel').on('click', function () {
+            JEReportFunction.ExportExcel()
+        })
+    }
 }
 
 function ExportExcel() {

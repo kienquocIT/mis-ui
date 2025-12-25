@@ -12,6 +12,7 @@
             background-image: url("{% static 'assets/js/home_4.jpg' %}");
             background-repeat: no-repeat;
             background-size: cover;
+            background-position: center;
         }
     </style>
 {% endblock %}
@@ -34,7 +35,7 @@
             <div class="row" id="my-task-summary-report" data-url="{% url 'MyTaskSummaryReport' %}">
                 <!-- Active Task -->
                 <div class="col-12 col-md-6 col-lg-3 mb-3">
-                    <div class="bflow-mirrow-card-20">
+                    <div class="bflow-mirrow-card">
                         <div class="row">
                             <div class="col-12">
                                 <div class="summary-item" data-item="actives">
@@ -50,7 +51,7 @@
                 </div>
                 <!-- Overdue -->
                 <div class="col-12 col-md-6 col-lg-3 mb-3">
-                    <div class="bflow-mirrow-card-20">
+                    <div class="bflow-mirrow-card">
                         <div class="summary-item" data-item="overdue">
                             <div class="text-center">
                                 <h1 class="text-white summary-value fw-bold"></h1>
@@ -61,7 +62,7 @@
                 </div>
                 <!-- Upcoming Today -->
                 <div class="col-12 col-md-6 col-lg-3 mb-3">
-                    <div class="bflow-mirrow-card-20">
+                    <div class="bflow-mirrow-card">
                         <div class="summary-item" data-item="upcoming_today">
                             <div class="text-center">
                                 <h1 class="text-white summary-value fw-bold"></h1>
@@ -72,7 +73,7 @@
                 </div>
                 <!-- Upcoming 3 Days -->
                 <div class="col-12 col-md-6 col-lg-3 mb-3">
-                    <div class="bflow-mirrow-card-20">
+                    <div class="bflow-mirrow-card">
                         <div class="summary-item" data-item="upcoming_soon">
                             <div class="text-center">
                                 <h1 class="text-white summary-value fw-bold"></h1>
@@ -215,7 +216,7 @@
                     <div id="calendar" class="w-100"></div>
                 </div>
                 <div class="col-12 mb-3">
-                    <div class="bflow-mirrow-card-20">
+                    <div class="bflow-mirrow-card">
                         <div class="w-100">
                             <div class="d-flex">
                                 <div id="event-at-day-selected-date" data-text-today="{% trans 'Today' %}" data-bs-toggle="tooltip"
@@ -275,7 +276,7 @@
                     </div>
                 </div>
                 <div class="col-12">
-                    <div class="bflow-mirrow-card-20">
+                    <div class="bflow-mirrow-card">
                         <div class="w-100 bookmark-group">
                             <h6>{% trans 'Bookmarks' %}</h6>
                             <div id="boxBookmarkDisplay" data-url="{% url 'BookMarkListAPI' %}" data-url-delete="{% url 'BookMarkDetailAPI' pk=1 %}">

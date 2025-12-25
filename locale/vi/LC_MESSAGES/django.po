@@ -10502,7 +10502,7 @@ msgstr "Khấu hao"
 
 #
 msgid "Straight line depreciation"
-msgstr "Khấu hao đuường thẳng"
+msgstr "Khấu hao đường thẳng"
 
 #
 msgid "Adjusted reducing balance"
@@ -12451,3 +12451,11 @@ msgstr "Bộ máy hạch toán"
 #
 msgid "Accounting Report"
 msgstr "Báo cáo kế toán"
+
+#
+msgid "Buyer information"
+msgstr "Thông tin người mua hàng"
+
+#
+msgid "Business partner"
+msgstr "Đối tác kinh doanh"

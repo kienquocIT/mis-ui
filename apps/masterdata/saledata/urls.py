@@ -149,17 +149,17 @@ urlpatterns = [
     path('contact/api/<str:pk>', ContactDetailAPI.as_view(), name='ContactDetailAPI'),
 
 ] + [
-    path('accounts', AccountList.as_view(), name='AccountList'),
-    path('accounts/api', AccountListAPI.as_view(), name='AccountListAPI'),
-    path('account/create', AccountCreate.as_view(), name='AccountCreate'),
-    path('account/create/api', AccountCreateAPI.as_view(), name='AccountCreateAPI'),
-    path('account/api/<str:pk>', AccountDetailAPI.as_view(), name='AccountDetailAPI'),
-    path('account/detail/<str:pk>', AccountDetail.as_view(), name='AccountDetail'),
-    path('account/update/<str:pk>', AccountUpdate.as_view(), name='AccountUpdate'),
+    path('partners', AccountList.as_view(), name='AccountList'),
+    path('partners/api', AccountListAPI.as_view(), name='AccountListAPI'),
+    path('partner/create', AccountCreate.as_view(), name='AccountCreate'),
+    path('partner/create/api', AccountCreateAPI.as_view(), name='AccountCreateAPI'),
+    path('partner/api/<str:pk>', AccountDetailAPI.as_view(), name='AccountDetailAPI'),
+    path('partner/detail/<str:pk>', AccountDetail.as_view(), name='AccountDetail'),
+    path('partner/update/<str:pk>', AccountUpdate.as_view(), name='AccountUpdate'),
 
-    path('accounts-map-employees/api', AccountsMapEmployeeAPI.as_view(), name='AccountsMapEmployeeAPI'),
-    path('accounts-sale/api', AccountForSaleListAPI.as_view(), name='AccountForSaleListAPI'),
-    path('accounts-dropdown/api', AccountDDListAPI.as_view(), name='AccountDDListAPI'),
+    path('partners-map-employees/api', AccountsMapEmployeeAPI.as_view(), name='AccountsMapEmployeeAPI'),
+    path('partners-sale/api', AccountForSaleListAPI.as_view(), name='AccountForSaleListAPI'),
+    path('partners-dropdown/api', AccountDDListAPI.as_view(), name='AccountDDListAPI'),
 ] + [
     path('masterdata/import', SaleDataImportDataList.as_view(), name='SaleDataImportDataList'),
     path('masterdata/product', ProductMasterDataList.as_view(), name='ProductMasterDataList'),

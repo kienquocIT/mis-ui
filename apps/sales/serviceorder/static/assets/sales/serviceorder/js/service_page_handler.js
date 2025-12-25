@@ -342,6 +342,7 @@ class ServiceOrderPageHandler {
                 }
 
                 $.fn.initMaskMoney2();
+
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
             }
         ).finally(

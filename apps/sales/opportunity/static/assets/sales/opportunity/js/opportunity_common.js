@@ -203,6 +203,7 @@ class OpportunityPageFunction {
                             'leaseorder.leaseorder': $transEle.attr('data-trans-lease-order'),
                             'contract.contractapproval': $transEle.attr('data-trans-contract'),
                             'serviceorder.serviceorder': $transEle.attr('data-trans-service-order'),
+                            'servicequotation.servicequotation': $transEle.attr('data-trans-service-quotation'),
                         }
                         let typeMapActivity = {
                             1: $transEle.attr('data-trans-task'),
@@ -250,6 +251,7 @@ class OpportunityPageFunction {
                             'leaseorder.leaseorder': $urlEle.attr('data-url-lease-order-detail'),
                             'contract.contractapproval': $urlEle.attr('data-url-contract-detail'),
                             'serviceorder.serviceorder': $urlEle.attr('data-url-service-order-detail'),
+                            'servicequotation.servicequotation': $transEle.attr('data-url-service-quotation'),
                         }
                         let link = '';
                         let title = '';
@@ -963,10 +965,41 @@ class OpportunityPageFunction {
                 console.log(errs);
             }
         )
+        const service_quotation_check_perm = $.fn.callAjax2({
+            url: $urlEle.attr('data-url-opp-list'),
+            data: {
+                'list_from_app': 'servicequotation.servicequotation.create', 'id': $.fn.getPkDetail()
+            },
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list) && data?.['opportunity_list'].length === 1) {
+                        return data?.['opportunity_list'][0];
+                    }
+                    return null
+                }
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
         let create_return_sc = $('#create-return-advance-shortcut')
         create_return_sc.attr('href', create_return_sc.attr('data-url'))
 
-        Promise.all([quotation_check_perm, sale_order_check_perm, advance_check_perm, payment_check_perm, bom_check_perm, biding_check_perm, consulting_check_perm, lease_order_check_perm, service_order_check_perm]).then(
+        Promise.all([
+            quotation_check_perm,
+            sale_order_check_perm,
+            advance_check_perm,
+            payment_check_perm,
+            bom_check_perm,
+            biding_check_perm,
+            consulting_check_perm,
+            lease_order_check_perm,
+            service_order_check_perm,
+            service_quotation_check_perm
+        ]).then(
             (results_perm_app) => {
                 if (results_perm_app[0]) {
                     let create_quotation_sc = $('#create-quotation-shortcut')
@@ -1047,6 +1080,22 @@ class OpportunityPageFunction {
                 }
                 if (results_perm_app[8]) {
                     let create_svo_sc = $('#create-service-order-shortcut')
+                    create_svo_sc.removeClass('disabled');
+                    let param_url = UsualLoadPageFunction.Push_param_to_url(create_svo_sc.attr('data-url'), {
+                        'opp_id': results_perm_app[8]?.['id'],
+                        'opp_code': results_perm_app[8]?.['code'],
+                        'opp_title': results_perm_app[8]?.['title'],
+                        'inherit_id': results_perm_app[8]?.['sale_person']?.['id'],
+                        'inherit_title': results_perm_app[8]?.['sale_person']?.['full_name'],
+                        'customer_id': results_perm_app[8]?.['customer']?.['id'],
+                        'customer_code': results_perm_app[8]?.['customer']?.['code'],
+                        'customer_title': results_perm_app[8]?.['customer']?.['name'],
+                        'customer': encodeURIComponent(JSON.stringify(results_perm_app[8]?.['customer'])),
+                    })
+                    create_svo_sc.attr('href', param_url)
+                }
+                if (results_perm_app[9]) {
+                    let create_svo_sc = $('#create-service-quotation-shortcut')
                     create_svo_sc.removeClass('disabled');
                     let param_url = UsualLoadPageFunction.Push_param_to_url(create_svo_sc.attr('data-url'), {
                         'opp_id': results_perm_app[8]?.['id'],

@@ -1,14 +1,5 @@
 $(document).ready(async function() {
     function handleDetailEvents(){
-        // Read-only specific handlers
-        ServiceOrder.pageElement.workOrder.$table.on('click', '.btn-open-task', function() {
-            TaskExtend.openAddTaskFromTblRow(this, ServiceOrder.pageElement.workOrder.$table);
-        });
-
-        ServiceOrder.pageElement.workOrder.$table.on('click', '.btn-list-task', function() {
-            TaskExtend.openListTaskFromTblRow(this, ServiceOrder.pageElement.workOrder.$table);
-        });
-
         ServiceOrder.adjustTableSizeWhenChangeTab();
         ServiceOrder.handleClickOpenServiceDelivery();
         ServiceOrder.handleClickOpenWorkOrderCost();
@@ -25,9 +16,10 @@ $(document).ready(async function() {
             IndicatorControl.$canvas.offcanvas('show');
         });
     }
-
+    WindowControl.showLoading()
     await ServiceOrderPageHandler.initializeCommonData();
     await ServiceOrderPageHandler.loadServiceOrderData($('#form-detail-service-quotation').attr('data-url'), true, false)
+    WindowControl.hideLoading()
     UsualLoadPageFunction.DisablePage(true, [
         '.btn-close', '.modal-header button', '#view-dashboard',
         '#btn-open-exchange-modal', '.btn-list-task',

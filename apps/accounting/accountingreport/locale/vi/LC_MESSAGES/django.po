@@ -84,3 +84,19 @@ msgstr "Hiển thị"
 #
 msgid "Non-zero account only"
 msgstr "Chỉ tài khoản có số dư"
+
+#
+msgid "Account Balance report"
+msgstr "Báo cáo số dư tài khoản"
+
+#
+msgid "Account balance report"
+msgstr "Báo cáo số dư tài khoản"
+
+#
+msgid "Account group"
+msgstr "Nhóm tài khoản"
+
+#
+msgid "Account level"
+msgstr "Cấp tài khoản"

@@ -59,7 +59,6 @@ const ASSET_EVENTS = {
     CASH_OUT_CLEARED: 'cash_out:cleared',
 }
 
-
 class EventBus {
     constructor() {
         this.events = {}
@@ -748,8 +747,8 @@ class SearchInventoryHandler {
 
     static getInventoryTransferHTML(){
         return `
-            <h6 class="fw-semibold mb-3">${$.fn.gettext('Select Inventory Item to Transfer')}</h6>
-            <button type="button" class="btn btn-primary" id='btn-open-search-inventory'>
+            <h6 class="fw-semibold mb-3 text-lg">${$.fn.gettext('Select Inventory Item to Transfer')}</h6>
+            <button type="button" class="btn btn-success btn-lg" id='btn-open-search-inventory'>
                 <i class="bi bi-search me-1"></i>
                 ${$.fn.gettext('Search Inventory')}
             </button>
@@ -811,7 +810,6 @@ class SearchInventoryHandler {
         $inventoryItemContent.empty()
         $inventoryItemContent.append(dataHtml)
     }
-
 }
 
 class PurchaseAssetHandler {
@@ -918,7 +916,6 @@ class PurchaseAssetHandler {
 
                     itemData.push({
                         ap_item_id: itemId,
-                        product_id: productData?.id || null,
                         product_code: productData?.code || '',
                         product_title: productData?.title || originalItem?.ap_product_des || '',
                         quantity: selectedQty,
@@ -1001,18 +998,20 @@ class PurchaseAssetHandler {
     }
     handleQuantityChange($input) {
         const unitPrice = parseFloat($input.data('unit-price')) || 0
+        const maxQty = parseFloat($input.data('max-quantity')) || 0
         let selectedQty = parseFloat($input.val()) || 0
 
-        if (selectedQty > 1 || selectedQty < 0) {
-            selectedQty = 1
-            $input.val(1)
-            alert('Maximum 1 quantity for each item')
+        // Validate against maximum available quantity
+        if (selectedQty > maxQty) {
+            selectedQty = maxQty
+            $input.val(maxQty)
+            $.fn.notifyB({description: `${$.fn.gettext('Maximum available quantity is')} ${maxQty}`}, 'failure')
         }
 
         if (selectedQty < 0) {
             selectedQty = 0
             $input.val(0)
-            alert('Minimum 1 quantity for each item')
+            $.fn.notifyB({description: $.fn.gettext('Quantity cannot be negative')}, 'failure')
         }
 
         // Calculate and update item amount
@@ -1020,6 +1019,7 @@ class PurchaseAssetHandler {
         const $amountEl = $input.closest('.ap-item-row').find(this.invoiceItemAmountClass)
         $amountEl.attr('data-init-money', amount)
     }
+
 
     resetCashOutModal() {
         this.selectedCashOutData = null
@@ -1057,7 +1057,8 @@ class PurchaseAssetHandler {
                     url: $table.attr('data-url'),
                     type: $table.attr('data-method'),
                     data: {
-                        'purpose': PURCHASE_REQUEST_PURPOSE.FIXED_ASSET
+                        'purpose': PURCHASE_REQUEST_PURPOSE.FIXED_ASSET,
+                        'asset_purchase_items__isnull': true
                     },
                     dataSrc: (resp) => {
                         let data = $.fn.switcherResp(resp);
@@ -1213,6 +1214,9 @@ class PurchaseAssetHandler {
             const productCode = productData.code || ''
             const quantity = item?.product_quantity || 0
             const unitPrice = item?.product_unit_price || 0
+            const increased_quantity = item?.increased_asset_quantity || 0
+
+            const maxAvailableQty = quantity - increased_quantity
 
             html += `
             <div class="card mb-3" style="border-top: 4px solid #0d6efd;" data-item-id="${itemId}">
@@ -1230,8 +1234,12 @@ class PurchaseAssetHandler {
                         </div>
                         <!-- Qty in Invoice (Read-only) -->
                         <div class="col-md-2">
-                            <label class="form-label text-muted fw-semibold fs-6">Qty in Invoice:</label>
+                            <label class="form-label text-muted fw-semibold fs-6">${$.fn.gettext('Invoice Quantity')}</label>
                             <div class="fw-semibold">${quantity}</div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label text-muted fw-semibold fs-6">${$.fn.gettext('Increased Quantity')}</label>
+                            <div class="fw-semibold">${increased_quantity}</div>
                         </div>
                         <!-- Select Qty (Input) -->
                         <div class="col-md-2">
@@ -1241,10 +1249,13 @@ class PurchaseAssetHandler {
                                 class="form-control ${this.invoiceItemQuantityClass.replace('.', '')}"
                                 data-item-id="${itemId}"
                                 data-unit-price="${unitPrice}"
+                                data-max-quantity="${maxAvailableQty}"
                                 min="0" 
-                                max="1" 
+                                max="${maxAvailableQty}" 
                                 value="0"
+                                ${maxAvailableQty === 0 ? 'disabled' : ''}
                             >
+                            <small class="text-muted">Max: ${maxAvailableQty}</small>
                         </div>
                         <!-- Unit Price (Read-only) -->
                         <div class="col-md-3">
@@ -1599,12 +1610,17 @@ class AssetHandler {
         })
     }
     handleAPInvoiceItemCleared(invoiceId) {
-        if (this.apInvoiceItems && this.apInvoiceItems.id === invoiceId) {
-            const clearedAmount = this.apInvoiceItems.total_register_value || 0
+        const invoiceToRemove = this.apInvoiceItems.find(item => item.id === invoiceId)
+
+        if (invoiceToRemove) {
+            // Update original cost
+            const clearedAmount = invoiceToRemove.total_register_value || 0
             this.originalCostValue = Math.max(0, this.originalCostValue - clearedAmount)
             this.$originalCost.attr('data-init-money', this.originalCostValue)
+            this.$netBookValue.attr('data-init-money', this.originalCostValue)
             $.fn.initMaskMoney2()
 
+            // Remove from array
             this.apInvoiceItems = this.apInvoiceItems.filter(item => item.id !== invoiceId)
         }
     }
@@ -1618,12 +1634,17 @@ class AssetHandler {
         })
     }
     handleCashOutCleared(cashOutId) {
-        if (this.cashOutItems && this.cashOutItems.id === cashOutId) {
-            const clearedAmount = this.cashOutItems.total_register_value || 0
+        const cashOutToRemove = this.cashOutItems.find(item => item.id === cashOutId)
+
+        if (cashOutToRemove) {
+            // Update original cost
+            const clearedAmount = cashOutToRemove.total_register_value || 0
             this.originalCostValue = Math.max(0, this.originalCostValue - clearedAmount)
             this.$originalCost.attr('data-init-money', this.originalCostValue)
+            this.$netBookValue.attr('data-init-money', this.originalCostValue)
             $.fn.initMaskMoney2()
 
+            // Remove from array
             this.cashOutItems = this.cashOutItems.filter(item => item.id !== cashOutId)
         }
     }
@@ -1851,7 +1872,6 @@ class AssetHandler {
                     }))
                 }
                 break
-
         }
     }
     setUpSubmit($form){
@@ -1866,16 +1886,17 @@ class AssetHandler {
     }
 
     loadDetailData(){
+        WindowControl.showLoading()
         $.fn.callAjax2({
             url: this.$formSubmit.attr('data-url'),
             method:'GET',
-        }).then(
+        })
+        .then(
             (resp) => {
                 const data = $.fn.switcherResp(resp);
                 if (data) {
                     $x.fn.renderCodeBreadcrumb(data);
                     $.fn.compareStatusShowPageAction(data)
-                    console.log(data)
                     //handle step
                     const sourceType = data.source_type
                     this.setSourceType(sourceType)
@@ -1918,8 +1939,7 @@ class AssetHandler {
                     // load selected product
                     switch (sourceType) {
                         case SOURCE_TYPE["INVENTORY_TRANSFER"]:
-                            this.inventoryProduct = data.source_data
-                            let inventoryHtml = this.searchInventoryHandler.getSelectedInventoryProductDataHtml({
+                            this.inventoryProduct = {
                                 product_data: {
                                     id: data.source_data.product_id,
                                     code: data.source_data.product_code,
@@ -1932,10 +1952,13 @@ class AssetHandler {
                                 },
                                 tracking_method: data.source_data.tracking_method,
                                 tracking_number: data.source_data.tracking_number,
+                                product_warehouse_id: data.source_data.product_warehouse_id,
                                 total_register_value: data.source_data.total_register_value
-                            })
+                            }
+
+                            let inventoryHtml = this.searchInventoryHandler.getSelectedInventoryProductDataHtml(this.inventoryProduct)
                             this.searchInventoryHandler.loadSelectedInventoryProductData(inventoryHtml)
-                            break;
+                            break
                         case SOURCE_TYPE["ASSET_PURCHASE"]:
                             const sourceData = data.source_data
 
@@ -1944,12 +1967,13 @@ class AssetHandler {
                                 sourceData.ap_invoice_items.forEach(invoice => {
                                     const selectedItems = invoice.detail_products?.map(product => ({
                                         id: product.id,
-                                        product_id: product.ap_invoice_item_id || null,
+                                        ap_item_id: product.ap_invoice_item_id || null,
                                         product_code: product.code || '',
                                         product_title: product.title || '',
                                         quantity: product.quantity,
                                         unit_price: product.unit_price,
-                                        amount: product.amount
+                                        amount: product.amount,
+
                                     })) || []
 
                                     const invoiceData = {
@@ -2013,6 +2037,10 @@ class AssetHandler {
                 } else {
                     $.fn.notifyB('Error', 'failure')
                 }
-            })
+            }
+        )
+        .finally(()=>{
+            WindowControl.hideLoading()
+        })
     }
 }

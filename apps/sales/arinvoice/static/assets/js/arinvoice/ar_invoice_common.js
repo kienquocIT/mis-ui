@@ -221,13 +221,13 @@ class ARInvoicePageFunction {
             },
             columns: [
                 {
-                    className: 'w-10',
+                    className: 'w-5',
                     render: () => {
                         return ``;
                     }
                 },
                 {
-                    className: 'w-15',
+                    className: 'w-10',
                     render: (data, type, row) => {
                         return `${row?.['is_done_ar_invoice'] ? `<i class="fas fa-check-circle text-success mr-1"></i>` + $.fn.gettext('Invoiced') : ''}
                                 <div class="form-check" ${row?.['is_done_ar_invoice'] ? 'hidden' : ''}>
@@ -237,13 +237,13 @@ class ARInvoicePageFunction {
                     }
                 },
                 {
-                    className: 'w-20',
+                    className: 'w-25',
                     render: (data, type, row) => {
                         return `<span class="text-primary fw-bold">${row?.['code']}</span>`
                     }
                 },
                 {
-                    className: 'w-35',
+                    className: 'w-40',
                     render: (data, type, row) => {
                         return `<span>${row?.['remarks'] || ''}</span>`
                     }
@@ -265,7 +265,7 @@ class ARInvoicePageFunction {
             reloadCurrency: true,
             paging: false,
             scrollX: true,
-            scrollY: '30vh',
+            scrollY: '50vh',
             scrollCollapse: true,
             data: datasource,
             columns: [
@@ -278,7 +278,7 @@ class ARInvoicePageFunction {
                 {
                     className: '',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-ssm badge-light">${(row?.['product_data'] || {})?.['code'] || ''}</span><br>${(row?.['product_data'] || {})?.['title'] || ''}`
+                        return `<span class="badge badge-sm badge-light">${(row?.['product_data'] || {})?.['code'] || ''}</span><br>${(row?.['product_data'] || {})?.['title'] || ''}`
                     }
                 },
                 {
@@ -1039,9 +1039,6 @@ class ARInvoiceEventHandler {
 
             let all_delivery_data = data_product?.['delivery_data'];
             let all_order_data = data_product?.['order_data'];
-
-            console.table(all_delivery_data)
-            console.table(all_order_data)
 
             ARInvoicePageFunction.LoadDeliveryProductTable(all_delivery_data);
 

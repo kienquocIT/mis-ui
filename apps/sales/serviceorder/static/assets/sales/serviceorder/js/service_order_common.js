@@ -1514,7 +1514,7 @@ const ServiceOrder = (function($) {
                 },
                 {
                     width: '15%',
-                    title: $.fn.gettext('Payment Value'),
+                    title: $.fn.gettext('Payment value'),
                     render: (data, type, row, meta) => {
                         const paymentValue = row.payment_value ?? 0
                         const isInvoice = row.is_invoice_required

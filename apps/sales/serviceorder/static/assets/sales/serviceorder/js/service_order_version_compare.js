@@ -640,7 +640,7 @@ const VersionCompareControl = {
             `${basePath}.payment_type`
         );
         html += this.renderInlineField('Invoice', payment.is_invoice_required, `${basePath}.is_invoice_required`);
-        html += this.renderInlineField('Payment Value', payment.payment_value, `${basePath}.payment_value`, ['mask-money']);
+        html += this.renderInlineField('Payment value', payment.payment_value, `${basePath}.payment_value`, ['mask-money']);
         html += this.renderInlineField('Tax', payment.tax_value, `${basePath}.tax_value`, ['mask-money']);
         html += this.renderInlineField('Reconcile Value', payment.reconcile_value, `${basePath}.reconcile_value`, ['mask-money']);
         html += this.renderInlineField('Receivable Value', payment.receivable_value, `${basePath}.receivable_value`, ['mask-money']);
